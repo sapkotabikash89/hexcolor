@@ -279,7 +279,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                   return (
                     <img
                       src={gumletUrl}
-                      alt={`${label} color swatch showing the color visually with RGB(${rgb.r}, ${rgb.g}, ${rgb.b}) values`}
+                      alt={`${name ? name : ''}${name ? ' ' : ''}(${hex}) color swatch showing RGB(${rgb.r}, ${rgb.g}, ${rgb.b}) values`}
                       width="1200"
                       height="630"
                       loading="eager"
