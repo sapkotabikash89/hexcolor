@@ -11,7 +11,8 @@ import { Palette, Droplet, Contrast, Eye, ImageIcon, CircleDot, Search, Menu, Pi
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { getColorPageLink } from "@/lib/color-linking-utils"
-import { performDeterministicSearch } from "@/lib/search-utils"
+import { performStaticSearch, performSimpleSearch } from "@/lib/static-search-utils"
+import blogPostsData from "@/lib/blog-posts-data.json"
 
 export function Header() {
   const router = useRouter()
@@ -36,8 +37,11 @@ export function Header() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Use deterministic search logic
-    const searchResult = await performDeterministicSearch(searchValue)
+    // Use static search logic with bundled blog post data
+    const blogPosts = Array.isArray(blogPostsData) ? blogPostsData : [];
+    const searchResult = blogPosts.length > 0 
+      ? performStaticSearch(searchValue, blogPosts)
+      : performSimpleSearch(searchValue)
     
     if (searchResult) {
       // Use Next.js router for navigation to avoid Cloudflare redirects
