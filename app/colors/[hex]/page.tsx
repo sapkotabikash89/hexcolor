@@ -138,6 +138,13 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
 export default async function ColorPage({ params }: ColorPageProps) {
   const { hex } = await params
   const normalizedHex = normalizeHex(hex)
+  
+  // Check if this is a known static color with lowercase hex
+  const upperHex = normalizedHex.toUpperCase();
+  if (isValidHex(normalizedHex) && KNOWN_COLOR_HEXES.has(upperHex) && normalizedHex !== upperHex) {
+    // Redirect to uppercase version for known static colors
+    redirect(`/colors/${upperHex}`);
+  }
 
   if (!isValidHex(normalizedHex)) {
     notFound()
