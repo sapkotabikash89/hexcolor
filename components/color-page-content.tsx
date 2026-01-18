@@ -277,19 +277,30 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                 if (gumletUrl && !imageError) {
                   // Has pre-generated image from Gumlet CDN
                   return (
-                    <a
-                      href={gumletUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full h-full"
-                    >
-                      <ColorImage
-                        hex={hex}
-                        alt={`${label} color swatch`}
-                        priority={true}
-                        className="object-cover w-full h-full"
+                    <>
+                      {/* Plain HTML img tag for Google Image Search */}
+                      <img
+                        src={gumletUrl}
+                        alt={`${label} color swatch showing the color visually with RGB(${rgb.r}, ${rgb.g}, ${rgb.b}) values`}
+                        width="1200"
+                        height="630"
+                        loading="eager"
+                        className="absolute inset-0 w-full h-full object-cover rounded-lg"
                       />
-                    </a>
+                      <a
+                        href={gumletUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full h-full"
+                      >
+                        <ColorImage
+                          hex={hex}
+                          alt={`${label} color swatch`}
+                          priority={true}
+                          className="object-cover w-full h-full"
+                        />
+                      </a>
+                    </>
                   );
                 }
                 
