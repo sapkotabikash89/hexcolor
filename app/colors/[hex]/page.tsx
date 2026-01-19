@@ -87,12 +87,12 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       "brand colors",
     ],
     alternates: {
-      canonical: `https://colormean.com/colors/${cleanHex}`,
+      canonical: `https://colormean.com/colors/${cleanHex.toLowerCase()}`,
     },
     openGraph: {
       title: baseTitle,
       description: baseDescription,
-      url: `https://colormean.com/colors/${cleanHex}`,
+      url: `https://colormean.com/colors/${cleanHex.toLowerCase()}`,
       type: "website",
       images: [
         {
@@ -124,11 +124,12 @@ export default async function ColorPage({ params }: ColorPageProps) {
   const { hex } = await params
   const normalizedHex = normalizeHex(hex)
 
-  // Check if this is a known static color with lowercase hex
-  const upperHex = normalizedHex.toUpperCase();
-  if (isValidHex(normalizedHex) && KNOWN_COLOR_HEXES.has(upperHex) && normalizedHex !== upperHex) {
-    // Redirect to uppercase version for known static colors
-    redirect(`/colors/${upperHex}`);
+  // Check if this is a known static color - ensure lowercase URL
+  const lowerHex = normalizedHex.replace("#", "").toLowerCase();
+  const upperHex = normalizedHex.replace("#", "").toUpperCase();
+  if (isValidHex(normalizedHex) && KNOWN_COLOR_HEXES.has(upperHex) && hex !== lowerHex) {
+    // Redirect to lowercase version for consistency and to match static export
+    redirect(`/colors/${lowerHex}`);
   }
 
   if (!isValidHex(normalizedHex)) {

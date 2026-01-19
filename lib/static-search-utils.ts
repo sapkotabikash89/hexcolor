@@ -24,27 +24,27 @@ interface ColorEntry {
 export function normalizeInput(input: string): string {
   // Trim leading/trailing spaces
   let normalized = input.trim()
-  
+
   // Convert to lowercase
   normalized = normalized.toLowerCase()
-  
+
   // Remove leading # only for hex comparisons
   if (normalized.startsWith('#')) {
     normalized = normalized.substring(1)
   }
-  
+
   return normalized
 }
 
 // Detect input type (Rule #2)
 export function detectInputType(input: string): 'hex' | 'color-name' {
   const normalized = normalizeInput(input)
-  
+
   // Check if it's a valid hex code (3 or 6 digits)
   if (/^[0-9a-f]{3}$/.test(normalized) || /^[0-9a-f]{6}$/.test(normalized)) {
     return 'hex'
   }
-  
+
   // Otherwise treat as color name
   return 'color-name'
 }
@@ -52,32 +52,32 @@ export function detectInputType(input: string): 'hex' | 'color-name' {
 // Search blog posts for color matches (using static data)
 // Since we don't have static blog post data in this file, we'll need to pass it in
 export function searchBlogPosts(
-  input: string, 
-  inputType: 'hex' | 'color-name', 
+  input: string,
+  inputType: 'hex' | 'color-name',
   blogPosts: BlogPost[]
 ): BlogPost | null {
   const normalizedInput = normalizeInput(input)
-  
+
   // For hex input, look for blog posts with titles containing the hex pattern
   if (inputType === 'hex') {
     // Look for patterns like "color-XXXXXX-meaning" or hex codes in titles
     const hexPattern = normalizedInput.toUpperCase()
-    
+
     for (const post of blogPosts) {
       const titleLower = post.title.toLowerCase()
-      
+
       // Check for hex in title (e.g., "FFA500 Color Orange Meaning")
       if (titleLower.includes(normalizedInput) || titleLower.includes(hexPattern)) {
         return post
       }
-      
+
       // Check if the URI contains the hex pattern (e.g., /color-ffa500-meaning/)
       if (post.uri.toLowerCase().includes(normalizedInput) || post.uri.toLowerCase().includes(hexPattern)) {
         return post
       }
     }
   }
-  
+
   // For color name input, look for exact or partial matches in blog post titles
   if (inputType === 'color-name') {
     // First try exact match - look for color name in the title
@@ -88,18 +88,18 @@ export function searchBlogPosts(
         return post
       }
     }
-    
+
     // If no exact match, try partial match with common color patterns
     for (const post of blogPosts) {
       const titleLower = post.title.toLowerCase()
       // Check for patterns like "blue color", "blue meaning", etc.
-      if (titleLower.includes(`${normalizedInput} color`) || 
-          titleLower.includes(`color ${normalizedInput}`) ||
-          titleLower.includes(`${normalizedInput} meaning`)) {
+      if (titleLower.includes(`${normalizedInput} color`) ||
+        titleLower.includes(`color ${normalizedInput}`) ||
+        titleLower.includes(`${normalizedInput} meaning`)) {
         return post
       }
     }
-    
+
     // Finally check if the URI contains the color name pattern (e.g., /color-blue-meaning/)
     for (const post of blogPosts) {
       if (post.uri.toLowerCase().includes(`color-${normalizedInput}-meaning`)) {
@@ -107,7 +107,7 @@ export function searchBlogPosts(
       }
     }
   }
-  
+
   return null
 }
 
@@ -115,14 +115,14 @@ export function searchBlogPosts(
 export function searchColorJson(input: string, inputType: 'hex' | 'color-name'): ColorEntry | null {
   const normalizedInput = normalizeInput(input)
   const colorData = colorMeaningJson as Record<string, ColorEntry>
-  
+
   if (inputType === 'hex') {
     // Direct hex lookup (uppercase)
     const hexKey = normalizedInput.toUpperCase()
     if (colorData[hexKey]) {
       return colorData[hexKey]
     }
-    
+
     // Also check if normalized input matches any hex key
     for (const [hex, colorInfo] of Object.entries(colorData)) {
       if (hex.toLowerCase() === normalizedInput.toLowerCase()) {
@@ -130,7 +130,7 @@ export function searchColorJson(input: string, inputType: 'hex' | 'color-name'):
       }
     }
   }
-  
+
   if (inputType === 'color-name') {
     // Search by color name
     for (const [, colorInfo] of Object.entries(colorData)) {
@@ -138,7 +138,7 @@ export function searchColorJson(input: string, inputType: 'hex' | 'color-name'):
         return colorInfo
       }
     }
-    
+
     // Partial match fallback
     for (const [, colorInfo] of Object.entries(colorData)) {
       if (colorInfo.name.toLowerCase().includes(normalizedInput)) {
@@ -146,13 +146,13 @@ export function searchColorJson(input: string, inputType: 'hex' | 'color-name'):
       }
     }
   }
-  
+
   return null
 }
 
 // Generate color page slug from hex (Rule #4)
 export function generateColorSlug(hex: string): string {
-  return `/colors/${hex.toUpperCase()}/`
+  return `/colors/${hex.toLowerCase()}`;
 }
 
 // Check if a color is known (exists in static color pages)
@@ -165,15 +165,15 @@ export function isKnownColor(hex: string): boolean {
 export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): string | null {
   // Rule #1: Input normalization (always first)
   const normalizedInput = normalizeInput(input)
-  
+
   // Handle empty/invalid input
   if (!normalizedInput) {
     return null
   }
-  
+
   // Rule #2: Detect input type
   const inputType = detectInputType(input)
-  
+
   // Rule #3: Priority rules - Blog post match first
   const blogMatch = searchBlogPosts(input, inputType, blogPosts)
   if (blogMatch) {
@@ -183,7 +183,7 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
     const baseUrl = "https://colormean.com"
     return new URL(uri, baseUrl).toString()
   }
-  
+
   // Rule #3: Known color JSON match second
   const jsonMatch = searchColorJson(input, inputType)
   if (jsonMatch) {
@@ -197,7 +197,7 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
       return `https://colormean.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
     }
   }
-  
+
   // Rule #3: Unknown color fallback (last) - only for hex input
   if (inputType === 'hex') {
     // Validate hex format
@@ -213,7 +213,7 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
       }
     }
   }
-  
+
   // No matches found
   return null
 }
@@ -234,15 +234,15 @@ export function getAllColorNames(): string[] {
 export function performSimpleSearch(input: string): string | null {
   // Rule #1: Input normalization (always first)
   const normalizedInput = normalizeInput(input)
-  
+
   // Handle empty/invalid input
   if (!normalizedInput) {
     return null
   }
-  
+
   // Rule #2: Detect input type
   const inputType = detectInputType(input)
-  
+
   // Rule #3: Known color JSON match first
   const jsonMatch = searchColorJson(input, inputType)
   if (jsonMatch) {
@@ -256,7 +256,7 @@ export function performSimpleSearch(input: string): string | null {
       return `https://colormean.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
     }
   }
-  
+
   // Rule #3: Unknown color fallback (last) - only for hex input
   if (inputType === 'hex') {
     // Validate hex format
@@ -272,7 +272,7 @@ export function performSimpleSearch(input: string): string | null {
       }
     }
   }
-  
+
   // No matches found
   return null
 }
