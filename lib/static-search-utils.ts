@@ -152,7 +152,7 @@ export function searchColorJson(input: string, inputType: 'hex' | 'color-name'):
 
 // Generate color page slug from hex (Rule #4)
 export function generateColorSlug(hex: string): string {
-  return `/colors/${hex.toLowerCase()}/`
+  return `/colors/${hex.toUpperCase()}/`
 }
 
 // Check if a color is known (exists in static color pages)
