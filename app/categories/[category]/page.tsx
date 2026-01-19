@@ -28,11 +28,11 @@ async function fetchPostsByCategory(categorySlug: string) {
 
   const categoryJson = await categoryRes.json();
   const category = categoryJson?.data?.categories?.nodes?.[0];
-  
+
   if (!category?.databaseId) {
     return { posts: [], categoryName: categorySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') };
   }
-  
+
   // Now fetch posts by category ID
   const res = await fetch("https://cms.colormean.com/graphql", {
     method: "POST",
@@ -141,13 +141,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </section>
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1">
-            <CategoryPosts 
-              initialPosts={posts} 
-              categoryName={categoryName} 
-              categorySlug={categorySlug} 
+          <article id="content" className="grow-content flex-1">
+            <CategoryPosts
+              initialPosts={posts}
+              categoryName={categoryName}
+              categorySlug={categorySlug}
             />
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
       </main>
