@@ -19,7 +19,7 @@ const DEFAULT_HEX = "#5B6FD8";
 function PickerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const hexParam = searchParams.get('hex');
+  const hexParam = searchParams ? searchParams.get('hex') : null;
   
   const [currentHex, setCurrentHex] = useState(() => {
     if (hexParam && isValidHex(`#${hexParam}`)) {
