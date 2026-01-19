@@ -89,7 +89,7 @@ export function BlogContent({ html, className = '', style }: BlogContentProps) {
   return (
     <div
       ref={contentRef}
-      className={className}
+      className={`wp-content not-prose ${className}`}
       style={style}
       dangerouslySetInnerHTML={{ __html: processedHtml }}
     />
