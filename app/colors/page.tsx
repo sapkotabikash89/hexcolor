@@ -86,12 +86,12 @@ export default function ColorsPage() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1">
+          <article id="content" className="grow-content flex-1">
             <ColorLibrary initialQuery="" />
             <div className="mt-8 flex justify-center">
               <ShareButtons title="Check out the ColorMean Color Library" />
             </div>
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
       </main>

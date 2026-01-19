@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
       <main className="container mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Privacy Policy", href: "/privacy-policy" }]} />
         <div className="flex flex-col lg:flex-row gap-8 mt-6">
-          <div className="flex-1 space-y-4">
+          <article id="content" className="grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold">Privacy Policy</h1>
             <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
               <p>
@@ -159,7 +159,7 @@ export default function PrivacyPolicyPage() {
             <div className="flex justify-center py-4 mt-8 border-t pt-8">
               <ShareButtons title="ColorMean Privacy Policy" />
             </div>
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
       </main>

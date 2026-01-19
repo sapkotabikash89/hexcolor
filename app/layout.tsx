@@ -7,6 +7,7 @@ import "./globals.css"
 import { WebsiteSchema, OrganizationSchema, SoftwareApplicationSchema } from "@/components/structured-data"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
+import { GrowHandler } from "@/components/grow-handler"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -120,6 +121,7 @@ export default function RootLayout({
         <div className="max-w-[1200px] mx-auto">
           {children}
         </div>
+        <GrowHandler />
         <ScrollToTop />
         <SonnerToaster />
         <Analytics />

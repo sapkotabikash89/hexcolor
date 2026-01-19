@@ -76,13 +76,13 @@ export default async function BlogPage() {
       </section>
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1">
-            <CategoryPosts 
-              initialPosts={transformedPosts} 
-              categoryName="Blog" 
-              categorySlug="blog" 
+          <article id="content" className="grow-content flex-1">
+            <CategoryPosts
+              initialPosts={transformedPosts}
+              categoryName="Blog"
+              categorySlug="blog"
             />
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
       </main>

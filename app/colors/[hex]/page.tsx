@@ -263,9 +263,9 @@ export default async function ColorPage({ params }: ColorPageProps) {
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Content Area - 2/3 */}
-          <div className="flex-1">
+          <article id="content" className="grow-content flex-1">
             <ColorPageContent hex={normalizedHex} faqs={faqItems} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
-          </div>
+          </article>
 
           {/* Sidebar - 1/3 */}
           <ColorSidebar color={normalizedHex} />

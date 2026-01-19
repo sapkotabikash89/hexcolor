@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script"
-import Head from "next/head"
 import "../globals.css" // Import globals for blog posts
 import { WebsiteSchema, OrganizationSchema, SoftwareApplicationSchema } from "@/components/structured-data"
 import { ScrollToTop } from "@/components/scroll-to-top"
@@ -79,59 +78,8 @@ export default function BlogRootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <>
-      <Head>
-        {/* Preconnect to critical origins */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://colormean.gumlet.io" />
-        <link rel="dns-prefetch" href="https://colormean.gumlet.io" />
-        <link rel="preconnect" href="https://cms.colormean.com" />
-        <link rel="dns-prefetch" href="https://cms.colormean.com" />
-        <link rel="preconnect" href="https://colormean.com" />
-        <link rel="dns-prefetch" href="https://colormean.com" />
-        
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <Script id="remove-generator-meta" strategy="beforeInteractive">
-          {`document.querySelectorAll('meta[name="generator"]').forEach((el)=>el.remove());`}
-        </Script>
-        <WebsiteSchema />
-        <OrganizationSchema />
-        <SoftwareApplicationSchema />
-      </Head>
-      <div className="max-w-[1200px] mx-auto">
-        {children}
-        <ScrollToTop />
-        <SonnerToaster />
-        <Analytics />
-        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (
-          <Script id="ga-defer-on-first-interaction" strategy="lazyOnload">
-            {`
-              (function() {
-                var loaded = false;
-                function loadGA() {
-                  if (loaded) return;
-                  loaded = true;
-                  var s = document.createElement('script');
-                  s.src = 'https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}';
-                  s.async = true;
-                  s.defer = true;
-                  document.head.appendChild(s);
-                  s.onload = function() {
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag('js', new Date());
-                    gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}', { page_path: window.location.pathname });
-                  };
-                }
-                ['keydown','pointerdown','touchstart','scroll'].forEach(function(evt){
-                  window.addEventListener(evt, loadGA, { once: true, passive: true });
-                });
-              })();
-            `}
-          </Script>
-        ) : null}
-      </div>
-    </>
+    <div className="max-w-[1200px] mx-auto">
+      {children}
+    </div>
   )
 }

@@ -71,7 +71,7 @@ export default function HomePage() {
       <main className="container mx-auto px-1 sm:px-4 py-8 sm:py-12">
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
           {/* Content Area - 2/3 */}
-          <div className="flex-1 space-y-8 sm:space-y-12">
+          <article id="content" className="grow-content flex-1 space-y-8 sm:space-y-12">
             {/* Interactive Color Picker Component */}
             <HomeColorPicker />
 
@@ -181,7 +181,7 @@ export default function HomePage() {
                 </p>
               </div>
             </Card>
-          </div>
+          </article>
 
           {/* Sidebar - 1/3 */}
           <ColorSidebar color="#5B6FD8" />

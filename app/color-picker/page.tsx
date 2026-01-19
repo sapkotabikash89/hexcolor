@@ -82,14 +82,14 @@ export default function ColorPickerPage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1 space-y-8">
+            <article id="content" className="grow-content flex-1 space-y-8">
               <ToolApplicationSchema
                 name="Color Picker"
                 slug="color-picker"
                 description="Interactive Color Picker Tool to sample and select colors"
               />
               <ColorPickerClient />
-              
+
               <div className="p-6 border-2 border-border rounded-lg space-y-4">
                 <h2 className="text-2xl font-bold">About the Color Picker</h2>
                 <p className="text-muted-foreground">
@@ -125,11 +125,11 @@ export default function ColorPickerPage() {
                   <li>Helps explore related colors and accessibility from the color page.</li>
                 </ul>
               </div>
-            </div>
+            </article>
             <ColorSidebar color="#5B6FD8" />
           </div>
-          
-          
+
+
         </div>
       </main>
       <ExploreColorTools current="color-picker" />
