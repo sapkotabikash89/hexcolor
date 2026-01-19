@@ -22,6 +22,9 @@ import { FeaturedImage } from "@/components/blog/featured-image"
 import { BlogContent } from "@/components/blog/blog-content"
 import { convertToGumletUrl, convertHtmlImagesToGumlet } from "@/lib/gumlet-image-utils"
 import { hasColorInTitle, hasExplicitHexInTitle } from "@/lib/color-title-utils"
+import { isShadesMeaningPost, extractShadesFromContent } from "@/lib/shades-utils"
+import { ShadesTOC } from "@/components/shades/shades-toc"
+import { ShadeSection } from "@/components/shades/shade-section"
 
 const ShareButtons = dynamic(() => import("@/components/share-buttons").then((mod) => mod.ShareButtons))
 const HelpfulVote = dynamic(() => import("@/components/helpful-vote").then((mod) => mod.HelpfulVote))
@@ -1105,6 +1108,12 @@ export default async function WPPostPage({ params }: WPPageProps) {
   // Check if the title contains a color for conditional rendering
   const titleContainsColor = titleHasExplicitHex  // Use explicit hex only, not color names
   
+  // Check if this is a Shades Meaning category post
+  const isShadesMeaning = isShadesMeaningPost(node?.categories?.nodes);
+  
+  // Extract shades from content if it's a Shades Meaning post
+  const shades = isShadesMeaning ? extractShadesFromContent(node.content || "") : [];
+  
   // Convert WordPress image URLs to Gumlet CDN
   const gumletImageUrl = img ? convertToGumletUrl(img) : undefined
 
@@ -1241,6 +1250,31 @@ export default async function WPPostPage({ params }: WPPageProps) {
                       )}
                     </section>
                   )
+                }
+                
+                // If this is a Shades Meaning post, render the special layout
+                if (isShadesMeaning && shades.length > 0) {
+                  return (
+                    <>
+                      {/* Featured image after title */}
+                      {renderFeaturedImage()}
+                      
+                      {/* Shades Table of Contents */}
+                      <ShadesTOC shades={shades} />
+                      
+                      {/* Individual shade sections */}
+                      {shades.map((shade, index) => (
+                        <ShadeSection 
+                          key={index}
+                          name={shade.name}
+                          hex={shade.hex}
+                          description={shade.description}
+                          slug={shade.slug}
+                          cmyk={shade.cmyk}
+                        />
+                      ))}
+                    </>
+                  );
                 }
 
                 // Check if we have a technical section in the content
