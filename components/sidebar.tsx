@@ -13,9 +13,10 @@ import { ColorCombination } from "@/components/color-combination"
 interface ColorSidebarProps {
   color: string
   onColorChange?: (color: string) => void
+  showColorSchemes?: boolean
 }
 
-export function ColorSidebar({ color: initialColor, onColorChange }: ColorSidebarProps) {
+export function ColorSidebar({ color: initialColor, onColorChange, showColorSchemes = true }: ColorSidebarProps) {
   const [color, setColor] = useState(initialColor)
   const [harmonyType, setHarmonyType] = useState("complementary")
   const [exportOpen, setExportOpen] = useState(false)
@@ -84,46 +85,48 @@ export function ColorSidebar({ color: initialColor, onColorChange }: ColorSideba
 
   return (
     <aside className="w-full lg:w-96 space-y-6 sticky top-24 self-start">
-      <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-lg">Color Schemes</h3>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="gap-2"
-            onClick={() => setExportOpen(true)}
-          >
-            <Share className="w-4 h-4" />
-            Export
-          </Button>
+      {showColorSchemes && (
+        <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-lg">Color Schemes</h3>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="gap-2"
+              onClick={() => setExportOpen(true)}
+            >
+              <Share className="w-4 h-4" />
+              Export
+            </Button>
+          </div>
+
+          <Select value={harmonyType} onValueChange={setHarmonyType}>
+            <SelectTrigger aria-label="Select harmony type">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="analogous">Analogous</SelectItem>
+              <SelectItem value="complementary">Complementary</SelectItem>
+              <SelectItem value="split-complementary">Split Complementary</SelectItem>
+              <SelectItem value="triadic">Triadic</SelectItem>
+              <SelectItem value="tetradic">Tetradic</SelectItem>
+              <SelectItem value="square">Square</SelectItem>
+              <SelectItem value="double-split-complementary">Double Split Complementary</SelectItem>
+              <SelectItem value="monochromatic">Monochromatic</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <ColorCombination colors={harmonies} baseHex={color} height={72} onColorChange={onColorChange} />
         </div>
-
-        <Select value={harmonyType} onValueChange={setHarmonyType}>
-          <SelectTrigger aria-label="Select harmony type">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="analogous">Analogous</SelectItem>
-            <SelectItem value="complementary">Complementary</SelectItem>
-            <SelectItem value="split-complementary">Split Complementary</SelectItem>
-            <SelectItem value="triadic">Triadic</SelectItem>
-            <SelectItem value="tetradic">Tetradic</SelectItem>
-            <SelectItem value="square">Square</SelectItem>
-            <SelectItem value="double-split-complementary">Double Split Complementary</SelectItem>
-            <SelectItem value="monochromatic">Monochromatic</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <ColorCombination colors={harmonies} baseHex={color} height={72} onColorChange={onColorChange} />
-      </div>
+      )}
 
       {latestPosts.length > 0 && (
         <div className="bg-card border border-border rounded-lg p-6 space-y-4">
           <h3 className="font-semibold text-lg">Latest Posts</h3>
           <ul className="space-y-3">
             {latestPosts.map((p, idx) => {
-              const numBg = color
-              const numColor = getContrastColor(numBg)
+              const numBg = showColorSchemes ? color : "#000000"
+              const numColor = "#FFFFFF"
               return (
                 <li key={`${p.uri}-${idx}`} className="flex items-start gap-3">
                   <span
@@ -147,14 +150,16 @@ export function ColorSidebar({ color: initialColor, onColorChange }: ColorSideba
           </ul>
         </div>
       )}
-      <ColorExportDialog
-        open={exportOpen}
-        onOpenChange={setExportOpen}
-        title={`Export ${harmonyType}`}
-        colors={harmonies}
-        baseHex={color}
-        filenameLabel={harmonyType}
-      />
+      {showColorSchemes && (
+        <ColorExportDialog
+          open={exportOpen}
+          onOpenChange={setExportOpen}
+          title={`Export ${harmonyType}`}
+          colors={harmonies}
+          baseHex={color}
+          filenameLabel={harmonyType}
+        />
+      )}
     </aside>
   )
 }

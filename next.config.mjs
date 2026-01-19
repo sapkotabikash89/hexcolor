@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true, // Add trailing slashes to all routes for compatibility
-  output: process.env.NEXT_EXPORT ? 'export' : undefined, // Enable static export only when building for export
+  output: 'export', // Force static export
   images: {
     unoptimized: true, // Required for static exports since we can't use Next.js image optimization
     formats: ["image/webp"],

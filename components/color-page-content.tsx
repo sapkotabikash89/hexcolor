@@ -82,7 +82,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
   useEffect(() => {
     // Sync global components (Header, Sidebar) with current page color
     window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: hex } }))
-    
+
     // Fetch global love count
     const fetchLoveCount = async () => {
       try {
@@ -95,7 +95,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         console.error("Failed to fetch love count", error)
       }
     }
-    
+
     fetchLoveCount()
 
     const key = `love:${hex.toUpperCase()}`
@@ -105,13 +105,13 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         const parsed = JSON.parse(raw)
         // setLoveCount(parsed.count || 9) // We prefer server count if available
         setLiked(!!parsed.liked)
-      } catch {}
+      } catch { }
     } else {
       // setLoveCount(9) // Default set by server fetch or initial state
       setLiked(false)
     }
   }, [hex])
-  
+
   // Sync background color with current hex when it changes
   useEffect(() => {
     if (onColorChange) {
@@ -139,7 +139,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
   const family = hueFamily(hsl.h)
   const categoryName = `${tone} ${family.name}`
   const complementary = getColorHarmony(hex, "complementary")[1]
-  
+
   const downloadMainSwatch = () => {
     const canvas = document.createElement("canvas")
     canvas.width = 1920
@@ -175,7 +175,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
     const key = `love:${hex.toUpperCase()}`
     const nextLiked = !liked
     setLiked(nextLiked)
-    
+
     // Optimistic update
     setLoveCount((prev) => (nextLiked ? prev + 1 : Math.max(0, prev - 1)))
 
@@ -186,7 +186,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ hex: hex.replace("#", ""), increment: nextLiked }),
       })
-      
+
       // Update local storage for persistence of "liked" state
       const payload = { liked: nextLiked }
       if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify(payload))
@@ -257,15 +257,12 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
           </div>
           <div className="px-4 sm:px-6 py-2">
             <p className="text-base leading-relaxed">
-              {label} RGB value is ({rgb.r}, {rgb.g}, {rgb.b}). The hex color red value is {rgb.r}, green is {rgb.g}, and
-              blue is {rgb.b}. Its HSL format shows a hue of {hsl.h}°, saturation of {hsl.s} percent, and lightness of{}
-              {hsl.l} percent. The CMYK process values are {cmyk.c} percent, {cmyk.m} percent, {cmyk.y} percent, {cmyk.k}{}
-              percent.
+              {`${label} RGB value is (${rgb.r}, ${rgb.g}, ${rgb.b}). The hex color red value is ${rgb.r}, green is ${rgb.g}, and blue is ${rgb.b}. Its HSL format shows a hue of ${hsl.h}°, saturation of ${hsl.s}%, and lightness of ${hsl.l}%. The CMYK process values are ${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%.`}
             </p>
           </div>
         </Card>
       ) : null}
-  
+
       {mode !== "sectionsOnly" ? (
         <Card className="p-4 sm:p-6 space-y-4">
           <div className="w-full flex justify-center">
@@ -273,13 +270,13 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
               {/* Try to render Gumlet CDN image first, fall back to CSS swatch */}
               {(() => {
                 const gumletUrl = getGumletImageUrl(hex);
-                
+
                 if (gumletUrl && !imageError) {
                   // Has pre-generated image from Gumlet CDN - Single image for Google Image Search indexing
                   return (
                     <img
                       src={gumletUrl}
-                      alt={`${name ? name : ''}${name ? ' ' : ''}(${hex}) color swatch showing RGB(${rgb.r}, ${rgb.g}, ${rgb.b}) values`}
+                      alt={`${name ? name + ' ' : ''}(${hex}) color swatch showing RGB(${rgb.r}, ${rgb.g}, ${rgb.b}) values`}
                       width="1200"
                       height="630"
                       loading="eager"
@@ -287,7 +284,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                     />
                   );
                 }
-                
+
                 // Fall back to CSS-generated swatch
                 return (
                   <div
@@ -340,9 +337,9 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
 
       {/* Color Conversion Table */}
       <Card id="conversion" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-        <div 
-          onClick={() => setOpenConversion((v) => !v)} 
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors" 
+        <div
+          onClick={() => setOpenConversion((v) => !v)}
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
           style={{ borderLeftColor: hex }}
         >
           <h2 className={`text-3xl font-bold m-0 leading-tight ${openConversion ? "" : "underline"}`}>Color Conversion</h2>
@@ -371,9 +368,9 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
 
       {/* RGB & CMYK Percentage Bars */}
       <Card className="p-0 overflow-hidden space-y-0">
-        <div 
-          onClick={() => setOpenBars((v) => !v)} 
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors" 
+        <div
+          onClick={() => setOpenBars((v) => !v)}
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
           style={{ borderLeftColor: hex }}
         >
           <h2 className={`text-3xl font-bold m-0 leading-tight ${openBars ? "" : "underline"}`}>RGB Values & CMYK Values</h2>
@@ -398,9 +395,9 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
       </Card>
 
       <Card id="variations" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-        <div 
-          onClick={() => setOpenVariations((v) => !v)} 
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors" 
+        <div
+          onClick={() => setOpenVariations((v) => !v)}
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
           style={{ borderLeftColor: hex }}
         >
           <h2 className={`text-3xl font-bold m-0 leading-tight ${openVariations ? "" : "underline"}`}>Color Variations</h2>
@@ -471,9 +468,9 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
 
       {/* Color Harmonies */}
       <Card id="harmonies" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-        <div 
-          onClick={() => setOpenHarmonies((v) => !v)} 
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors" 
+        <div
+          onClick={() => setOpenHarmonies((v) => !v)}
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
           style={{ borderLeftColor: hex }}
         >
           <h2 className={`text-3xl font-bold m-0 leading-tight ${openHarmonies ? "" : "underline"}`}>Color Harmonies</h2>
@@ -516,7 +513,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
       {/* Contrast Checker */}
       {mode !== "sectionsOnly" ? (
         <Card id="contrast-checker" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div 
+          <div
             className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
             style={{ borderLeftColor: hex }}
             onClick={() => setOpenContrast((v) => !v)}
@@ -576,7 +573,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
       {/* Color Blindness Simulator */}
       {mode !== "sectionsOnly" ? (
         <Card id="blindness-simulator" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div 
+          <div
             className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
             style={{ borderLeftColor: hex }}
             onClick={() => setOpenBlindness((v) => !v)}
@@ -639,7 +636,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
 
       {/* CSS Examples */}
       <Card id="css-examples" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-        <div 
+        <div
           className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
           style={{ borderLeftColor: hex }}
           onClick={() => setOpenCss((v) => !v)}
@@ -698,7 +695,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
       {/* Related Colors */}
       {mode !== "sectionsOnly" ? (
         <Card id="related-colors" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div 
+          <div
             className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
             style={{ borderLeftColor: hex }}
             onClick={() => setOpenRelated((v) => !v)}
@@ -724,7 +721,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                         className="w-full aspect-square rounded-lg border border-border shadow-sm transition-transform group-hover:scale-105 flex items-center justify-center"
                         style={{ backgroundColor: color.hex }}
                       >
-                        <span 
+                        <span
                           className="font-mono text-xs font-bold"
                           style={{ color: getContrastColor(color.hex) }}
                         >
@@ -763,7 +760,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
           </div>
         </Card>
       ) : null}
-      
+
       {mode !== "sectionsOnly" ? (
         <div className="flex flex-col gap-4 mt-6">
           <div className="flex justify-between items-center py-6 border-t border-b border-border">

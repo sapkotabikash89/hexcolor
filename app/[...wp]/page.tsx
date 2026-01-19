@@ -18,6 +18,7 @@ import { AnchorHashNav } from "@/components/anchor-hash-nav"
 import { FAQSection } from "@/components/faq-section"
 import { RelatedColorsSection } from "@/components/related-colors-section"
 import { BlogPostActions } from "@/components/blog-post-actions"
+import { ShadesTOC } from "@/components/shades-toc"
 import { FeaturedImage } from "@/components/blog/featured-image"
 import { BlogContent } from "@/components/blog/blog-content"
 import { convertToGumletUrl, convertHtmlImagesToGumlet } from "@/lib/gumlet-image-utils"
@@ -62,7 +63,7 @@ async function fetchPostByUri(uri: string) {
                 }
               }
               tags { nodes { name uri databaseId } }
-              categories { nodes { name uri databaseId } }
+              categories { nodes { name uri slug databaseId } }
               previousPost {
                 title
                 uri
@@ -187,11 +188,11 @@ async function fetchPostByUri(uri: string) {
           variables: { uri: u },
         }),
         // OPTIMIZATION: Increased revalidate time for Vercel free plan
-                next: { revalidate: 3600, tags: [`wp:node:${u}`] },  // 1 hour instead of 10 min
+        next: { revalidate: 3600, tags: [`wp:node:${u}`] },  // 1 hour instead of 10 min
       })
       const json = await res.json()
       if (json?.data?.nodeByUri) return json.data.nodeByUri
-    } catch {}
+    } catch { }
   }
   return null
 }
@@ -215,7 +216,7 @@ async function fetchPostBySlug(slug: string) {
               colormeanHex
               featuredImage { node { sourceUrl altText } }
               tags { nodes { name uri databaseId } }
-              categories { nodes { name uri databaseId } }
+              categories { nodes { name uri slug databaseId } }
               seo {
                 title
                 metaDesc
@@ -254,7 +255,7 @@ async function fetchPostBySlug(slug: string) {
         variables: { slug },
       }),
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
-              next: { revalidate: 3600, tags: [`wp:slug:${slug}`] },  // 1 hour instead of 10 min
+      next: { revalidate: 3600, tags: [`wp:slug:${slug}`] },  // 1 hour instead of 10 min
     })
     const json = await res.json()
     return json?.data?.post ?? null
@@ -280,7 +281,7 @@ async function fetchContentByUri(uri: string) {
               colormeanHex
               featuredImage { node { sourceUrl altText } }
               tags { nodes { name uri databaseId } }
-              categories { nodes { name uri databaseId } }
+              categories { nodes { name uri slug databaseId } }
               seo {
                 title
                 metaDesc
@@ -360,7 +361,7 @@ async function fetchContentByUri(uri: string) {
         variables: { uri },
       }),
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
-              next: { revalidate: 3600, tags: [`wp:uri:${uri}`] },  // 1 hour instead of 10 min
+      next: { revalidate: 3600, tags: [`wp:uri:${uri}`] },  // 1 hour instead of 10 min
     })
     const json = await res.json()
     return json?.data?.post ?? json?.data?.page ?? null
@@ -386,7 +387,7 @@ async function fetchAnyBySearch(term: string) {
                 date
                 featuredImage { node { sourceUrl altText } }
                 tags { nodes { name uri databaseId } }
-                categories { nodes { name uri databaseId } }
+                categories { nodes { name uri slug databaseId } }
                 seo {
                   title
                   metaDesc
@@ -468,7 +469,7 @@ async function fetchAnyBySearch(term: string) {
         variables: { q: term },
       }),
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
-              next: { revalidate: 3600, tags: [`wp:search:${term}`] },  // 1 hour instead of 10 min
+      next: { revalidate: 3600, tags: [`wp:search:${term}`] },  // 1 hour instead of 10 min
     })
     const json = await res.json()
     const post = json?.data?.posts?.nodes?.[0]
@@ -489,7 +490,7 @@ async function fetchRestFeaturedMedia(id: number) {
   try {
     const res = await fetch(`https://cms.colormean.com/wp-json/wp/v2/media/${id}?_fields=source_url,alt_text`, {
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
-              next: { revalidate: 3600 },  // 1 hour instead of 10 min
+      next: { revalidate: 3600 },  // 1 hour instead of 10 min
     })
     const json = await res.json()
     if (!json || !json.source_url) return null
@@ -535,17 +536,46 @@ function mapYoastToSeo(yoast: any, link: string) {
   }
 }
 
+async function fetchRestCategories(ids: number[]) {
+  if (!ids || ids.length === 0) return []
+  try {
+    const res = await fetch(
+      `https://cms.colormean.com/wp-json/wp/v2/categories?include=${ids.join(",")}&_fields=id,name,slug,link`,
+      { next: { revalidate: 3600 } }
+    )
+    const json = await res.json()
+    if (!Array.isArray(json)) return []
+    return json.map((c: any) => {
+      let uri = ""
+      try {
+        if (c.link) uri = new URL(c.link).pathname
+      } catch { }
+      return {
+        name: c.name,
+        slug: c.slug,
+        uri: uri || `/category/${c.slug}/`, // Fallback with singular category path
+        databaseId: c.id
+      }
+    })
+  } catch {
+    return []
+  }
+}
+
 async function fetchRestPostBySlug(slug: string) {
   try {
     const res = await fetch(
-      `https://cms.colormean.com/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,yoast_head_json`,
+      `https://cms.colormean.com/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,categories,yoast_head_json`,
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
-              { next: { revalidate: 3600, tags: [`wp:rest:post:${slug}`] } }  // 1 hour instead of 10 min
+      { next: { revalidate: 3600, tags: [`wp:rest:post:${slug}`] } }  // 1 hour instead of 10 min
     )
     const arr = await res.json()
     const post = Array.isArray(arr) ? arr[0] : null
     if (!post) return null
-    const media = await fetchRestFeaturedMedia(post.featured_media)
+    const [media, categories] = await Promise.all([
+      fetchRestFeaturedMedia(post.featured_media),
+      post.categories && post.categories.length ? fetchRestCategories(post.categories) : Promise.resolve([])
+    ])
     const url = new URL(post.link)
     const uri = url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`
     return {
@@ -555,7 +585,7 @@ async function fetchRestPostBySlug(slug: string) {
       uri,
       featuredImage: media ? { node: media } : undefined,
       tags: { nodes: [] },
-      categories: { nodes: [] },
+      categories: { nodes: categories },
       seo: mapYoastToSeo(post.yoast_head_json, post.link),
     }
   } catch {
@@ -568,7 +598,7 @@ async function fetchRestPageBySlug(slug: string) {
     const res = await fetch(
       `https://cms.colormean.com/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,yoast_head_json`,
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
-              { next: { revalidate: 3600, tags: [`wp:rest:page:${slug}`] } }  // 1 hour instead of 10 min
+      { next: { revalidate: 3600, tags: [`wp:rest:page:${slug}`] } }  // 1 hour instead of 10 min
     )
     const arr = await res.json()
     const page = Array.isArray(arr) ? arr[0] : null
@@ -675,25 +705,25 @@ async function resolvePrevNext(node: any): Promise<{ previous: { title: string; 
     }
     const currentUri: string | undefined = node?.uri
     const catIds: number[] = Array.from(new Set(((node?.categories?.nodes as any[]) || []).map((c) => c?.databaseId).filter(Boolean)))
-  const tagIds: number[] = Array.from(new Set(((node?.tags?.nodes as any[]) || []).map((t) => t?.databaseId).filter(Boolean)))
-  let list: Array<{ title: string; uri: string; date?: string }> = []
-  if (catIds.length) list = await fetchPostsByCategoryIds(catIds, 100)
-  if ((!list || list.length === 0) && tagIds.length) list = await fetchPostsByTagIds(tagIds, 100)
-  if (!list || list.length === 0 || !currentUri) return { previous: null, next: null }
-  list = list.slice().sort((a, b) => {
-    const da = a.date ? Date.parse(a.date) : 0
-    const db = b.date ? Date.parse(b.date) : 0
-    return db - da
-  })
-  if (!list.some((p) => p.uri === currentUri)) {
-    list.push({ title: node.title, uri: currentUri, date: node.date })
+    const tagIds: number[] = Array.from(new Set(((node?.tags?.nodes as any[]) || []).map((t) => t?.databaseId).filter(Boolean)))
+    let list: Array<{ title: string; uri: string; date?: string }> = []
+    if (catIds.length) list = await fetchPostsByCategoryIds(catIds, 100)
+    if ((!list || list.length === 0) && tagIds.length) list = await fetchPostsByTagIds(tagIds, 100)
+    if (!list || list.length === 0 || !currentUri) return { previous: null, next: null }
     list = list.slice().sort((a, b) => {
       const da = a.date ? Date.parse(a.date) : 0
       const db = b.date ? Date.parse(b.date) : 0
       return db - da
     })
-  }
-  const idx = list.findIndex((p) => p?.uri === currentUri)
+    if (!list.some((p) => p.uri === currentUri)) {
+      list.push({ title: node.title, uri: currentUri, date: node.date })
+      list = list.slice().sort((a, b) => {
+        const da = a.date ? Date.parse(a.date) : 0
+        const db = b.date ? Date.parse(b.date) : 0
+        return db - da
+      })
+    }
+    const idx = list.findIndex((p) => p?.uri === currentUri)
     if (idx < 0) return { previous: null, next: null }
     const previous = list[idx + 1] ? { title: list[idx + 1].title, uri: list[idx + 1].uri } : null
     const next = list[idx - 1] ? { title: list[idx - 1].title, uri: list[idx - 1].uri } : null
@@ -705,29 +735,29 @@ async function resolvePrevNext(node: any): Promise<{ previous: { title: string; 
 
 function detectColorFromTitle(title: string): string | null {
   // First check for hex codes (both with and without #, 3-digit and 6-digit)
-  
+
   // Check for 6-digit hex with #
   const hex6Match = title.match(/#([0-9a-f]{6})/i)
   if (hex6Match) return `#${hex6Match[1].toUpperCase()}`
-  
+
   // Check for 3-digit hex with #
   const hex3Match = title.match(/#([0-9a-f]{3})/i)
   if (hex3Match) {
     const hex3 = hex3Match[1].toUpperCase()
     return `#${hex3[0]}${hex3[0]}${hex3[1]}${hex3[1]}${hex3[2]}${hex3[2]}`
   }
-  
+
   // Check for 6-digit hex without # (must be bounded by word boundaries or spaces)
   const hex6NoHashMatch = title.match(/\b([0-9a-f]{6})\b/i)
   if (hex6NoHashMatch) return `#${hex6NoHashMatch[1].toUpperCase()}`
-  
+
   // Check for 3-digit hex without # (must be bounded by word boundaries or spaces)
   const hex3NoHashMatch = title.match(/\b([0-9a-f]{3})\b/i)
   if (hex3NoHashMatch) {
     const hex3 = hex3NoHashMatch[1].toUpperCase()
     return `#${hex3[0]}${hex3[0]}${hex3[1]}${hex3[1]}${hex3[2]}${hex3[2]}`
   }
-  
+
   // Check for named colors
   const lower = title.toLowerCase()
   const map: Record<string, string> = {
@@ -748,17 +778,17 @@ function detectColorFromTitle(title: string): string | null {
     maroon: "#800000",
     burgundy: "#800020",
   }
-  
+
   for (const key of Object.keys(map)) {
     if (lower.includes(key)) return map[key]
   }
-  
+
   return null
 }
 
 function detectColorName(node: any, fallbackHex?: string): string | null {
   const title = String(node?.title || "").toLowerCase()
-  const names = ["green","red","blue","yellow","orange","purple","violet","cyan","magenta","pink","black","white","gray","brown","maroon","burgundy"]
+  const names = ["green", "red", "blue", "yellow", "orange", "purple", "violet", "cyan", "magenta", "pink", "black", "white", "gray", "brown", "maroon", "burgundy"]
   for (const n of names) {
     if (title.includes(n)) return n
   }
@@ -797,32 +827,17 @@ interface WPPageProps {
 export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
   try {
     // Fetch popular/recent posts to pre-generate at build time
+    const blogPosts = (await import("@/lib/blog-posts-data.json")).default
+    return blogPosts.map((post) => {
+      const parts = post.uri.replace(/^\/|\/$/g, "").split('/')
+      return { wp: parts }
+    })
+    /*
+    // Fetch popular/recent posts to pre-generate at build time
     const res = await fetch("https://cms.colormean.com/graphql", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: `
-          query GetRecentPosts {
-            posts(first: 50, where: { orderby: { field: DATE, order: DESC } }) {
-              nodes {
-                uri
-              }
-            }
-          }
-        `,
-      }),
-      next: { revalidate: 86400 }, // 24 hours
-    })
-    
-    const json = await res.json()
-    const posts = json?.data?.posts?.nodes || []
-    
-    // Convert URIs to wp params format
-    return posts.map((post: any) => {
-      // Remove leading and trailing slashes, split into segments
-      const segments = post.uri.replace(/^\/|\/$/, '').split('/')
-      return { wp: segments }
-    })
+    ...
+    */
+
   } catch (error) {
     console.error('Failed to generate static params:', error)
     // Return empty array to allow ISR fallback
@@ -850,11 +865,11 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
     const clean = shortcodeHex.replace("#", "").toUpperCase()
     return `https://colormean.com/colors/${clean}/image.webp`
   })()
-  
+
   // Convert WordPress CMS URLs to Gumlet CDN URLs for metadata
   const site = "https://colormean.com"
   const gumletFeaturedUrl = featuredSrc ? convertToGumletUrl(featuredSrc) : undefined
-  
+
   const ogImg =
     gumletFeaturedUrl ||
     (node.seo?.opengraphImage?.mediaItemUrl ? convertToGumletUrl(node.seo.opengraphImage.mediaItemUrl) : undefined) ||
@@ -901,13 +916,13 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
       authors: node.seo.opengraphAuthor ? [node.seo.opengraphAuthor] : undefined,
       images: ogImg
         ? [
-            {
-              url: ogImg.startsWith("http") ? ogImg : `${site}${ogImg}`,
-              width: 1200,
-              height: 630,
-              alt: `${node.title} featured image`,
-            },
-          ]
+          {
+            url: ogImg.startsWith("http") ? ogImg : `${site}${ogImg}`,
+            width: 1200,
+            height: 630,
+            alt: `${node.title} featured image`,
+          },
+        ]
         : undefined,
     },
     twitter: {
@@ -1002,10 +1017,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
   const titleHasExplicitHex = hasExplicitHexInTitle(node.title)
   const titleHex = titleHasColor ? detectColorFromTitle(node.title) : null  // Still use color names for actual hex value when needed for display
   const isYellowPost = /yellow/i.test(String(node?.title || ""))
-  
+
   // Use colormeanHex from WordPress REST API as the primary source of truth
   const apiHex = node?.colormeanHex || null
-  
+
   // Fallback to existing shortcode detection logic if API hex is not available
   const piecesRaw = parseContentPieces(node.content || "")
   const allShorts = piecesRaw.filter((p) => p.kind === "shortcode") as Array<{ kind: "shortcode"; hex: string }>
@@ -1014,29 +1029,29 @@ export default async function WPPostPage({ params }: WPPageProps) {
     lastShort?.hex ||
     extractShortcodeHexFromGutenberg(node.content || "") ||
     (isYellowPost ? nearestShortcodeHexAroundTechnical(node.content || "") : null)
-  
+
   // Use hex from title as primary source (as per new requirement), fallback to API, then shortcode detection
   const effectiveHex = titleHex || apiHex || shortcodeHex
-  
+
   const pieces = (effectiveHex && !shortcodeHex)
     ? parseContentPieces(node.content || "", effectiveHex)
     : piecesRaw
-    
+
   // Check if there are any shortcodes in the processed pieces
   const hasProcessedShortcode = pieces.some(piece => piece.kind === "shortcode")
-    
+
   const postColor = effectiveHex || "#000000"
   const accentColor = effectiveHex || "#000000"
   let prevNext = await resolvePrevNext(node)
-  
+
   // Use the first category for breadcrumbs
   const firstCategory = node?.categories?.nodes?.[0]
-  
+
   // Only create category-based breadcrumbs if a category exists
   let crumbs;
   if (firstCategory) {
     const categoryLabel = firstCategory.name
-    const categoryHref = `/categories/${firstCategory.slug}`
+    const categoryHref = `/category/${firstCategory.slug}`
     crumbs = [
       { label: categoryLabel, href: categoryHref },
       { label: shortTitle(node.title), href: node.uri },
@@ -1092,19 +1107,19 @@ export default async function WPPostPage({ params }: WPPageProps) {
       next: { title: related[1].title, uri: related[1].uri },
     }
   }
-  const moreLink = firstCategory ? `/categories/${firstCategory.slug}` : "/blog"
+  const moreLink = firstCategory ? `/category/${firstCategory.slug}` : "/blog"
   const colorName = detectColorName(node, (effectiveHex || postColor)?.toUpperCase())
   const isSingleColor = !!colorName
-  
+
   // Show color UI only if hex is available from title (not from API or shortcode)
   const hasColorUI = !!titleHex
-  
+
   // Determine if we have hex from any source for sections
   const hasAnyHex = !!effectiveHex
-    
+
   // Check if the title contains a color for conditional rendering
   const titleContainsColor = titleHasExplicitHex  // Use explicit hex only, not color names
-  
+
   // Convert WordPress image URLs to Gumlet CDN
   const gumletImageUrl = img ? convertToGumletUrl(img) : undefined
 
@@ -1140,10 +1155,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
         <div className="container mx-auto">
           <BreadcrumbNav items={crumbs} />
           <BreadcrumbSchema
-            items={[  
+            items={[
               { name: "ColorMean", item: site },
-              ...(firstCategory 
-                ? [{ name: firstCategory.name, item: `${site}/categories/${firstCategory.slug}` }] 
+              ...(firstCategory
+                ? [{ name: firstCategory.name, item: `${site}/category/${firstCategory.slug}` }]
                 : [{ name: "Blog", item: `${site}/blog` }]),
               { name: shortTitle(node.title), item: `${site}${node.uri}` },
             ]}
@@ -1202,7 +1217,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 // Helper to render the featured image
                 const renderFeaturedImage = () => {
                   if (!img) return null
-                  
+
                   return (
                     <section key="featured-image" className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4">
                       <FeaturedImage
@@ -1245,7 +1260,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
 
                 // Check if we have a technical section in the content
                 const hasTechnicalSection = secs.some(sec => isTechnical(sec));
-                
+
                 const mappedSections = secs.map((sec: string, i: number) => {
                   const sectionContent = (() => {
                     if (isTechnical(sec)) {
@@ -1255,7 +1270,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                         const hexValue = effectiveHex?.toUpperCase() || '';
                         const rgb = effectiveHex ? hexToRgb(effectiveHex) : null;
                         const hsl = effectiveHex && rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null;
-                        
+
                         return (
                           <section id="technical-information" style={{ scrollMarginTop: "96px" }} key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4">
                             {/* Enhanced Technical Information with hex data */}
@@ -1265,13 +1280,13 @@ export default async function WPPostPage({ params }: WPPageProps) {
                                 <div>
                                   <span className="font-medium text-gray-700">Color Hex:</span>
                                   <div className="mt-1">
-                                    <CopyButton 
-                                      showIcon={false} 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="p-0 h-auto font-mono text-lg" 
-                                      label={hexValue} 
-                                      value={hexValue} 
+                                    <CopyButton
+                                      showIcon={false}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="p-0 h-auto font-mono text-lg"
+                                      label={hexValue}
+                                      value={hexValue}
                                     />
                                   </div>
                                 </div>
@@ -1279,13 +1294,13 @@ export default async function WPPostPage({ params }: WPPageProps) {
                                   <div>
                                     <span className="font-medium text-gray-700">RGB:</span>
                                     <div className="mt-1">
-                                      <CopyButton 
-                                        showIcon={false} 
-                                        variant="ghost" 
-                                        size="sm" 
-                                        className="p-0 h-auto font-mono" 
-                                        label={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`} 
-                                        value={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`} 
+                                      <CopyButton
+                                        showIcon={false}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-0 h-auto font-mono"
+                                        label={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}
+                                        value={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}
                                       />
                                     </div>
                                   </div>
@@ -1294,13 +1309,13 @@ export default async function WPPostPage({ params }: WPPageProps) {
                                   <div>
                                     <span className="font-medium text-gray-700">HSL:</span>
                                     <div className="mt-1">
-                                      <CopyButton 
-                                        showIcon={false} 
-                                        variant="ghost" 
-                                        size="sm" 
-                                        className="p-0 h-auto font-mono" 
-                                        label={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`} 
-                                        value={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`} 
+                                      <CopyButton
+                                        showIcon={false}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-0 h-auto font-mono"
+                                        label={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`}
+                                        value={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`}
                                       />
                                     </div>
                                   </div>
@@ -1311,7 +1326,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
                             <BlogContent
                               html={enhanceContentHtml(removeShortcode(sec), accentColor)}
                               className="cm-wrap"
-                              style={{ "--page-accent-color": accentColor } as React.CSSProperties}
+                              style={{
+                                "--page-accent-color": accentColor,
+                                "--page-accent-contrast": getContrastColor(accentColor)
+                              } as React.CSSProperties}
                             />
                           </section>
                         );
@@ -1325,46 +1343,103 @@ export default async function WPPostPage({ params }: WPPageProps) {
                         <BlogContent
                           html={enhanceContentHtml(removeShortcode(sec), accentColor)}
                           className="cm-wrap"
-                          style={{ "--page-accent-color": accentColor } as React.CSSProperties}
+                          style={{
+                            "--page-accent-color": accentColor,
+                            "--page-accent-contrast": getContrastColor(accentColor)
+                          } as React.CSSProperties}
                         />
                       </section>
                     )
                   })()
 
                   // Render featured image after the first section (intro)
+                  // Render featured image after the first section (intro)
                   if (i === 0) {
-                    return [sectionContent, renderFeaturedImage()]
+                    const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
+                    let tocElement: React.ReactNode = null
+
+                    if (isShadesMeaning) {
+                      const shadesList = secs.map(sec => {
+                        const match = sec.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i)
+                        if (!match) return null
+                        const name = match[1].replace(/<[^>]+>/g, "").trim()
+
+                        // Smart Hex Extraction
+                        let hex = ""
+
+                        // 1. Look for explicit "Hex:" or "Hex Code:" label pattern
+                        // Handles variations like "Hex:", "Hex Code:", "Hex Value:", bold tags, spaces, non-breaking spaces
+                        const explicitMatch = sec.match(/Hex(?:(?:\s|&nbsp;)*(?:Code|Value))?(?:\s|&nbsp;|:)*(?:<[^>]+>|\s|&nbsp;)*#?([0-9a-fA-F]{6})\b/i)
+
+                        if (explicitMatch) {
+                          hex = explicitMatch[1]
+                        } else {
+                          // 2. Fallback: Search for any hex code, but be careful
+                          const allHexes = [...sec.matchAll(/#([0-9a-fA-F]{6})\b/g)]
+                          for (const m of allHexes) {
+                            const h = m[1].toUpperCase()
+                            // Skip common background colors unless the name explicitly matches
+                            const nameLower = name.toLowerCase()
+                            if (h === 'FFFFFF' && !nameLower.includes('white') && !nameLower.includes('snow') && !nameLower.includes('ivory')) continue
+                            if (h === '000000' && !nameLower.includes('black') && !nameLower.includes('jet') && !nameLower.includes('obsidian') && !nameLower.includes('onyx')) continue
+                            if (h === 'F8F9FA' || h === 'F0F0F0') continue // Skip common light gray backgrounds
+
+                            hex = h
+                            break
+                          }
+                        }
+
+                        if (!name || !hex) return null
+                        return {
+                          name,
+                          hex: `#${hex.toUpperCase()}`,
+                          id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+                        }
+                      }).filter((s): s is { name: string, hex: string, id: string } => !!s)
+
+                      if (shadesList.length > 0) {
+                        tocElement = (
+                          <ShadesTOC
+                            key="shades-toc"
+                            shades={shadesList}
+                            baseColorName={colorName || node.title.replace(/Shades/i, "").trim()}
+                          />
+                        )
+                      }
+                    }
+
+                    return [sectionContent, renderFeaturedImage(), tocElement]
                   }
                   return sectionContent
                 });
-                
+
                 // If there's no technical section in the content and the title contains a color,
                 // automatically insert the technical information section before the FAQ section
                 if (!hasTechnicalSection && titleContainsColor) {
                   return [
                     ...mappedSections,
-                    <section 
-                      key="auto-tech-info-wrapper" 
+                    <section
+                      key="auto-tech-info-wrapper"
                       id="technical-information"
                       className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden"
                       style={{ scrollMarginTop: "96px" }}
                     >
-                      <div 
+                      <div
                         className="flex items-center bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight"
                         style={{ borderLeftColor: effectiveHex }}
                       >
                         Technical Information
                       </div>
                       <div className="px-4 sm:px-6 py-2">
-                        <ColorPageContent 
-                          hex={effectiveHex} 
-                          mode="sectionsOnly" 
+                        <ColorPageContent
+                          hex={effectiveHex}
+                          mode="sectionsOnly"
                         />
                       </div>
                     </section>
                   ];
                 }
-                
+
                 return mappedSections
               })()}
             </article>
@@ -1440,7 +1515,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               )}
             </Suspense>
           </div>
-          {hasColorUI && <ColorSidebar color={accentColor} />}
+          <ColorSidebar color={accentColor} showColorSchemes={hasColorUI} />
         </div>
       </main>
       <Footer />
@@ -1674,35 +1749,35 @@ function enhanceContentHtml(html: string, accentColor: string): string {
     return input.replace(/<img([^>]*)>/gi, (m, attrs) => {
       let a = attrs || ""
       if (!/\balt\s*=/.test(a)) a = ` alt="" ${a}`.trim()
-      
+
       // Extract src
       const sMatch = a.match(/\bsrc\s*=\s*["']([^"']+)["']/i)
       const origSrc = sMatch ? sMatch[1] : null
-      
+
       // Parse width and height if available
       const wMatch = a.match(/\bwidth\s*=\s*["']?(\d+)["']?/i)
       const hMatch = a.match(/\bheight\s*=\s*["']?(\d+)["']?/i)
-      
+
       let width = wMatch ? parseInt(wMatch[1]) : 1200
       let height = hMatch ? parseInt(hMatch[1]) : 800
 
       // Enforce 1200x800 aspect ratio if no dimensions are present or if they differ significantly
       if (!wMatch || !hMatch) {
-          width = 1200
-          height = 800
+        width = 1200
+        height = 800
       }
 
       // Add width and height attributes if missing or replace existing ones
       if (wMatch) {
-         a = a.replace(wMatch[0], `width="${width}"`)
+        a = a.replace(wMatch[0], `width="${width}"`)
       } else {
-         a = `${a} width="${width}"`
+        a = `${a} width="${width}"`
       }
-      
+
       if (hMatch) {
-          a = a.replace(hMatch[0], `height="${height}"`)
+        a = a.replace(hMatch[0], `height="${height}"`)
       } else {
-          a = `${a} height="${height}"`
+        a = `${a} height="${height}"`
       }
 
       // Convert WordPress URLs to Gumlet CDN URLs
@@ -1710,7 +1785,7 @@ function enhanceContentHtml(html: string, accentColor: string): string {
         const gumletUrl = convertToGumletUrl(origSrc)
         a = a.replace(sMatch![0], `src="${gumletUrl}"`)
       }
-      
+
       // Handle class
       const dbl = a.match(/\bclass\s*=\s*"([^"]*)"/i)
       const sgl = a.match(/\bclass\s*=\s*'([^']*)'/i)
@@ -1725,10 +1800,10 @@ function enhanceContentHtml(html: string, accentColor: string): string {
       } else {
         a = `${a.trim()} class="${cls}"`
       }
-      
+
       // Ensure lazy loading
       if (!/\bloading\s*=/.test(a)) a = `${a.trim()} loading="lazy"`
-      
+
       // Add decoding async for better performance
       if (!/\bdecoding\s*=/.test(a)) a = `${a.trim()} decoding="async"`
 
@@ -1973,34 +2048,34 @@ function splitSectionsByH2(html: string): string[] {
     const inner = m[1] || ""
     matches.push({ start, end, inner })
   }
-  
+
   // If there are no H2 tags, return the whole content as one section
   if (!matches.length) return [input]
-  
+
   const strip = (s: string) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim().toLowerCase()
   const keyIdx = matches.findIndex((x) => /key[\s-]*takeaways/.test(strip(x.inner)))
   const whatIdx = matches.findIndex((x) => /what\s+is/.test(strip(x.inner)) && /color/.test(strip(x.inner)))
-  
+
   const sections: string[] = []
-  
+
   // Add content before the first H2 (intro content)
   const firstH2Start = matches[0].start
   if (firstH2Start > 0) {
     sections.push(input.slice(0, firstH2Start))
   }
-  
+
   if (keyIdx >= 0) {
     // Process content starting from the key takeaways section
     const keyStart = matches[keyIdx].start
     const nextStart = matches[keyIdx + 1]?.start ?? input.length
     sections.push(input.slice(keyStart, nextStart))
-    
+
     if (whatIdx >= 0 && whatIdx > keyIdx) {
       // Process content from what is section onwards
       const whatStart = matches[whatIdx].start
       const whatNextStart = matches[whatIdx + 1]?.start ?? input.length
       sections.push(input.slice(whatStart, whatNextStart))
-      
+
       // Process remaining sections after what is
       for (let i = whatIdx + 1; i < matches.length; i++) {
         const start = matches[i].start
@@ -2024,12 +2099,12 @@ function splitSectionsByH2(html: string): string[] {
       sections.push(input.slice(start, next))
     }
   }
-  
+
   // If no sections were added (shouldn't happen), return the original input
   if (sections.length === 0) {
     return [input]
   }
-  
+
   return sections
 }
 

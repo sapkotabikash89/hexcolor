@@ -13,42 +13,27 @@ import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, WebPageSchema } from "@
 import { CopyButton } from "@/components/copy-button"
 import { generateFAQs } from "@/lib/category-utils"
 
-export const runtime = 'nodejs'
+// export const runtime = 'nodejs' // Not needed for static export
 
 interface ColorPageProps {
-  params: Promise<{ 
+  params: Promise<{
     hex: string
   }>
 }
 
 export async function generateStaticParams() {
   const data = (await import('@/lib/color-meaning.json')).default
-  const hexCodes = Object.keys(data)
-  
-  // Generate additional common color variations to improve coverage
-  const commonColors = [
-    // Grayscale
-    '000000', 'ffffff', '808080', 'c0c0c0', 
-    // Primary colors
-    'ff0000', '00ff00', '0000ff',
-    // Secondary colors  
-    'ffff00', 'ff00ff', '00ffff',
-    // Common web colors
-    'ff6b6b', '4ecdc4', '45b7d1', '96ceb4', 'ffeaa7', 'dda0dd', '98d8c8',
-    // Additional common colors to reduce 404s
-    'ff4757', '2ed573', '3742fa', 'ffa502', '70a1ff', '7bed9f', 'ff6b81',
-    '2f3542', 'a4b0be', 'ff3838', '3ae374', '67e6dc', '18dcff', '7d5fff',
-    'cd84f1', 'ffb8b8', 'ff9f43', '7efff5', '1bfff0', '7158e2', '3d3d3d',
-    'f7f1e3', '40407a', '706fd3', 'f5cd79', 'eccc68', 'ff793f', 'ffda79',
-    '33d9b2', '218c74', 'aaa69d', '2c2c54', '474787', 'ff5252', 'ff79ac',
-    'd1ccc0', 'ffb142', 'ffda79', 'b33939', 'cd6133', '84817a', 'cc8e35'
-  ]
-  
-  // Combine database colors with common colors, removing duplicates
-  const allHexCodes = [...new Set([...hexCodes, ...commonColors])]
-  
-  return allHexCodes.map((hex) => ({
-    hex: hex.toUpperCase(),
+  const meaningHexes = Object.keys(data)
+  const knownHexes = Array.from(KNOWN_COLOR_HEXES)
+
+  // Combine all sources
+  const allHexes = new Set([
+    ...meaningHexes.map(h => h.toLowerCase()),
+    ...knownHexes.map(h => h.toLowerCase())
+  ])
+
+  return Array.from(allHexes).map((hex) => ({
+    hex: hex,
   }))
 }
 
@@ -69,18 +54,18 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
   const meta: any = (data as any)[cleanHex]
   const colorName: string | undefined = meta?.name || undefined
   const displayLabel = colorName ? `${colorName} (${normalizedHex})` : normalizedHex
-  
+
   // Determine if image should be from Gumlet CDN
   const gumletImageUrl = getGumletImageUrl(normalizedHex);
   const imageUrl = gumletImageUrl || `https://colormean.com/opengraph-image.webp`; // Fallback for unknown colors
 
   // Enhanced SEO metadata specifically for known colors
   const isKnownColor = KNOWN_COLOR_HEXES.has(cleanHex);
-  
-  const baseTitle = isKnownColor 
+
+  const baseTitle = isKnownColor
     ? `${displayLabel} Color Meaning, Symbolism & Psychology - ColorMean`
     : `${displayLabel} Color Information & Tools - ColorMean`;
-    
+
   const baseDescription = isKnownColor
     ? `Discover the complete meaning, symbolism, psychology, and cultural significance of ${displayLabel}. Explore RGB, HEX, HSL conversions, color harmonies, and practical applications in design and branding.`
     : `Explore ${normalizedHex} color information, meanings, conversions (RGB, HSL, CMYK, HSV, LAB), harmonies, variations, and accessibility. Professional color tools for designers and developers.`;
@@ -138,7 +123,7 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
 export default async function ColorPage({ params }: ColorPageProps) {
   const { hex } = await params
   const normalizedHex = normalizeHex(hex)
-  
+
   // Check if this is a known static color with lowercase hex
   const upperHex = normalizedHex.toUpperCase();
   if (isValidHex(normalizedHex) && KNOWN_COLOR_HEXES.has(upperHex) && normalizedHex !== upperHex) {
@@ -149,12 +134,12 @@ export default async function ColorPage({ params }: ColorPageProps) {
   if (!isValidHex(normalizedHex)) {
     notFound()
   }
-  
+
   // Load data dynamically for both static and dynamic rendering
   const data = (await import('@/lib/color-meaning.json')).default
   const upper = normalizedHex.replace("#", "").toUpperCase()
   const meta: any = (data as any)[upper]
-  
+
   // If the color doesn't exist in our JSON, we'll still render the page but with minimal data
   const colorName: string | undefined = meta?.name || undefined
   const displayLabel = colorName ? `${colorName} (${normalizedHex})` : normalizedHex
@@ -182,19 +167,19 @@ export default async function ColorPage({ params }: ColorPageProps) {
   // Determine if image is available from Gumlet CDN
   const gumletImageUrl = getGumletImageUrl(normalizedHex);
   const colorExistsInDb = !!meta;
-  
+
   // Render the page regardless of whether color exists in database
   // Known colors have full data, unknown colors will show minimal information
   // This ensures all hex patterns render a page instead of 404 or redirecting
-  
+
   return (
     <div className="flex flex-col min-h-screen">
       <WebPageSchema name={`${displayLabel} Color`} url={pageUrl} description={pageDescription} />
       <BreadcrumbSchema items={breadcrumbItems} />
       <FAQSchema faqs={faqItems} />
-      
+
       <Header />
-      
+
       {gumletImageUrl ? (
         <ImageObjectSchema
           url={gumletImageUrl}
@@ -206,7 +191,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
         // For unknown colors without Gumlet images, we don't include an image in the schema
         <div className="sr-only">No image schema for dynamic color</div>
       )}
-      
+
       {/* Dynamic Color Hero */}
       <section
         className="py-12 px-4 transition-colors"
@@ -224,8 +209,8 @@ export default async function ColorPage({ params }: ColorPageProps) {
           />
           <div className="text-center space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold">{displayLabel} Color Meaning and Information</h1>
-            
-            
+
+
             <p className="max-w-3xl mx-auto text-sm md:text-base opacity-90">
               Everything you need to know about {displayLabel} including values, color harmonies, shades,
               meanings, and applications in design, branding, and everyday visuals.
@@ -272,7 +257,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
           { href: "#faqs", label: "FAQs" },
         ]}
       />
-      
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -280,12 +265,12 @@ export default async function ColorPage({ params }: ColorPageProps) {
           <div className="flex-1">
             <ColorPageContent hex={normalizedHex} faqs={faqItems} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
           </div>
-          
+
           {/* Sidebar - 1/3 */}
           <ColorSidebar color={normalizedHex} />
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
@@ -294,13 +279,13 @@ export default async function ColorPage({ params }: ColorPageProps) {
 async function maybeRedirectToBlog(hex: string): Promise<string | null> {
   const normalizedHex = normalizeHex(hex)
   const cleanHex = normalizedHex.replace("#", "").toUpperCase()
-  
+
   // CRITICAL: Never redirect known static colors
   // These are authoritative static pages that must not redirect
   if (KNOWN_COLOR_HEXES.has(cleanHex)) {
     return null
   }
-  
+
   const site = "https://colormean.com"
   const searchTerm = hex.toUpperCase()
   const clean = searchTerm.replace("#", "")
@@ -335,7 +320,7 @@ async function maybeRedirectToBlog(hex: string): Promise<string | null> {
         if (n?.uri) return new URL(n.uri, site).toString()
       }
     }
-  } catch {}
+  } catch { }
   return null
 }
 

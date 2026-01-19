@@ -114,6 +114,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -143,6 +144,7 @@
     .mobile-section {
       @apply p-1;
     }
+
     .mobile-card {
       @apply p-1;
     }
@@ -167,14 +169,83 @@
   @apply text-xl font-bold mt-4 mb-2;
 }
 
-.cm-wrap > *:not(h2) {
+.cm-wrap>*:not(h2) {
   @apply px-4 sm:px-6;
 }
 
-.cm-wrap > * + * {
+.cm-wrap>*+* {
   margin-top: 1rem;
 }
 
-.cm-wrap > h2 + * {
+.cm-wrap>h2+* {
   margin-top: 0.5rem;
+}
+
+/* WordPress Content List Styles */
+.wp-content ul {
+  list-style: none;
+  padding-left: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.wp-content ul>li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.wp-content ul>li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: -0.1em;
+  font-size: 1.5em;
+  /* Slightly bigger dots */
+  line-height: 1;
+  color: var(--page-accent-color, var(--primary));
+}
+
+.wp-content ol {
+  list-style: none;
+  counter-reset: item;
+  padding-left: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.wp-content ol>li {
+  counter-increment: item;
+  position: relative;
+  padding-left: 2.75rem;
+  /* Reduced space */
+  margin-bottom: 1rem;
+  min-height: 1.75rem;
+  /* Match new circle size */
+  line-height: 1.6;
+  /* Good readability */
+}
+
+.wp-content ol>li::before {
+  content: counter(item);
+  position: absolute;
+  left: 0;
+  top: -0.1rem;
+  width: 1.75rem;
+  /* Slightly smaller circle */
+  height: 1.75rem;
+  border-radius: 50%;
+  background-color: var(--page-accent-color, var(--primary));
+  color: var(--page-accent-contrast, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+  /* Slightly smaller number */
+  line-height: 1;
+}
+
+.wp-content li>ul,
+.wp-content li>ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }

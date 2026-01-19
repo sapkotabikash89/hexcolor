@@ -26,7 +26,7 @@ export function Header() {
     try {
       const c = localStorage.getItem("currentPostColor")
       if (c) setPickerColor(c)
-    } catch {}
+    } catch { }
     const handleColorUpdate = (e: CustomEvent) => {
       setPickerColor(e.detail.color)
     }
@@ -36,13 +36,13 @@ export function Header() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Use static search logic with bundled blog post data
     const blogPosts = Array.isArray(blogPostsData) ? blogPostsData : [];
-    const searchResult = blogPosts.length > 0 
+    const searchResult = blogPosts.length > 0
       ? performStaticSearch(searchValue, blogPosts)
       : performSimpleSearch(searchValue)
-    
+
     if (searchResult) {
       // Use Next.js router for navigation to avoid Cloudflare redirects
       router.push(searchResult.replace('https://colormean.com', ''))
@@ -51,7 +51,7 @@ export function Header() {
       return
     }
   }
-  
+
 
   const handleColorChange = (color: string) => {
     setTempColor(color)
@@ -92,40 +92,40 @@ export function Header() {
                 <span className="hidden xl:inline">Tools</span>
               </Button>
             </Link>
-            <div className="absolute left-0 mt-2 min-w-max w-auto bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-200">
+            <div className="absolute left-0 mt-2 w-[240px] bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-200">
               <Link href="/color-wheel">
-                <Button variant="ghost" className="w-full justify-start gap-2" aria-label="Color Wheel">
-                  <CircleDot className="w-4 h-4" aria-hidden="true" />
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Wheel">
+                  <CircleDot className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Wheel
                 </Button>
               </Link>
               <Link href="/color-picker">
-                <Button variant="ghost" className="w-full justify-start gap-2" aria-label="Color Picker">
-                  <Droplet className="w-4 h-4" aria-hidden="true" />
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Picker">
+                  <Droplet className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Picker
                 </Button>
               </Link>
               <Link href="/contrast-checker">
-                <Button variant="ghost" className="w-full justify-start gap-2" aria-label="Contrast Checker">
-                  <Contrast className="w-4 h-4" aria-hidden="true" />
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Contrast Checker">
+                  <Contrast className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Contrast Checker
                 </Button>
               </Link>
               <Link href="/color-blindness-simulator">
-                <Button variant="ghost" className="w-full justify-start gap-2" aria-label="Color Blindness Simulator">
-                  <Eye className="w-4 h-4" aria-hidden="true" />
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Blindness Simulator">
+                  <Eye className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Blindness Simulator
                 </Button>
               </Link>
               <Link href="/image-color-picker">
-                <Button variant="ghost" className="w-full justify-start gap-2" aria-label="Image Color Picker">
-                  <ImageIcon className="w-4 h-4" aria-hidden="true" />
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Image Color Picker">
+                  <ImageIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Image Color Picker
                 </Button>
               </Link>
               <Link href="/palette-from-image">
-                <Button variant="ghost" className="w-full justify-start gap-2" aria-label="Palette from Image">
-                  <Palette className="w-4 h-4" aria-hidden="true" />
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Palette from Image">
+                  <Palette className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Palette from Image
                 </Button>
               </Link>

@@ -1,7 +1,5 @@
-# Redirect old color URL structure for backward compatibility only
-/color/([0-9a-fA-F]{3,6}) /html-color-picker?hex=$1 302
+# Redirects
+/color/*  /colors/:splat  301
 
-# NOTE: All other color routing is handled by Next.js static generation
-# Known colors (1534+) are pre-generated static pages
-# Unknown colors are handled by the dynamic route /colors/[hex]/page.tsx
-# No additional redirects needed for color pages - handled by search logic
+# Image rewrites try (might not work with mid-string wildcards)
+# /colors/*-image.webp /colors/:splat/image.webp 200
