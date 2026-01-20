@@ -87,28 +87,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://cms.colormean.com" />
         <meta name="google-site-verification" content="tiT0KL3QCJ4bLgDI-k7s8vphX4Sx6LQCFmkflXUe4pU" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        {/* Grow by Mediavine Script - Literal HTML implementation */}
-        <script
-          data-grow-initializer=""
-          dangerouslySetInnerHTML={{
-            __html: `!(function(){
-  window.growMe || (
-    (window.growMe = function(e){ window.growMe._.push(e); }),
-    (window.growMe._ = [])
-  );
-  var e = document.createElement("script");
-  e.type = "text/javascript";
-  e.src = "https://faves.grow.me/main.js";
-  e.defer = true;
-  e.setAttribute(
-    "data-grow-faves-site-id",
-    "U2l0ZTo5ZmZmYjE4Yi0wMmU2LTQ5YTYtYWRiYy05NGViMmU0OGU4NjY="
-  );
-  var t = document.getElementsByTagName("script")[0];
-  t.parentNode.insertBefore(e, t);
-})();`,
-          }}
-        />
         <WebsiteSchema />
         <OrganizationSchema />
         <SoftwareApplicationSchema />

@@ -76,7 +76,7 @@ export default async function BlogPage() {
       </section>
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <article id="content" className="grow-content flex-1">
+          <article id="content" className="grow-content flex-1" itemProp="articleBody">
             <CategoryPosts
               initialPosts={transformedPosts}
               categoryName="Blog"
