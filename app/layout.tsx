@@ -6,7 +6,6 @@ import "./globals.css"
 import { WebsiteSchema, OrganizationSchema, SoftwareApplicationSchema } from "@/components/structured-data"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
-import { GrowHandler } from "@/components/grow-handler"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -97,14 +96,6 @@ export default function RootLayout({
         </div>
 
         {/* Grow Script - Placed in body with afterInteractive strategy for safe loading */}
-        <Script
-          id="grow-script"
-          src="https://faves.grow.me/main.js"
-          strategy="afterInteractive"
-          data-grow-faves-site-id="U2l0ZTo5ZmZmYjE4Yi0wMmU2LTQ5YTYtYWRiYy05NGViMmU0OGU4NjY="
-        />
-
-        <GrowHandler />
         <ScrollToTop />
         <SonnerToaster />
         <Script src="/color-fallback-handler.js" strategy="beforeInteractive" />
