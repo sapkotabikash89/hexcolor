@@ -82,7 +82,7 @@ export default function ColorPickerPage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            <article id="content" className="grow-content flex-1 space-y-8">
+            <article id="content" data-grow-content className="grow-content flex-1 space-y-8">
               <ToolApplicationSchema
                 name="Color Picker"
                 slug="color-picker"

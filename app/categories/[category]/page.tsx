@@ -141,7 +141,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </section>
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <article id="content" className="grow-content flex-1">
+          <article id="content" data-grow-content className="grow-content flex-1">
             <CategoryPosts
               initialPosts={posts}
               categoryName={categoryName}

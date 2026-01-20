@@ -86,7 +86,7 @@ export default function ColorWheelPage() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <article id="content" className="grow-content flex-1">
+          <article id="content" data-grow-content className="grow-content flex-1">
             <ToolApplicationSchema
               name="Color Wheel"
               slug="color-wheel"

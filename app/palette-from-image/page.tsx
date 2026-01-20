@@ -80,7 +80,7 @@ export default function PaletteFromImagePage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8" aria-label="Palette Generator from Image Tool to create color palettes">
-            <article id="content" className="grow-content flex-1">
+            <article id="content" data-grow-content className="grow-content flex-1">
               <ToolApplicationSchema
                 name="Palette from Image"
                 slug="palette-from-image"

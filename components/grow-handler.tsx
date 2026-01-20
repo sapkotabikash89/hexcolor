@@ -5,62 +5,73 @@ import { usePathname } from "next/navigation"
 
 export function GrowHandler() {
     const pathname = usePathname()
-    const isFirstLoad = useRef(true)
+    const lastPathname = useRef<string | null>(null)
 
     useEffect(() => {
-        // Initialize Grow script only once on mounting
-        const initGrow = () => {
+        const injectGrowScript = () => {
+            // Remove existing Grow script to ensure a fresh scan of the new DOM
+            // Deterministic approach: re-inject script on every page change for SPAs
+            const existingScripts = document.querySelectorAll('script[src*="faves.grow.me/main.js"]')
+            existingScripts.forEach(s => s.remove())
+
+            // Initialize command queue if not present
             if (!(window as any).growMe) {
                 ; (window as any).growMe = function (e: any) {
                     ; (window as any).growMe._.push(e)
                 }
                     ; (window as any).growMe._ = []
+            }
 
-                const script = document.createElement("script")
-                script.type = "text/javascript"
-                script.src = "https://faves.grow.me/main.js"
-                script.defer = true
-                script.setAttribute("data-grow-faves-site-id", "U2l0ZTo5ZmZmYjE4Yi0wMmU2LTQ5YTYtYWRiYy05NGViMmU0OGU4NjY=")
+            const script = document.createElement("script")
+            script.type = "text/javascript"
+            script.src = `https://faves.grow.me/main.js?ts=${Date.now()}` // Cache busting for deterministic re-init
+            script.defer = true
+            script.setAttribute("data-grow-faves-site-id", "U2l0ZTo5ZmZmYjE4Yi0wMmU2LTQ5YTYtYWRiYy05NGViMmU0OGU4NjY=")
 
-                const target = document.getElementsByTagName("script")[0] || document.head.firstChild
-                if (target && target.parentNode) {
-                    target.parentNode.insertBefore(script, target)
-                } else {
-                    document.head.appendChild(script)
-                }
+            // Non-blocking injection
+            const target = document.getElementsByTagName("script")[0] || document.head.firstChild
+            if (target && target.parentNode) {
+                target.parentNode.insertBefore(script, target)
+            } else {
+                document.head.appendChild(script)
             }
         }
 
-        // Delay injection until window.onload + safety buffer to ensure non-blocking UX
-        if (document.readyState === 'complete') {
-            setTimeout(initGrow, 1000)
-        } else {
-            window.addEventListener('load', () => setTimeout(initGrow, 1000), { once: true })
-        }
-    }, [])
+        const isDOMReallyReady = () => {
+            // Mandatory Check 1: Loading state
+            if (document.readyState !== 'complete') return false
 
-    useEffect(() => {
-        const refreshGrow = () => {
-            if ((window as any).growMe && typeof (window as any).growMe === 'function') {
-                try {
-                    ; (window as any).growMe('refresh')
-                } catch (e) {
-                    // Fail silently
+            // Mandatory Check 2: Structural anchors present (Required by Grow classification)
+            const content = document.querySelector('[data-grow-content]')
+            const sidebar = document.querySelector('[data-grow-sidebar]')
+            if (!content || !sidebar) return false
+
+            // Mandatory Check 3: Content-aware readability (Enforce classification)
+            const textContent = content.textContent?.trim() || ""
+            if (textContent.length < 200) return false
+
+            return true
+        }
+
+        // Deterministic wait for hydration completion and DOM readiness
+        let checkCount = 0
+        const interval = setInterval(() => {
+            checkCount++
+            if (isDOMReallyReady()) {
+                clearInterval(interval)
+                if (lastPathname.current !== pathname) {
+                    // Delay Share & Love UI until after fully loaded and path has stabilized
+                    setTimeout(() => {
+                        injectGrowScript()
+                        lastPathname.current = pathname
+                    }, 800)
                 }
             }
-        }
+            // Timeout after 15 seconds
+            if (checkCount > 75) clearInterval(interval)
+        }, 200)
 
-        // Trigger refresh after content readiness
-        if (isFirstLoad.current) {
-            isFirstLoad.current = false
-            // Initial load needs more time for everything to settle
-            const timer = setTimeout(refreshGrow, 3000)
-            return () => clearTimeout(timer)
-        } else {
-            // Route changes
-            const timer = setTimeout(refreshGrow, 1200)
-            return () => clearTimeout(timer)
-        }
+        return () => clearInterval(interval)
     }, [pathname])
 
     return null
