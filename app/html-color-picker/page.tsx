@@ -10,12 +10,12 @@ import { AnchorHashNav } from "@/components/anchor-hash-nav";
 import { CopyButton } from "@/components/copy-button";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  normalizeHex, 
-  isValidHex, 
-  getContrastColor as originalGetContrastColor, 
-  hexToRgb, 
-  rgbToHsl, 
+import {
+  normalizeHex,
+  isValidHex,
+  getContrastColor as originalGetContrastColor,
+  hexToRgb,
+  rgbToHsl,
   rgbToCmyk,
   getColorHarmony,
   hslToRgb,
@@ -29,7 +29,7 @@ const DEFAULT_HEX = "#5B6FD8";
 export default function HtmlColorPickerPage() {
   // Get hex from URL query parameter on client side
   const [initialHex, setInitialHex] = useState<string | null>(null);
-  
+
   useEffect(() => {
     // Client-side only - parse URL parameters
     if (typeof window !== 'undefined') {
@@ -42,7 +42,7 @@ export default function HtmlColorPickerPage() {
         setInitialHex(DEFAULT_HEX);
       }
     }
-    
+
     // Listen for URL changes to update color when hex parameter changes
     const handlePopState = () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -51,7 +51,7 @@ export default function HtmlColorPickerPage() {
         setInitialHex(`#${hexParam}`);
       }
     };
-    
+
     // Listen for hashchange events as well for SPA navigation
     const handleHashChange = () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -60,10 +60,10 @@ export default function HtmlColorPickerPage() {
         setInitialHex(`#${hexParam}`);
       }
     };
-    
+
     window.addEventListener('popstate', handlePopState);
     window.addEventListener('hashchange', handleHashChange);
-    
+
     // Listen for custom color update events from header
     const handleColorUpdate = (e: CustomEvent) => {
       const color = e.detail.color;
@@ -71,16 +71,16 @@ export default function HtmlColorPickerPage() {
         setInitialHex(color);
       }
     };
-    
+
     window.addEventListener('colorUpdate', handleColorUpdate as EventListener);
-    
+
     return () => {
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('colorUpdate', handleColorUpdate as EventListener);
     };
   }, []);
-  
+
   // Don't render anything until we have the initial hex from URL
   if (initialHex === null) {
     return (
@@ -94,7 +94,7 @@ export default function HtmlColorPickerPage() {
       </div>
     );
   }
-  
+
   return (
     <PickerContent initialHex={initialHex} />
   );
@@ -107,7 +107,7 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
   useEffect(() => {
     setCurrentHex(initialHex);
   }, [initialHex]);
-  
+
   // Update URL when current hex changes
   useEffect(() => {
     // Update URL to reflect current color
@@ -121,7 +121,7 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
   const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null;
   const contrastColor = originalGetContrastColor(currentHex);
   const displayLabel = currentHex;
-  
+
   // Mock FAQ items since we don't have the full category utils here
   const faqItems = [
     {
@@ -157,8 +157,8 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <WebPageSchema 
-        name={`${displayLabel} Color Information`} 
+      <WebPageSchema
+        name={`${displayLabel} Color Information`}
         url={`https://colormean.com/html-color-picker?hex=${currentHex.replace("#", "").toUpperCase()}`}
         description={`Explore ${currentHex} color information, conversions, harmonies, variations, and accessibility.`}
       />
@@ -168,7 +168,7 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
         { name: currentHex.toUpperCase(), item: `https://colormean.com/html-color-picker?hex=${currentHex.replace("#", "").toUpperCase()}` }
       ]} />
       <FAQSchema faqs={faqItems} />
-      
+
       {/* Note: noindex is handled via server response headers or robots.txt */}
 
       <Header />
@@ -246,26 +246,26 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
 
 
               {/* Advanced Color Picker Tool */}
-              <AdvancedColorPickerComponent 
+              <AdvancedColorPickerComponent
                 selectedColor={currentHex}
                 onColorChange={updateCurrentHex}
               />
-              
+
               {/* Social Share Section */}
               <div className="flex justify-center py-4">
                 <ShareButtons url={`https://colormean.com/html-color-picker?hex=${currentHex.replace("#", "").toUpperCase()}`} title={`${currentHex.toUpperCase()} Color Information - ColorMean`} />
               </div>
-              
+
               {/* Static color page sections (exact parity) */}
-              <ColorPageContent 
-                hex={currentHex} 
-                name={undefined} 
-                mode="full" 
+              <ColorPageContent
+                hex={currentHex}
+                name={undefined}
+                mode="full"
                 colorExistsInDb={false}
                 onColorChange={updateCurrentHex}
               />
             </div>
-          </div>
+          </article>
 
           {/* Sidebar - 1/3 */}
           <ColorSidebar color={currentHex} onColorChange={updateCurrentHex} />
@@ -287,17 +287,17 @@ function getComplementaryColor(hex: string): string {
 function getAnalogousColors(hex: string): string[] {
   const rgb = hexToRgb(hex);
   if (!rgb) return [hex, hex, hex];
-  
+
   const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
   if (!hsl) return [hex, hex, hex];
-  
+
   const colors = [];
   for (let i = -30; i <= 30; i += 30) {
     const newHue = (hsl.h + i + 360) % 360;
     const newRgb = hslToRgb(newHue, hsl.s, hsl.l);
     colors.push(`#${newRgb.r.toString(16).padStart(2, '0')}${newRgb.g.toString(16).padStart(2, '0')}${newRgb.b.toString(16).padStart(2, '0')}`);
   }
-  
+
   return colors;
 }
 
@@ -310,12 +310,12 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>(0);
   const isDraggingRef = useRef(false);
-  
+
   // Refs to hold current values to avoid stale closures
   const hueRef = useRef(hue);
   const saturationRef = useRef(saturation);
   const lightnessRef = useRef(lightness);
-  
+
   // Update refs when state changes
   useEffect(() => {
     hueRef.current = hue;
@@ -347,25 +347,25 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
 
     const width = canvas.width;
     const height = canvas.height;
-    
+
     // Optimized drawing using imageData for better performance
     const imageData = ctx.createImageData(width, height);
     const data = imageData.data;
-    
+
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const idx = (y * width + x) * 4;
         const s = (x / width) * 100;
         const l = 100 - (y / height) * 100;
         const rgb = hslToRgb(hueRef.current, s, l);
-        
+
         data[idx] = rgb.r;     // R
         data[idx + 1] = rgb.g;   // G
         data[idx + 2] = rgb.b;   // B
         data[idx + 3] = 255;     // A
       }
     }
-    
+
     ctx.putImageData(imageData, 0, 0);
   }, []);
 
@@ -375,14 +375,14 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      
+
       animationFrameRef.current = requestAnimationFrame(() => {
         const clampedSaturation = Math.max(0, Math.min(100, Math.round(newSaturation)));
         const clampedLightness = Math.max(0, Math.min(100, Math.round(newLightness)));
-        
+
         setSaturation(clampedSaturation);
         setLightness(clampedLightness);
-        
+
         const rgb = hslToRgb(hueRef.current, clampedSaturation, clampedLightness);
         const newColor = rgbToHex(rgb.r, rgb.g, rgb.b);
         onColorChange(newColor);
@@ -393,7 +393,7 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
 
   const handleCanvasInteraction = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault(); // Prevent default to improve touch performance
-    
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -421,14 +421,14 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
 
     const newSaturation = (canvasX / canvas.width) * 100;
     const newLightness = 100 - (canvasY / canvas.height) * 100;
-    
+
     throttledColorUpdate(newSaturation, newLightness);
   }, [throttledColorUpdate]);
 
   const handleHueChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newHue = Number.parseInt(e.target.value);
     setHue(newHue);
-    
+
     // Update the color immediately with new hue
     const rgb = hslToRgb(newHue, saturationRef.current, lightnessRef.current);
     const newColor = rgbToHex(rgb.r, rgb.g, rgb.b);
@@ -441,7 +441,7 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
     const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null;
     return { rgb, hsl };
   }, [selectedColor]);
-  
+
   // Calculate picker position
   const pickerX = `${Math.max(0, Math.min(100, saturation))}%`;
   const pickerY = `${Math.max(0, Math.min(100, 100 - lightness))}%`;
