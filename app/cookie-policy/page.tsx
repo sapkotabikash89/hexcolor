@@ -28,7 +28,7 @@ export default function CokiePolicyPage() {
       <main className="container mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Cookie Policy", href: "/cookie-policy" }]} />
         <div className="flex flex-col lg:flex-row gap-8 mt-6">
-          <div className="flex-1 space-y-4">
+          <article id="content" className="grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold mb-4">Cookie Policy</h1>
             <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
               <p>
@@ -58,7 +58,7 @@ export default function CokiePolicyPage() {
               <p>Cookies help us improve both technical functionality and content quality.</p>
 
               <h2 className="text-2xl font-bold text-foreground">Types of Cookies We Use</h2>
-              
+
               <h3 className="text-xl font-semibold text-foreground">Essential Cookies</h3>
               <p>
                 These cookies are necessary for the website to function properly. They enable basic features such as page navigation, security, and access to tools.
@@ -132,7 +132,7 @@ export default function CokiePolicyPage() {
 
               <h2 className="text-2xl font-bold text-foreground">Contact Us</h2>
               <p>If you have any questions about this Cookie Policy, you may contact us at:</p>
-              
+
               <div className="bg-muted p-4 rounded-lg">
                 <p className="mb-2">
                   <strong>Email:</strong> <a href="mailto:info@colormean.com" className="text-primary hover:underline">info@colormean.com</a>
@@ -149,7 +149,7 @@ export default function CokiePolicyPage() {
             <div className="flex justify-center py-4 mt-8 border-t pt-8">
               <ShareButtons title="ColorMean Cookie Policy" />
             </div>
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
       </main>

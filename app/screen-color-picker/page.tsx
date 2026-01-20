@@ -84,7 +84,7 @@ export default function ScreenColorPickerPage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8" aria-label="Interactive Screen Color Picker Tool to sample colors anywhere on your display">
-            <div className="flex-1">
+            <article id="content" className="grow-content flex-1">
               <ToolApplicationSchema
                 name="Screen Color Picker"
                 slug="screen-color-picker"
@@ -94,12 +94,12 @@ export default function ScreenColorPickerPage() {
               <div className="mt-8">
                 <ShareButtons title="Screen Color Picker by ColorMean" />
               </div>
-            </div>
+            </article>
             <ColorSidebar color="#5B6FD8" />
           </div>
         </div>
       </main>
-      
+
       <ExploreColorTools current="screen-color-picker" />
       <Footer />
     </div>

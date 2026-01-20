@@ -28,7 +28,7 @@ export default function DisclaimerPage() {
       <main className="container mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Disclaimer", href: "/disclaimer" }]} />
         <div className="flex flex-col lg:flex-row gap-8 mt-6">
-          <div className="flex-1 space-y-4">
+          <article id="content" className="grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold mb-4">Disclaimer</h1>
             <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
               <p>
@@ -150,7 +150,7 @@ export default function DisclaimerPage() {
             <div className="flex justify-center py-4 mt-8 border-t pt-8">
               <ShareButtons title="ColorMean Disclaimer" />
             </div>
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
       </main>

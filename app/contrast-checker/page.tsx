@@ -87,18 +87,18 @@ export default function ContrastCheckerPage() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1">
+          <article id="content" className="grow-content flex-1">
             <ToolApplicationSchema
               name="Contrast Checker"
               slug="contrast-checker"
               description="Contrast Checker Tool to verify color accessibility ratios"
             />
             <ContrastCheckerClient />
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
 
-        
+
       </main>
 
       <ExploreColorTools current="contrast-checker" />

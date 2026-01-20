@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script"
 import "./globals.css"
 import { WebsiteSchema, OrganizationSchema, SoftwareApplicationSchema } from "@/components/structured-data"
@@ -88,9 +87,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://cms.colormean.com" />
         <meta name="google-site-verification" content="tiT0KL3QCJ4bLgDI-k7s8vphX4Sx6LQCFmkflXUe4pU" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <Script id="remove-generator-meta" strategy="beforeInteractive">
-          {`document.querySelectorAll('meta[name="generator"]').forEach((el)=>el.remove());`}
-        </Script>
         {/* Grow by Mediavine Script - Literal HTML implementation */}
         <script
           data-grow-initializer=""
@@ -124,7 +120,6 @@ export default function RootLayout({
         <GrowHandler />
         <ScrollToTop />
         <SonnerToaster />
-        <Analytics />
         <Script src="/color-fallback-handler.js" strategy="beforeInteractive" />
 
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (

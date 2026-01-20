@@ -80,18 +80,18 @@ export default function PaletteFromImagePage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8" aria-label="Palette Generator from Image Tool to create color palettes">
-            <div className="flex-1">
+            <article id="content" className="grow-content flex-1">
               <ToolApplicationSchema
                 name="Palette from Image"
                 slug="palette-from-image"
                 description="Palette Generator from Image Tool to create color palettes"
               />
               <PaletteFromImageClient />
-            </div>
+            </article>
             <ColorSidebar color="#5B6FD8" />
           </div>
-          
-          
+
+
         </div>
       </main>
       <ExploreColorTools current="palette-from-image" />

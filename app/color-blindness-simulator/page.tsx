@@ -85,18 +85,18 @@ export default function ColorBlindnessSimulatorPage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1">
-            <ToolApplicationSchema
-              name="Color Blindness Simulator"
-              slug="color-blindness-simulator"
-              description="Color Blindness Simulator to test color visibility"
-            />
-            <ColorBlindnessSimulatorClient />
-            </div>
+            <article id="content" className="grow-content flex-1">
+              <ToolApplicationSchema
+                name="Color Blindness Simulator"
+                slug="color-blindness-simulator"
+                description="Color Blindness Simulator to test color visibility"
+              />
+              <ColorBlindnessSimulatorClient />
+            </article>
             <ColorSidebar color="#5B6FD8" />
           </div>
 
-          
+
 
 
         </div>

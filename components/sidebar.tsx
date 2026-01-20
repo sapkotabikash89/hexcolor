@@ -126,7 +126,7 @@ export function ColorSidebar({ color: initialColor, onColorChange, showColorSche
           <ul className="space-y-3">
             {latestPosts.map((p, idx) => {
               const numBg = showColorSchemes ? color : "#000000"
-              const numColor = "#FFFFFF"
+              const numColor = getContrastColor(numBg)
               return (
                 <li key={`${p.uri}-${idx}`} className="flex items-start gap-3">
                   <span

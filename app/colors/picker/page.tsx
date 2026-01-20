@@ -20,7 +20,7 @@ function PickerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hexParam = searchParams ? searchParams.get('hex') : null;
-  
+
   const [currentHex, setCurrentHex] = useState(() => {
     if (hexParam && isValidHex(`#${hexParam}`)) {
       return `#${hexParam}`;
@@ -40,7 +40,7 @@ function PickerContent() {
   const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null;
   const contrastColor = getContrastColor(currentHex);
   const displayLabel = currentHex;
-  
+
   // Mock FAQ items since we don't have the full category utils here
   const faqItems = [
     {
@@ -76,8 +76,8 @@ function PickerContent() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <WebPageSchema 
-        name={`${displayLabel} Color Information`} 
+      <WebPageSchema
+        name={`${displayLabel} Color Information`}
         url={`https://colormean.com/colors/picker?hex=${currentHex.replace("#", "")}`}
         description={`Explore ${currentHex} color information, conversions, harmonies, variations, and accessibility.`}
       />
@@ -159,7 +159,7 @@ function PickerContent() {
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Content Area - 2/3 */}
-          <div className="flex-1">
+          <article id="content" className="grow-content flex-1">
             <div className="space-y-8">
               {/* Color Picker Section */}
               <div className="bg-card border border-border rounded-lg p-6">
@@ -167,7 +167,7 @@ function PickerContent() {
                 <p className="text-muted-foreground mb-6">
                   Select any color using our advanced color picker and get instant color codes
                 </p>
-                
+
                 {/* Simple color input for demonstration */}
                 <div className="flex items-center gap-4 mb-6">
                   <input
@@ -190,9 +190,9 @@ function PickerContent() {
                       placeholder="#RRGGBB"
                     />
                   </div>
-                  <Button 
+                  <Button
                     onClick={() => {
-                      const randomHex = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                      const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
                       updateCurrentHex(randomHex);
                     }}
                     variant="outline"
@@ -226,8 +226,8 @@ function PickerContent() {
                 </summary>
                 <div className="space-y-4">
                   <p>
-                    This page displays information for the color <strong>{currentHex}</strong>. 
-                    You can explore different colors using the interactive picker above or by clicking 
+                    This page displays information for the color <strong>{currentHex}</strong>.
+                    You can explore different colors using the interactive picker above or by clicking
                     on the color swatches.
                   </p>
                   {rgb && (
@@ -258,8 +258,8 @@ function PickerContent() {
                 </summary>
                 <div className="space-y-4">
                   <p>
-                    Colors carry psychological and cultural meanings that influence how we perceive 
-                    and interact with the world around us. The color <strong>{currentHex}</strong> has 
+                    Colors carry psychological and cultural meanings that influence how we perceive
+                    and interact with the world around us. The color <strong>{currentHex}</strong> has
                     its own unique associations and interpretations.
                   </p>
                   <div className="bg-muted p-4 rounded">
@@ -304,14 +304,14 @@ function PickerContent() {
               </details>
 
               {/* Full Color Page Content */}
-              <ColorPageContent 
-                hex={currentHex} 
-                name={undefined} 
-                mode="sectionsOnly" 
+              <ColorPageContent
+                hex={currentHex}
+                name={undefined}
+                mode="sectionsOnly"
                 colorExistsInDb={false}
               />
             </div>
-          </div>
+          </article>
 
           {/* Sidebar - 1/3 */}
           <ColorSidebar color={currentHex} />
@@ -341,30 +341,30 @@ function getComplementaryColor(hex: string): string {
 function getAnalogousColors(hex: string): string[] {
   const rgb = hexToRgb(hex);
   if (!rgb) return [hex, hex, hex];
-  
+
   const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
   if (!hsl) return [hex, hex, hex];
-  
+
   const colors = [];
   for (let i = -30; i <= 30; i += 30) {
     const newHue = (hsl.h + i + 360) % 360;
     const newRgb = hslToRgb(newHue, hsl.s, hsl.l);
     colors.push(`#${newRgb.r.toString(16).padStart(2, '0')}${newRgb.g.toString(16).padStart(2, '0')}${newRgb.b.toString(16).padStart(2, '0')}`);
   }
-  
+
   return colors;
 }
 
 function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
   s /= 100;
   l /= 100;
-  
+
   const c = (1 - Math.abs(2 * l - 1)) * s;
   const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
   const m = l - c / 2;
-  
+
   let r = 0, g = 0, b = 0;
-  
+
   if (0 <= h && h < 60) {
     r = c; g = x; b = 0;
   } else if (60 <= h && h < 120) {
@@ -378,7 +378,7 @@ function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: n
   } else if (300 <= h && h < 360) {
     r = c; g = 0; b = x;
   }
-  
+
   return {
     r: Math.round((r + m) * 255),
     g: Math.round((g + m) * 255),

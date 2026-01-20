@@ -8,9 +8,18 @@ export function GrowHandler() {
 
     useEffect(() => {
         // Force Grow rescan after hydration and route changes
-        if (typeof window !== "undefined" && (window as any).growMe) {
-            ; (window as any).growMe('refresh')
-        }
+        // Added a small delay to ensure DOM is fully ready and hydration is complete
+        const timer = setTimeout(() => {
+            if (typeof window !== "undefined" && (window as any).growMe && typeof (window as any).growMe === 'function') {
+                try {
+                    ; (window as any).growMe('refresh')
+                } catch (e) {
+                    console.warn('Grow refresh failed:', e)
+                }
+            }
+        }, 500)
+
+        return () => clearTimeout(timer)
     }, [pathname])
 
     return null

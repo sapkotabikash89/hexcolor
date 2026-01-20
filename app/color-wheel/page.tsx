@@ -86,18 +86,18 @@ export default function ColorWheelPage() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1">
+          <article id="content" className="grow-content flex-1">
             <ToolApplicationSchema
               name="Color Wheel"
               slug="color-wheel"
               description="Interactive Color Wheel Tool to select colors and generate palettes"
             />
             <ColorWheelClient />
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
 
-        
+
       </main>
 
       <ExploreColorTools current="color-wheel" />
