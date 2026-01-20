@@ -8,6 +8,7 @@ import { BreadcrumbSchema, CollectionPageSchema, ItemListSchema } from "@/compon
 import data from "@/lib/color-meaning.json"
 
 import { ShareButtons } from "@/components/share-buttons"
+import { GrowSubscribeCTA } from "@/components/grow-subscribe-cta"
 
 export const metadata: Metadata = {
   title: "Color Library - Browse Thousands of Colors | ColorMean",
@@ -88,6 +89,7 @@ export default function ColorsPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           <article id="content" data-grow-content className="grow-content flex-1" itemProp="articleBody">
             <ColorLibrary initialQuery="" />
+            <GrowSubscribeCTA />
             <div className="mt-8 flex justify-center">
               <ShareButtons title="Check out the ColorMean Color Library" />
             </div>

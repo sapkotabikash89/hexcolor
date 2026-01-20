@@ -6,6 +6,7 @@ import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema, HowToSchema } from "@/components/structured-data"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
+import { GrowSubscribeCTA } from "@/components/grow-subscribe-cta"
 
 export const metadata: Metadata = {
   title: "Color Picker - ColorMean",
@@ -125,6 +126,7 @@ export default function ColorPickerPage() {
                   <li>Helps explore related colors and accessibility from the color page.</li>
                 </ul>
               </div>
+              <GrowSubscribeCTA />
             </article>
             <ColorSidebar color="#5B6FD8" />
           </div>

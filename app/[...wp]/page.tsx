@@ -12,6 +12,7 @@ import { WPColorContext } from "@/components/wp-color-context"
 import { ColorPageContent } from "@/components/color-page-content"
 import { WPSEOHead } from "@/components/wpseo-head"
 import { BreadcrumbSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
+import { GrowSubscribeCTA } from "@/components/grow-subscribe-cta"
 import { CopyButton } from "@/components/copy-button"
 import { getContrastColor, hexToRgb, rgbToHsl } from "@/lib/color-utils"
 import { AnchorHashNav } from "@/components/anchor-hash-nav"
@@ -1446,6 +1447,8 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 return mappedSections
               })()}
             </article>
+            <GrowSubscribeCTA />
+
             {titleContainsColor && <FAQSection color={colorName} />}
             {titleHex && <RelatedColorsSection hex={effectiveHex} />}
             <div className="flex justify-between items-center py-6 border-t border-b border-border my-6">

@@ -42,6 +42,7 @@ import { ShareButtons } from "@/components/share-buttons"
 import { ColorImage } from "@/components/color-image"
 import { getGumletImageUrl } from "@/lib/gumlet-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
+import { GrowSubscribeCTA } from "@/components/grow-subscribe-cta"
 
 interface ColorPageContentProps {
   hex: string
@@ -509,6 +510,8 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
           </div>
         ) : null}
       </Card>
+      <GrowSubscribeCTA />
+
 
       {/* Contrast Checker */}
       {mode !== "sectionsOnly" ? (
