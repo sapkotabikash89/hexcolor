@@ -9,7 +9,7 @@ import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCm
 import { getGumletImageUrl } from "@/lib/gumlet-utils"
 import { KNOWN_COLOR_HEXES } from "@/lib/known-colors-complete"
 import { notFound, redirect } from "next/navigation"
-import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, WebPageSchema, ArticleSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
 import { generateFAQs } from "@/lib/category-utils"
 
@@ -178,6 +178,17 @@ export default async function ColorPage({ params }: ColorPageProps) {
       <WebPageSchema name={`${displayLabel} Color`} url={pageUrl} description={pageDescription} />
       <BreadcrumbSchema items={breadcrumbItems} />
       <FAQSchema faqs={faqItems} />
+      <ArticleSchema
+        title={`${displayLabel} Color Meaning, Symbolism & Psychology`}
+        description={pageDescription}
+        authorName="ColorMean"
+        authorType="Organization"
+        url={pageUrl}
+        image={gumletImageUrl || `https://colormean.com/opengraph-image.webp`}
+        datePublished="2024-01-01T08:00:00+00:00"
+        dateModified="2024-01-01T08:00:00+00:00"
+        articleSection="Color Meanings"
+      />
 
       <Header />
 

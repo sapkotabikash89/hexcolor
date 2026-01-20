@@ -273,3 +273,74 @@ export function BlogPostingSchema({
   }
   return <Script id="blogposting-schema" type="application/ld+json" strategy="beforeInteractive">{JSON.stringify(schema)}</Script>
 }
+export function ArticleSchema({
+  title,
+  description,
+  authorName,
+  authorType = "Organization",
+  publisherName = "ColorMean",
+  publisherLogo = "https://colormean.com/logo.webp",
+  image,
+  datePublished,
+  dateModified,
+  url,
+  articleSection,
+}: {
+  title: string
+  description?: string
+  authorName: string
+  authorType?: "Organization" | "Person"
+  publisherName?: string
+  publisherLogo?: string
+  image?: string
+  datePublished: string
+  dateModified: string
+  url: string
+  articleSection?: string
+}) {
+  const schema: any = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: description ?? undefined,
+    author: {
+      "@type": authorType,
+      name: authorName,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: publisherName,
+      logo: {
+        "@type": "ImageObject",
+        url: publisherLogo,
+      },
+    },
+    datePublished: datePublished,
+    dateModified: dateModified,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    inLanguage: "en",
+  }
+
+  if (image) {
+    schema.image = image
+  }
+
+  if (articleSection) {
+    schema.articleSection = articleSection
+  }
+
+  const id = `article-schema-${url.split('/').filter(Boolean).pop() || 'index'}`
+
+  return (
+    <Script
+      id={id}
+      type="application/ld+json"
+      strategy="beforeInteractive"
+    >
+      {JSON.stringify(schema)}
+    </Script>
+  )
+}
