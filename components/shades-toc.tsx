@@ -106,7 +106,7 @@ export function ShadesTOC({ shades, baseColorName }: ShadesTOCProps) {
                     <h3 className="font-bold text-xl mb-6 text-center text-foreground">List of Shades of {baseColorName}</h3>
 
                     <div className="overflow-x-auto pb-2">
-                        <div className="min-w-[400px] grid grid-cols-[40px_1fr_80px_130px] md:grid-cols-[40px_auto_80px_130px_1fr] gap-2 mb-3 font-semibold text-sm text-foreground/70 border-b pb-2 px-2">
+                        <div className="min-w-[400px] grid grid-cols-[40px_1fr_80px_130px] md:grid-cols-[60px_1fr_1fr_1fr] gap-2 md:gap-4 mb-3 font-semibold text-sm text-foreground/70 border-b pb-2 px-2">
                             <div className="text-center">Color</div>
                             <div>Name</div>
                             <div>Hex Code</div>
@@ -119,7 +119,7 @@ export function ShadesTOC({ shades, baseColorName }: ShadesTOCProps) {
                                 const rgbString = rgb ? `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})` : "N/A"
 
                                 return (
-                                    <div key={`${shade.hex}-${idx}`} className="min-w-[400px] grid grid-cols-[40px_1fr_80px_130px] md:grid-cols-[40px_auto_80px_130px_1fr] gap-2 items-center text-sm py-3 hover:bg-muted/30 px-2 transition-colors">
+                                    <div key={`${shade.hex}-${idx}`} className="min-w-[400px] grid grid-cols-[40px_1fr_80px_130px] md:grid-cols-[60px_1fr_1fr_1fr] gap-2 md:gap-4 items-center text-sm py-3 hover:bg-muted/30 px-2 transition-colors">
                                         <div className="flex justify-center">
                                             <div
                                                 className="w-8 h-8 rounded-full border-2 border-border shadow-sm"
