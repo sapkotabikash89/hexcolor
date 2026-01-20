@@ -90,17 +90,20 @@ export default function RootLayout({
         <WebsiteSchema />
         <OrganizationSchema />
         <SoftwareApplicationSchema />
-        <script
-          data-grow-initializer=""
-          dangerouslySetInnerHTML={{
-            __html: `!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement("script");e.type="text/javascript";e.src="https://faves.grow.me/main.js";e.defer=!0;e.setAttribute("data-grow-faves-site-id","U2l0ZTo5ZmZmYjE4Yi0wMmU2LTQ5YTYtYWRiYy05NGViMmU0OGU4NjY=");var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t);})();`,
-          }}
-        />
       </head>
       <body className={`${inter.className} px-[2px] sm:px-4`}>
         <div className="max-w-[1200px] mx-auto">
           {children}
         </div>
+
+        {/* Grow Script - Placed in body with afterInteractive strategy for safe loading */}
+        <Script
+          id="grow-script"
+          src="https://faves.grow.me/main.js"
+          strategy="afterInteractive"
+          data-grow-faves-site-id="U2l0ZTo5ZmZmYjE4Yi0wMmU2LTQ5YTYtYWRiYy05NGViMmU0OGU4NjY="
+        />
+
         <GrowHandler />
         <ScrollToTop />
         <SonnerToaster />
