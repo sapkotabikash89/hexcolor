@@ -9,7 +9,6 @@ import { Download, Share } from "lucide-react"
 import { toast } from "sonner"
 import { ColorExportDialog } from "@/components/color-export-dialog"
 import { ColorCombination } from "@/components/color-combination"
-import { GrowSubscribeCTA } from "@/components/grow-subscribe-cta"
 
 interface ColorSidebarProps {
   color: string
@@ -161,7 +160,6 @@ export function ColorSidebar({ color: initialColor, onColorChange, showColorSche
           filenameLabel={harmonyType}
         />
       )}
-      <GrowSubscribeCTA variant="sidebar" />
     </aside>
   )
 }

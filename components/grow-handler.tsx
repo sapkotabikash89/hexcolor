@@ -10,9 +10,11 @@ export function GrowHandler() {
 
     useEffect(() => {
         const injectGrowScript = () => {
-            const existingScripts = document.querySelectorAll('script[src*="faves.grow.me/main.js"]')
+            // Remove any legacy instances to avoid duplication
+            const existingScripts = document.querySelectorAll('script[src*="grow.js"], script[src*="faves.grow.me"]')
             existingScripts.forEach(s => s.remove())
 
+            // Initialize command queue for early calls
             if (!(window as any).growMe) {
                 ; (window as any).growMe = function (e: any) {
                     ; (window as any).growMe._.push(e)
@@ -22,10 +24,11 @@ export function GrowHandler() {
 
             const script = document.createElement("script")
             script.type = "text/javascript"
-            script.src = `https://faves.grow.me/main.js?ts=${Date.now()}`
+            script.src = "https://cdn.mediavine.com/grow.js"
             script.defer = true
             script.setAttribute("data-grow-faves-site-id", "U2l0ZTo5ZmZmYjE4Yi0wMmU2LTQ5YTYtYWRiYy05NGViMmU0OGU4NjY=")
 
+            // Non-blocking injection after page is interactive
             const target = document.getElementsByTagName("script")[0] || document.head.firstChild
             if (target && target.parentNode) {
                 target.parentNode.insertBefore(script, target)
@@ -34,57 +37,45 @@ export function GrowHandler() {
             }
         }
 
-        const isDOMReallyReady = () => {
-            if (document.readyState !== 'complete') return false
-            const content = document.querySelector('[data-grow-content]')
-            const sidebar = document.querySelector('[data-grow-sidebar]')
-            if (!content || !sidebar) return false
-            const textContent = content.textContent?.trim() || ""
-            if (textContent.length < 200) return false
-            return true
+        const isPageInteractive = () => {
+            return document.readyState === 'complete'
         }
 
-        let checkCount = 0
-        const interval = setInterval(() => {
-            checkCount++
-            if (isDOMReallyReady()) {
-                clearInterval(interval)
-                if (lastPathname.current !== pathname) {
-                    setTimeout(() => {
-                        injectGrowScript()
-                        lastPathname.current = pathname
-                    }, 800)
-                }
-            }
-            if (checkCount > 75) clearInterval(interval)
-        }, 200)
+        // Wait for interactivity before injecting the Floating Widget script
+        if (isPageInteractive()) {
+            injectGrowScript()
+        } else {
+            window.addEventListener('load', injectGrowScript, { once: true })
+        }
 
-        // Manual Trigger Logic
+        // Trigger logic for native Grow Subscribe Popup
         const triggerSubscribe = () => {
-            if (sessionStorage.getItem('grow_subscribe_triggered')) return
+            // Guard: Fire only once per session
+            if (sessionStorage.getItem('grow_popup_triggered')) return
 
-            if (typeof (window as any).growMe === 'function') {
+            const g = (window as any).growMe
+            if (g) {
                 try {
-                    // Try both common API patterns for maximum reliability
-                    (window as any).growMe('triggerSubscribePopup', { id: formId });
-                    // Explicit method call if script is fully initialized
-                    if ((window as any).growMe.triggerSubscribePopup) {
-                        (window as any).growMe.triggerSubscribePopup(formId);
+                    // Use the SDK command queue to trigger the popup
+                    if (typeof g === 'function') {
+                        g('triggerSubscribePopup', { id: formId })
+                    } else if (g.triggerSubscribePopup) {
+                        g.triggerSubscribePopup(formId)
                     }
-                    sessionStorage.setItem('grow_subscribe_triggered', 'true')
+                    sessionStorage.setItem('grow_popup_triggered', 'true')
                 } catch (e) {
-                    console.warn('Grow subscribe trigger failed', e)
+                    // Silent fail as requested
                 }
             }
         }
 
-        // 1. Time-based trigger (10 seconds)
-        const timeTimer = setTimeout(triggerSubscribe, 10000)
+        // Trigger 1: 12-second time delay
+        const timeTimer = setTimeout(triggerSubscribe, 12000)
 
-        // 2. Scroll-based trigger (45%)
+        // Trigger 2: 50% Scroll depth
         const handleScroll = () => {
             const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight
-            if (scrollPercent > 0.45) {
+            if (scrollPercent > 0.50) {
                 triggerSubscribe()
                 window.removeEventListener('scroll', handleScroll)
             }
@@ -92,7 +83,6 @@ export function GrowHandler() {
         window.addEventListener('scroll', handleScroll, { passive: true })
 
         return () => {
-            clearInterval(interval)
             clearTimeout(timeTimer)
             window.removeEventListener('scroll', handleScroll)
         }
