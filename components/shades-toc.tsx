@@ -18,7 +18,7 @@ interface ShadesTOCProps {
 }
 
 export function ShadesTOC({ shades, baseColorName }: ShadesTOCProps) {
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(true)
     const [limit, setLimit] = useState(10)
     const [copied, setCopied] = useState<string | null>(null)
 
