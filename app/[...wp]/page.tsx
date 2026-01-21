@@ -1488,8 +1488,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                     )
                   })()
 
-                  // Render featured image after the first section (intro)
-                  // Render featured image after the first section (intro)
+                  // Render featured image at the top of the content section
                   if (i === 0) {
                     const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
                     let tocElement: React.ReactNode = null
@@ -1544,7 +1543,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                       }
                     }
 
-                    return [sectionContent, renderFeaturedImage(), tocElement]
+                    return [renderFeaturedImage(), sectionContent, tocElement]
                   }
                   return sectionContent
                 });
