@@ -100,6 +100,24 @@ export default function RootLayout({
         <SonnerToaster />
         <Script src="/color-fallback-handler.js" strategy="beforeInteractive" />
 
+        <Script id="grow-by-mediavine" strategy="afterInteractive">
+          {`
+    !(function() {
+      window.growMe || (
+        (window.growMe = function(e) { window.growMe._.push(e); }),
+        (window.growMe._ = [])
+      );
+      var e = document.createElement("script");
+      e.type = "text/javascript";
+      e.src = "https://faves.grow.me/main.js";
+      e.defer = true;
+      e.setAttribute("data-grow-faves-site-id", "U2l0ZTo5ZmZmYjE4Yi0wMmU2LTQ5YTYtYWRiYy05NGViMmU0OGU4NjY=");
+      var t = document.getElementsByTagName("script")[0];
+      t.parentNode.insertBefore(e, t);
+    })();
+  `}
+        </Script>
+
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (
           <Script id="ga-defer-on-first-interaction" strategy="lazyOnload">
             {`
