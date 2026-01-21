@@ -63,34 +63,34 @@ export function ShadeSwatch({ hex, rgb, cmyk }: ShadeSwatchProps) {
             className="my-6 rounded-xl overflow-hidden shadow-sm border border-border transition-all hover:shadow-md"
             style={{ backgroundColor: hex }}
         >
-            <div className="p-6 relative min-h-[140px]">
+            <div className="p-4 sm:p-6 relative min-h-[120px] sm:min-h-[140px]">
 
                 {/* Values Container */}
                 <div className="space-y-3 w-full pr-16 text-left">
                     {/* HEX */}
                     <div
-                        className="flex items-center gap-3 group cursor-pointer w-fit"
+                        className="flex items-center gap-2 sm:gap-3 group cursor-pointer w-fit"
                         onClick={() => handleCopy(hex, "HEX")}
                         style={{ color: textColor }}
                     >
-                        <span className="font-bold text-lg min-w-[60px]">HEX</span>
-                        <span className="font-mono text-lg opacity-90">{hex}</span>
+                        <span className="font-bold text-base sm:text-lg min-w-[48px] sm:min-w-[60px]">HEX</span>
+                        <span className="font-mono text-base sm:text-lg opacity-90">{hex}</span>
                         <div className="opacity-50 group-hover:opacity-100 transition-opacity">
-                            {copied === "HEX" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                            {copied === "HEX" ? <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
                         </div>
                     </div>
 
                     {/* RGB */}
                     {rgb && (
                         <div
-                            className="flex items-center gap-3 group cursor-pointer w-fit"
+                            className="flex items-center gap-2 sm:gap-3 group cursor-pointer w-fit"
                             onClick={() => handleCopy(rgb, "RGB")}
                             style={{ color: textColor }}
                         >
-                            <span className="font-bold text-base min-w-[60px] opacity-90">RGB</span>
-                            <span className="font-mono text-base opacity-90">{rgb}</span>
+                            <span className="font-bold text-sm sm:text-base min-w-[48px] sm:min-w-[60px] opacity-90">RGB</span>
+                            <span className="font-mono text-sm sm:text-base opacity-90">{rgb}</span>
                             <div className="opacity-50 group-hover:opacity-100 transition-opacity">
-                                {copied === "RGB" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                {copied === "RGB" ? <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
                             </div>
                         </div>
                     )}
@@ -98,30 +98,30 @@ export function ShadeSwatch({ hex, rgb, cmyk }: ShadeSwatchProps) {
                     {/* CMYK */}
                     {cmyk && (
                         <div
-                            className="flex items-center gap-3 group cursor-pointer w-fit"
+                            className="flex items-center gap-2 sm:gap-3 group cursor-pointer w-fit"
                             onClick={() => handleCopy(cmyk, "CMYK")}
                             style={{ color: textColor }}
                         >
-                            <span className="font-bold text-base min-w-[60px] opacity-90">CMYK</span>
-                            <span className="font-mono text-base opacity-90">{cmyk}</span>
+                            <span className="font-bold text-sm sm:text-base min-w-[48px] sm:min-w-[60px] opacity-90">CMYK</span>
+                            <span className="font-mono text-sm sm:text-base opacity-90">{cmyk}</span>
                             <div className="opacity-50 group-hover:opacity-100 transition-opacity">
-                                {copied === "CMYK" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                {copied === "CMYK" ? <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
                             </div>
                         </div>
                     )}
                 </div>
 
                 {/* Love Interaction - Absolute Top Right */}
-                <div className="absolute top-6 right-6 flex flex-col items-center gap-1">
+                <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex flex-col items-center gap-1">
                     <button
                         onClick={handleLove}
-                        className="group relative p-3 rounded-full transition-all hover:scale-110 active:scale-95 bg-white/10 backdrop-blur-sm border border-white/20"
+                        className="group relative p-2.5 sm:p-3 rounded-full transition-all hover:scale-110 active:scale-95 bg-white/10 backdrop-blur-sm border border-white/20"
                         title="Love this color"
                         style={{ color: textColor }}
                     >
-                        <Heart className={`w-6 h-6 ${liked ? "fill-current" : ""}`} />
+                        <Heart className="w-5 h-5 sm:w-6 sm:h-6" fill={liked ? "currentColor" : "none"} />
                     </button>
-                    <span className="text-xs font-bold font-mono shadow-sm" style={{ color: textColor }}>
+                    <span className="text-[10px] sm:text-xs font-bold font-mono shadow-sm" style={{ color: textColor }}>
                         {loveCount}
                     </span>
                 </div>
