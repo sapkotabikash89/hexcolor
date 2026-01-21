@@ -13,7 +13,7 @@ import { ColorPageContent } from "@/components/color-page-content"
 import { WPSEOHead } from "@/components/wpseo-head"
 import { BreadcrumbSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
-import { getContrastColor, hexToRgb, rgbToHsl } from "@/lib/color-utils"
+import { getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk } from "@/lib/color-utils"
 import { AnchorHashNav } from "@/components/anchor-hash-nav"
 import { FAQSection } from "@/components/faq-section"
 import { RelatedColorsSection } from "@/components/related-colors-section"
@@ -21,6 +21,7 @@ import { BlogPostActions } from "@/components/blog-post-actions"
 import { ShadesTOC } from "@/components/shades-toc"
 import { FeaturedImage } from "@/components/blog/featured-image"
 import { BlogContent } from "@/components/blog/blog-content"
+import { ShadeSwatch } from "@/components/blog/shade-swatch"
 import { convertToGumletUrl, convertHtmlImagesToGumlet } from "@/lib/gumlet-image-utils"
 import { hasColorInTitle, hasExplicitHexInTitle } from "@/lib/color-title-utils"
 
@@ -1314,6 +1315,75 @@ export default async function WPPostPage({ params }: WPPageProps) {
 
                 const mappedSections = secs.map((sec: string, i: number) => {
                   const sectionContent = (() => {
+                    // Check for Shades Meaning category to apply Swatch enhancement
+                    const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
+
+                    if (isShadesMeaning) {
+                      // Parse values from the section content
+                      let blockHtml = ""
+                      let found = false
+
+                      // Try detecting a list first (common format)
+                      const listMatch = sec.match(/<ul[^>]*>[\s\S]*?(?:#([0-9a-fA-F]{6})\b|Hex|RGB|CMYK)[\s\S]*?<\/ul>/i)
+                      if (listMatch) {
+                        blockHtml = listMatch[0]
+                        found = true
+                      } else {
+                        // Try detecting a paragraph
+                        const paraMatch = sec.match(/<p[^>]*>[\s\S]*?(?:#([0-9a-fA-F]{6})\b|Hex|RGB|CMYK)[\s\S]*?<\/p>/i)
+                        if (paraMatch) {
+                          blockHtml = paraMatch[0]
+                          found = true
+                        }
+                      }
+
+                      if (found && blockHtml) {
+                        const hexMatch = blockHtml.match(/#([0-9a-fA-F]{6})\b/)
+                        const rgbMatch = blockHtml.match(/RGB(?:[:\-\s]|&nbsp;)+(\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3})/i)
+                        const cmykMatch = blockHtml.match(/CMYK(?:[:\-\s]|&nbsp;)+(\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3})/i)
+
+                        if (hexMatch) {
+                          const hex = `#${hexMatch[1].toUpperCase()}`
+                          let rgb = rgbMatch ? rgbMatch[1].replace(/&nbsp;/g, ' ').trim() : undefined
+                          let cmyk = cmykMatch ? cmykMatch[1].replace(/&nbsp;/g, ' ').trim() : undefined
+
+                          if (!rgb || !cmyk) {
+                            const calculatedRgb = hexToRgb(hex)
+                            if (calculatedRgb) {
+                              if (!rgb) rgb = `${calculatedRgb.r}, ${calculatedRgb.g}, ${calculatedRgb.b}`
+                              if (!cmyk) {
+                                const calculatedCmyk = rgbToCmyk(calculatedRgb.r, calculatedRgb.g, calculatedRgb.b)
+                                cmyk = `${calculatedCmyk.c}, ${calculatedCmyk.m}, ${calculatedCmyk.y}, ${calculatedCmyk.k}`
+                              }
+                            }
+                          }
+
+                          const parts = sec.split(blockHtml)
+                          return (
+                            <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden">
+                              {parts[0] && (
+                                <BlogContent
+                                  html={enhanceContentHtml(removeShortcode(parts[0]), accentColor)}
+                                  className="cm-wrap"
+                                  style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
+                                />
+                              )}
+                              <div className="px-4 sm:px-6">
+                                <ShadeSwatch hex={hex} rgb={rgb} cmyk={cmyk} />
+                              </div>
+                              {parts[1] && (
+                                <BlogContent
+                                  html={enhanceContentHtml(removeShortcode(parts[1]), accentColor)}
+                                  className="cm-wrap"
+                                  style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
+                                />
+                              )}
+                            </section>
+                          )
+                        }
+                      }
+                    }
+
                     if (isTechnical(sec)) {
                       // Only show technical section if there's a color in the title
                       if (titleContainsColor) {
