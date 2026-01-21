@@ -1,0 +1,41 @@
+name: Sync WordPress Posts
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Every hour
+  workflow_dispatch: # Enable manual trigger
+  repository_dispatch:
+    types: [wordpress_post_published] # Enable trigger via webhook
+
+jobs:
+  sync_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Sync Posts
+        run: npm run sync
+        
+      - name: Check for changes
+        id: git-check
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add lib/posts/ lib/blog-posts-data.json
+          git status
+          git diff --quiet && git diff --staged --quiet || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and Push
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git commit -m "Sync: New WordPress posts detected and saved"
+          git push

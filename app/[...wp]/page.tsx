@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import fs from "fs"
+import path from "path"
 import Image from "next/image"
 import { Suspense } from "react"
 import Script from "next/script"
@@ -42,6 +44,19 @@ async function fetchPostByUri(uri: string) {
     ])
   )
   for (const u of variants) {
+    // Try local JSON cache first
+    const slug = u.replace(/^\/|\/$/g, '').replace(/\//g, '-');
+    if (slug) {
+      try {
+        const dataPath = path.join(process.cwd(), 'lib/posts', `${slug}.json`);
+        if (fs.existsSync(dataPath)) {
+          return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+        }
+      } catch (e) {
+        // Ignore error and fall back to fetch
+      }
+    }
+
     try {
       const res = await fetch("https://cms.colormean.com/graphql", {
         method: "POST",
