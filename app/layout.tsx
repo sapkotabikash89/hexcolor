@@ -85,6 +85,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://cms.colormean.com" />
         <link rel="dns-prefetch" href="https://cms.colormean.com" />
         <meta name="google-site-verification" content="tiT0KL3QCJ4bLgDI-k7s8vphX4Sx6LQCFmkflXUe4pU" />
+        <meta name="p:domain_verify" content="2f0be474874f515dce302624f3919d26" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <WebsiteSchema />
         <OrganizationSchema />
