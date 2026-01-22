@@ -6,6 +6,7 @@ import "./globals.css"
 import { WebsiteSchema, OrganizationSchema, SoftwareApplicationSchema } from "@/components/structured-data"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
+import { GrowRefresh } from "@/components/grow-refresh"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -99,6 +100,7 @@ export default function RootLayout({
         {/* Grow Script - Placed in body with afterInteractive strategy for safe loading */}
         <ScrollToTop />
         <SonnerToaster />
+        <GrowRefresh />
         <Script src="/color-fallback-handler.js" strategy="beforeInteractive" />
 
         <Script id="grow-by-mediavine" strategy="afterInteractive">
