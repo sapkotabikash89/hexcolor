@@ -84,7 +84,7 @@ export function ColorSidebar({ color: initialColor, onColorChange, showColorSche
   }, [])
 
   return (
-    <aside id="sidebar" className="grow-sidebar w-full lg:w-96 space-y-6 sticky top-24 self-start">
+    <aside id="sidebar" className="main-sidebar w-full lg:w-96 space-y-6">
       {showColorSchemes && (
         <div className="bg-card border border-border rounded-lg p-6 space-y-4">
           <div className="flex items-center justify-between">

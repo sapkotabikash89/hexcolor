@@ -29,8 +29,12 @@ export function CategoryPosts({ initialPosts, categoryName, categorySlug }: Cate
       {posts.map((post: any, i: number) => {
         const img = post?.featuredImage?.node?.sourceUrl;
         const alt = post?.featuredImage?.node?.altText || post?.title;
-        const excerpt = (post?.excerpt || "").replace(/<\/\?[^>]+(>|$)/g, "");
-        
+        const excerpt = (post?.excerpt || "")
+          .replace(/<[^>]*>/g, "")
+          .replace(/&nbsp;/g, " ")
+          .replace(/&amp;/g, "&")
+          .trim();
+
         return (
           <Card key={i} className="overflow-hidden hover:shadow-lg transition-shadow">
             <Link href={post?.uri || "#"} className="block">

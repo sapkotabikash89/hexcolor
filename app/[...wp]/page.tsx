@@ -1273,7 +1273,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
       <main className="container mx-auto px-2 sm:px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-1 space-y-6">
-            <article id="content" className="grow-content max-w-none space-y-6" itemProp="articleBody">
+            <article id="content" className="main-content grow-content max-w-none space-y-6" itemProp="articleBody">
               {(() => {
                 const contentHtml = node.content || ""
                 const secs = splitSectionsByH2(contentHtml)

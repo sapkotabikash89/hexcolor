@@ -86,7 +86,7 @@ export default function ImageColorPickerPage() {
 
       <main className="container mx-auto px-4 py-12" aria-label="Image Color Picker Tool to extract colors from images">
         <div className="flex flex-col lg:flex-row gap-8">
-          <article id="content" data-grow-content className="grow-content flex-1">
+          <article id="content" className="main-content grow-content flex-1">
             <ToolApplicationSchema
               name="Image Color Picker"
               slug="image-color-picker"

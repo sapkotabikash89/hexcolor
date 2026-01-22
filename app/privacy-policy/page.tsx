@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
       <main className="container mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Privacy Policy", href: "/privacy-policy" }]} />
         <div className="flex flex-col lg:flex-row gap-8 mt-6">
-          <article id="content" data-grow-content className="grow-content flex-1 space-y-4">
+          <article id="content" className="main-content grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold">Privacy Policy</h1>
             <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
               <p>

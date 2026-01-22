@@ -159,7 +159,7 @@ function PickerContent() {
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Content Area - 2/3 */}
-          <article id="content" data-grow-content className="grow-content flex-1">
+          <article id="content" className="main-content grow-content flex-1">
             <div className="space-y-8">
               {/* Color Picker Section */}
               <div className="bg-card border border-border rounded-lg p-6">

@@ -86,7 +86,7 @@ export function HomeColorPicker() {
     const rgb = hslToRgb(hue, newSaturation, newLightness)
     const newColor = rgbToHex(rgb.r, rgb.g, rgb.b)
     setSelectedColor(newColor)
-    
+
     // Dispatch color update event for sidebar
     const event = new CustomEvent("colorUpdate", { detail: { color: newColor } })
     window.dispatchEvent(event)
@@ -98,7 +98,7 @@ export function HomeColorPicker() {
     const rgb = hslToRgb(newHue, saturation, lightness)
     const newColor = rgbToHex(rgb.r, rgb.g, rgb.b)
     setSelectedColor(newColor)
-    
+
     // Dispatch color update event for sidebar
     const event = new CustomEvent("colorUpdate", { detail: { color: newColor } })
     window.dispatchEvent(event)
@@ -106,7 +106,7 @@ export function HomeColorPicker() {
 
   const handleRandomColor = () => {
     // Generate a random hex color
-    const randomHex = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+    const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
     const rgb = hexToRgb(randomHex)
     if (rgb) {
       const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
@@ -266,14 +266,14 @@ export function HomeColorPicker() {
                 <Shuffle className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="truncate">Random</span>
               </Button>
-              <Link href="/screen-color-picker">
+              <Link href="/image-color-picker">
                 <Button
                   variant="outline"
                   size="lg"
                   className="w-full gap-1 sm:gap-2 bg-transparent text-xs sm:text-sm px-2 sm:px-4"
                 >
                   <Pipette className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="truncate">Screen</span>
+                  <span className="truncate">Image</span>
                 </Button>
               </Link>
             </div>
@@ -288,7 +288,7 @@ export function HomeColorPicker() {
 function getContrastColor(hex: string): string {
   const rgb = hexToRgb(hex)
   if (!rgb) return "#000000"
-  
+
   // Calculate luminance
   const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255
   return luminance > 0.5 ? "#000000" : "#FFFFFF"

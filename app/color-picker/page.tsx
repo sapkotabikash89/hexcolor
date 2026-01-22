@@ -82,7 +82,7 @@ export default function ColorPickerPage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            <article id="content" data-grow-content className="grow-content flex-1 space-y-8">
+            <article id="content" className="main-content grow-content flex-1 space-y-8">
               <ToolApplicationSchema
                 name="Color Picker"
                 slug="color-picker"
@@ -125,6 +125,18 @@ export default function ColorPickerPage() {
                   <li>Helps explore related colors and accessibility from the color page.</li>
                 </ul>
               </div>
+
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold">FAQs</h2>
+                <div className="space-y-4">
+                  {faqs.map((faq, i) => (
+                    <details key={i} className="border border-border rounded-md p-4">
+                      <summary className="font-semibold text-lg cursor-pointer list-none">{faq.question}</summary>
+                      <div className="mt-2 text-muted-foreground">{faq.answer}</div>
+                    </details>
+                  ))}
+                </div>
+              </div>
             </article>
             <ColorSidebar color="#5B6FD8" />
           </div>
@@ -133,19 +145,6 @@ export default function ColorPickerPage() {
         </div>
       </main>
       <ExploreColorTools current="color-picker" />
-      <section className="container mx-auto px-4 py-8">
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold">FAQs</h2>
-          <div className="space-y-4">
-            {faqs.map((faq, i) => (
-              <details key={i} className="border border-border rounded-md p-4">
-                <summary className="font-semibold text-lg cursor-pointer list-none">{faq.question}</summary>
-                <div className="mt-2 text-muted-foreground">{faq.answer}</div>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
       <Footer />
     </div>
   )

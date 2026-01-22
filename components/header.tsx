@@ -83,7 +83,7 @@ export function Header() {
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-1 flex-1">
+        <nav className="hidden md:flex items-center justify-between gap-1 flex-1 max-w-[500px] xl:max-w-none">
           {/* Tools submenu */}
           <div className="relative group">
             <Link href="/color-wheel">

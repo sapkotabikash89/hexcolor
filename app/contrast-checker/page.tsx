@@ -87,7 +87,7 @@ export default function ContrastCheckerPage() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <article id="content" data-grow-content className="grow-content flex-1">
+          <article id="content" className="main-content grow-content flex-1">
             <ToolApplicationSchema
               name="Contrast Checker"
               slug="contrast-checker"

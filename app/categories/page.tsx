@@ -58,7 +58,7 @@ export default async function AllCategoriesPage() {
       </section>
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1">
+          <article id="content" className="main-content grow-content flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {activeCategories.map((category: any, i: number) => (
                 <a
@@ -71,7 +71,7 @@ export default async function AllCategoriesPage() {
                 </a>
               ))}
             </div>
-          </div>
+          </article>
           <ColorSidebar color="#5B6FD8" />
         </div>
       </main>
