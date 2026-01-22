@@ -2,11 +2,14 @@ import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ColorSidebar } from "@/components/sidebar"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Palette, Droplet, Monitor, ImageIcon, Contrast, Eye, CircleDot, Shuffle, Pipette } from "lucide-react"
+import { Hero } from "@/components/home/hero"
+import { ColorLibraryPreview } from "@/components/home/color-library-preview"
+import { AboutSection } from "@/components/home/about-section"
+import { LatestPosts } from "@/components/home/latest-posts"
+import { CompactAdvancedColorPicker } from "@/components/home/compact-advanced-color-picker"
+import { CompactImageColorPicker } from "@/components/home/compact-image-color-picker"
+import { CompactColorWheel } from "@/components/home/compact-color-wheel"
 import Link from "next/link"
-import { HomeColorPicker } from "@/components/home-color-picker"
 import {
   WebsiteSchema,
   OrganizationSchema,
@@ -45,11 +48,10 @@ export const metadata: Metadata = {
 
 // Static props for server-side generation
 export async function generateStaticParams() {
-  // For the home page, we just return an empty array as there are no dynamic params
   return [{}]
 }
 
-// Static content for the homepage
+// Interactive homepage
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -57,164 +59,86 @@ export default function HomePage() {
       <OrganizationSchema />
       <Header />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-accent/10 py-12 sm:py-16 px-1 sm:px-4">
-        <div className="container mx-auto text-center space-y-4">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-balance">ColorMean: Know Your Color</h1>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto text-pretty px-2">
-            Turn ideas into visuals with confidence. Access rich color details, meanings, psychology, symbolism, uses, precise conversions, and powerful tools made for creative minds.
-          </p>
-        </div>
-      </section>
+      {/* Hero Section with Animation */}
+      <Hero />
 
       {/* Main Content */}
-      <main className="container mx-auto px-1 sm:px-4 py-8 sm:py-12">
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
-          {/* Content Area - 2/3 */}
-          <article id="content" className="main-content grow-content flex-1 space-y-8 sm:space-y-12">
-            {/* Interactive Color Picker Component */}
-            <HomeColorPicker />
+      <main className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Content Area */}
+          <article id="content" className="main-content grow-content flex-1 space-y-12">
+            {/* Live Color Picker Tool */}
+            <ToolSection
+              title="Interactive Color Picker"
+              description="Choose your perfect color and explore its properties instantly"
+            >
+              <CompactAdvancedColorPicker />
+            </ToolSection>
 
-            {/* Color Tools Preview - Static */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl font-bold">Professional Color Tools</h2>
-                <p className="text-muted-foreground">Powerful tools to help you work with colors like a professional</p>
-              </div>
+            {/* Live Image Color Picker Tool */}
+            <ToolSection
+              title="Image Color Picker"
+              description="Upload an image and extract exact color values from any pixel"
+            >
+              <CompactImageColorPicker />
+            </ToolSection>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <ToolCard
-                  icon={<CircleDot className="w-6 h-6" />}
-                  title="Color Wheel"
-                  description="Explore color relationships and harmonies"
-                  href="/color-wheel"
-                />
-                <ToolCard
-                  icon={<Droplet className="w-6 h-6" />}
-                  title="Color Picker"
-                  description="Advanced color selection tool"
-                  href="/color-picker"
-                />
-                <ToolCard
-                  icon={<Pipette className="w-6 h-6" />}
-                  title="Screen Color Picker"
-                  description="Pick colors from your screen"
-                  href="/screen-color-picker"
-                />
-                <ToolCard
-                  icon={<ImageIcon className="w-6 h-6" />}
-                  title="Image Color Picker"
-                  description="Extract colors from images"
-                  href="/image-color-picker"
-                />
-                <ToolCard
-                  icon={<Palette className="w-6 h-6" />}
-                  title="Palette from Image"
-                  description="Generate color palettes from photos"
-                  href="/palette-from-image"
-                />
-                <ToolCard
-                  icon={<Contrast className="w-6 h-6" />}
-                  title="Contrast Checker"
-                  description="Check WCAG accessibility standards"
-                  href="/contrast-checker"
-                />
-                <ToolCard
-                  icon={<Eye className="w-6 h-6" />}
-                  title="Color Blindness Simulator"
-                  description="See colors through different vision types"
-                  href="/color-blindness-simulator"
-                />
-                <ToolCard
-                  icon={<Monitor className="w-6 h-6" />}
-                  title="Color Library"
-                  description="Browse thousands of colors"
-                  href="/colors"
-                />
-              </div>
-            </div>
+            {/* Live Color Wheel Tool */}
+            <ToolSection
+              title="Color Wheel"
+              description="Explore color relationships and create harmonious color combinations"
+            >
+              <CompactColorWheel />
+            </ToolSection>
 
-            {/* About Section - Static */}
-            <Card className="p-8 space-y-4">
-              <h2 className="text-2xl font-bold">About ColorMean</h2>
-              <div className="space-y-4 text-muted-foreground leading-relaxed">
-                <p>
-                  <strong className="text-foreground">ColorMean</strong> is your comprehensive color companion, designed
-                  for designers, developers, artists, and anyone passionate about colors. We provide detailed color
-                  information, meanings, and professional-grade tools to help you make the perfect color choices for
-                  your projects.
-                </p>
-                <p>
-                  Whether you're looking for the perfect shade, need to check color accessibility, or want to understand
-                  color harmonies, ColorMean has you covered. Our platform combines intuitive tools with in-depth color
-                  knowledge to empower your creative work.
-                </p>
-                <h3 className="text-lg font-semibold text-foreground pt-4">What You Can Do:</h3>
-                <ul className="list-disc list-inside space-y-2 pl-4">
-                  <li>
-                    <strong className="text-foreground">Explore Color Information:</strong> Get detailed color codes in
-                    HEX, RGB, HSL, CMYK, HSV, and LAB formats
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Discover Color Meanings:</strong> Learn about the psychology and
-                    symbolism behind different colors
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Find Color Harmonies:</strong> Generate complementary,
-                    analogous, triadic, and more color schemes
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Check Accessibility:</strong> Ensure your color combinations
-                    meet WCAG standards
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Extract Colors from Images:</strong> Build palettes from your
-                    favorite photos
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Test Color Blindness:</strong> See how your colors appear to
-                    people with different vision types
-                  </li>
-                </ul>
-                <p className="pt-4">
-                  Start exploring colors today and discover how ColorMean can enhance your creative workflow!
-                </p>
-              </div>
-            </Card>
+            {/* Color Library Preview */}
+            <ToolSection
+              title="Color Library Preview"
+              description="Explore popular shades and their detailed properties"
+            >
+              <ColorLibraryPreview />
+            </ToolSection>
+
+            {/* About ColorMean */}
+            <ToolSection
+              title="About ColorMean"
+              description="Your comprehensive color companion for all your creative needs"
+            >
+              <AboutSection />
+            </ToolSection>
           </article>
 
-          {/* Sidebar - 1/3 */}
+          {/* Sidebar */}
           <ColorSidebar color="#5B6FD8" />
         </div>
       </main>
+
+      {/* Latest Posts - Full Width */}
+      <LatestPosts />
 
       <Footer />
     </div>
   )
 }
 
-function ToolCard({
-  icon,
+// Tool Section Wrapper Component
+function ToolSection({
   title,
   description,
-  href,
+  children,
 }: {
-  icon: React.ReactNode
   title: string
   description: string
-  href: string
+  children: React.ReactNode
 }) {
   return (
-    <Link href={href}>
-      <Card className="p-6 h-full hover:shadow-lg transition-all hover:border-primary cursor-pointer group">
-        <div className="space-y-3">
-          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-            {icon}
-          </div>
-          <h3 className="font-semibold text-lg">{title}</h3>
-          <p className="text-sm text-muted-foreground">{description}</p>
-        </div>
-      </Card>
-    </Link>
+    <div className="space-y-4">
+      <div className="space-y-1">
+        <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
+        <p className="text-sm sm:text-base text-muted-foreground">{description}</p>
+      </div>
+
+      {children}
+    </div>
   )
 }
