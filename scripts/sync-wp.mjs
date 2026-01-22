@@ -107,17 +107,31 @@ async function sync() {
         fs.writeFileSync(indexFile, JSON.stringify(posts, null, 2));
         console.log(`Updated index: ${indexFile}`);
 
-        // 2. Save individual JSON files
+        // 2. Save individual JSON files and detect new ones
+        let newItemsCount = 0;
+        const newItems = [];
+
         items.forEach(item => {
             if (!item.uri || item.uri === '/') return;
 
             const slug = item.uri.replace(/^\/|\/$/g, '').replace(/\//g, '-');
             const itemPath = path.join(postsDir, `${slug}.json`);
 
+            if (!fs.existsSync(itemPath)) {
+                newItemsCount++;
+                newItems.push(item.title);
+            }
+
             fs.writeFileSync(itemPath, JSON.stringify(item, null, 2));
         });
 
         console.log(`Successfully saved ${items.length} items to ${postsDir}`);
+        if (newItemsCount > 0) {
+            console.log(`\nDETECTED ${newItemsCount} NEW POSTS:`);
+            newItems.forEach(title => console.log(` - ${title}`));
+        } else {
+            console.log('\nNo new posts detected.');
+        }
         console.log('Sync complete!');
 
     } catch (error) {

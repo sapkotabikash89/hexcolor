@@ -839,72 +839,39 @@ interface WPPageProps {
   params: Promise<{ wp: string[] }>
 }
 
-// Generate static paths for critical blog posts at build time
+// Generate static paths for blog posts and pages from local JSON cache
 export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
   if (process.env.NODE_ENV === 'development') {
     return []
   }
 
   try {
+    const postsDir = path.join(process.cwd(), 'lib/posts')
+    if (!fs.existsSync(postsDir)) {
+      console.warn('Posts directory not found, skipping static param generation')
+      return []
+    }
+
+    const files = fs.readdirSync(postsDir).filter(f => f.endsWith('.json'))
     const allParams: { wp: string[] }[] = []
-    let hasMore = true
-    let endCursor = ""
 
-    // Fetch all posts with pagination
-    while (hasMore) {
-      const res = await fetch("https://cms.colormean.com/graphql", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: `
-            query GetAllContent($after: String) {
-              posts(first: 100, after: $after) {
-                pageInfo {
-                  hasNextPage
-                  endCursor
-                }
-                nodes {
-                  uri
-                }
-              }
-              pages(first: 100, after: $after) {
-                 nodes {
-                   uri
-                 }
-              }
-            }
-          `,
-          variables: { after: endCursor },
-        }),
-        next: { revalidate: 3600 }
-      })
-
-      const json = await res.json()
-      const posts = json?.data?.posts?.nodes || []
-      const pages = json?.data?.pages?.nodes || []
-
-      const content = [...posts, ...pages]
-
-      content.forEach((node: any) => {
-        if (node.uri && node.uri !== '/') {
-          const parts = node.uri.replace(/^\/|\/$/g, "").split('/')
+    for (const file of files) {
+      try {
+        const content = JSON.parse(fs.readFileSync(path.join(postsDir, file), 'utf8'))
+        if (content.uri && content.uri !== '/') {
+          const parts = content.uri.replace(/^\/|\/$/g, "").split('/')
           allParams.push({ wp: parts })
         }
-      })
-
-      if (json?.data?.posts?.pageInfo?.hasNextPage) {
-        endCursor = json.data.posts.pageInfo.endCursor
-      } else {
-        hasMore = false
+      } catch (e) {
+        console.error(`Error parsing ${file}:`, e)
       }
     }
 
+    console.log(`Generated ${allParams.length} static paths from local files.`)
     return allParams
 
   } catch (error) {
-    console.error('Failed to generate static params:', error)
-    // In production build, we might want to throw or return what we have
-    // Returning empty array in strict export mode means NO pages generate, which is bad.
+    console.error('Failed to generate static params from local files:', error)
     return []
   }
 }

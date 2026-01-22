@@ -3,8 +3,20 @@ import { Footer } from "@/components/footer";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ColorSidebar } from "@/components/sidebar";
 import { CategoryPosts } from "@/components/category-posts";
+import fs from "fs";
+import path from "path";
 
 async function fetchAllPosts() {
+  try {
+    const dataPath = path.join(process.cwd(), 'lib/blog-posts-data.json');
+    if (fs.existsSync(dataPath)) {
+      return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    }
+  } catch (e) {
+    console.error('Error reading local posts data:', e);
+  }
+
+  // Fallback to fetch if local file doesn't exist (e.g. first build)
   const res = await fetch("https://cms.colormean.com/graphql", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
