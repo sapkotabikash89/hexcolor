@@ -53,7 +53,7 @@ export default function ColorsPage() {
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
-        <div className="w-full max-w-[1300px] mx-auto">
+        <div className="w-full max-w-[1350px] mx-auto">
           <BreadcrumbNav items={[{ label: "Color Library", href: "/colors" }]} />
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">Color Library</h1>
@@ -64,7 +64,7 @@ export default function ColorsPage() {
         </div>
       </section>
 
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           <article id="content" className="main-content grow-content flex-1" itemProp="articleBody">
             <div className="space-y-12">

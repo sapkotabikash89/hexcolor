@@ -19,7 +19,7 @@ export default function AboutUsPage() {
         { name: "About Us", item: "https://hexcolormeans.com/about-us" }
       ]} />
       <Header />
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "About Us", href: "/about-us" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
