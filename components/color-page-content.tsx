@@ -940,6 +940,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         <CustomColorPicker
           value={tempForeground}
           onChange={setTempForeground}
+          disableGlobalUpdate={true}
           onApply={(color) => {
             const finalColor = color || tempForeground
             setContrastForeground(finalColor)
@@ -956,6 +957,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         <CustomColorPicker
           value={tempBackground}
           onChange={setTempBackground}
+          disableGlobalUpdate={true}
           onApply={(color) => {
             const finalColor = color || tempBackground
             setContrastBackground(finalColor)

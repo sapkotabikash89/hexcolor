@@ -175,6 +175,7 @@ export function ContrastCheckerTool() {
           value={tempForeground}
           onChange={setTempForeground}
           onApply={handleApplyForeground}
+          disableGlobalUpdate={true}
           onClose={() => {
             setShowForegroundPicker(false)
             setTempForeground(foreground)
@@ -186,6 +187,7 @@ export function ContrastCheckerTool() {
           value={tempBackground}
           onChange={setTempBackground}
           onApply={handleApplyBackground}
+          disableGlobalUpdate={true}
           onClose={() => {
             setShowBackgroundPicker(false)
             setTempBackground(background)

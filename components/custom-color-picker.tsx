@@ -13,9 +13,10 @@ interface CustomColorPickerProps {
   onChange: (color: string) => void
   onApply?: (color: string) => void
   onClose: () => void
+  disableGlobalUpdate?: boolean
 }
 
-export function CustomColorPicker({ value, onChange, onApply, onClose }: CustomColorPickerProps) {
+export function CustomColorPicker({ value, onChange, onApply, onClose, disableGlobalUpdate = false }: CustomColorPickerProps) {
   const [hue, setHue] = useState(0)
   const [saturation, setSaturation] = useState(100)
   const [lightness, setLightness] = useState(50)
@@ -100,8 +101,10 @@ export function CustomColorPicker({ value, onChange, onApply, onClose }: CustomC
     setTempColor(hex)
     
     // Dispatch color update event for sidebar - only when dragging
-    const event = new CustomEvent("colorUpdate", { detail: { color: hex } })
-    window.dispatchEvent(event)
+    if (!disableGlobalUpdate) {
+      const event = new CustomEvent("colorUpdate", { detail: { color: hex } })
+      window.dispatchEvent(event)
+    }
   }
 
   const handleHueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,8 +116,10 @@ export function CustomColorPicker({ value, onChange, onApply, onClose }: CustomC
     setTempColor(hex)
     
     // Dispatch color update event for sidebar
-    const event = new CustomEvent("colorUpdate", { detail: { color: hex } })
-    window.dispatchEvent(event)
+    if (!disableGlobalUpdate) {
+      const event = new CustomEvent("colorUpdate", { detail: { color: hex } })
+      window.dispatchEvent(event)
+    }
   }
 
   const handleHexInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
