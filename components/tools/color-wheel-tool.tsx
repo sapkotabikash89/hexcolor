@@ -411,7 +411,7 @@ export function ColorWheelTool() {
                     </SelectContent>
                   </Select>
                   <span 
-                    className="font-mono font-semibold text-sm sm:text-base truncate sm:hidden"
+                    className="font-mono font-semibold text-sm sm:text-base truncate hidden md:block"
                     style={{ color: getContrastColor(baseColor) }}
                   >
                     {getColorValue(baseColor)}
