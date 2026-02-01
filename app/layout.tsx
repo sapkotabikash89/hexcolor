@@ -102,7 +102,9 @@ export default function RootLayout({
         <SoftwareApplicationSchema />
       </head>
       <body className={`${inter.className} px-0`}>
-        {children}
+        <div className="max-w-[1430px] mx-auto w-full bg-background shadow-xl min-h-screen relative">
+          {children}
+        </div>
 
         {/* Grow Script - Placed in body with afterInteractive strategy for safe loading */}
         <ScrollToTop />
