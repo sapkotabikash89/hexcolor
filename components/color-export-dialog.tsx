@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Copy, Check, X, Terminal, Cpu, Layout, Hash, Download } from "lucide-react"
-import { hexToRgb, rgbToHsl } from "@/lib/color-utils"
+import { hexToRgb, rgbToHsl, rgbToCmyk } from "@/lib/color-utils"
 import { cn } from "@/lib/utils"
 
 interface ColorExportDialogProps {
@@ -19,7 +19,7 @@ interface ColorExportDialogProps {
 }
 
 type ExportTarget = "tailwind-v4" | "tailwind-v3" | "figma" | "css-prefixes" | "just-codes"
-type ExportFormat = "hex" | "rgb" | "hsl"
+type ExportFormat = "hex" | "rgb" | "hsl" | "cmyk"
 
 export function ColorExportDialog({ open, onOpenChange, title = "Export color codes", colors, baseHex, filenameLabel }: ColorExportDialogProps) {
   const [selectedTarget, setSelectedTarget] = useState<ExportTarget>("tailwind-v4")
@@ -40,18 +40,21 @@ export function ColorExportDialog({ open, onOpenChange, title = "Export color co
     { id: "hex" as ExportFormat, label: "HEX" },
     { id: "rgb" as ExportFormat, label: "RGB" },
     { id: "hsl" as ExportFormat, label: "HSL" },
+    { id: "cmyk" as ExportFormat, label: "CMYK" },
   ]
 
   const colorData = useMemo(() => {
     return colors.map((hex) => {
       const rgb = hexToRgb(hex)
       const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null
+      const cmyk = rgb ? rgbToCmyk(rgb.r, rgb.g, rgb.b) : null
       return {
         hex: hex.toUpperCase(),
         rgbSpace: rgb ? `${rgb.r} ${rgb.g} ${rgb.b}` : "",
         hslSpace: hsl ? `${hsl.h} ${hsl.s} ${hsl.l}` : "",
         rgbComma: rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : "",
         hslComma: hsl ? `${hsl.h}, ${hsl.s}, ${hsl.l}` : "",
+        cmyk: cmyk ? `${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%` : "",
       }
     })
   }, [colors])
@@ -62,12 +65,14 @@ export function ColorExportDialog({ open, onOpenChange, title = "Export color co
         case "hex": return data.hex
         case "rgb": return data.rgbComma
         case "hsl": return data.hslComma
+        case "cmyk": return data.cmyk
       }
     }
     switch (format) {
       case "hex": return data.hex
       case "rgb": return `rgb(${data.rgbSpace})`
       case "hsl": return `hsl(${data.hslSpace})`
+      case "cmyk": return `cmyk(${data.cmyk})`
     }
   }
 
@@ -164,7 +169,7 @@ export function ColorExportDialog({ open, onOpenChange, title = "Export color co
           <DialogTitle className="text-xl font-bold text-foreground text-center tracking-tight">{dynamicTitle}</DialogTitle>
           <button
             onClick={() => onOpenChange(false)}
-            className="absolute right-6 p-2 hover:bg-muted rounded-full transition-all text-muted-foreground hover:text-foreground"
+            className="absolute right-6 p-2 hover:bg-muted rounded-full transition-all text-muted-foreground hover:text-foreground md:top-6 top-12"
           >
             <X className="w-5 h-5" />
           </button>
