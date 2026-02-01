@@ -128,7 +128,7 @@ export default function ContrastCheckerPage() {
             </section>
 
             {/* Precision Accessibility Standards section */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-8 bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-8 bg-white">
               <div className="flex items-center gap-3">
                 <Info className="w-8 h-8 text-primary" />
                 <h2 className="text-4xl font-bold m-0">Precision Accessibility Standards</h2>
@@ -144,7 +144,7 @@ export default function ContrastCheckerPage() {
             </section>
 
             {/* WCAG Accessibility Standards section */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-10 bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-10 bg-white">
               <div className="flex items-center gap-3">
                 <BadgeCheck className="w-8 h-8 text-primary" />
                 <h2 className="text-4xl font-bold m-0">WCAG Accessibility Standards</h2>
@@ -180,7 +180,7 @@ export default function ContrastCheckerPage() {
             </section>
 
             {/* Accessibility & Professional Compliance section */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
               <div className="flex items-center gap-3">
                 <Layers className="w-8 h-8 text-primary" />
                 <h2 className="text-4xl font-bold text-left m-0">Accessibility & Professional Compliance</h2>
@@ -204,7 +204,7 @@ export default function ContrastCheckerPage() {
             </section>
 
             {/* FAQs Area Section */}
-            <section id="faqs" className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+            <section id="faqs" className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
               <div className="flex items-center gap-4">
                 <HelpCircle className="w-10 h-10 text-primary" />
                 <h2 className="text-4xl font-bold m-0 text-left">FAQs About Color Contrast</h2>

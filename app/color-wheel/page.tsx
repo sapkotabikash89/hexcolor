@@ -159,7 +159,7 @@ export default function ColorWheelPage() {
                         </section>
 
                         {/* How to Use Area with border */}
-                        <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+                        <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
                             <div className="space-y-6">
                                 <div className="flex items-center gap-3">
                                     <CheckCircle2 className="w-8 h-8 text-primary" />
@@ -197,7 +197,7 @@ export default function ColorWheelPage() {
                         </section>
 
                         {/* Why Use Area with border */}
-                        <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-10 bg-white">
+                        <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-10 bg-white">
                             <div className="flex items-center gap-3">
                                 <Info className="w-8 h-8 text-primary" />
                                 <h2 className="text-4xl font-bold m-0">Why Use a Color Wheel?</h2>
@@ -213,7 +213,7 @@ export default function ColorWheelPage() {
                         </section>
 
                         {/* Understanding Color Harmonies with border */}
-                        <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-16 bg-white">
+                        <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-16 bg-white">
                             <div className="flex items-center gap-3">
                                 <Layers className="w-8 h-8 text-primary" />
                                 <h2 className="text-4xl font-bold m-0">Understanding Color Harmonies</h2>
@@ -242,7 +242,7 @@ export default function ColorWheelPage() {
                         </section>
 
                         {/* FAQs Area with border */}
-                        <section id="faqs" className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+                        <section id="faqs" className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
                             <div className="flex items-center gap-4">
                                 <HelpCircle className="w-10 h-10 text-primary" />
                                 <h2 className="text-4xl font-bold m-0">FAQs About Color Wheel</h2>

@@ -133,7 +133,7 @@ export default function ColorBlindnessSimulatorPage() {
             </section>
 
             {/* How to Audit Your Design section */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
                   <CheckCircle2 className="w-8 h-8 text-primary" />
@@ -233,7 +233,7 @@ export default function ColorBlindnessSimulatorPage() {
             </section>
 
             {/* FAQs Area Section */}
-            <section id="faqs" className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+            <section id="faqs" className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
               <div className="flex items-center gap-4">
                 <HelpCircle className="w-10 h-10 text-primary" />
                 <h2 className="text-4xl font-bold m-0 text-left">FAQs About Color Blindness</h2>
