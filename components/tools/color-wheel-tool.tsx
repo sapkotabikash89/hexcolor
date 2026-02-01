@@ -482,9 +482,9 @@ export function ColorWheelTool() {
               <ColorCombination 
                 colors={showRandomPalette ? randomPalette : harmonies} 
                 baseHex={baseColor} 
-                height={320}
+                height="100%"
                 vertical={true}
-                className="w-full"
+                className="flex-1 w-full"
               />
               
               {/* Random Palette Box - Equal height to base color box */}
