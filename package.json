@@ -5,8 +5,8 @@
   "type": "module",
   "packageManager": "npm@10.0.0",
   "scripts": {
-    "prebuild": "npm run sync || echo 'Sync failed, continuing build...' && node scripts/generate-sitemaps.mjs",
-    "build": "next build",
+    "prebuild": "rm -rf .next/cache && npm run sync || echo 'Sync failed, continuing build...' && node scripts/generate-sitemaps.mjs",
+    "build": "opennextjs-cloudflare build",
     "postbuild": "echo 'Skipping static export verification for Edge Runtime'",
     "export": "npm run build",
     "dev": "next dev",
