@@ -8,20 +8,57 @@ const __dirname = path.dirname(__filename);
 const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL || 'https://blog.hexcolormeans.com/graphql';
 
 async function fetchGraphQL(query, variables = {}) {
+    console.log(`Attempting to connect to WordPress API at: ${WORDPRESS_API_URL}`);
     if (!process.env.WORDPRESS_API_URL) {
         console.warn('Warning: WORDPRESS_API_URL env variable not set. Using default.');
     }
-    const response = await fetch(WORDPRESS_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, variables }),
-    });
-    const json = await response.json();
-    if (json.errors) {
-        console.error('GraphQL Errors:', JSON.stringify(json.errors, null, 2));
-        throw new Error('GraphQL query failed');
+    
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
+        const response = await fetch(WORDPRESS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables }),
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        // Check if response is OK
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`HTTP Error ${response.status}: ${response.statusText}`);
+            console.error(`Response body: ${errorText.substring(0, 500)}...`);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const errorText = await response.text();
+            console.error('Expected JSON response but received:', contentType);
+            console.error('Response preview:', errorText.substring(0, 500));
+            throw new Error('Invalid response format - expected JSON');
+        }
+        
+        const json = await response.json();
+        if (json.errors) {
+            console.error('GraphQL Errors:', JSON.stringify(json.errors, null, 2));
+            throw new Error('GraphQL query failed');
+        }
+        return json;
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            console.error('Request timed out after 30 seconds. The WordPress API may be slow or unreachable.');
+            throw new Error('WordPress API request timed out');
+        }
+        if (error instanceof SyntaxError && error.message.includes('Unexpected token')) {
+            console.error('Failed to parse JSON response. The WordPress API may be unreachable or returning an error page.');
+            console.error('Please check if the WordPress GraphQL endpoint is accessible and properly configured.');
+        }
+        throw error;
     }
-    return json;
 }
 
 async function fetchItems(type) {
