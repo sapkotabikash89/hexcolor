@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: true, // Required for consistent routing
+  trailingSlash: false, // Disabled to fix 404s on Cloudflare Pages
 
   // Image configuration
   images: {
