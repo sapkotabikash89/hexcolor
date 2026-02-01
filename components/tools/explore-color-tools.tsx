@@ -17,7 +17,7 @@ export function ExploreColorTools({ current }: { current: string }) {
 
   return (
     <section className="w-full bg-muted/30">
-      <div className="w-full max-w-[1350px] mx-auto px-4 py-12">
+      <div className="w-full max-w-[1300px] mx-auto px-4 py-12">
         <div className="mb-6">
           <h2 className="text-3xl font-bold">Explore Color Tools</h2>
           <p className="text-muted-foreground">

@@ -113,7 +113,7 @@ export default function ContrastCheckerPage() {
         </div>
       </section>
 
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           <article id="content" className="main-content grow-content flex-1 space-y-16">
             <ToolApplicationSchema

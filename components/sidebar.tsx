@@ -95,7 +95,7 @@ export function ColorSidebar({
   }, [showLatestPosts])
 
   return (
-    <aside id="sidebar" className={className || "main-sidebar w-full lg:w-[380px] shrink-0 space-y-6 sticky top-24 self-start"}>
+    <aside id="sidebar" className={className || "main-sidebar w-full lg:w-[340px] shrink-0 space-y-6 sticky top-24 self-start"}>
       {showColorSchemes && (
         <div className="bg-card border border-border rounded-lg p-6 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-2">
