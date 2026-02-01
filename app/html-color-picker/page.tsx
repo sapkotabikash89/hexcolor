@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ColorPickerClientContent } from "./color-picker-client";
 import { ToolApplicationSchema } from "@/components/structured-data";
 
@@ -52,7 +53,9 @@ export default function HtmlColorPickerPage() {
                 slug="html-color-picker" 
                 description="Advanced HTML color picker with HEX, RGB, and HSL support. Perfect for web developers and designers looking for precise color selection and WCAG accessibility info." 
             />
-            <ColorPickerClientContent />
+            <Suspense fallback={<div className="flex flex-col min-h-screen"><div className="flex-1 flex items-center justify-center"><div className="text-center py-12"><div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-current"></div><p className="mt-2 text-muted-foreground">Loading...</p></div></div></div>}>
+                <ColorPickerClientContent />
+            </Suspense>
         </>
     );
 }

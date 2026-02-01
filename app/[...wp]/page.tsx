@@ -1,7 +1,5 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import fs from "fs"
-import path from "path"
 import Image from "next/image"
 import { Suspense } from "react"
 import Script from "next/script"
@@ -53,7 +51,8 @@ async function fetchPostByUri(uri: string) {
     ])
   )
   for (const u of variants) {
-    // Try local JSON cache first
+    // Try local JSON cache first - SKIPPED FOR EDGE RUNTIME
+    /*
     const slug = u.replace(/^\/|\/$/g, '').replace(/\//g, '-');
     if (slug) {
       try {
@@ -65,6 +64,7 @@ async function fetchPostByUri(uri: string) {
         // Ignore error and fall back to fetch
       }
     }
+    */
 
     try {
       const apiUrl = GRAPHQL_ENDPOINT;
@@ -859,6 +859,9 @@ export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
   }
 
   try {
+    const fs = await import("fs")
+    const path = await import("path")
+    
     const postsDir = path.join(process.cwd(), 'lib/posts')
     if (!fs.existsSync(postsDir)) {
       console.warn('Posts directory not found, skipping static param generation')

@@ -2,3 +2,8 @@ name = "my-v0-project"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".open-next/assets"
+
+[[kv_namespaces]]
+binding = "NEXT_CACHE_WORKERS_KV"
+id = "225285022528502252850" # Placeholder ID - Cloudflare will generate/require a real one if using Wrangler CLI, but for Pages it's often auto-bound or managed in dashboard. 
+# However, OpenNext often requires this binding name to be present.
