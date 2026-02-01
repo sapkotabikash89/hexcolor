@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { CheckCircle2, Info, Eye, HelpCircle, ShieldCheck, Zap, Layers, Image as ImageIcon } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Image Color Picker - Free Online Tool to Extract Colors from Images | HexColorMeans",
   description: "Upload any image and extract exact hex, RGB, and HSL codes with our professional image color picker. Fast, accurate, and privacy-focused pixel extraction for professional design workflow.",

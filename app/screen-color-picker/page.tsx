@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { CheckCircle2, Info, Eye, HelpCircle, ShieldCheck, Zap, Layers, Pipette } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Screen Color Picker - Free Online Tool to Pick Colors from Anything | HexColorMeans",
   description: "Pick any color directly from your screen with our professional EyeDropper tool. Extract exact hex codes from other applications, websites, or images instantly with 1:1 pixel precision.",

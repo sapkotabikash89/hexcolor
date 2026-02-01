@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { Info, HelpCircle, Eye, CheckCircle2, ShieldAlert, Palette, Layers, Accessibility } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Color Blindness Simulator - Free Online Color Vision Deficiency Checker | HexColorMeans",
   description: "Test your designs for accessibility with our professional color blindness simulator. Model various vision deficiencies like Protanopia, Deuteranopia, and Tritanopia instantly to ensure WCAG compliance.",

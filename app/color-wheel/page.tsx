@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { CheckCircle2, Info, Palette, HelpCircle, Layers } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
     title: "Color Wheel - Free Online Chromatic Wheel & Harmony Tool | HexColorMeans",
     description:

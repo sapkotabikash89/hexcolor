@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { CheckCircle2, Info, MousePointer2, HelpCircle, Zap, ShieldCheck, RefreshCw, Layers } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Color Picker - Free Online Hex, HTML & CSS Color Selector Tool | HexColorMeans",
   description: "Select and explore colors with our professional-grade hex color picker. Get instant HEX, RGB, and HSL codes for HTML, CSS, and UI design projects with precise control.",

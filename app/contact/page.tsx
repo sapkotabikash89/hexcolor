@@ -6,6 +6,8 @@ import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbSchema } from "@/components/structured-data"
 import { ShareButtons } from "@/components/share-buttons"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Contact Us - HexColorMeans",
   description: "Get in touch with the HexColorMeans team for questions, feedback, or collaborations regarding color meanings and data.",

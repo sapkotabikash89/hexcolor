@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { Info, HelpCircle, ShieldAlert, FileCheck, Layers, BadgeCheck } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Color Contrast Checker - Free Online WCAG Color Contrast Accessibility Tool | HexColorMeans",
   description: "Verify your design's legibility with our professional contrast checker. Ensure your color combinations meet WCAG AA and AAA accessibility standards instantly for a truly inclusive web experience.",

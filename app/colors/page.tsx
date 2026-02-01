@@ -8,6 +8,8 @@ import { BreadcrumbSchema, CollectionPageSchema } from "@/components/structured-
 
 import { ShareButtons } from "@/components/share-buttons"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Color Library - Browse Thousands of Colors | HexColorMeans",
   description:

@@ -16,6 +16,8 @@ import {
 } from "@/components/structured-data"
 import { getAllPosts } from "@/lib/wordpress"
 
+export const dynamic = "force-static";
+
 // Static metadata for SEO
 export const metadata: Metadata = {
   title: "HexColorMeans: Where Every Color Has Meaning - Professional Color Tools & Information",

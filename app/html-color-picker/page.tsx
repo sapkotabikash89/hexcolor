@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { ColorPickerClientContent } from "./color-picker-client";
 import { ToolApplicationSchema } from "@/components/structured-data";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
     title: "HTML Color Picker - Free Online Tool for Web Designers | HexColorMeans",
     description: "Advanced HTML color picker with HEX, RGB, and HSL support. Perfect for web developers and designers looking for precise color selection and WCAG accessibility info.",

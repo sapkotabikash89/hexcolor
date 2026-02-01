@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { CheckCircle2, Info, Palette, HelpCircle, Layers, ShieldCheck, Zap } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Image Palette Generator - Create Beautiful Color Palettes from Images | HexColorMeans",
   description: "Generate stunning color palettes from any photograph or design asset. Our advanced image palette generator extracts dominant hues to create professional color combinations instantly.",

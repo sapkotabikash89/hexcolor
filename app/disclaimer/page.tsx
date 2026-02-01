@@ -6,6 +6,8 @@ import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbSchema, WebPageSchema } from "@/components/structured-data"
 import { ShareButtons } from "@/components/share-buttons"
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Disclaimer - HexColorMeans",
   description: "Disclaimer for HexColorMeans. Information provided is for general educational purposes only.",
