@@ -198,9 +198,8 @@ export default async function ColorPage({ params }: ColorPageProps) {
         authorType="Organization"
         url={pageUrl}
         image={imageUrl}
-        datePublished="2024-01-01T08:00:00+00:00"
-        dateModified="2024-01-01T08:00:00+00:00"
         articleSection="Color Meanings"
+        color={normalizedHex}
       />
 
       <Header />

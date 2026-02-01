@@ -60,7 +60,6 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       <WebsiteSchema />
-      <OrganizationSchema />
       <Header />
 
       {/* Hero Section with Animation */}

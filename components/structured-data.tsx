@@ -130,29 +130,7 @@ export function ImageObjectSchema({
   return <Script id="imageobject-schema" type="application/ld+json" strategy="beforeInteractive">{JSON.stringify(schema)}</Script>
 }
 
-export function ToolApplicationSchema({
-  name,
-  slug,
-  description,
-}: {
-  name: string
-  slug: string
-  description: string
-}) {
-  const url = `https://www.hexcolormeans.com/${slug}`
-  const image = `https://www.hexcolormeans.com/tools/${slug}-snapshot.webp`
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name,
-    url,
-    applicationCategory: "DesignApplication",
-    operatingSystem: "Web",
-    description,
-    image,
-  }
-  return <Script id={`${slug}-webapp-schema`} type="application/ld+json" strategy="beforeInteractive">{JSON.stringify(schema)}</Script>
-}
+
 
 export function WebPageSchema({
   name,
@@ -289,28 +267,26 @@ export function ArticleSchema({
   dateModified,
   url,
   articleSection,
+  color,
 }: {
   title: string
   description?: string
-  authorName: string
+  authorName?: string
   authorType?: "Organization" | "Person"
   publisherName?: string
   publisherLogo?: string
   image?: string
-  datePublished: string
-  dateModified: string
+  datePublished?: string
+  dateModified?: string
   url: string
   articleSection?: string
+  color?: string
 }) {
   const schema: any = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: title,
     description: description ?? undefined,
-    author: {
-      "@type": authorType,
-      name: authorName,
-    },
     publisher: {
       "@type": "Organization",
       name: publisherName,
@@ -319,13 +295,26 @@ export function ArticleSchema({
         url: publisherLogo,
       },
     },
-    datePublished: datePublished,
-    dateModified: dateModified,
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": url,
     },
     inLanguage: "en",
+  }
+
+  if (authorName) {
+    schema.author = {
+      "@type": authorType,
+      name: authorName,
+    }
+  }
+
+  if (datePublished) {
+    schema.datePublished = datePublished
+  }
+
+  if (dateModified) {
+    schema.dateModified = dateModified
   }
 
   if (image) {
@@ -334,6 +323,10 @@ export function ArticleSchema({
 
   if (articleSection) {
     schema.articleSection = articleSection
+  }
+
+  if (color) {
+    schema.color = color
   }
 
   const id = `article-schema-${url.split('/').filter(Boolean).pop() || 'index'}`
@@ -347,4 +340,35 @@ export function ArticleSchema({
       {JSON.stringify(schema)}
     </Script>
   )
+}
+
+export function ToolApplicationSchema({
+  name,
+  slug,
+  description,
+  applicationCategory = "DesignApplication",
+}: {
+  name: string
+  slug: string
+  description: string
+  applicationCategory?: string
+}) {
+  const url = `https://www.hexcolormeans.com/${slug}`
+  const image = `https://www.hexcolormeans.com/tools/${slug}-snapshot.webp`
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name,
+    url,
+    applicationCategory,
+    operatingSystem: "Web",
+    description,
+    image,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  }
+  return <Script id={`${slug}-webapp-schema`} type="application/ld+json" strategy="beforeInteractive">{JSON.stringify(schema)}</Script>
 }

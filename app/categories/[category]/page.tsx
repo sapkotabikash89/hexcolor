@@ -3,6 +3,7 @@ import { Footer } from "@/components/footer";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ColorSidebar } from "@/components/sidebar";
 import { CategoryPosts } from "@/components/category-posts";
+import { CollectionPageSchema, BreadcrumbSchema } from "@/components/structured-data";
 
 import { getPostsByCategory, getAllCategories } from "@/lib/wordpress";
 
@@ -48,6 +49,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <CollectionPageSchema name={categoryName} url={`https://hexcolormeans.com/categories/${categorySlug}`} />
+      <BreadcrumbSchema items={[
+        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
+        { name: "Categories", item: "https://hexcolormeans.com/categories" },
+        { name: categoryName, item: `https://hexcolormeans.com/categories/${categorySlug}` }
+      ]} />
       <Header />
       <section className="bg-muted/30 py-12 px-4">
         <div className="container mx-auto">

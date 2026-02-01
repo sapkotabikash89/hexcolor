@@ -1589,10 +1589,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
   return (
     <div className="flex flex-col min-h-screen">
       {node?.__typename === "Post" && (() => {
-        const author = node?.seo?.opengraphAuthor || "HexColorMeans"
+        const author = node?.seo?.opengraphAuthor
         const description = node?.seo?.metaDesc || node?.seo?.opengraphDescription || ""
-        const datePublished = node?.seo?.opengraphPublishedTime || node?.date || "2024-01-01T08:00:00+00:00"
-        const dateModified = node?.seo?.opengraphModifiedTime || node?.date || "2024-01-01T08:00:00+00:00"
+        const datePublished = node?.seo?.opengraphPublishedTime || node?.date
+        const dateModified = node?.seo?.opengraphModifiedTime || node?.date
         return (
           <ArticleSchema
             title={node.title}
@@ -1606,6 +1606,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
             dateModified={dateModified}
             url={canonical || `${site}${node.uri}`}
             articleSection={node?.categories?.nodes?.[0]?.name || "Blog"}
+            color={effectiveHex || undefined}
           />
         )
       })()}
