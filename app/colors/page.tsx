@@ -81,7 +81,7 @@ export default function ColorsPage() {
               </div>
             </div>
           </article>
-          <aside className="hidden xl:block w-[380px] shrink-0">
+          <aside className="hidden lg:block w-[380px] shrink-0">
             <ColorSidebar color="#E0115F" />
           </aside>
         </div>
