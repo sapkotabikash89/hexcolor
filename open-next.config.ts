@@ -2,7 +2,11 @@ import type { OpenNextConfig } from '@opennextjs/cloudflare';
 
 const config: OpenNextConfig = {
   default: {
-    placement: "global",
+    override: {
+      wrapper: "cloudflare-node",
+      converter: "edge",
+      proxyExternalRequest: "fetch",
+    },
   },
   buildCommand: "next build",
 };
