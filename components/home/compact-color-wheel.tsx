@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getColorHarmony, hslToRgb, rgbToHex, hexToRgb, rgbToHsl } from "@/lib/color-utils"
+import { getColorHarmony, hslToRgb, rgbToHex, hexToRgb, rgbToHsl, rgbToCmyk } from "@/lib/color-utils"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ColorCombination } from "@/components/color-combination"
 import { getColorPageLink } from "@/lib/color-linking-utils"
+import { ColorExportDialog } from "@/components/color-export-dialog"
 import Link from "next/link"
 import { Share, Shuffle, Pipette } from "lucide-react"
 
@@ -29,6 +30,7 @@ export function CompactColorWheel() {
     const [showCustomPicker, setShowCustomPicker] = useState(false) // State for custom color picker
     const [tempColor, setTempColor] = useState(baseColor) // Temporary color for picker
     const [copiedValue, setCopiedValue] = useState<string | null>(null) // State for copy notification
+    const [exportOpen, setExportOpen] = useState(false) // State for export dialog
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [isDragging, setIsDragging] = useState(false)
     const [canvasSize, setCanvasSize] = useState(450)
@@ -428,6 +430,39 @@ export function CompactColorWheel() {
                                 )}
                             </button>
                         </div>
+                        
+                        {/* Mobile view: Show all color values stacked */}
+                        <div className="md:hidden grid grid-cols-2 gap-2 text-xs">
+                          <div className="px-3 py-2 bg-muted rounded border text-center font-mono">
+                            <span className="block text-muted-foreground mb-1">HEX</span>
+                            <span className="font-semibold" style={{ color: getContrastColor(baseColor) }}>{baseColor.toUpperCase()}</span>
+                          </div>
+                          <div className="px-3 py-2 bg-muted rounded border text-center font-mono">
+                            <span className="block text-muted-foreground mb-1">RGB</span>
+                            <span className="font-semibold" style={{ color: getContrastColor(baseColor) }}>{(() => {
+                              const rgb = hexToRgb(baseColor);
+                              return rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : 'N/A';
+                            })()}</span>
+                          </div>
+                          <div className="px-3 py-2 bg-muted rounded border text-center font-mono">
+                            <span className="block text-muted-foreground mb-1">HSL</span>
+                            <span className="font-semibold" style={{ color: getContrastColor(baseColor) }}>{(() => {
+                              const rgb = hexToRgb(baseColor);
+                              if (!rgb) return 'N/A';
+                              const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+                              return `${Math.round(hsl.h)}, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%`;
+                            })()}</span>
+                          </div>
+                          <div className="px-3 py-2 bg-muted rounded border text-center font-mono">
+                            <span className="block text-muted-foreground mb-1">CMYK</span>
+                            <span className="font-semibold" style={{ color: getContrastColor(baseColor) }}>{(() => {
+                              const rgb = hexToRgb(baseColor);
+                              if (!rgb) return 'N/A';
+                              const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+                              return `${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%`;
+                            })()}</span>
+                          </div>
+                        </div>
                     </div>
                 </div>
 
@@ -458,7 +493,7 @@ export function CompactColorWheel() {
                     <div className="flex flex-col gap-3 flex-1 min-h-0 w-full">
                         <div className="flex items-center justify-between flex-shrink-0">
                             <h3 className="font-semibold text-sm sm:text-base">Color Harmony</h3>
-                            <Button size="sm" variant="ghost" className="gap-2" onClick={() => router.push(getColorPageLink(showRandomPalette ? randomPalette[0] : baseColor))}>
+                            <Button size="sm" variant="ghost" className="gap-2" onClick={() => setExportOpen(true)}>
                                 <Share className="w-4 h-4" />
                                 Export
                             </Button>
@@ -508,6 +543,15 @@ export function CompactColorWheel() {
                     }}
                 />
             )}
+            
+            <ColorExportDialog
+                open={exportOpen}
+                onOpenChange={setExportOpen}
+                title={`Export ${showRandomPalette ? 'Random Palette' : harmonyType}`}
+                colors={showRandomPalette ? randomPalette : harmonies}
+                baseHex={baseColor}
+                filenameLabel={showRandomPalette ? 'random-palette' : harmonyType}
+            />
         </Card>
     )
 }

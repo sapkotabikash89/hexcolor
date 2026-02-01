@@ -306,6 +306,15 @@ export function ColorExportDialog({ open, onOpenChange, title = "Export color co
                   </>
                 )}
               </Button>
+              
+              <Button
+                onClick={() => onOpenChange(false)}
+                variant="outline"
+                className="flex-1 h-12 rounded-xl bg-white border border-border hover:bg-muted hover:text-foreground transition-all font-bold text-foreground gap-3"
+              >
+                <X className="w-4 h-4" />
+                <span>Close</span>
+              </Button>
             </div>
           </div>
         </div>
