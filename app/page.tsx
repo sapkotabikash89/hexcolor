@@ -14,7 +14,7 @@ import {
   WebsiteSchema,
   OrganizationSchema,
 } from "@/components/structured-data"
-import { getLocalPosts } from "@/lib/wordpress"
+import { getAllPosts } from "@/lib/wordpress"
 
 // Static metadata for SEO
 export const metadata: Metadata = {
@@ -54,8 +54,7 @@ export async function generateStaticParams() {
 
 // Interactive homepage
 export default async function HomePage() {
-  const posts = await getLocalPosts();
-  const latestPosts = posts.slice(0, 5);
+  const latestPosts = await getAllPosts(5);
 
   return (
     <div className="flex flex-col min-h-screen">

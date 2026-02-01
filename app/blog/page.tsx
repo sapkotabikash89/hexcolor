@@ -3,46 +3,8 @@ import { Footer } from "@/components/footer";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ColorSidebar } from "@/components/sidebar";
 import { CategoryPosts } from "@/components/category-posts";
-import fs from "fs";
-import path from "path";
 
-import { fetchGraphQL, getLocalPosts } from "@/lib/wordpress";
-
-async function fetchAllPosts() {
-  // Try live fetch first
-  const query = `
-    query AllPosts {
-      posts(first: 100) {
-        nodes {
-          title
-          excerpt
-          uri
-          date
-          featuredImage {
-            node {
-              sourceUrl
-              altText
-            }
-          }
-          categories {
-            nodes {
-              name
-              slug
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  const json = await fetchGraphQL(query);
-  if (json?.data?.posts?.nodes) {
-    return json.data.posts.nodes;
-  }
-
-  // Fallback to local data
-  return await getLocalPosts();
-}
+import { getAllPosts } from "@/lib/wordpress";
 
 export const metadata = {
   title: "Blog - Latest Articles on Color Meanings, Psychology & Design",
@@ -50,7 +12,7 @@ export const metadata = {
 };
 
 export default async function BlogPage() {
-  const posts = await fetchAllPosts();
+  const posts = await getAllPosts(100);
 
   // Transform posts to include category information
   const transformedPosts = posts.map((post: any) => ({

@@ -100,6 +100,42 @@ export async function getAllCategories() {
 }
 
 /**
+ * Get all posts - ISR Version
+ * Used for homepage latest posts
+ */
+export async function getAllPosts(limit = 10) {
+  const query = `
+    query AllPosts($first: Int!) {
+      posts(first: $first) {
+        nodes {
+          id
+          title
+          slug
+          uri
+          date
+          excerpt
+          featuredImage {
+            node {
+              sourceUrl
+              altText
+            }
+          }
+          categories {
+            nodes {
+              name
+              slug
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const data = await fetchGraphQL(query, { first: limit });
+  return data?.data?.posts?.nodes || [];
+}
+
+/**
  * Get a single post by URI - ISR Version
  * (Mainly used by other components if needed, though [...wp]/page.tsx has its own)
  */
