@@ -126,7 +126,7 @@ export default function PaletteFromImagePage() {
             </section>
 
             {/* How to Generate Palettes section */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
                   <CheckCircle2 className="w-8 h-8 text-primary" />
@@ -152,7 +152,7 @@ export default function PaletteFromImagePage() {
                       ))}
                     </ul>
                   </div>
-                  <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-6 sm:p-10">
+                  <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-4 sm:p-10">
                     <img
                       src="/advanced-color-palette-from-image-tool-online-free.webp"
                       alt="Professional user interface of the online palette from image tool"
@@ -164,7 +164,7 @@ export default function PaletteFromImagePage() {
             </section>
 
             {/* Why Use an Image Palette Generator? section */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-10 text-left bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-10 text-left bg-white">
               <div className="flex items-center gap-3">
                 <Info className="w-8 h-8 text-primary" />
                 <h2 className="text-4xl font-bold m-0">Why Use an Image Palette Generator?</h2>
@@ -180,14 +180,14 @@ export default function PaletteFromImagePage() {
             </section>
 
             {/* Professional Color Harmonization Section with border */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
               <div className="flex items-center gap-3">
                 <Layers className="w-8 h-8 text-primary" />
                 <h2 className="text-4xl font-bold m-0">Professional Color Harmonization</h2>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
                 {features.map((feature, i) => (
-                  <Card key={i} className="p-8 space-y-4 border-2 border-border/50 hover:border-primary/30 transition-all shadow-md hover:shadow-xl rounded-2xl bg-white">
+                  <Card key={i} className="p-5 sm:p-8 space-y-4 border-2 border-border/50 hover:border-primary/30 transition-all shadow-md hover:shadow-xl rounded-2xl bg-white">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                       <feature.icon className="w-6 h-6" />
                     </div>
@@ -204,7 +204,7 @@ export default function PaletteFromImagePage() {
             </section>
 
             {/* FAQs Area Section with border */}
-            <section id="faqs" className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+            <section id="faqs" className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
               <div className="flex items-center gap-4">
                 <HelpCircle className="w-10 h-10 text-primary" />
                 <h2 className="text-4xl font-bold m-0 text-left">FAQs About Image Palettes</h2>
