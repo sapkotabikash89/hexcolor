@@ -57,7 +57,6 @@ ${legalPages.map(page => `  <url>
 function generateToolsSitemap() {
     const toolPages = [
         { url: `${BASE_URL}/`, priority: 1.0 },
-        { url: `${BASE_URL}/html-color-picker/`, priority: 0.9 },
         { url: `${BASE_URL}/color-picker/`, priority: 0.9 },
         { url: `${BASE_URL}/color-wheel/`, priority: 0.8 },
         { url: `${BASE_URL}/contrast-checker/`, priority: 0.8 },
