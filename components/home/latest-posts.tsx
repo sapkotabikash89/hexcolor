@@ -1,12 +1,11 @@
-"use client"
-
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
-import postsData from "@/lib/blog-posts-data.json"
 
-export function LatestPosts() {
-    // Get 5 latest posts
-    const latestPosts = postsData.slice(0, 5)
+export function LatestPosts({ posts }: { posts: any[] }) {
+    // If no posts provided, return null or empty state
+    if (!posts || posts.length === 0) {
+        return null;
+    }
 
     return (
         <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-muted/30 border-y py-8 sm:py-12 mt-8 sm:mt-12">
@@ -19,7 +18,7 @@ export function LatestPosts() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    {latestPosts.map((post: any) => {
+                    {posts.map((post: any) => {
                         const img = post?.featuredImage?.node?.sourceUrl || post?.seo?.opengraphImage?.sourceUrl;
                         const excerpt = (post?.excerpt || "")
                             .replace(/<[^>]*>/g, "")

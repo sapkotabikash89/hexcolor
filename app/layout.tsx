@@ -10,8 +10,10 @@ import { GrowRefresh } from "@/components/grow-refresh"
 
 const inter = Inter({ subsets: ["latin"] })
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hexcolormeans.com"),
+  metadataBase: new URL(SITE_URL),
   title: "HexColorMeans - Where Every Color Has Meaning | Color Information, Meanings & Tools",
   description:
     "Explore colors with HexColorMeans. Get detailed color information, meanings, conversions, harmonies, and use professional color tools including color picker, contrast checker, and more.",
@@ -28,17 +30,17 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "HexColorMeans" }],
   alternates: {
-    canonical: "https://hexcolormeans.com",
+    canonical: SITE_URL,
   },
   openGraph: {
     title: "HexColorMeans - Where Every Color Has Meaning",
     description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
     type: "website",
-    url: "https://hexcolormeans.com",
+    url: SITE_URL,
     siteName: "HexColorMeans",
     images: [
       {
-        url: "https://hexcolormeans.com/advanced-color-picker-tool-online-free.webp",
+        url: `${SITE_URL}/advanced-color-picker-tool-online-free.webp`,
         width: 1200,
         height: 630,
         alt: "HexColorMeans - Professional Color Tools and Information",
@@ -49,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HexColorMeans - Where Every Color Has Meaning",
     description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
-    images: ["https://hexcolormeans.com/advanced-color-picker-tool-online-free.webp"],
+    images: [`${SITE_URL}/advanced-color-picker-tool-online-free.webp`],
   },
   icons: {
     icon: [

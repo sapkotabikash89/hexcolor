@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "npm@10.0.0",
   "scripts": {
-    "prebuild": "node scripts/generate-sitemaps.mjs",
+    "prebuild": "npm run sync && node scripts/generate-sitemaps.mjs",
     "build": "next build",
     "postbuild": "node scripts/verify-static-export.mjs",
     "export": "npm run build",

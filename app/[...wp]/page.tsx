@@ -34,6 +34,33 @@ import { cn, autoLinkShadeNames } from "@/lib/utils"
 const ShareButtons = dynamic(() => import("@/components/share-buttons").then((mod) => mod.ShareButtons))
 const HelpfulVote = dynamic(() => import("@/components/helpful-vote").then((mod) => mod.HelpfulVote))
 
+const GRAPHQL_ENDPOINT = process.env.WORDPRESS_API_URL || "https://blog.hexcolormeans.com/graphql";
+const REST_ENDPOINT = GRAPHQL_ENDPOINT.replace(/\/graphql\/?$/, "/wp-json");
+
+export async function generateStaticParams() {
+  const postsDir = path.join(process.cwd(), 'lib/posts');
+  if (!fs.existsSync(postsDir)) return [];
+
+  const files = fs.readdirSync(postsDir);
+  const params = files.map(file => {
+    if (!file.endsWith('.json')) return null;
+    try {
+      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
+      const json = JSON.parse(content);
+      if (json.uri) {
+        // Remove leading/trailing slashes and split
+        const parts = json.uri.replace(/^\/|\/$/g, '').split('/');
+        return { wp: parts };
+      }
+    } catch (e) {
+      console.error(`Error processing ${file} for static params:`, e);
+    }
+    return null;
+  }).filter((p): p is { wp: string[] } => p !== null);
+
+  return params;
+}
+
 async function fetchPostByUri(uri: string) {
   const variants = Array.from(
     new Set([
@@ -62,7 +89,8 @@ async function fetchPostByUri(uri: string) {
     }
 
     try {
-      const res = await fetch("https://blog.hexcolormeans.com/graphql", {
+      const apiUrl = GRAPHQL_ENDPOINT;
+      const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -221,7 +249,7 @@ async function fetchPostByUri(uri: string) {
 
 async function fetchPostBySlug(slug: string) {
   try {
-    const res = await fetch("https://blog.hexcolormeans.com/graphql", {
+    const res = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -286,7 +314,7 @@ async function fetchPostBySlug(slug: string) {
 
 async function fetchContentByUri(uri: string) {
   try {
-    const res = await fetch("https://blog.hexcolormeans.com/graphql", {
+    const res = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -392,7 +420,7 @@ async function fetchContentByUri(uri: string) {
 
 async function fetchAnyBySearch(term: string) {
   try {
-    const res = await fetch("https://blog.hexcolormeans.com/graphql", {
+    const res = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -508,7 +536,7 @@ function lastSegment(path: string) {
 async function fetchRestFeaturedMedia(id: number) {
   if (!id || id <= 0) return null
   try {
-    const res = await fetch(`https://blog.hexcolormeans.com/wp-json/wp/v2/media/${id}?_fields=source_url,alt_text`, {
+    const res = await fetch(`https:c/blog.hexcolormeans.com/ol-jsonowp/rmeans.com/wp-json/wp/v2/media/${id}?_fields=source_url,alt_text`, {
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
       next: { revalidate: 3600 },  // 1 hour instead of 10 min
     })
@@ -560,7 +588,7 @@ async function fetchRestCategories(ids: number[]) {
   if (!ids || ids.length === 0) return []
   try {
     const res = await fetch(
-      `https://blog.hexcolormeans.com/wp-json/wp/v2/categories?include=${ids.join(",")}&_fields=id,name,slug,link`,
+      `${REST_ENDPOINT}/wp/v2/categories?include=${ids.join(",")}&_fields=id,name,slug,link`,
       { next: { revalidate: 3600 } }
     )
     const json = await res.json()
@@ -585,7 +613,7 @@ async function fetchRestCategories(ids: number[]) {
 async function fetchRestPostBySlug(slug: string) {
   try {
     const res = await fetch(
-      `https://blog.hexcolormeans.com/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,categories,yoast_head_json`,
+      `${REST_ENDPOINT}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,categories,yoast_head_json`,
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
       { next: { revalidate: 3600, tags: [`wp:rest:post:${slug}`] } }  // 1 hour instead of 10 min
     )
@@ -640,7 +668,7 @@ async function fetchRestPageBySlug(slug: string) {
 }
 
 async function fetchPostsByTagIds(tagIds: number[], count: number) {
-  const res = await fetch("https://blog.hexcolormeans.com/graphql", {
+  const res = await fetch(GRAPHQL_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -666,7 +694,7 @@ async function fetchPostsByTagIds(tagIds: number[], count: number) {
 }
 
 async function fetchPostsByCategoryIds(catIds: number[], count: number) {
-  const res = await fetch("https://blog.hexcolormeans.com/graphql", {
+  const res = await fetch(GRAPHQL_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -692,7 +720,7 @@ async function fetchPostsByCategoryIds(catIds: number[], count: number) {
 }
 
 async function fetchRandomPosts(count: number) {
-  const res = await fetch("https://blog.hexcolormeans.com/graphql", {
+  const res = await fetch(GRAPHQL_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

@@ -5,9 +5,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const WORDPRESS_API_URL = 'https://blog.hexcolormeans.com/graphql';
+const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL || 'https://blog.hexcolormeans.com/graphql';
 
 async function fetchGraphQL(query, variables = {}) {
+    if (!process.env.WORDPRESS_API_URL) {
+        console.warn('Warning: WORDPRESS_API_URL env variable not set. Using default.');
+    }
     const response = await fetch(WORDPRESS_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -10,7 +10,7 @@ import path from "path";
  * NO RUNTIME FETCHING - All data is static.
  */
 
-const GRAPHQL_URL = "https://blog.hexcolormeans.com/graphql";
+const GRAPHQL_URL = process.env.WORDPRESS_API_URL || "https://blog.hexcolormeans.com/graphql";
 
 /**
  * Fetch GraphQL data - ONLY for build-time scripts
@@ -23,8 +23,13 @@ export async function fetchGraphQL(query: string, variables: any = {}) {
     return null;
   }
 
+  const url = process.env.WORDPRESS_API_URL;
+  if (!url) {
+    console.warn('WORDPRESS_API_URL is not defined');
+  }
+
   try {
-    const res = await fetch(GRAPHQL_URL, {
+    const res = await fetch(url || GRAPHQL_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),

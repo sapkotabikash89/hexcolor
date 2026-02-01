@@ -14,6 +14,7 @@ import {
   WebsiteSchema,
   OrganizationSchema,
 } from "@/components/structured-data"
+import { getLocalPosts } from "@/lib/wordpress"
 
 // Static metadata for SEO
 export const metadata: Metadata = {
@@ -21,17 +22,17 @@ export const metadata: Metadata = {
   description: "Turn ideas into visuals with confidence. Access rich color details, meanings, psychology, symbolism, uses, precise conversions, and powerful tools made for creative minds.",
   keywords: ["color picker", "color converter", "color meanings", "color harmonies", "design tools", "color psychology"],
   alternates: {
-    canonical: "https://hexcolormeans.com",
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com",
   },
   openGraph: {
     title: "HexColorMeans: Where Every Color Has Meaning",
     description: "Professional color tools and information for designers and developers",
-    url: "https://hexcolormeans.com",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com",
     siteName: "HexColorMeans",
     type: "website",
     images: [
       {
-        url: "https://hexcolormeans.com/opengraph-image.webp",
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com"}/opengraph-image.webp`,
         width: 1200,
         height: 630,
         alt: "HexColorMeans - Professional Color Tools",
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HexColorMeans: Where Every Color Has Meaning",
     description: "Professional color tools and information for designers and developers",
-    images: ["https://hexcolormeans.com/opengraph-image.webp"],
+    images: [`${process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com"}/opengraph-image.webp`],
   },
 }
 
@@ -52,7 +53,10 @@ export async function generateStaticParams() {
 }
 
 // Interactive homepage
-export default function HomePage() {
+export default async function HomePage() {
+  const posts = await getLocalPosts();
+  const latestPosts = posts.slice(0, 5);
+
   return (
     <div className="flex flex-col min-h-screen">
       <WebsiteSchema />
@@ -114,7 +118,7 @@ export default function HomePage() {
       </main>
 
       {/* Latest Posts - Full Width */}
-      <LatestPosts />
+      <LatestPosts posts={latestPosts} />
 
       <Footer />
     </div>
