@@ -434,37 +434,15 @@ export function ColorWheelTool() {
                 </button>
               </div>
               
-              {/* Mobile view: Show all color values stacked */}
-              <div className="md:hidden grid grid-cols-2 gap-2 text-xs">
-                <div className="px-3 py-2 bg-muted rounded border text-center font-mono">
-                  <span className="block text-muted-foreground mb-1">HEX</span>
-                  <span className="font-semibold" style={{ color: getContrastColor(baseColor) }}>{baseColor.toUpperCase()}</span>
-                </div>
-                <div className="px-3 py-2 bg-muted rounded border text-center font-mono">
-                  <span className="block text-muted-foreground mb-1">RGB</span>
-                  <span className="font-semibold" style={{ color: getContrastColor(baseColor) }}>{(() => {
-                    const rgb = hexToRgb(baseColor);
-                    return rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : 'N/A';
-                  })()}</span>
-                </div>
-                <div className="px-3 py-2 bg-muted rounded border text-center font-mono">
-                  <span className="block text-muted-foreground mb-1">HSL</span>
-                  <span className="font-semibold" style={{ color: getContrastColor(baseColor) }}>{(() => {
-                    const rgb = hexToRgb(baseColor);
-                    if (!rgb) return 'N/A';
-                    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-                    return `${Math.round(hsl.h)}, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%`;
-                  })()}</span>
-                </div>
-                <div className="px-3 py-2 bg-muted rounded border text-center font-mono">
-                  <span className="block text-muted-foreground mb-1">CMYK</span>
-                  <span className="font-semibold" style={{ color: getContrastColor(baseColor) }}>{(() => {
-                    const rgb = hexToRgb(baseColor);
-                    if (!rgb) return 'N/A';
-                    const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
-                    return `${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%`;
-                  })()}</span>
-                </div>
+              {/* Mobile view: Show selected color value below base color box */}
+              <div className="md:hidden mt-2 text-center">
+                <span className="text-xs text-muted-foreground block mb-1">Selected Value</span>
+                <span 
+                  className="font-mono font-semibold text-sm"
+                  style={{ color: getContrastColor(baseColor) }}
+                >
+                  {getColorValue(baseColor)}
+                </span>
               </div>
           </div>
           </div>
