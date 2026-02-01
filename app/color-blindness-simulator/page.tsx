@@ -200,7 +200,7 @@ export default function ColorBlindnessSimulatorPage() {
             </section>
 
             {/* Designing for Total Inclusion */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
               <div className="flex items-center gap-3">
                 <Accessibility className="w-8 h-8 text-primary" />
                 <h2 className="text-4xl font-bold text-left m-0">Designing for Total Inclusion</h2>
