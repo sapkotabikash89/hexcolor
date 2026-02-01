@@ -3,40 +3,18 @@ import { Footer } from "@/components/footer";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ColorSidebar } from "@/components/sidebar";
 
-async function fetchAllCategories() {
-  const res = await fetch("https://cms.colormean.com/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query AllCategories {
-          categories(first: 100) {
-            nodes {
-              name
-              slug
-              count
-            }
-          }
-        }
-      `,
-    }),
-    next: { revalidate: 3600 }, // 1 hour cache
-  });
-
-  const json = await res.json();
-  return json?.data?.categories?.nodes ?? [];
-}
+import { getAllCategories } from "@/lib/wordpress";
 
 export const metadata = {
   title: "Color Categories - Browse All Topics",
-  description: "Explore all color categories and topics on ColorMean. Find articles about color meanings, psychology, and more.",
+  description: "Explore all color categories and topics on HexColorMeans. Find articles about color meanings, psychology, and more.",
 };
 
 export default async function AllCategoriesPage() {
-  const categories = await fetchAllCategories();
+  const categories = await getAllCategories();
 
   // Filter out categories with no posts
-  const activeCategories = categories.filter((category: any) => category.count > 0);
+  const activeCategories = categories.filter((category: any) => (category.count ?? 0) > 0);
 
   const crumbs = [
     { label: "Categories", href: "/categories" },
@@ -45,19 +23,19 @@ export default async function AllCategoriesPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <section className="bg-muted/30 py-12 px-4">
+      <section className="bg-muted/30 py-12 px-4 border-b">
         <div className="container mx-auto">
           <BreadcrumbNav items={crumbs} />
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold">Color Categories</h1>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Browse articles by category and explore specific color topics
+          <div className="text-center space-y-4 max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">Taxonomy of Color Intelligence</h1>
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+              Explore our structured knowledge base organized by chromatic domain. Our research is categorized to provide deep insights into psychological profiles, cultural symbolism, and technical implementations.
             </p>
           </div>
         </div>
       </section>
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <main className="w-full max-w-[1280px] mx-auto px-4 py-12">
+        <div className="flex flex-col lg:flex-row gap-6">
           <article id="content" className="main-content grow-content flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {activeCategories.map((category: any, i: number) => (
@@ -72,7 +50,7 @@ export default async function AllCategoriesPage() {
               ))}
             </div>
           </article>
-          <ColorSidebar color="#5B6FD8" />
+          <ColorSidebar color="#E0115F" />
         </div>
       </main>
       <Footer />

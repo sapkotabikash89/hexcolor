@@ -1,39 +1,39 @@
 "use client"
 
 import Image from 'next/image';
-import { getGumletImageUrl } from '@/lib/gumlet-utils';
+import { getGumletColorImage } from '@/lib/image-utils';
+import { hexToRgb } from '@/lib/color-utils';
 
 interface ColorImageProps {
   hex: string;
+  name?: string;
   alt?: string;
   priority?: boolean;
   className?: string;
 }
 
 /**
- * Reusable ColorImage component for displaying pre-generated color images from Gumlet CDN
+ * Reusable ColorImage component for displaying Gumlet CDN color images
  * Features:
  * - Width: 1200, Height: 630
- * - Lazy loading enabled by default
+ * - Mandatory SEO-friendly alt text
  * - Responsive via style maxWidth: "100%", height: "auto"
- * - Returns nothing if URL is null (no image available)
  */
-export function ColorImage({ hex, alt, priority = false, className = '' }: ColorImageProps) {
-  // Get Gumlet CDN URL for this color
-  const imageUrl = getGumletImageUrl(hex);
-  
-  // If no pre-generated image exists, return null (fall back to CSS swatch)
-  if (!imageUrl) {
-    return null;
-  }
-  
-  // Normalize hex for alt text
-  const normalizedHex = hex.replace('#', '').toUpperCase();
-  const altText = alt || `${normalizedHex} color swatch`;
-  
+export function ColorImage({ hex, name, alt, priority = false, className = '' }: ColorImageProps) {
+  const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+
+  // Use central utility for Gumlet URL and Mandatory Alt Text
+  const gumlet = getGumletColorImage({
+    colorName: name || hex,
+    hex,
+    rgb
+  });
+
+  const altText = alt || gumlet.alt;
+
   return (
     <Image
-      src={imageUrl}
+      src={gumlet.url}
       alt={altText}
       width={1200}
       height={630}
@@ -45,7 +45,7 @@ export function ColorImage({ hex, alt, priority = false, className = '' }: Color
         maxWidth: '100%',
         height: 'auto',
       }}
-      unoptimized // Since images are already optimized on Gumlet CDN
+      unoptimized // Gumlet already serves optimized WebP
       placeholder="blur"
       blurDataURL="data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAADAAQDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
     />

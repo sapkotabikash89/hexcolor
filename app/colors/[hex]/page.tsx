@@ -4,14 +4,14 @@ import { Footer } from "@/components/footer"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorPageContent } from "@/components/color-page-content"
-import { AnchorHashNav } from "@/components/anchor-hash-nav"
 import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk, getColorHarmony } from "@/lib/color-utils"
-import { getGumletImageUrl } from "@/lib/gumlet-utils"
+import { getGumletColorImage } from "@/lib/image-utils"
 import { KNOWN_COLOR_HEXES } from "@/lib/known-colors-complete"
 import { notFound, redirect } from "next/navigation"
 import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, WebPageSchema, ArticleSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
 import { generateFAQs } from "@/lib/category-utils"
+import { TableOfContents } from "@/components/table-of-contents"
 
 // export const runtime = 'nodejs' // Not needed for static export
 
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
 
   if (!isValidHex(normalizedHex)) {
     return {
-      title: "Invalid Color - ColorMean",
+      title: "Invalid Color - HexColorMeans",
     }
   }
 
@@ -54,21 +54,27 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
   const meta: any = (data as any)[cleanHex]
   const colorName: string | undefined = meta?.name || undefined
   const displayLabel = colorName ? `${colorName} (${normalizedHex})` : normalizedHex
+  const rgb = hexToRgb(normalizedHex)
 
-  // Determine if image should be from Gumlet CDN
-  const gumletImageUrl = getGumletImageUrl(normalizedHex);
-  const imageUrl = gumletImageUrl || `https://colormean.com/opengraph-image.webp`; // Fallback for unknown colors
+  // Use Gumlet CDN image
+  const gumlet = getGumletColorImage({
+    colorName: colorName || (normalizedHex),
+    hex: normalizedHex,
+    rgb: rgb || { r: 0, g: 0, b: 0 }
+  })
+  const imageUrl = gumlet.url;
+  const imageAlt = gumlet.alt;
 
   // Enhanced SEO metadata specifically for known colors
   const isKnownColor = KNOWN_COLOR_HEXES.has(cleanHex);
 
   const baseTitle = isKnownColor
-    ? `${displayLabel} Color Meaning, Symbolism & Psychology - ColorMean`
-    : `${displayLabel} Color Information & Tools - ColorMean`;
+    ? `${displayLabel} Color Meaning, Values and Psychology | HexColorMeans`
+    : `${displayLabel} Color Information & Tools | HexColorMeans`;
 
   const baseDescription = isKnownColor
-    ? `Discover the complete meaning, symbolism, psychology, and cultural significance of ${displayLabel}. Explore RGB, HEX, HSL conversions, color harmonies, and practical applications in design and branding.`
-    : `Explore ${normalizedHex} color information, meanings, conversions (RGB, HSL, CMYK, HSV, LAB), harmonies, variations, and accessibility. Professional color tools for designers and developers.`;
+    ? `Master the psychology and technical profile of ${displayLabel}. Comprehensive analysis of color meaning, symbolism, and exact RGB/HSL/CMYK specifications for professional design.`
+    : `Technical specifications for ${normalizedHex}. Access calibrated color conversions (RGB, HSL, CMYK), harmony maps, and accessibility validation metrics.`;
 
   return {
     title: baseTitle,
@@ -87,19 +93,19 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       "brand colors",
     ],
     alternates: {
-      canonical: `https://colormean.com/colors/${cleanHex.toLowerCase()}`,
+      canonical: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`,
     },
     openGraph: {
       title: baseTitle,
       description: baseDescription,
-      url: `https://colormean.com/colors/${cleanHex.toLowerCase()}`,
+      url: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`,
       type: "website",
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: `${displayLabel} - Professional color information and tools`,
+          alt: imageAlt,
         }
       ],
     },
@@ -156,17 +162,24 @@ export default async function ColorPage({ params }: ColorPageProps) {
   const cmyk = rgb ? rgbToCmyk(rgb.r, rgb.g, rgb.b) : null
 
   const breadcrumbItems = [
-    { name: "ColorMean", item: "https://colormean.com" },
-    { name: "Color Names", item: "https://colormean.com/colors" },
-    { name: normalizedHex, item: `https://colormean.com/colors/${normalizedHex.replace("#", "").toUpperCase()}` },
+    { name: "HexColorMeans", item: "https://hexcolormeans.com" },
+    { name: "Color Names", item: "https://hexcolormeans.com/colors" },
+    { name: normalizedHex, item: `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}` },
   ]
 
   const faqItems = rgb && hsl ? generateFAQs(normalizedHex, rgb, hsl) : []
-  const pageUrl = `https://colormean.com/colors/${normalizedHex.replace("#", "").toUpperCase()}`
+  const pageUrl = `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}`
   const pageDescription = `Explore ${normalizedHex} color information, conversions, harmonies, variations, and accessibility.`
 
-  // Determine if image is available from Gumlet CDN
-  const gumletImageUrl = getGumletImageUrl(normalizedHex);
+  // Use Gumlet CDN image for schema and display
+  const gumlet = getGumletColorImage({
+    colorName: colorName || normalizedHex,
+    hex: normalizedHex,
+    rgb: rgb || { r: 0, g: 0, b: 0 }
+  })
+  const imageUrl = gumlet.url;
+  const imageAlt = gumlet.alt;
+
   const colorExistsInDb = !!meta;
 
   // Render the page regardless of whether color exists in database
@@ -179,12 +192,12 @@ export default async function ColorPage({ params }: ColorPageProps) {
       <BreadcrumbSchema items={breadcrumbItems} />
       <FAQSchema faqs={faqItems} />
       <ArticleSchema
-        title={`${displayLabel} Color Meaning, Symbolism & Psychology`}
+        title={`${displayLabel} Color Meaning, Codes and Information`}
         description={pageDescription}
-        authorName="ColorMean"
+        authorName="HexColorMeans"
         authorType="Organization"
         url={pageUrl}
-        image={gumletImageUrl || `https://colormean.com/opengraph-image.webp`}
+        image={imageUrl}
         datePublished="2024-01-01T08:00:00+00:00"
         dateModified="2024-01-01T08:00:00+00:00"
         articleSection="Color Meanings"
@@ -192,17 +205,17 @@ export default async function ColorPage({ params }: ColorPageProps) {
 
       <Header />
 
-      {gumletImageUrl ? (
-        <ImageObjectSchema
-          url={gumletImageUrl}
-          width={1200}
-          height={630}
-          alt={`Color swatch image showing ${displayLabel} with RGB(${rgb?.r ?? 0},${rgb?.g ?? 0},${rgb?.b ?? 0}) values`}
-        />
-      ) : (
-        // For unknown colors without Gumlet images, we don't include an image in the schema
-        <div className="sr-only">No image schema for dynamic color</div>
-      )}
+      <ImageObjectSchema
+        url={imageUrl}
+        width={1200}
+        height={630}
+        name={colorName ? `${colorName} (${normalizedHex}) color swatch` : `${normalizedHex} color swatch`}
+        alt={imageAlt}
+        description={colorName
+          ? `Detailed color guide showing ${colorName} (${normalizedHex}) technical specifications and analysis.`
+          : `Detailed technical specifications for color ${normalizedHex}.`}
+        representativeOfPage={true}
+      />
 
       {/* Dynamic Color Hero */}
       <section
@@ -212,20 +225,20 @@ export default async function ColorPage({ params }: ColorPageProps) {
           color: contrastColor,
         }}
       >
-        <div className="container mx-auto">
+        <div className="w-full max-w-[1430px] mx-auto overflow-hidden">
           <BreadcrumbNav
             items={[
               { label: "Color Names", href: "/colors" },
-              { label: normalizedHex, href: `/colors/${normalizedHex.replace("#", "").toUpperCase()}` },
+              { label: normalizedHex, href: `/colors/${normalizedHex.replace("#", "").toLowerCase()}` },
             ]}
           />
           <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold">{displayLabel} Color Meaning and Information</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
+              {displayLabel} Color Meaning, Codes and Information
+            </h1>
 
-
-            <p className="max-w-3xl mx-auto text-sm md:text-base opacity-90">
-              Everything you need to know about {displayLabel} including values, color harmonies, shades,
-              meanings, and applications in design, branding, and everyday visuals.
+            <p className="max-w-3xl mx-auto text-lg md:text-xl opacity-90 leading-relaxed text-pretty">
+              A complete guide to {displayLabel} covering color values, harmonies, shades, meaning, and practical uses across design, branding, and everyday visuals.
             </p>
             <div className="max-w-4xl mx-auto">
               <div className="font-mono text-xs md:text-sm flex flex-wrap justify-center gap-4">
@@ -255,31 +268,30 @@ export default async function ColorPage({ params }: ColorPageProps) {
           </div>
         </div>
       </section>
-      <AnchorHashNav
-        items={[
-          { href: "#information", label: "Information" },
-          { href: "#meaning", label: "Meaning" },
-          { href: "#conversion", label: "Conversion" },
-          { href: "#variations", label: "Variations" },
-          { href: "#harmonies", label: "Harmonies" },
-          { href: "#contrast-checker", label: "Contrast Checker" },
-          { href: "#blindness-simulator", label: "Blindness Simulator" },
-          { href: "#css-examples", label: "CSS Examples" },
-          { href: "#related-colors", label: "Related Colors" },
-          { href: "#faqs", label: "FAQs" },
-        ]}
-      />
+
+      {/* Mobile-only horizontal navigation strip */}
+      <div className="lg:hidden z-40">
+        <TableOfContents currentHex={normalizedHex} mobileOnly />
+      </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Content Area - 2/3 */}
-          <article id="content" className="main-content grow-content flex-1" itemProp="articleBody">
-            <ColorPageContent hex={normalizedHex} faqs={faqItems} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
+      <main className="w-full max-w-[1430px] mx-auto px-4 py-12">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+
+          {/* Left Sidebar Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}
+          <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
+            <TableOfContents currentHex={normalizedHex} />
+          </aside>
+
+          {/* Center Article Content - Flexible width */}
+          <article className="flex-1 min-w-0 w-full">
+            <ColorPageContent key={normalizedHex} hex={normalizedHex} faqs={faqItems} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
           </article>
 
-          {/* Sidebar - 1/3 */}
-          <ColorSidebar color={normalizedHex} />
+          {/* Right Sidebar - Hidden below xl to prioritize content width */}
+          <aside className="hidden xl:block w-[380px] shrink-0 sticky top-24 self-start">
+            <ColorSidebar color={normalizedHex} />
+          </aside>
         </div>
       </main>
 
@@ -298,11 +310,11 @@ async function maybeRedirectToBlog(hex: string): Promise<string | null> {
     return null
   }
 
-  const site = "https://colormean.com"
+  const site = "https://hexcolormeans.com"
   const searchTerm = hex.toUpperCase()
   const clean = searchTerm.replace("#", "")
   try {
-    const res = await fetch("https://cms.colormean.com/graphql", {
+    const res = await fetch("https://blog.hexcolormeans.com/graphql", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -362,7 +374,7 @@ function parseShortcodeHex(html: string): string | null {
     .replace(/&(amp;)?rbrack;?/gi, "]")
     .replace(/\u005B/g, "[")
     .replace(/\u005D/g, "]")
-  const tag = pre.match(/\[\s*colormean\b([\s\S]*?)\]/i)
+  const tag = pre.match(/\[\s*(?:colormean|hexcolormeans)\b([\s\S]*?)\]/i)
   if (!tag) return null
   const attrs = tag[1] || ""
   const decoded = attrs

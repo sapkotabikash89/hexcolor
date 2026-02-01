@@ -12,7 +12,7 @@ import { getColorPageLink } from "@/lib/color-linking-utils"
 
 export function HomeColorPicker() {
   const router = useRouter()
-  const [selectedColor, setSelectedColor] = useState("#5B6FD8")
+  const [selectedColor, setSelectedColor] = useState("#E0115F")
   const [hue, setHue] = useState(230)
   const [saturation, setSaturation] = useState(70)
   const [lightness, setLightness] = useState(60)

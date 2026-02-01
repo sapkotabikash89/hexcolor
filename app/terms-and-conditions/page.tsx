@@ -7,8 +7,8 @@ import { BreadcrumbSchema, WebPageSchema } from "@/components/structured-data"
 import { ShareButtons } from "@/components/share-buttons"
 
 export const metadata: Metadata = {
-  title: "Terms and Conditions - ColorMean",
-  description: "Terms and conditions for using ColorMean. Read our rules and guidelines.",
+  title: "Terms and Conditions - HexColorMeans",
+  description: "Terms and conditions for using HexColorMeans. Outlines the rules and responsibilities for using our website.",
 }
 
 export default function TermsAndConditionsPage() {
@@ -16,152 +16,117 @@ export default function TermsAndConditionsPage() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name="Terms and Conditions"
-        url="https://colormean.com/terms-and-conditions"
-        description="Terms and conditions for using ColorMean. Read our rules and guidelines."
+        url="https://hexcolormeans.com/terms-and-conditions"
+        description="Terms and conditions for using HexColorMeans. Outlines the rules and responsibilities for using our website."
       />
       <BreadcrumbSchema items={[
-        { name: "ColorMean", item: "https://colormean.com" },
-        { name: "Terms and Conditions", item: "https://colormean.com/terms-and-conditions" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
+        { name: "Terms and Conditions", item: "https://hexcolormeans.com/terms-and-conditions" }
       ]} />
       <Header />
-      <main className="container mx-auto px-4 py-12 flex-1">
+      <main className="w-full max-w-[1280px] mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Terms and Conditions", href: "/terms-and-conditions" }]} />
-        <div className="flex flex-col lg:flex-row gap-8 mt-6">
+        <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
-            <h1 className="text-3xl font-bold mb-4">Terms and Conditions</h1>
-            <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
-              <p>
-                Welcome to <strong>ColorMean</strong>. These Terms and Conditions outline the rules and guidelines for using our website, located at <a href="https://colormean.com" className="text-primary hover:underline">https://colormean.com</a>.
-              </p>
-              <p>
-                By accessing this website, you accept these Terms and Conditions in full. If you do not agree with any part of these terms, please discontinue use of ColorMean.
-              </p>
+            <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Terms and Conditions</h1>
 
-              <h2 className="text-2xl font-bold text-foreground">Use of the Website</h2>
-              <p>By using ColorMean, you agree that:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>You will use the website for lawful purposes only</li>
-                <li>You will not use the website in any way that causes damage or impairs accessibility</li>
-                <li>You will not attempt to gain unauthorized access to any part of the website</li>
-                <li>You will not misuse our tools, data, or content for harmful or illegal activities</li>
-              </ul>
-              <p>All users must comply with applicable local and international laws.</p>
+            <div className="prose dark:prose-invert max-w-none space-y-8 text-muted-foreground leading-relaxed">
+              <section className="space-y-4">
+                <p>
+                  Welcome to <strong>HexColorMeans</strong>. These Terms and Conditions outline the rules and responsibilities for using our website, located at <a href="https://hexcolormeans.com" className="text-primary hover:underline transition-colors">https://hexcolormeans.com</a>. By accessing or using HexColorMeans, you accept these terms in full. If you disagree with any part of these terms, please refrain from using the website.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Intellectual Property Rights</h2>
-              <p>
-                Unless otherwise stated, ColorMean and its editorial team own the intellectual property rights for all content published on this website, including:
-              </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Articles and written content</li>
-                <li>Color data organization and presentation</li>
-                <li>Tools and generators</li>
-                <li>Layout structure and branding</li>
-              </ul>
-              <p>You may:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>View and read content for personal use</li>
-                <li>Share links to our pages with proper attribution</li>
-              </ul>
-              <p>You may not:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Republish our content without written permission</li>
-                <li>Copy large sections of content for commercial use</li>
-                <li>Sell, rent, or license our content</li>
-                <li>Reproduce our tools or databases without approval</li>
-              </ul>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Use of the Website</h2>
+                <p>
+                  When you use HexColorMeans, you agree to engage with the website in a lawful and respectful manner. You must not attempt to disrupt or impair the website’s functionality, nor seek unauthorized access to any part of it. The website is intended for informational and creative use, and any misuse of its content, tools, or data for harmful, fraudulent, or commercial purposes is strictly prohibited. All users are expected to comply with applicable laws and regulations, both locally and internationally.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Educational and Informational Purpose</h2>
-              <p>
-                All content on ColorMean is provided for <strong>educational and informational purposes only</strong>. While we strive for accuracy:
-              </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Symbolism, psychology, and spiritual meanings may vary by culture and personal belief</li>
-                <li>Technical color values are presented using standard digital models but may differ slightly across displays and devices</li>
-              </ul>
-              <p>We do not guarantee absolute accuracy in every context.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Intellectual Property</h2>
+                <p>
+                  All content on HexColorMeans, including written articles, guides, color codes, interactive tools, and website design, is the intellectual property of HexColorMeans or its contributors unless explicitly stated otherwise. You are welcome to read, view, and reference our content for personal or educational purposes, and you may share links with proper attribution. Reproducing, republishing, or using our content for commercial purposes without prior written permission is prohibited, as is copying large portions of the website or our tools.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">User Submissions</h2>
-              <p>If you submit feedback, suggestions, or messages to ColorMean:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>You grant us the right to use that feedback for improvement purposes</li>
-                <li>You confirm that your submission does not violate any third party rights</li>
-                <li>You agree not to submit false, misleading, or harmful information</li>
-              </ul>
-              <p>We reserve the right to remove or ignore any inappropriate submissions.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Educational and Informational Purpose</h2>
+                <p>
+                  HexColorMeans provides content primarily for educational and informational purposes. While we strive for accuracy in our color data and creative guidance, interpretations of color symbolism, psychology, and meaning can vary widely depending on culture, context, and personal perspective. Color codes are presented using standard digital models, though slight variations may occur across devices. We do not guarantee that every piece of information will be accurate in all contexts, and the website should not replace professional advice in specialized areas.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Tools and Interactive Features</h2>
-              <p>ColorMean offers color related tools such as:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Color generators</li>
-                <li>Color pickers</li>
-                <li>Palettes and harmonies</li>
-                <li>Contrast and accessibility checkers</li>
-              </ul>
-              <p>
-                These tools are provided as is, without any guarantees of accuracy, availability, or uninterrupted access.
-              </p>
-              <p>We are not responsible for:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Errors in generated values</li>
-                <li>Design outcomes based on tool use</li>
-                <li>Business decisions made using our data</li>
-              </ul>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">User Contributions</h2>
+                <p>
+                  If you submit feedback, suggestions, or other contributions to HexColorMeans, you grant us permission to use your submissions to improve the website or enhance content. You represent that your submissions do not violate any third party rights and agree not to provide false, harmful, or misleading information. We reserve the right to remove, modify, or ignore any submissions that are deemed inappropriate or irrelevant without prior notice.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">External Links</h2>
-              <p>
-                ColorMean may contain links to third party websites. These external sites are not operated by us. We:
-              </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Do not control their content or policies</li>
-                <li>Are not responsible for damages or losses caused by third party services</li>
-                <li>Encourage users to review third party terms before interacting</li>
-              </ul>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Tools and Interactive Features</h2>
+                <p>
+                  HexColorMeans offers a range of tools such as color generators, palette creators, and accessibility checkers to assist users in creative projects. These tools are provided “as is” and may not always guarantee accurate results, uninterrupted access, or complete compatibility across devices. HexColorMeans is not responsible for errors in generated outputs or decisions made based on tool usage, including creative, branding, or business outcomes.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Limitation of Liability</h2>
-              <p>ColorMean and its editorial team shall not be held liable for:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Any direct or indirect loss or damage</li>
-                <li>Data loss or business interruption</li>
-                <li>Design, branding, or creative outcomes based on our content</li>
-                <li>Misinterpretation of symbolic or spiritual content</li>
-              </ul>
-              <p>Use of the website is entirely at your own risk.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">External Links</h2>
+                <p>
+                  The website may include links to third party websites for additional information or resources. HexColorMeans does not control these external sites and is not responsible for their content, policies, or actions. Users are encouraged to review the terms, privacy policies, and practices of any third party site they access through HexColorMeans before interacting with it.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Termination of Access</h2>
-              <p>We reserve the right to:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Restrict or terminate access to any user</li>
-                <li>Block harmful traffic</li>
-                <li>Remove abusive interactions</li>
-                <li>Disable access without notice in case of misuse</li>
-              </ul>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Limitation of Liability</h2>
+                <p>
+                  HexColorMeans and its team shall not be held liable for any direct, indirect, or incidental losses resulting from the use of the website. This includes, but is not limited to, data loss, business interruptions, design or creative outcomes based on our content, and misinterpretation of symbolic or cultural meanings. Users access and use the website entirely at their own risk.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Changes to These Terms</h2>
-              <p>
-                We may update these Terms and Conditions at any time. Changes become effective immediately after being posted on this page. Continued use of the website means you accept the updated terms.
-              </p>
-              <p>We recommend reviewing this page regularly.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Termination of Access</h2>
+                <p>
+                  HexColorMeans reserves the right to restrict or terminate access for any user who violates these Terms and Conditions. Harmful or abusive behavior, attempts to bypass website security, or misuse of content may result in immediate removal or blocking of access without prior notice.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Governing Law</h2>
-              <p>
-                These Terms and Conditions are governed in accordance with applicable international digital use standards. Any disputes shall be resolved under the relevant jurisdictional guidelines.
-              </p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Changes to Terms</h2>
+                <p>
+                  We may update these Terms and Conditions at any time, with changes becoming effective immediately upon posting. Continued use of HexColorMeans constitutes acceptance of the updated terms. We recommend reviewing this page periodically to stay informed of any modifications.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Contact Information</h2>
-              <p>If you have any questions about these Terms and Conditions, you may contact us at:</p>
-              <div className="bg-muted p-4 rounded-lg">
-                <p><strong>Email:</strong> <a href="mailto:info@colormean.com" className="text-primary hover:underline">info@colormean.com</a></p>
-                <p><strong>Website:</strong> <a href="https://colormean.com" className="text-primary hover:underline">https://colormean.com</a></p>
-              </div>
-              <p className="font-medium text-lg pt-4 text-foreground">
-                By continuing to use ColorMean, you confirm that you understand and agree to these Terms and Conditions.
-              </p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Governing Law</h2>
+                <p>
+                  These Terms are governed by applicable international digital standards and relevant jurisdictional laws. Any disputes arising from the use of HexColorMeans will be resolved under the applicable legal framework.
+                </p>
+              </section>
+
+              <section className="pt-6 border-t space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Contact Information</h2>
+                <p>
+                  If you have any questions or concerns about these Terms and Conditions, you may reach us at:
+                </p>
+                <div className="bg-muted p-6 rounded-xl border border-border space-y-2">
+                  <p><strong>Email:</strong> <a href="mailto:info@hexcolormeans.com" className="text-primary hover:underline transition-colors">info@hexcolormeans.com</a></p>
+                  <p><strong>Website:</strong> <a href="https://hexcolormeans.com" className="text-primary hover:underline transition-colors">https://hexcolormeans.com</a></p>
+                </div>
+                <p className="font-bold text-lg text-foreground italic mt-4">
+                  By continuing to use HexColorMeans, you acknowledge that you have read, understood, and agreed to these Terms and Conditions.
+                </p>
+              </section>
             </div>
+
             <div className="flex justify-center py-4 mt-8 border-t pt-8">
-              <ShareButtons title="ColorMean Terms and Conditions" />
+              <ShareButtons title="HexColorMeans Terms and Conditions" />
             </div>
           </article>
-          <ColorSidebar color="#5B6FD8" />
+          <ColorSidebar color="#E0115F" />
         </div>
       </main>
       <Footer />

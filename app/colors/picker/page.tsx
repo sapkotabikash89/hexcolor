@@ -14,7 +14,7 @@ import { AnchorHashNav } from "@/components/anchor-hash-nav";
 import { Button } from "@/components/ui/button";
 import { Palette } from "lucide-react";
 
-const DEFAULT_HEX = "#5B6FD8";
+const DEFAULT_HEX = "#E0115F";
 
 function PickerContent() {
   const router = useRouter();
@@ -78,13 +78,13 @@ function PickerContent() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name={`${displayLabel} Color Information`}
-        url={`https://colormean.com/colors/picker?hex=${currentHex.replace("#", "")}`}
+        url={`https://hexcolormeans.com/colors/picker?hex=${currentHex.replace("#", "")}`}
         description={`Explore ${currentHex} color information, conversions, harmonies, variations, and accessibility.`}
       />
       <BreadcrumbSchema items={[
-        { name: "ColorMean", item: "https://colormean.com" },
-        { name: "Color Names", item: "https://colormean.com/colors" },
-        { name: currentHex, item: `https://colormean.com/colors/picker?hex=${currentHex.replace("#", "")}` }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
+        { name: "Color Names", item: "https://hexcolormeans.com/colors" },
+        { name: currentHex, item: `https://hexcolormeans.com/colors/picker?hex=${currentHex.replace("#", "")}` }
       ]} />
       <FAQSchema faqs={faqItems} />
 
@@ -105,9 +105,9 @@ function PickerContent() {
               { label: currentHex, href: `/colors/picker?hex=${currentHex.replace("#", "")}` },
             ]}
           />
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold">{currentHex} Color Information</h1>
-            <p className="max-w-3xl mx-auto text-sm md:text-base opacity-90">
+          <div className="text-center space-y-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">{currentHex} Color Meaning, Codes and Information</h1>
+            <p className="max-w-3xl mx-auto text-lg md:text-xl opacity-90 leading-relaxed text-pretty">
               Everything you need to know about {currentHex} including values, color harmonies, shades,
               meanings, and applications in design, branding, and everyday visuals.
             </p>
@@ -150,6 +150,7 @@ function PickerContent() {
           { href: "#contrast-checker", label: "Contrast Checker" },
           { href: "#blindness-simulator", label: "Blindness Simulator" },
           { href: "#css-examples", label: "CSS Examples" },
+          { href: "#icons", label: "Icons" },
           { href: "#related-colors", label: "Related Colors" },
           { href: "#faqs", label: "FAQs" },
         ]}

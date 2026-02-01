@@ -9,14 +9,23 @@ import { Download, Share } from "lucide-react"
 import { toast } from "sonner"
 import { ColorExportDialog } from "@/components/color-export-dialog"
 import { ColorCombination } from "@/components/color-combination"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface ColorSidebarProps {
   color: string
   onColorChange?: (color: string) => void
   showColorSchemes?: boolean
+  showLatestPosts?: boolean
+  className?: string
 }
 
-export function ColorSidebar({ color: initialColor, onColorChange, showColorSchemes = true }: ColorSidebarProps) {
+export function ColorSidebar({ 
+  color: initialColor, 
+  onColorChange, 
+  showColorSchemes = true,
+  showLatestPosts = true,
+  className 
+}: ColorSidebarProps) {
   const [color, setColor] = useState(initialColor)
   const [harmonyType, setHarmonyType] = useState("complementary")
   const [exportOpen, setExportOpen] = useState(false)
@@ -58,9 +67,11 @@ export function ColorSidebar({ color: initialColor, onColorChange, showColorSche
   }
 
   useEffect(() => {
+    if (!showLatestPosts) return
+
     const fetchLatest = async () => {
       try {
-        const res = await fetch("https://cms.colormean.com/graphql", {
+        const res = await fetch("https://blog.hexcolormeans.com/graphql", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -81,18 +92,18 @@ export function ColorSidebar({ color: initialColor, onColorChange, showColorSche
       }
     }
     fetchLatest()
-  }, [])
+  }, [showLatestPosts])
 
   return (
-    <aside id="sidebar" className="main-sidebar w-full lg:w-96 space-y-6">
+    <aside id="sidebar" className={className || "main-sidebar w-full lg:w-[380px] shrink-0 space-y-6 sticky top-24 self-start"}>
       {showColorSchemes && (
         <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-2">
             <h3 className="font-semibold text-lg">Color Schemes</h3>
             <Button
               size="sm"
               variant="ghost"
-              className="gap-2"
+              className="gap-2 shrink-0"
               onClick={() => setExportOpen(true)}
             >
               <Share className="w-4 h-4" />
@@ -120,7 +131,7 @@ export function ColorSidebar({ color: initialColor, onColorChange, showColorSche
         </div>
       )}
 
-      {latestPosts.length > 0 && (
+      {showLatestPosts && latestPosts.length > 0 && (
         <div className="bg-card border border-border rounded-lg p-6 space-y-4">
           <h3 className="font-semibold text-lg">Latest Posts</h3>
           <ul className="space-y-3">

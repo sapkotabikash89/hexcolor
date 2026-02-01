@@ -1,72 +1,38 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: true, // Add trailing slashes to all routes for compatibility
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined, // Force static export only in production
+  // STATIC EXPORT CONFIGURATION
+  output: 'export', // Always use static export
+  trailingSlash: true, // Required for consistent routing in static export
+
+  // Image configuration for static export
   images: {
-    unoptimized: true, // Required for static exports since we can't use Next.js image optimization
+    unoptimized: true, // Required - Next.js image optimization not available in static export
     formats: ["image/webp"],
     minimumCacheTTL: 31536000,
-    localPatterns: [
-      { pathname: "/img/**" },
-      { pathname: "/img/lqip/**" },
-      { pathname: "/colors/**" },
-    ],
     remotePatterns: [
-      { protocol: "https", hostname: "cms.colormean.com", pathname: "/**" },
+      { protocol: "https", hostname: "hexcolormeans.gumlet.io", pathname: "/**" },
+      { protocol: "https", hostname: "blog.hexcolormeans.com", pathname: "/**" },
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
       { protocol: "https", hostname: "static.wixstatic.com", pathname: "/**" },
-      { protocol: "https", hostname: "colormean.com", pathname: "/**" },
-      { protocol: "https", hostname: "www.colormean.com", pathname: "/**" },
+      { protocol: "https", hostname: "hexcolormeans.com", pathname: "/**" },
+      { protocol: "https", hostname: "www.hexcolormeans.com", pathname: "/**" },
     ],
   },
+
+  // Performance optimizations
   experimental: {
-    optimizePackageImports: ['lucide-react', 'date-fns', 'framer-motion', '@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-tooltip'],
+    optimizePackageImports: [
+      'lucide-react',
+      'date-fns',
+      'framer-motion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-tooltip'
+    ],
   },
-  async headers() {
-    return [
-      {
-        source: '/:all*(svg|jpg|png|webp)',
-        locale: false,
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ]
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/colors/:hex([0-9a-fA-F]{3,6})-image.webp",
-        destination: "/colors/:hex/image.webp",
-      },
-      {
-        source: "/tools/:slug-snapshot.webp",
-        destination: "/tools/snapshot.webp?slug=:slug",
-      },
-      {
-        source: "/img/lqip",
-        destination: "/img/lqip",
-      },
-      {
-        source: "/img",
-        destination: "/img",
-      },
-    ]
-  },
-  // Note: Redirects are handled via public/_redirects file for static export compatibility
-  // async redirects() {
-  //   return [
-  //     // 301 redirect from old URL structure to new one for SEO
-  //     {
-  //       source: '/color/:hex',
-  //       destination: '/colors/:hex',
-  //       permanent: true,
-  //     },
-  //   ]
-  // },
+
+  // Note: headers(), rewrites(), and redirects() are NOT supported in static export
+  // Use Cloudflare Pages _headers and _redirects files instead
 }
 
 export default nextConfig

@@ -22,7 +22,6 @@ export function PaletteFromImageTool() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [exportOpen, setExportOpen] = useState(false)
-  const pieCanvasRef = useRef<HTMLCanvasElement>(null)
   const [colorCount, setColorCount] = useState(8)
 
   const kMeansPalette = (imageData: ImageData, k: number): { hex: string; count: number }[] => {
@@ -81,32 +80,6 @@ export function PaletteFromImageTool() {
     }))
   }
 
-  const drawPie = (items: { hex: string; percent: number }[]) => {
-    const canvas = pieCanvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-    const w = 280
-    const h = 280
-    canvas.width = w
-    canvas.height = h
-    const centerX = w / 2
-    const centerY = h / 2
-    const radius = Math.min(centerX, centerY) - 8
-    let start = -Math.PI / 2
-    items.forEach((item) => {
-      const sweep = (item.percent / 100) * Math.PI * 2
-      ctx.beginPath()
-      ctx.moveTo(centerX, centerY)
-      ctx.arc(centerX, centerY, radius, start, start + sweep)
-      ctx.closePath()
-      ctx.fillStyle = item.hex
-      ctx.fill()
-      start += sweep
-    })
-  }
-  
-
   const extractPalette = (imageSrc: string, countOverride?: number) => {
     setIsProcessing(true)
     const img = new window.Image()
@@ -136,15 +109,13 @@ export function PaletteFromImageTool() {
       }
       setPalette(withPercents)
       setIsProcessing(false)
-      drawPie(withPercents)
     }
 
     img.src = imageSrc
   }
 
   useEffect(() => {
-    const defaultImg =
-      "https://images.unsplash.com/photo-1744994338689-77e9f043abd9?q=80&w=2064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    const defaultImg = "/default-image-for-image-palette-generator.webp"
     setImage(defaultImg)
     setIsCustomImage(false)
     extractPalette(defaultImg)
@@ -165,7 +136,7 @@ export function PaletteFromImageTool() {
   }
 
 
-  
+
 
   const handleExplore = (color: string) => {
     // Use centralized linking logic for safe color navigation
@@ -174,7 +145,7 @@ export function PaletteFromImageTool() {
 
   const openExport = () => setExportOpen(true)
 
-  
+
 
   return (
     <div className="space-y-8">
@@ -202,16 +173,6 @@ export function PaletteFromImageTool() {
                     alt="Uploaded"
                     className="w-full h-auto max-h-96 object-contain"
                   />
-                  {!isCustomImage && image && (
-                    <a
-                      href={image}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute bottom-2 right-2 text-[11px] px-2 py-1 rounded bg-black/50 text-white"
-                    >
-                      Photo © Unsplash
-                    </a>
-                  )}
                 </div>
                 <canvas ref={canvasRef} className="hidden" />
 
@@ -274,11 +235,6 @@ export function PaletteFromImageTool() {
                         />
                       ))}
                     </div>
-
-                    <div className="space-y-1 pb-0 mb-0">
-                      <h4 className="font-medium">Palette Distribution</h4>
-                      <canvas ref={pieCanvasRef} className="w-72 h-72 block" />
-                    </div>
                   </div>
                 ) : null}
               </div>
@@ -295,58 +251,8 @@ export function PaletteFromImageTool() {
       />
 
       <div className="flex justify-center py-4">
-        <ShareButtons title="Palette From Image Tool - ColorMean" />
+        <ShareButtons title="Palette From Image Tool - HexColorMeans" />
       </div>
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">How to Use Palette Generator</h2>
-        <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-          <li>Click &quot;Upload Image&quot; and select a photo or image from your device</li>
-          <li>Wait a moment while we analyze the image and extract dominant colors</li>
-          <li>View the extracted color palette with HEX codes</li>
-          <li>Click on any color to explore it in detail</li>
-          <li>Download the palette as a text file for future reference</li>
-        </ol>
-      </Card>
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">Use Cases</h2>
-        <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-          <li>Extract brand colors from logos and marketing materials</li>
-          <li>Create color schemes inspired by nature photography</li>
-          <li>Build website color palettes from mood boards</li>
-          <li>Match colors from artwork and illustrations</li>
-          <li>Generate cohesive palettes from product photos</li>
-          <li>Find complementary colors in existing designs</li>
-        </ul>
-      </Card>
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">Frequently Asked Questions</h2>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="text-base sm:text-lg">How many colors are extracted?</AccordionTrigger>
-            <AccordionContent>
-              We extract the top 8 most dominant colors from your image. These are the colors that appear most
-              frequently and define the overall color scheme of your image.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="text-base sm:text-lg">Are my images stored or shared?</AccordionTrigger>
-            <AccordionContent>
-              No, all image processing happens entirely in your browser. Your images are never uploaded to our servers
-              and are not stored or shared in any way.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="text-base sm:text-lg">What image formats are supported?</AccordionTrigger>
-            <AccordionContent>
-              We support all common image formats including JPG, PNG, GIF, WebP, and more. For best results, use
-              high-quality images with distinct colors.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </Card>
     </div>
   )
 }

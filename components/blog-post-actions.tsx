@@ -28,27 +28,15 @@ export function BlogPostActions({ loveKey, shareUrl, shareTitle }: BlogPostActio
     // If no key provided, we can't track love
     if (!loveKey) return
 
-    const fetchLoveCount = async () => {
-      try {
-        const res = await fetch(`/api/love?hex=${loveKey}`)
-        if (res.ok) {
-          const data = await res.json()
-          setLoveCount(data.count)
-        }
-      } catch (error) {
-        // Silently fail in development/localhost - API may not be available
-        // This is expected behavior and not an error
-      }
-    }
-    fetchLoveCount()
-
     const key = `love:${loveKey}`
     const raw = typeof window !== "undefined" ? window.localStorage.getItem(key) : null
     if (raw) {
       try {
         const parsed = JSON.parse(raw)
         setLiked(!!parsed.liked)
-      } catch {}
+      } catch { }
+    } else {
+      setLiked(false)
     }
   }, [loveKey])
 
@@ -60,21 +48,8 @@ export function BlogPostActions({ loveKey, shareUrl, shareTitle }: BlogPostActio
     setLiked(nextLiked)
     setLoveCount((prev) => (nextLiked ? prev + 1 : Math.max(0, prev - 1)))
 
-    try {
-      await fetch("/api/love", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hex: loveKey, increment: nextLiked }),
-      })
-      
-      const payload = { liked: nextLiked }
-      if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify(payload))
-    } catch (error) {
-      // Silently fail in development/localhost - API may not be available
-      // Store locally anyway so the UI state persists
-      const payload = { liked: nextLiked }
-      if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify(payload))
-    }
+    const payload = { liked: nextLiked }
+    if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify(payload))
   }
 
   const copyToClipboard = () => {
@@ -89,7 +64,7 @@ export function BlogPostActions({ loveKey, shareUrl, shareTitle }: BlogPostActio
       platform === "facebook"
         ? `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
         : `https://x.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`
-    
+
     if (typeof window !== "undefined") window.open(targetUrl, "_blank", "noopener,noreferrer")
   }
 
@@ -114,7 +89,7 @@ export function BlogPostActions({ loveKey, shareUrl, shareTitle }: BlogPostActio
           <Facebook className="w-4 h-4" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => shareTo("x")} aria-label="Share on X" className="h-8 w-8 text-muted-foreground hover:text-black hover:bg-gray-100">
-           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 fill-current"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 fill-current"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
         </Button>
         <Button variant="ghost" size="icon" onClick={copyToClipboard} aria-label="Copy Link" className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-gray-100">
           <LinkIcon className="w-4 h-4" />

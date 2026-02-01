@@ -16,7 +16,7 @@ import { getColorPageLink } from "@/lib/color-linking-utils"
 
 export function AdvancedColorPicker() {
   const router = useRouter()
-  const [selectedColor, setSelectedColor] = useState("#5B6FD8")
+  const [selectedColor, setSelectedColor] = useState("#E0115F")
   const [hue, setHue] = useState(230)
   const [saturation, setSaturation] = useState(70)
   const [lightness, setLightness] = useState(60)
@@ -234,7 +234,7 @@ export function AdvancedColorPicker() {
       </Card>
       
       <div className="flex justify-center py-4">
-        <ShareButtons title="Advanced Color Picker Tool - ColorMean" />
+        <ShareButtons title="Advanced Color Picker Tool - HexColorMeans" />
       </div>
       {(() => {
         // OPTIMIZATION: Pass the color hex directly without looking up name

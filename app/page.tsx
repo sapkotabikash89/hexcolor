@@ -17,32 +17,32 @@ import {
 
 // Static metadata for SEO
 export const metadata: Metadata = {
-  title: "ColorMean: Know Your Color - Professional Color Tools & Information",
+  title: "HexColorMeans: Where Every Color Has Meaning - Professional Color Tools & Information",
   description: "Turn ideas into visuals with confidence. Access rich color details, meanings, psychology, symbolism, uses, precise conversions, and powerful tools made for creative minds.",
   keywords: ["color picker", "color converter", "color meanings", "color harmonies", "design tools", "color psychology"],
   alternates: {
-    canonical: "https://colormean.com",
+    canonical: "https://hexcolormeans.com",
   },
   openGraph: {
-    title: "ColorMean: Know Your Color",
+    title: "HexColorMeans: Where Every Color Has Meaning",
     description: "Professional color tools and information for designers and developers",
-    url: "https://colormean.com",
-    siteName: "ColorMean",
+    url: "https://hexcolormeans.com",
+    siteName: "HexColorMeans",
     type: "website",
     images: [
       {
-        url: "https://colormean.com/opengraph-image.webp",
+        url: "https://hexcolormeans.com/opengraph-image.webp",
         width: 1200,
         height: 630,
-        alt: "ColorMean - Professional Color Tools",
+        alt: "HexColorMeans - Professional Color Tools",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ColorMean: Know Your Color",
+    title: "HexColorMeans: Where Every Color Has Meaning",
     description: "Professional color tools and information for designers and developers",
-    images: ["https://colormean.com/opengraph-image.webp"],
+    images: ["https://hexcolormeans.com/opengraph-image.webp"],
   },
 }
 
@@ -63,14 +63,14 @@ export default function HomePage() {
       <Hero />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 sm:py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <main className="w-full max-w-[1280px] mx-auto px-4 py-8 sm:py-12">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Content Area */}
           <article id="content" className="main-content grow-content flex-1 space-y-12">
             {/* Live Color Picker Tool */}
             <ToolSection
               title="Interactive Color Picker"
-              description="Choose your perfect color and explore its properties instantly"
+              description="Select a color and instantly view its codes, meaning, and related details."
             >
               <CompactAdvancedColorPicker />
             </ToolSection>
@@ -78,38 +78,38 @@ export default function HomePage() {
             {/* Live Image Color Picker Tool */}
             <ToolSection
               title="Image Color Picker"
-              description="Upload an image and extract exact color values from any pixel"
+              description="Upload an image and capture precise hex color values from any pixel with ease. Your data stays local"
             >
               <CompactImageColorPicker />
             </ToolSection>
 
             {/* Live Color Wheel Tool */}
             <ToolSection
-              title="Color Wheel"
-              description="Explore color relationships and create harmonious color combinations"
+              title="Harmonic Color Wheel"
+              description="Generate scientifically accurate color schemes based on color theory principles"
             >
               <CompactColorWheel />
             </ToolSection>
 
             {/* Color Library Preview */}
             <ToolSection
-              title="Color Library Preview"
-              description="Explore popular shades and their detailed properties"
+              title="Browse Color Library"
+              description="Browse our extensive database of colors, meanings, and standardized values"
             >
               <ColorLibraryPreview />
             </ToolSection>
 
-            {/* About ColorMean */}
+            {/* About HexColorMeans */}
             <ToolSection
-              title="About ColorMean"
-              description="Your comprehensive color companion for all your creative needs"
+              title="About HexColorMeans"
+              description="A reliable color reference for creative and technical work"
             >
               <AboutSection />
             </ToolSection>
           </article>
 
           {/* Sidebar */}
-          <ColorSidebar color="#5B6FD8" />
+          <ColorSidebar color="#E0115F" />
         </div>
       </main>
 

@@ -3,68 +3,10 @@ import { Footer } from "@/components/footer";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ColorSidebar } from "@/components/sidebar";
 import { CategoryPosts } from "@/components/category-posts";
+import { getPostsByCategory } from "@/lib/wordpress";
 
 async function fetchPostsByCategory() {
-  // First get the category ID for "Color Meaning"
-  const categoryRes = await fetch("https://cms.colormean.com/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query GetColorMeaningCategory {
-          categories(first: 1, where: { slug: "color-meaning" }) {
-            nodes {
-              databaseId
-              name
-              slug
-            }
-          }
-        }
-      `,
-    }),
-    next: { revalidate: 3600 }, // 1 hour cache
-  });
-
-  const categoryJson = await categoryRes.json();
-  const category = categoryJson?.data?.categories?.nodes?.[0];
-
-  if (!category?.databaseId) {
-    return { posts: [], categoryName: "Color Meaning" };
-  }
-
-  // Now fetch posts by category ID
-  const res = await fetch("https://cms.colormean.com/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query PostsByColorMeaningCategory($catId: ID!) {
-          posts(first: 24, where: { categoryIn: [$catId] }) {
-            nodes {
-              title
-              excerpt
-              uri
-              date
-              featuredImage {
-                node {
-                  sourceUrl
-                  altText
-                }
-              }
-            }
-          }
-        }
-      `,
-      variables: { catId: category.databaseId },
-    }),
-    next: { revalidate: 3600 }, // 1 hour cache
-  });
-
-  const json = await res.json();
-  return {
-    posts: json?.data?.posts?.nodes ?? [],
-    categoryName: category.name
-  };
+  return await getPostsByCategory("color-meaning");
 }
 
 export const metadata = {
@@ -73,7 +15,7 @@ export const metadata = {
     "Explore color meanings, psychology, spirituality, and cultural symbolism. Curated articles from our headless WordPress CMS.",
 };
 
-export default async function ColorMeaningCategoryPage() {
+export default async function HexColorMeansingCategoryPage() {
   const { posts, categoryName } = await fetchPostsByCategory();
 
   // Define breadcrumbs
@@ -95,8 +37,8 @@ export default async function ColorMeaningCategoryPage() {
           </div>
         </div>
       </section>
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <main className="w-full max-w-[1280px] mx-auto px-4 py-12">
+        <div className="flex flex-col lg:flex-row gap-6">
           <article id="content" className="main-content grow-content flex-1">
             <CategoryPosts
               initialPosts={posts}
@@ -104,7 +46,7 @@ export default async function ColorMeaningCategoryPage() {
               categorySlug="color-meaning"
             />
           </article>
-          <ColorSidebar color="#5B6FD8" />
+          <ColorSidebar color="#E0115F" />
         </div>
       </main>
       <Footer />

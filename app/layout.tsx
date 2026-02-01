@@ -11,10 +11,10 @@ import { GrowRefresh } from "@/components/grow-refresh"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://colormean.com"),
-  title: "ColorMean - Know Your Color | Color Information, Meanings & Tools",
+  metadataBase: new URL("https://hexcolormeans.com"),
+  title: "HexColorMeans - Where Every Color Has Meaning | Color Information, Meanings & Tools",
   description:
-    "Explore colors with ColorMean. Get detailed color information, meanings, conversions, harmonies, and use professional color tools including color picker, contrast checker, and more.",
+    "Explore colors with HexColorMeans. Get detailed color information, meanings, conversions, harmonies, and use professional color tools including color picker, contrast checker, and more.",
   keywords: [
     "color picker",
     "color codes",
@@ -26,32 +26,41 @@ export const metadata: Metadata = {
     "color palette",
     "contrast checker",
   ],
-  authors: [{ name: "ColorMean" }],
+  authors: [{ name: "HexColorMeans" }],
   alternates: {
-    canonical: "https://colormean.com",
+    canonical: "https://hexcolormeans.com",
   },
   openGraph: {
-    title: "ColorMean - Know Your Color",
+    title: "HexColorMeans - Where Every Color Has Meaning",
     description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
     type: "website",
-    url: "https://colormean.com",
-    siteName: "ColorMean",
+    url: "https://hexcolormeans.com",
+    siteName: "HexColorMeans",
     images: [
       {
-        url: "https://colormean.com/colormean-know%20your%20color.webp",
+        url: "https://hexcolormeans.com/advanced-color-picker-tool-online-free.webp",
         width: 1200,
         height: 630,
-        alt: "ColorMean homepage preview",
+        alt: "HexColorMeans - Professional Color Tools and Information",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ColorMean - Know Your Color",
+    title: "HexColorMeans - Where Every Color Has Meaning",
     description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
-    images: ["https://colormean.com/colormean-know%20your%20color.webp"],
+    images: ["https://hexcolormeans.com/advanced-color-picker-tool-online-free.webp"],
   },
-  icons: { icon: "/favicon.webp" },
+  icons: {
+    icon: [
+      { url: "/favicon.webp" },
+      { url: "/favicon.webp", type: "image/webp" },
+    ],
+    shortcut: ["/favicon.webp"],
+    apple: [
+      { url: "/favicon.webp" },
+    ],
+  },
   robots: {
     index: true,
     follow: true,
@@ -69,7 +78,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#5B6FD8",
+  themeColor: "#E0115F",
 }
 export default function RootLayout({
   children,
@@ -81,10 +90,8 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://colormean.gumlet.io" />
-        <link rel="dns-prefetch" href="https://colormean.gumlet.io" />
-        <link rel="preconnect" href="https://cms.colormean.com" />
-        <link rel="dns-prefetch" href="https://cms.colormean.com" />
+        <link rel="preconnect" href="https://blog.hexcolormeans.com" />
+        <link rel="dns-prefetch" href="https://blog.hexcolormeans.com" />
         <meta name="google-site-verification" content="tiT0KL3QCJ4bLgDI-k7s8vphX4Sx6LQCFmkflXUe4pU" />
         <meta name="p:domain_verify" content="2f0be474874f515dce302624f3919d26" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -92,10 +99,8 @@ export default function RootLayout({
         <OrganizationSchema />
         <SoftwareApplicationSchema />
       </head>
-      <body className={`${inter.className} px-[2px] sm:px-4`}>
-        <div className="max-w-[1200px] mx-auto">
-          {children}
-        </div>
+      <body className={`${inter.className} px-0`}>
+        {children}
 
         {/* Grow Script - Placed in body with afterInteractive strategy for safe loading */}
         <ScrollToTop />

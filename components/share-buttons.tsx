@@ -19,7 +19,7 @@ export function ShareButtons({ url, title, className = "" }: ShareButtonsProps) 
     }
   }, [url])
   const shareUrl = url || hydratedUrl
-  const shareTitle = title || "Check out ColorMean"
+  const shareTitle = title || "Check out HexColorMeans"
 
   const shareTo = (platform: "facebook" | "x" | "copy") => {
     const encodedUrl = encodeURIComponent(shareUrl)

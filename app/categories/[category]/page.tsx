@@ -4,96 +4,17 @@ import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ColorSidebar } from "@/components/sidebar";
 import { CategoryPosts } from "@/components/category-posts";
 
-async function fetchPostsByCategory(categorySlug: string) {
-  // First get the category info by slug
-  const categoryRes = await fetch("https://cms.colormean.com/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query GetCategoryBySlug($slug: String!) {
-          categories(first: 1, where: { slug: $slug }) {
-            nodes {
-              databaseId
-              name
-              slug
-            }
-          }
-        }
-      `,
-      variables: { slug: categorySlug },
-    }),
-    next: { revalidate: 3600 }, // 1 hour cache
-  });
+import { getPostsByCategory, getAllCategories } from "@/lib/wordpress";
 
-  const categoryJson = await categoryRes.json();
-  const category = categoryJson?.data?.categories?.nodes?.[0];
-
-  if (!category?.databaseId) {
-    return { posts: [], categoryName: categorySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') };
-  }
-
-  // Now fetch posts by category ID
-  const res = await fetch("https://cms.colormean.com/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query PostsByCategory($catId: ID!) {
-          posts(first: 24, where: { categoryIn: [$catId] }) {
-            nodes {
-              title
-              excerpt
-              uri
-              date
-              featuredImage {
-                node {
-                  sourceUrl
-                  altText
-                }
-              }
-            }
-          }
-        }
-      `,
-      variables: { catId: category.databaseId },
-    }),
-    next: { revalidate: 3600 }, // 1 hour cache
-  });
-
-  const json = await res.json();
-  return {
-    posts: json?.data?.posts?.nodes ?? [],
-    categoryName: category.name || categorySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-  };
-}
-
-async function fetchAllCategories() {
-  const res = await fetch("https://cms.colormean.com/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query AllCategories {
-          categories(first: 100) {
-            nodes {
-              name
-              slug
-              count
-            }
-          }
-        }
-      `,
-    }),
-    next: { revalidate: 3600 }, // 1 hour cache
-  });
-
-  const json = await res.json();
-  return json?.data?.categories?.nodes ?? [];
-}
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const categories = await fetchAllCategories();
+  console.log("Generating static params for categories...");
+  const categories = await getAllCategories();
+  if (!categories || categories.length === 0) {
+    console.log("No categories found. Returning fallback to prevent build error.");
+    return [{ category: "uncategorized" }];
+  }
   return categories.map((category: any) => ({
     category: category.slug,
   }));
@@ -111,14 +32,14 @@ export async function generateMetadata({ params }: CategoryPageProps) {
     .join(" ");
 
   return {
-    title: `${capitalizedCategory} - ColorMean`,
-    description: `Explore ${capitalizedCategory.toLowerCase()} articles and guides on ColorMean. Latest posts about ${capitalizedCategory.toLowerCase()} meanings, psychology, and symbolism.`,
+    title: `${capitalizedCategory} - HexColorMeans`,
+    description: `Explore ${capitalizedCategory.toLowerCase()} articles and guides on HexColorMeans. Latest posts about ${capitalizedCategory.toLowerCase()} meanings, psychology, and symbolism.`,
   };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category: categorySlug } = await params;
-  const { posts, categoryName } = await fetchPostsByCategory(categorySlug);
+  const { posts, categoryName } = await getPostsByCategory(categorySlug);
 
   // Define breadcrumbs
   const crumbs = [
@@ -139,8 +60,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         </div>
       </section>
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <main className="w-full max-w-[1280px] mx-auto px-4 py-12">
+        <div className="flex flex-col lg:flex-row gap-6">
           <article id="content" className="main-content grow-content flex-1">
             <CategoryPosts
               initialPosts={posts}
@@ -148,7 +69,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               categorySlug={categorySlug}
             />
           </article>
-          <ColorSidebar color="#5B6FD8" />
+          <ColorSidebar color="#E0115F" />
         </div>
       </main>
       <Footer />

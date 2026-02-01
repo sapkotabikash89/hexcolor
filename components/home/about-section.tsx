@@ -6,22 +6,22 @@ export function AboutSection() {
         {
             icon: Palette,
             title: "Professional Tools",
-            description: "Access industry-standard color tools for design, development, and creative work",
+            description: "Use industry-ready color utilities designed for design systems, UI work, and development workflows.",
         },
         {
             icon: BookOpen,
             title: "Color Knowledge",
-            description: "Learn color meanings, psychology, and symbolism to make informed creative decisions",
+            description: "Learn the meaning, psychology, symbolism, and cultural context behind colors to guide smarter creative decisions.",
         },
         {
             icon: Zap,
             title: "Instant Conversions",
-            description: "Convert between HEX, RGB, HSL, CMYK, and more with precision and speed",
+            description: "Convert HEX, RGB, HSL, CMYK, and related formats with speed and accuracy.",
         },
         {
             icon: Shield,
             title: "Privacy First",
-            description: "All tools run in your browser. Your images and data never leave your device",
+            description: "All tools run directly in your browser. Your images and data stay on your device.",
         },
     ]
 
@@ -29,9 +29,8 @@ export function AboutSection() {
         <Card className="p-6 space-y-4">
             <div className="space-y-2 text-left max-w-3xl">
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                    ColorMean is your comprehensive color companion, designed for designers, developers, artists,
-                    and anyone passionate about colors. We provide detailed color information, meanings, and
-                    professional-grade tools to help you make the perfect color choices for your projects.
+                    HexColorMeans is built for designers, developers, artists, and anyone who works with color daily.
+                    The site delivers clear color data, meaningful context, and practical tools that help you choose colors with confidence and purpose.
                 </p>
             </div>
 
@@ -56,8 +55,7 @@ export function AboutSection() {
 
             <div className="pt-2 text-left">
                 <p className="text-muted-foreground">
-                    Whether you're looking for the perfect shade, need to check color accessibility, or want to
-                    understand color harmonies, ColorMean has you covered.
+                    Whether you are selecting the right shade, checking color accessibility, or working with balanced color relationships, HexColorMeans gives you the clarity and precision you need.
                 </p>
             </div>
         </Card>

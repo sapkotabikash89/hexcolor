@@ -118,7 +118,7 @@ export default function ColorSwatchClient({ hex, width = 1200, height = 630, sho
               opacity: 0.35,
             }}
           >
-            ColorMean
+            HexColorMeans
           </div>
         </>
       )}

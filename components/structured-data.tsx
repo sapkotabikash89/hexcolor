@@ -46,12 +46,12 @@ export function WebsiteSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "ColorMean",
-    url: "https://colormean.com",
+    name: "HexColorMeans",
+    url: "https://hexcolormeans.com",
     description: "Know your color - Explore color information, meanings, conversions, and professional tools",
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://colormean.com/colors/{search_term_string}",
+      target: "https://hexcolormeans.com/colors/{search_term_string}",
       "query-input": "required name=search_term_string",
     },
   }
@@ -63,9 +63,9 @@ export function OrganizationSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "ColorMean",
-    url: "https://colormean.com",
-    logo: "https://colormean.com/logo.webp",
+    name: "HexColorMeans",
+    url: "https://hexcolormeans.com",
+    logo: "https://hexcolormeans.com/logo.webp",
     description: "Professional color tools and information for designers, developers, and artists",
     sameAs: [],
   }
@@ -77,7 +77,7 @@ export function SoftwareApplicationSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "ColorMean",
+    name: "HexColorMeans",
     applicationCategory: "DesignApplication",
     operatingSystem: "Web Browser",
     offers: {
@@ -100,6 +100,7 @@ export function ImageObjectSchema({
   description,
   author,
   representativeOfPage,
+  name,
 }: {
   url: string
   width: number
@@ -109,10 +110,12 @@ export function ImageObjectSchema({
   description?: string
   author?: string
   representativeOfPage?: boolean
+  name?: string
 }) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "ImageObject",
+    name: name ?? caption ?? alt,
     url,
     contentUrl: url,
     encodingFormat: "image/webp",
@@ -122,6 +125,7 @@ export function ImageObjectSchema({
     description: description ?? undefined,
     author: author ?? undefined,
     representativeOfPage: representativeOfPage ?? undefined,
+    inLanguage: "en-US",
   }
   return <Script id="imageobject-schema" type="application/ld+json" strategy="beforeInteractive">{JSON.stringify(schema)}</Script>
 }
@@ -135,8 +139,8 @@ export function ToolApplicationSchema({
   slug: string
   description: string
 }) {
-  const url = `https://www.colormean.com/${slug}`
-  const image = `https://www.colormean.com/tools/${slug}-snapshot.webp`
+  const url = `https://www.hexcolormeans.com/${slug}`
+  const image = `https://www.hexcolormeans.com/tools/${slug}-snapshot.webp`
   const schema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -278,8 +282,8 @@ export function ArticleSchema({
   description,
   authorName,
   authorType = "Organization",
-  publisherName = "ColorMean",
-  publisherLogo = "https://colormean.com/logo.webp",
+  publisherName = "HexColorMeans",
+  publisherLogo = "https://hexcolormeans.com/logo.webp",
   image,
   datePublished,
   dateModified,

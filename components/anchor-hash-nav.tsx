@@ -2,6 +2,7 @@
 
 import { useCallback } from "react"
 import { cn } from "@/lib/utils"
+import { BLOG_NAV_ITEMS } from "@/lib/blog-nav-data"
 
 interface NavItem {
   label: string
@@ -13,21 +14,10 @@ interface AnchorHashNavProps {
   className?: string
 }
 
-export function AnchorHashNav({ items, className }: AnchorHashNavProps) {
-  const defaultItems = [
-    { label: "Definition", href: "#definition" },
-    { label: "History", href: "#history" },
-    { label: "Symbolism", href: "#symbolism" },
-    { label: "Spiritual Meaning", href: "#spiritual-meaning" },
-    { label: "Psychology", href: "#psychology" },
-    { label: "Personality", href: "#personality" },
-    { label: "Cultural Meaning", href: "#cultural-meaning" },
-    { label: "Dreams Meaning", href: "#dreams-meaning" },
-    { label: "Uses", href: "#uses" },
-    { label: "Technical Information", href: "#technical-information" },
-  ]
+export { BLOG_NAV_ITEMS }
 
-  const navItems = items || defaultItems
+export function AnchorHashNav({ items, className }: AnchorHashNavProps) {
+  const navItems = items || BLOG_NAV_ITEMS
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement

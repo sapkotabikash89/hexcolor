@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image'
-import { convertToGumletUrl } from '@/lib/gumlet-image-utils'
+import { convertToArticleImageUrl } from '@/lib/image-utils'
 
 interface FeaturedImageProps {
   src: string
@@ -16,21 +16,21 @@ interface FeaturedImageProps {
  * - Fully responsive on all devices
  * - Lazy-loaded by default
  * - Client-side only (no SSR)
- * - Automatically converts WordPress URLs to Gumlet CDN
+ * - Automatically converts WordPress URLs to the configured article image base
  */
-export function FeaturedImage({ 
-  src, 
-  alt, 
-  priority = false, 
-  className = '' 
+export function FeaturedImage({
+  src,
+  alt,
+  priority = false,
+  className = ''
 }: FeaturedImageProps) {
-  // Convert WordPress URL to Gumlet CDN URL
-  const gumletUrl = convertToGumletUrl(src)
-  
+  // Convert WordPress URL to configured Article Image URL
+  const imageUrl = convertToArticleImageUrl(src)
+
   return (
     <div className={`relative w-full aspect-[1200/800] overflow-hidden rounded-lg ${className}`}>
       <Image
-        src={gumletUrl}
+        src={imageUrl}
         alt={alt}
         fill
         priority={priority}

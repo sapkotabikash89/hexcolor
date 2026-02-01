@@ -19,7 +19,7 @@ import data from "@/lib/color-meaning.json"
 export function ImageColorPickerTool() {
   const router = useRouter()
   const [image, setImage] = useState<string | null>(null)
-  const [selectedColor, setSelectedColor] = useState("#5B6FD8")
+  const [selectedColor, setSelectedColor] = useState("#E0115F")
   const [pickedColors, setPickedColors] = useState<string[]>([])
   const [isCustomImage, setIsCustomImage] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -51,8 +51,7 @@ export function ImageColorPickerTool() {
 
   useEffect(() => {
     if (!image) {
-      const defaultImg =
-        "https://images.unsplash.com/photo-1599345697595-2d1398084369?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      const defaultImg = "/default-image-for-image-color-picker.webp"
       setImage(defaultImg)
       setIsCustomImage(false)
     }
@@ -197,7 +196,7 @@ export function ImageColorPickerTool() {
 
     const zoomLevel = 11 // Odd number for centered pixel
     const magSize = 120
-    
+
     // Ensure accurate pixel sampling
     const half = Math.floor(zoomLevel / 2)
     const sx = Math.max(0, Math.min(canvas.width - zoomLevel, Math.floor(x - half)))
@@ -247,7 +246,7 @@ export function ImageColorPickerTool() {
     mctx.strokeStyle = "#ef4444" // Red
     mctx.lineWidth = 2
     mctx.strokeRect(Math.floor(zoomLevel / 2) * cell, Math.floor(zoomLevel / 2) * cell, cell, cell)
-    
+
     // Add a secondary white border for better visibility on dark colors
     mctx.strokeStyle = "rgba(255, 255, 255, 0.5)"
     mctx.lineWidth = 1
@@ -270,15 +269,15 @@ export function ImageColorPickerTool() {
     const canvas = canvasRef.current
     if (!canvas || !imageLoaded) return
     const rect = canvas.getBoundingClientRect()
-     
+
     // Check bounds
     if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
       setShowMagnifier(false)
       return
     }
- 
+
     lastCursorPos.current = { x: clientX, y: clientY }
- 
+
     const offsetX = clientX - rect.left
     const offsetY = clientY - rect.top
     const magSize = 120 // Balanced size
@@ -288,13 +287,13 @@ export function ImageColorPickerTool() {
       typeof window !== "undefined" &&
       !!window.matchMedia &&
       window.matchMedia("(pointer: coarse)").matches
- 
+
     // Smart Positioning Logic
     const isLeftHalf = offsetX < rect.width / 2
     const isTopHalf = offsetY < rect.height / 2
     let mx: number
     let my: number
- 
+
     if (isCoarse) {
       // Mobile/tablet: keep current corner-based opposite placement
       mx = isLeftHalf ? Math.max(pad, rect.width - magSize - pad) : pad
@@ -317,13 +316,13 @@ export function ImageColorPickerTool() {
       targetY = Math.max(pad, Math.min(rect.height - magSize - pad, targetY))
       my = targetY
     }
- 
+
     setMagnifierPos({ x: mx, y: my })
     setShowMagnifier(true)
- 
+
     // Try to draw immediately if ref exists
     if (magnifierRef.current) {
-        drawMagnifier(clientX, clientY)
+      drawMagnifier(clientX, clientY)
     }
   }
 
@@ -344,34 +343,34 @@ export function ImageColorPickerTool() {
   }
 
   const handleCanvasTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
-      // Pick color on touch end if we want, or just hide magnifier
-      setShowMagnifier(false)
-      // If we want to support "tap to pick", we should handle it here because preventDefault on start/move might kill onClick
-      // Let's rely on onClick for now? No, preventDefault kills onClick.
-      // So we must pick color here.
-      if (e.changedTouches.length > 0) {
-          const touch = e.changedTouches[0]
-          // Re-use logic from handleCanvasClick but with touch coords
-          const canvas = canvasRef.current
-          if (!canvas) return
-          const rect = canvas.getBoundingClientRect()
-          const scaleX = canvas.width / rect.width
-          const scaleY = canvas.height / rect.height
-          const x = (touch.clientX - rect.left) * scaleX
-          const y = (touch.clientY - rect.top) * scaleY
-          const ctx = canvas.getContext("2d")
-          if (!ctx) return
-          const imageData = ctx.getImageData(x, y, 1, 1)
-          const [r, g, b] = imageData.data
-          const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`
-          setSelectedColor(hex)
-          setPickedColors((prev) => {
-            if (prev.includes(hex)) return prev
-            const next = [...prev, hex]
-            return next.length > 10 ? next.slice(next.length - 10) : next
-          })
-          window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: hex } }))
-      }
+    // Pick color on touch end if we want, or just hide magnifier
+    setShowMagnifier(false)
+    // If we want to support "tap to pick", we should handle it here because preventDefault on start/move might kill onClick
+    // Let's rely on onClick for now? No, preventDefault kills onClick.
+    // So we must pick color here.
+    if (e.changedTouches.length > 0) {
+      const touch = e.changedTouches[0]
+      // Re-use logic from handleCanvasClick but with touch coords
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const rect = canvas.getBoundingClientRect()
+      const scaleX = canvas.width / rect.width
+      const scaleY = canvas.height / rect.height
+      const x = (touch.clientX - rect.left) * scaleX
+      const y = (touch.clientY - rect.top) * scaleY
+      const ctx = canvas.getContext("2d")
+      if (!ctx) return
+      const imageData = ctx.getImageData(x, y, 1, 1)
+      const [r, g, b] = imageData.data
+      const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`
+      setSelectedColor(hex)
+      setPickedColors((prev) => {
+        if (prev.includes(hex)) return prev
+        const next = [...prev, hex]
+        return next.length > 10 ? next.slice(next.length - 10) : next
+      })
+      window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: hex } }))
+    }
   }
 
   const handleCanvasMouseLeave = () => {
@@ -418,16 +417,6 @@ export function ImageColorPickerTool() {
                     onTouchEnd={handleCanvasTouchEnd}
                     className="w-full cursor-crosshair max-h-[500px] object-contain touch-none"
                   />
-                  {!isCustomImage && image && (
-                    <a
-                      href={image}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute bottom-2 right-2 text-[11px] px-2 py-1 rounded bg-black/50 text-white"
-                    >
-                      Photo © Unsplash
-                    </a>
-                  )}
                   {showMagnifier && (
                     <div
                       className="absolute z-10 border-4 border-white bg-background rounded-full shadow-2xl pointer-events-none overflow-hidden"
@@ -558,7 +547,7 @@ export function ImageColorPickerTool() {
       </Card>
 
       <div className="flex justify-center py-4">
-        <ShareButtons title="Image Color Picker Tool - ColorMean" />
+        <ShareButtons title="Image Color Picker Tool - HexColorMeans" />
       </div>
       {(() => {
         const upper = selectedColor.replace("#", "").toUpperCase()
@@ -566,57 +555,6 @@ export function ImageColorPickerTool() {
         const colorName: string | undefined = meta?.name || undefined
         return <ColorPageContent hex={selectedColor} name={colorName} mode="sectionsOnly" />
       })()}
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">How to Use the Image Color Picker</h2>
-        <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-          <li>Click the "Upload Image" button and select an image from your device</li>
-          <li>Click anywhere on the uploaded image to pick a color from that exact pixel</li>
-          <li>View the selected color code in HEX, RGB, and HSL formats</li>
-          <li>Your picked colors are saved below the image for reference</li>
-          <li>Click on any picked color swatch to explore it in detail</li>
-        </ol>
-      </Card>
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">Use Cases for Image Color Picker</h2>
-        <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-          <li>Extract brand colors from logos and marketing materials</li>
-          <li>Match colors from photographs for design projects</li>
-          <li>Create color palettes inspired by nature photos</li>
-          <li>Identify exact colors used in competitor designs</li>
-          <li>Reproduce colors from physical products in digital designs</li>
-          <li>Build color schemes based on artwork or illustrations</li>
-        </ul>
-      </Card>
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">Frequently Asked Questions</h2>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="text-base sm:text-lg">What image formats are supported?</AccordionTrigger>
-            <AccordionContent>
-              The image color picker supports all common image formats including JPG, PNG, GIF, WebP, and SVG. For best
-              results, use high-quality images with accurate colors.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="text-base sm:text-lg">Are my uploaded images stored?</AccordionTrigger>
-            <AccordionContent>
-              No, your images are processed entirely in your browser and are never uploaded to our servers. Once you
-              close or refresh the page, the image is completely removed from memory.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="text-base sm:text-lg">How accurate are the color values?</AccordionTrigger>
-            <AccordionContent>
-              The color values are extracted directly from the image pixels, providing exact accuracy. However, note
-              that colors may appear slightly different on various screens due to monitor calibration and color profile
-              differences.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </Card>
       <ColorExportDialog
         open={exportOpen}
         onOpenChange={setExportOpen}

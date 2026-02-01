@@ -17,15 +17,19 @@ import { BreadcrumbSchema, ImageObjectSchema, ArticleSchema } from "@/components
 import { CopyButton } from "@/components/copy-button"
 import { getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk } from "@/lib/color-utils"
 import { AnchorHashNav } from "@/components/anchor-hash-nav"
+import { BLOG_NAV_ITEMS } from "@/lib/blog-nav-data"
+import { TableOfContents } from "@/components/table-of-contents"
 import { FAQSection } from "@/components/faq-section"
 import { RelatedColorsSection } from "@/components/related-colors-section"
 import { BlogPostActions } from "@/components/blog-post-actions"
 import { ShadesTOC } from "@/components/shades-toc"
+import { ShadesSidebarTOC } from "@/components/shades-sidebar-toc"
 import { FeaturedImage } from "@/components/blog/featured-image"
 import { BlogContent } from "@/components/blog/blog-content"
 import { ShadeSwatch } from "@/components/blog/shade-swatch"
-import { convertToGumletUrl, convertHtmlImagesToGumlet } from "@/lib/gumlet-image-utils"
+import { convertToArticleImageUrl, convertHtmlImagesToBase, getLocalImageAbsoluteUrl } from "@/lib/image-utils"
 import { hasColorInTitle, hasExplicitHexInTitle } from "@/lib/color-title-utils"
+import { cn, autoLinkShadeNames } from "@/lib/utils"
 
 const ShareButtons = dynamic(() => import("@/components/share-buttons").then((mod) => mod.ShareButtons))
 const HelpfulVote = dynamic(() => import("@/components/helpful-vote").then((mod) => mod.HelpfulVote))
@@ -58,7 +62,7 @@ async function fetchPostByUri(uri: string) {
     }
 
     try {
-      const res = await fetch("https://cms.colormean.com/graphql", {
+      const res = await fetch("https://blog.hexcolormeans.com/graphql", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -217,7 +221,7 @@ async function fetchPostByUri(uri: string) {
 
 async function fetchPostBySlug(slug: string) {
   try {
-    const res = await fetch("https://cms.colormean.com/graphql", {
+    const res = await fetch("https://blog.hexcolormeans.com/graphql", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -282,7 +286,7 @@ async function fetchPostBySlug(slug: string) {
 
 async function fetchContentByUri(uri: string) {
   try {
-    const res = await fetch("https://cms.colormean.com/graphql", {
+    const res = await fetch("https://blog.hexcolormeans.com/graphql", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -388,7 +392,7 @@ async function fetchContentByUri(uri: string) {
 
 async function fetchAnyBySearch(term: string) {
   try {
-    const res = await fetch("https://cms.colormean.com/graphql", {
+    const res = await fetch("https://blog.hexcolormeans.com/graphql", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -504,7 +508,7 @@ function lastSegment(path: string) {
 async function fetchRestFeaturedMedia(id: number) {
   if (!id || id <= 0) return null
   try {
-    const res = await fetch(`https://cms.colormean.com/wp-json/wp/v2/media/${id}?_fields=source_url,alt_text`, {
+    const res = await fetch(`https://blog.hexcolormeans.com/wp-json/wp/v2/media/${id}?_fields=source_url,alt_text`, {
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
       next: { revalidate: 3600 },  // 1 hour instead of 10 min
     })
@@ -556,7 +560,7 @@ async function fetchRestCategories(ids: number[]) {
   if (!ids || ids.length === 0) return []
   try {
     const res = await fetch(
-      `https://cms.colormean.com/wp-json/wp/v2/categories?include=${ids.join(",")}&_fields=id,name,slug,link`,
+      `https://blog.hexcolormeans.com/wp-json/wp/v2/categories?include=${ids.join(",")}&_fields=id,name,slug,link`,
       { next: { revalidate: 3600 } }
     )
     const json = await res.json()
@@ -581,7 +585,7 @@ async function fetchRestCategories(ids: number[]) {
 async function fetchRestPostBySlug(slug: string) {
   try {
     const res = await fetch(
-      `https://cms.colormean.com/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,categories,yoast_head_json`,
+      `https://blog.hexcolormeans.com/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,categories,yoast_head_json`,
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
       { next: { revalidate: 3600, tags: [`wp:rest:post:${slug}`] } }  // 1 hour instead of 10 min
     )
@@ -612,7 +616,7 @@ async function fetchRestPostBySlug(slug: string) {
 async function fetchRestPageBySlug(slug: string) {
   try {
     const res = await fetch(
-      `https://cms.colormean.com/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,yoast_head_json`,
+      `https://blog.hexcolormeans.com/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,yoast_head_json`,
       // OPTIMIZATION: Increased revalidate time for Vercel free plan
       { next: { revalidate: 3600, tags: [`wp:rest:page:${slug}`] } }  // 1 hour instead of 10 min
     )
@@ -636,7 +640,7 @@ async function fetchRestPageBySlug(slug: string) {
 }
 
 async function fetchPostsByTagIds(tagIds: number[], count: number) {
-  const res = await fetch("https://cms.colormean.com/graphql", {
+  const res = await fetch("https://blog.hexcolormeans.com/graphql", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -662,7 +666,7 @@ async function fetchPostsByTagIds(tagIds: number[], count: number) {
 }
 
 async function fetchPostsByCategoryIds(catIds: number[], count: number) {
-  const res = await fetch("https://cms.colormean.com/graphql", {
+  const res = await fetch("https://blog.hexcolormeans.com/graphql", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -688,7 +692,7 @@ async function fetchPostsByCategoryIds(catIds: number[], count: number) {
 }
 
 async function fetchRandomPosts(count: number) {
-  const res = await fetch("https://cms.colormean.com/graphql", {
+  const res = await fetch("https://blog.hexcolormeans.com/graphql", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -839,6 +843,8 @@ interface WPPageProps {
   params: Promise<{ wp: string[] }>
 }
 
+export const dynamicParams = false;
+
 // Generate static paths for blog posts and pages from local JSON cache
 export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
   if (process.env.NODE_ENV === 'development') {
@@ -849,7 +855,7 @@ export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
     const postsDir = path.join(process.cwd(), 'lib/posts')
     if (!fs.existsSync(postsDir)) {
       console.warn('Posts directory not found, skipping static param generation')
-      return []
+      return [{ wp: ["welcome"] }] // Fallback
     }
 
     const files = fs.readdirSync(postsDir).filter(f => f.endsWith('.json'))
@@ -868,11 +874,14 @@ export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
     }
 
     console.log(`Generated ${allParams.length} static paths from local files.`)
+    if (allParams.length === 0) {
+        return [{ wp: ["welcome"] }] // Fallback
+    }
     return allParams
 
   } catch (error) {
     console.error('Failed to generate static params from local files:', error)
-    return []
+    return [{ wp: ["welcome"] }] // Fallback
   }
 }
 
@@ -891,25 +900,21 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
   if (!node?.seo) return { title: node?.title || "Article" }
   const featuredSrc: string | undefined = node?.featuredImage?.node?.sourceUrl || undefined
   const shortcodeHex = extractShortcodeHex(String(node?.content || "")) || detectColorFromTitle(String(node?.title || ""))
-  const colorImageAbs = (() => {
-    if (!shortcodeHex) return undefined
-    const clean = shortcodeHex.replace("#", "").toUpperCase()
-    return `https://colormean.com/colors/${clean}/image.webp`
-  })()
+  const colorImageAbs = shortcodeHex ? getLocalImageAbsoluteUrl(shortcodeHex) : undefined
 
-  // Convert WordPress CMS URLs to Gumlet CDN URLs for metadata
-  const site = "https://colormean.com"
-  const gumletFeaturedUrl = featuredSrc ? convertToGumletUrl(featuredSrc) : undefined
+  // Convert WordPress CMS URLs to configured Article Image URLs for metadata
+  const site = "https://hexcolormeans.com"
+  const articleFeaturedUrl = featuredSrc ? convertToArticleImageUrl(featuredSrc) : undefined
 
   const ogImg =
-    gumletFeaturedUrl ||
-    (node.seo?.opengraphImage?.mediaItemUrl ? convertToGumletUrl(node.seo.opengraphImage.mediaItemUrl) : undefined) ||
-    (node.seo?.opengraphImage?.sourceUrl ? convertToGumletUrl(node.seo.opengraphImage.sourceUrl) : undefined) ||
+    articleFeaturedUrl ||
+    (node.seo?.opengraphImage?.mediaItemUrl ? convertToArticleImageUrl(node.seo.opengraphImage.mediaItemUrl) : undefined) ||
+    (node.seo?.opengraphImage?.sourceUrl ? convertToArticleImageUrl(node.seo.opengraphImage.sourceUrl) : undefined) ||
     undefined
   const twImg =
-    gumletFeaturedUrl ||
-    (node.seo?.twitterImage?.mediaItemUrl ? convertToGumletUrl(node.seo.twitterImage.mediaItemUrl) : undefined) ||
-    (node.seo?.twitterImage?.sourceUrl ? convertToGumletUrl(node.seo.twitterImage.sourceUrl) : undefined) ||
+    articleFeaturedUrl ||
+    (node.seo?.twitterImage?.mediaItemUrl ? convertToArticleImageUrl(node.seo.twitterImage.mediaItemUrl) : undefined) ||
+    (node.seo?.twitterImage?.sourceUrl ? convertToArticleImageUrl(node.seo.twitterImage.sourceUrl) : undefined) ||
     undefined
   const canonical = node?.uri ? new URL(node.uri, site).toString() : node.seo?.canonical || node.seo?.opengraphUrl || undefined
   const robotsIndex = node.seo?.metaRobotsNoindex === "noindex" ? false : true
@@ -941,7 +946,7 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
       description: node.seo.opengraphDescription || node.seo.metaDesc || "",
       type: node.seo.opengraphType || "article",
       url: canonical,
-      siteName: "ColorMean",
+      siteName: "HexColorMeans",
       publishedTime: node.seo.opengraphPublishedTime || undefined,
       modifiedTime: node.seo.opengraphModifiedTime || undefined,
       authors: node.seo.opengraphAuthor ? [node.seo.opengraphAuthor] : undefined,
@@ -961,7 +966,7 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
       description: node.seo.twitterDescription || node.seo.metaDesc || "",
       images: twImg ? [twImg.startsWith("http") ? twImg : `${site}${twImg}`] : undefined,
       card: node.seo.twitterCard || "summary_large_image",
-      site: node.seo.twitterSite || "ColorMean",
+      site: node.seo.twitterSite || "HexColorMeans",
       creator: node.seo.twitterCreator || undefined,
     },
   }
@@ -992,7 +997,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
     )
   }
   async function getBlurDataURL(src: string | undefined): Promise<string | undefined> {
-    // Gumlet CDN images don't need blur placeholders - skip LQIP generation
+    // Article and color images are optimized for fast delivery - skip LQIP generation
     return undefined
   }
   if (node.__typename === "Category") {
@@ -1042,7 +1047,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
   const img = node?.featuredImage?.node?.sourceUrl
   const alt = node?.featuredImage?.node?.altText || node?.title
   const schemaRaw = node?.seo?.schema?.raw || undefined
-  const site = "https://colormean.com"
+  const site = "https://hexcolormeans.com"
   const canonical = node?.uri ? new URL(node.uri, site).toString() : undefined
   const titleHasColor = hasColorInTitle(node.title)
   const titleHasExplicitHex = hasExplicitHexInTitle(node.title)
@@ -1151,13 +1156,434 @@ export default async function WPPostPage({ params }: WPPageProps) {
   // Check if the title contains a color for conditional rendering
   const titleContainsColor = titleHasExplicitHex  // Use explicit hex only, not color names
 
-  // Convert WordPress image URLs to Gumlet CDN
-  const gumletImageUrl = img ? convertToGumletUrl(img) : undefined
+  // Convert WordPress image URLs to configured Article Image Base
+  const articleImageUrl = img ? convertToArticleImageUrl(img) : undefined
+
+  const isColorMeaningCategory = node?.categories?.nodes?.some((c: any) => 
+    c.slug === "color-meaning" || 
+    c.slug === "color-meanings" || 
+    c.name === "Color Meaning" || 
+    c.name === "Color Meanings"
+  );
+
+  const isShadesMeaningCategory = node?.categories?.nodes?.some((c: any) => 
+    c.name === "Shades Meaning" || 
+    c.slug === "shades-meaning"
+  );
+
+  // Extract shades list for Shades Meaning category posts
+  let shadesList: Array<{ name: string, hex: string, id: string }> = [];
+  let baseColorName = "";
+  
+  if (isShadesMeaningCategory) {
+    const contentHtml = node.content || "";
+    const secs = splitSectionsByH2(contentHtml);
+    
+    shadesList = secs.map(sec => {
+      const match = sec.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i)
+      if (!match) return null
+      const name = match[1].replace(/<[^>]+>/g, "").trim()
+
+      // Smart Hex Extraction
+      let hex = ""
+
+      // 1. Look for explicit "Hex:" or "Hex Code:" label pattern
+      // Handles variations like "Hex:", "Hex Code:", "Hex Value:", bold tags, spaces, non-breaking spaces
+      const explicitMatch = sec.match(/Hex(?:(?:\s|&nbsp;)*(?:Code|Value))?(?:\s|&nbsp;|:)*(?:<[^>]+>|\s|&nbsp;)*#?([0-9a-fA-F]{6})\b/i)
+
+      if (explicitMatch) {
+        hex = explicitMatch[1]
+      } else {
+        // 2. Fallback: Search for any hex code, but be careful
+        const allHexes = [...sec.matchAll(/#([0-9a-fA-F]{6})\b/g)]
+        for (const m of allHexes) {
+          const h = m[1].toUpperCase()
+          // Skip common background colors unless the name explicitly matches
+          const nameLower = name.toLowerCase()
+          if (h === 'FFFFFF' && !nameLower.includes('white') && !nameLower.includes('snow') && !nameLower.includes('ivory')) continue
+          if (h === '000000' && !nameLower.includes('black') && !nameLower.includes('jet') && !nameLower.includes('obsidian') && !nameLower.includes('onyx')) continue
+          if (h === 'F8F9FA' || h === 'F0F0F0') continue // Skip common light gray backgrounds
+
+          hex = h
+          break
+        }
+      }
+
+      if (!name || !hex) return null
+      return {
+        name,
+        hex: `#${hex.toUpperCase()}`,
+        id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+      }
+    }).filter((s): s is { name: string, hex: string, id: string } => !!s)
+    
+    baseColorName = colorName || node.title.replace(/Shades/i, "").trim()
+  }
+
+  const mainContent = (
+    <>
+      <article id="content" className="main-content grow-content max-w-none space-y-6 min-w-0" itemProp="articleBody">
+        {(() => {
+          const contentHtml = node.content || ""
+          const secs = splitSectionsByH2(contentHtml)
+          const isTechnical = (html: string) => /<h2[^>]*>[\s\S]*technical[\s\S]*<\/h2>/i.test(html)
+          const preferNearestForYellow = (colorName || "").toLowerCase() === "yellow"
+          const nearestHexForYellow = preferNearestForYellow ? nearestShortcodeHexAroundTechnical(contentHtml) : null
+
+          // Helper to render the featured image
+          const renderFeaturedImage = () => {
+            if (!img) return null
+
+            return (
+              <section key="featured-image" className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4 min-w-0">
+                <FeaturedImage
+                  src={img}
+                  alt={
+                    isSingleColor
+                      ? `${alt || ""} – Featured image for color ${colorName}`
+                      : `${alt || ""}`
+                  }
+                  priority={true}
+                  className="w-full"
+                />
+                <ImageObjectSchema
+                  url={articleImageUrl!}
+                  width={1200}
+                  height={800}
+                  caption={
+                    isSingleColor
+                      ? `Infographic showing color meaning, psychology and spirituality association of color ${colorName}`
+                      : (node?.seo?.opengraphImage?.altText || alt || undefined)
+                  }
+                  description={
+                    isSingleColor
+                      ? `A visual guide for understanding color ${colorName} meaning, symbolism, psychology, and informational data for your next project.`
+                      : (node?.seo?.opengraphDescription || node?.seo?.metaDesc || undefined)
+                  }
+                  author="HexColorMeans"
+                  representativeOfPage={true}
+                />
+                {hasColorUI && (
+                  <BlogPostActions
+                    loveKey={(effectiveHex || postColor).replace("#", "")}
+                    shareUrl={`${site}${node.uri}`}
+                    shareTitle={node.title}
+                  />
+                )}
+              </section>
+            )
+          }
+
+          // Check if we have a technical section in the content
+          const hasTechnicalSection = secs.some(sec => isTechnical(sec));
+
+          const mappedSections = secs.map((sec: string, i: number) => {
+            const sectionContent = (() => {
+              // Check for Shades Meaning category to apply Swatch enhancement
+              const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
+              console.log("DEBUG: isShadesMeaning check result:", isShadesMeaning);
+              console.log("DEBUG: Categories:", node.categories?.nodes);
+              console.log("DEBUG: Section HTML length:", sec.length);
+              console.log("DEBUG: Section preview:", sec.substring(0, 100) + "...");
+
+              if (isShadesMeaning) {
+                // Parse values from the section content
+                let blockHtml = ""
+                let found = false
+
+                // Try detecting a list first (common format)
+                const listMatch = sec.match(/<ul[^>]*>[\s\S]*?(?:#([0-9a-fA-F]{6})\b|Hex|RGB|CMYK)[\s\S]*?<\/ul>/i)
+                if (listMatch) {
+                  blockHtml = listMatch[0]
+                  found = true
+                } else {
+                  // Try detecting a paragraph
+                  const paraMatch = sec.match(/<p[^>]*>[\s\S]*?(?:#([0-9a-fA-F]{6})\b|Hex|RGB|CMYK)[\s\S]*?<\/p>/i)
+                  if (paraMatch) {
+                    blockHtml = paraMatch[0]
+                    found = true
+                  }
+                }
+
+                if (found && blockHtml) {
+                  const hexMatch = blockHtml.match(/#([0-9a-fA-F]{6})\b/)
+                  const rgbMatch = blockHtml.match(/RGB(?:[:\-\s]|&nbsp;)+(\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3})/i)
+                  const cmykMatch = blockHtml.match(/CMYK(?:[:\-\s]|&nbsp;)+(\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3})/i)
+
+                  if (hexMatch) {
+                    const hex = `#${hexMatch[1].toUpperCase()}`
+                    let rgb = rgbMatch ? rgbMatch[1].replace(/&nbsp;/g, ' ').trim() : undefined
+                    let cmyk = cmykMatch ? cmykMatch[1].replace(/&nbsp;/g, ' ').trim() : undefined
+
+                    if (!rgb || !cmyk) {
+                      const calculatedRgb = hexToRgb(hex)
+                      if (calculatedRgb) {
+                        if (!rgb) rgb = `${calculatedRgb.r}, ${calculatedRgb.g}, ${calculatedRgb.b}`
+                        if (!cmyk) {
+                          const calculatedCmyk = rgbToCmyk(calculatedRgb.r, calculatedRgb.g, calculatedRgb.b)
+                          cmyk = `${calculatedCmyk.c}, ${calculatedCmyk.m}, ${calculatedCmyk.y}, ${calculatedCmyk.k}`
+                        }
+                      }
+                    }
+
+                    const parts = sec.split(blockHtml)
+                    return (
+                      <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden">
+                        {parts[0] && (
+                          <BlogContent
+                            html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[0]), accentColor), isShadesMeaning)}
+                            className="cm-wrap"
+                            style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
+                          />
+                        )}
+                        <div className="px-4 sm:px-6">
+                          <ShadeSwatch hex={hex} rgb={rgb} cmyk={cmyk} />
+                        </div>
+                        {parts[1] && (
+                          <BlogContent
+                            html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[1]), accentColor), isShadesMeaning)}
+                            className="cm-wrap"
+                            style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
+                          />
+                        )}
+                      </section>
+                    )
+                  }
+                }
+              }
+
+              if (isTechnical(sec)) {
+                // Only show technical section if there's a color in the title
+                if (titleContainsColor) {
+                  // Enhance technical sections with hex information when available
+                  const hexValue = effectiveHex?.toUpperCase() || '';
+                  const rgb = effectiveHex ? hexToRgb(effectiveHex) : null;
+                  const hsl = effectiveHex && rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null;
+
+                  return (
+                    <section id="technical-information" style={{ scrollMarginTop: "96px" }} key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4">
+                      {/* Enhanced Technical Information with hex data */}
+                      <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h3 className="text-lg font-semibold text-blue-800 mb-3">Technical Information</h3>
+                        <div className="space-y-3">
+                          <div>
+                            <span className="font-medium text-gray-700">Color Hex:</span>
+                            <div className="mt-1">
+                              <CopyButton
+                                showIcon={false}
+                                variant="ghost"
+                                size="sm"
+                                className="p-0 h-auto font-mono text-lg"
+                                label={hexValue}
+                                value={hexValue}
+                              />
+                            </div>
+                          </div>
+                          {rgb && (
+                            <div>
+                              <span className="font-medium text-gray-700">RGB:</span>
+                              <div className="mt-1">
+                                <CopyButton
+                                  showIcon={false}
+                                  variant="ghost"
+                                  size="sm"
+                                  className="p-0 h-auto font-mono"
+                                  label={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}
+                                  value={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}
+                                />
+                              </div>
+                            </div>
+                          )}
+                          {hsl && (
+                            <div>
+                              <span className="font-medium text-gray-700">HSL:</span>
+                              <div className="mt-1">
+                                <CopyButton
+                                  showIcon={false}
+                                  variant="ghost"
+                                  size="sm"
+                                  className="p-0 h-auto font-mono"
+                                  label={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`}
+                                  value={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`}
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {/* Render the rest of the technical content */}
+                      <BlogContent
+                        html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaning)}
+                        className="cm-wrap"
+                        style={{
+                          "--page-accent-color": accentColor,
+                          "--page-accent-contrast": getContrastColor(accentColor)
+                        } as React.CSSProperties}
+                      />
+                    </section>
+                  );
+                } else {
+                  // Hide technical section if no color in title
+                  return null;
+                }
+              }
+              return (
+                <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden min-w-0">
+                  <BlogContent
+                    html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaning)}
+                    className="cm-wrap"
+                    style={{
+                      "--page-accent-color": accentColor,
+                      "--page-accent-contrast": getContrastColor(accentColor)
+                    } as React.CSSProperties}
+                  />
+                </section>
+              )
+            })()
+
+            // Render featured image at the top of the content section
+            if (i === 0) {
+              const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
+              let tocElement: React.ReactNode = null
+
+              if (isShadesMeaning) {
+                // Only show ShadesTOC on mobile/small screens where left sidebar is not visible
+                // On desktop (lg+), the left sidebar provides navigation
+                if (shadesList.length > 0) {
+                  tocElement = (
+                    <div className="lg:hidden">
+                      <ShadesTOC
+                        key="shades-toc"
+                        shades={shadesList}
+                        baseColorName={baseColorName}
+                      />
+                    </div>
+                  )
+                }
+              }
+
+              return [renderFeaturedImage(), sectionContent, tocElement]
+            }
+            return sectionContent
+          });
+
+          // If there's no technical section in the content and the title contains a color,
+          // automatically insert the technical information section before the FAQ section
+          if (!hasTechnicalSection && titleContainsColor) {
+            return [
+              ...mappedSections,
+              <section
+                key="auto-tech-info-wrapper"
+                id="technical-information"
+                className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden"
+                style={{ scrollMarginTop: "96px" }}
+              >
+                <div
+                  className="flex items-center bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight"
+                  style={{ borderLeftColor: effectiveHex }}
+                >
+                  Technical Information
+                </div>
+                <div className="px-4 sm:px-6 py-2">
+                  <ColorPageContent
+                    hex={effectiveHex}
+                    mode="sectionsOnly"
+                  />
+                </div>
+              </section>
+            ];
+          }
+
+          return mappedSections
+        })()}
+      </article>
+
+      {titleContainsColor && <FAQSection color={colorName} />}
+      {titleHex && <RelatedColorsSection hex={effectiveHex} />}
+      <div className="flex justify-between items-center py-6 border-t border-b border-border my-6">
+        {prevNext.previous ? (
+          <Link href={prevNext.previous.uri} className="flex flex-col items-start max-w-[45%] group">
+            <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">← Previous Post</span>
+            <span className="font-medium text-purple-600 group-hover:underline line-clamp-2">{prevNext.previous.title}</span>
+          </Link>
+        ) : <div></div>}
+        {prevNext.next ? (
+          <Link href={prevNext.next.uri} className="flex flex-col items-end max-w-[45%] text-right group">
+            <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">Next Post →</span>
+            <span className="font-medium text-purple-600 group-hover:underline line-clamp-2">{prevNext.next.title}</span>
+          </Link>
+        ) : <div></div>}
+      </div>
+      <Suspense fallback={<div className="flex justify-center py-4"><span className="h-6 w-24 rounded bg-muted animate-pulse" /></div>}>
+        <div className="flex justify-center py-4">
+          <ShareButtons title={node.title} url={`${site}${node.uri}`} />
+        </div>
+      </Suspense>
+      <HelpfulVote uri={uri} />
+      <Suspense
+        fallback={
+          <section className="rounded-xl border border-border bg-muted/30 shadow-sm md:shadow p-1 sm:p-2 md:p-4 mt-8">
+            <h3 className="text-2xl font-bold mb-4">Related Posts</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-lg overflow-hidden border-2 border-border">
+                  <div className="w-full aspect-[3/2] bg-muted animate-pulse" />
+                  <div className="p-4">
+                    <div className="h-4 w-3/4 bg-muted rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        }
+      >
+        {related.length > 0 && (
+          <section className="rounded-xl border border-border bg-muted/30 shadow-sm md:shadow p-1 sm:p-2 md:p-4 mt-8">
+            <h3 className="text-2xl font-bold mb-4">Related Posts</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {related.map((p: any, i: number) => {
+                const src = p?.featuredImage?.node?.sourceUrl || undefined
+                return (
+                  <div key={i} className="rounded-lg overflow-hidden border-2 border-border hover:shadow-lg transition-shadow">
+                    <Link href={p.uri} className="block">
+                      {src && (
+                        <FeaturedImage
+                          src={src}
+                          alt={p.featuredImage.node.altText || p.title}
+                          className="w-full"
+                        />
+                      )}
+                      <div className="p-4">
+                        <h4 className="text-base font-semibold line-clamp-2">{p.title}</h4>
+                      </div>
+                    </Link>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="mt-6 flex justify-center">
+              <Link href={moreLink} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg">
+                <span>More Posts</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
+          </section>
+        )}
+      </Suspense>
+    </>
+  );
+
+  const blogTocItems = BLOG_NAV_ITEMS.map((item) => ({
+    id: item.href.replace(/^#/, ""),
+    label: item.label,
+  }))
 
   return (
     <div className="flex flex-col min-h-screen">
       {node?.__typename === "Post" && (() => {
-        const author = node?.seo?.opengraphAuthor || "ColorMean"
+        const author = node?.seo?.opengraphAuthor || "HexColorMeans"
         const description = node?.seo?.metaDesc || node?.seo?.opengraphDescription || ""
         const datePublished = node?.seo?.opengraphPublishedTime || node?.date || "2024-01-01T08:00:00+00:00"
         const dateModified = node?.seo?.opengraphModifiedTime || node?.date || "2024-01-01T08:00:00+00:00"
@@ -1167,9 +1593,9 @@ export default async function WPPostPage({ params }: WPPageProps) {
             description={description}
             authorName={author}
             authorType="Person"
-            publisherName="ColorMean"
+            publisherName="HexColorMeans"
             publisherLogo={`${site}/logo.webp`}
-            image={gumletImageUrl}
+            image={articleImageUrl}
             datePublished={datePublished}
             dateModified={dateModified}
             url={canonical || `${site}${node.uri}`}
@@ -1186,11 +1612,11 @@ export default async function WPPostPage({ params }: WPPageProps) {
           color: hasColorUI ? getContrastColor(effectiveHex || postColor) : '#000000',
         }}
       >
-        <div className="container mx-auto">
+        <div className={cn("w-full mx-auto", isColorMeaningCategory ? "max-w-[1430px]" : "max-w-[1280px]")}>
           <BreadcrumbNav items={crumbs} />
           <BreadcrumbSchema
             items={[
-              { name: "ColorMean", item: site },
+              { name: "HexColorMeans", item: site },
               ...(firstCategory
                 ? [{ name: firstCategory.name, item: `${site}/category/${firstCategory.slug}` }]
                 : [{ name: "Blog", item: `${site}/blog` }]),
@@ -1198,7 +1624,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
             ]}
           />
           <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold">{node.title}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold">{node.title}</h1>
             {hasColorUI && (
               <div className="max-w-4xl mx-auto">
                 <div className="font-mono text-xs md:text-sm flex flex-wrap justify-center gap-4">
@@ -1236,395 +1662,81 @@ export default async function WPPostPage({ params }: WPPageProps) {
           </div>
         </div>
       </section>
-      {titleContainsColor && <AnchorHashNav />}
-      <main className="container mx-auto px-2 sm:px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1 space-y-6">
-            <article id="content" className="main-content grow-content max-w-none space-y-6" itemProp="articleBody">
-              {(() => {
-                const contentHtml = node.content || ""
-                const secs = splitSectionsByH2(contentHtml)
-                const isTechnical = (html: string) => /<h2[^>]*>[\s\S]*technical[\s\S]*<\/h2>/i.test(html)
-                const preferNearestForYellow = (colorName || "").toLowerCase() === "yellow"
-                const nearestHexForYellow = preferNearestForYellow ? nearestShortcodeHexAroundTechnical(contentHtml) : null
 
-                // Helper to render the featured image
-                const renderFeaturedImage = () => {
-                  if (!img) return null
-
-                  return (
-                    <section key="featured-image" className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4">
-                      <FeaturedImage
-                        src={img}
-                        alt={
-                          isSingleColor
-                            ? `${alt || ""} – Featured image for color ${colorName}`
-                            : `${alt || ""}`
-                        }
-                        priority={true}
-                        className="w-full"
-                      />
-                      <ImageObjectSchema
-                        url={gumletImageUrl!}
-                        width={1200}
-                        height={800}
-                        caption={
-                          isSingleColor
-                            ? `Infographic showing color meaning, psychology and spirituality association of color ${colorName}`
-                            : (node?.seo?.opengraphImage?.altText || alt || undefined)
-                        }
-                        description={
-                          isSingleColor
-                            ? `A visual guide for understanding color ${colorName} meaning, symbolism, psychology, and informational data for your next project.`
-                            : (node?.seo?.opengraphDescription || node?.seo?.metaDesc || undefined)
-                        }
-                        author="ColorMean"
-                        representativeOfPage={true}
-                      />
-                      {hasColorUI && (
-                        <BlogPostActions
-                          loveKey={(effectiveHex || postColor).replace("#", "")}
-                          shareUrl={`${site}${node.uri}`}
-                          shareTitle={node.title}
-                        />
-                      )}
-                    </section>
-                  )
-                }
-
-                // Check if we have a technical section in the content
-                const hasTechnicalSection = secs.some(sec => isTechnical(sec));
-
-                const mappedSections = secs.map((sec: string, i: number) => {
-                  const sectionContent = (() => {
-                    // Check for Shades Meaning category to apply Swatch enhancement
-                    const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
-
-                    if (isShadesMeaning) {
-                      // Parse values from the section content
-                      let blockHtml = ""
-                      let found = false
-
-                      // Try detecting a list first (common format)
-                      const listMatch = sec.match(/<ul[^>]*>[\s\S]*?(?:#([0-9a-fA-F]{6})\b|Hex|RGB|CMYK)[\s\S]*?<\/ul>/i)
-                      if (listMatch) {
-                        blockHtml = listMatch[0]
-                        found = true
-                      } else {
-                        // Try detecting a paragraph
-                        const paraMatch = sec.match(/<p[^>]*>[\s\S]*?(?:#([0-9a-fA-F]{6})\b|Hex|RGB|CMYK)[\s\S]*?<\/p>/i)
-                        if (paraMatch) {
-                          blockHtml = paraMatch[0]
-                          found = true
-                        }
-                      }
-
-                      if (found && blockHtml) {
-                        const hexMatch = blockHtml.match(/#([0-9a-fA-F]{6})\b/)
-                        const rgbMatch = blockHtml.match(/RGB(?:[:\-\s]|&nbsp;)+(\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3})/i)
-                        const cmykMatch = blockHtml.match(/CMYK(?:[:\-\s]|&nbsp;)+(\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3}(?:[,\s]|&nbsp;)+\d{1,3})/i)
-
-                        if (hexMatch) {
-                          const hex = `#${hexMatch[1].toUpperCase()}`
-                          let rgb = rgbMatch ? rgbMatch[1].replace(/&nbsp;/g, ' ').trim() : undefined
-                          let cmyk = cmykMatch ? cmykMatch[1].replace(/&nbsp;/g, ' ').trim() : undefined
-
-                          if (!rgb || !cmyk) {
-                            const calculatedRgb = hexToRgb(hex)
-                            if (calculatedRgb) {
-                              if (!rgb) rgb = `${calculatedRgb.r}, ${calculatedRgb.g}, ${calculatedRgb.b}`
-                              if (!cmyk) {
-                                const calculatedCmyk = rgbToCmyk(calculatedRgb.r, calculatedRgb.g, calculatedRgb.b)
-                                cmyk = `${calculatedCmyk.c}, ${calculatedCmyk.m}, ${calculatedCmyk.y}, ${calculatedCmyk.k}`
-                              }
-                            }
-                          }
-
-                          const parts = sec.split(blockHtml)
-                          return (
-                            <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden">
-                              {parts[0] && (
-                                <BlogContent
-                                  html={enhanceContentHtml(removeShortcode(parts[0]), accentColor)}
-                                  className="cm-wrap"
-                                  style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
-                                />
-                              )}
-                              <div className="px-4 sm:px-6">
-                                <ShadeSwatch hex={hex} rgb={rgb} cmyk={cmyk} />
-                              </div>
-                              {parts[1] && (
-                                <BlogContent
-                                  html={enhanceContentHtml(removeShortcode(parts[1]), accentColor)}
-                                  className="cm-wrap"
-                                  style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
-                                />
-                              )}
-                            </section>
-                          )
-                        }
-                      }
-                    }
-
-                    if (isTechnical(sec)) {
-                      // Only show technical section if there's a color in the title
-                      if (titleContainsColor) {
-                        // Enhance technical sections with hex information when available
-                        const hexValue = effectiveHex?.toUpperCase() || '';
-                        const rgb = effectiveHex ? hexToRgb(effectiveHex) : null;
-                        const hsl = effectiveHex && rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null;
-
-                        return (
-                          <section id="technical-information" style={{ scrollMarginTop: "96px" }} key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4">
-                            {/* Enhanced Technical Information with hex data */}
-                            <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                              <h3 className="text-lg font-semibold text-blue-800 mb-3">Technical Information</h3>
-                              <div className="space-y-3">
-                                <div>
-                                  <span className="font-medium text-gray-700">Color Hex:</span>
-                                  <div className="mt-1">
-                                    <CopyButton
-                                      showIcon={false}
-                                      variant="ghost"
-                                      size="sm"
-                                      className="p-0 h-auto font-mono text-lg"
-                                      label={hexValue}
-                                      value={hexValue}
-                                    />
-                                  </div>
-                                </div>
-                                {rgb && (
-                                  <div>
-                                    <span className="font-medium text-gray-700">RGB:</span>
-                                    <div className="mt-1">
-                                      <CopyButton
-                                        showIcon={false}
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-0 h-auto font-mono"
-                                        label={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}
-                                        value={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}
-                                      />
-                                    </div>
-                                  </div>
-                                )}
-                                {hsl && (
-                                  <div>
-                                    <span className="font-medium text-gray-700">HSL:</span>
-                                    <div className="mt-1">
-                                      <CopyButton
-                                        showIcon={false}
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-0 h-auto font-mono"
-                                        label={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`}
-                                        value={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`}
-                                      />
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            {/* Render the rest of the technical content */}
-                            <BlogContent
-                              html={enhanceContentHtml(removeShortcode(sec), accentColor)}
-                              className="cm-wrap"
-                              style={{
-                                "--page-accent-color": accentColor,
-                                "--page-accent-contrast": getContrastColor(accentColor)
-                              } as React.CSSProperties}
-                            />
-                          </section>
-                        );
-                      } else {
-                        // Hide technical section if no color in title
-                        return null;
-                      }
-                    }
-                    return (
-                      <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden">
-                        <BlogContent
-                          html={enhanceContentHtml(removeShortcode(sec), accentColor)}
-                          className="cm-wrap"
-                          style={{
-                            "--page-accent-color": accentColor,
-                            "--page-accent-contrast": getContrastColor(accentColor)
-                          } as React.CSSProperties}
-                        />
-                      </section>
-                    )
-                  })()
-
-                  // Render featured image at the top of the content section
-                  if (i === 0) {
-                    const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
-                    let tocElement: React.ReactNode = null
-
-                    if (isShadesMeaning) {
-                      const shadesList = secs.map(sec => {
-                        const match = sec.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i)
-                        if (!match) return null
-                        const name = match[1].replace(/<[^>]+>/g, "").trim()
-
-                        // Smart Hex Extraction
-                        let hex = ""
-
-                        // 1. Look for explicit "Hex:" or "Hex Code:" label pattern
-                        // Handles variations like "Hex:", "Hex Code:", "Hex Value:", bold tags, spaces, non-breaking spaces
-                        const explicitMatch = sec.match(/Hex(?:(?:\s|&nbsp;)*(?:Code|Value))?(?:\s|&nbsp;|:)*(?:<[^>]+>|\s|&nbsp;)*#?([0-9a-fA-F]{6})\b/i)
-
-                        if (explicitMatch) {
-                          hex = explicitMatch[1]
-                        } else {
-                          // 2. Fallback: Search for any hex code, but be careful
-                          const allHexes = [...sec.matchAll(/#([0-9a-fA-F]{6})\b/g)]
-                          for (const m of allHexes) {
-                            const h = m[1].toUpperCase()
-                            // Skip common background colors unless the name explicitly matches
-                            const nameLower = name.toLowerCase()
-                            if (h === 'FFFFFF' && !nameLower.includes('white') && !nameLower.includes('snow') && !nameLower.includes('ivory')) continue
-                            if (h === '000000' && !nameLower.includes('black') && !nameLower.includes('jet') && !nameLower.includes('obsidian') && !nameLower.includes('onyx')) continue
-                            if (h === 'F8F9FA' || h === 'F0F0F0') continue // Skip common light gray backgrounds
-
-                            hex = h
-                            break
-                          }
-                        }
-
-                        if (!name || !hex) return null
-                        return {
-                          name,
-                          hex: `#${hex.toUpperCase()}`,
-                          id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-                        }
-                      }).filter((s): s is { name: string, hex: string, id: string } => !!s)
-
-                      if (shadesList.length > 0) {
-                        tocElement = (
-                          <ShadesTOC
-                            key="shades-toc"
-                            shades={shadesList}
-                            baseColorName={colorName || node.title.replace(/Shades/i, "").trim()}
-                          />
-                        )
-                      }
-                    }
-
-                    return [renderFeaturedImage(), sectionContent, tocElement]
-                  }
-                  return sectionContent
-                });
-
-                // If there's no technical section in the content and the title contains a color,
-                // automatically insert the technical information section before the FAQ section
-                if (!hasTechnicalSection && titleContainsColor) {
-                  return [
-                    ...mappedSections,
-                    <section
-                      key="auto-tech-info-wrapper"
-                      id="technical-information"
-                      className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden"
-                      style={{ scrollMarginTop: "96px" }}
-                    >
-                      <div
-                        className="flex items-center bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight"
-                        style={{ borderLeftColor: effectiveHex }}
-                      >
-                        Technical Information
-                      </div>
-                      <div className="px-4 sm:px-6 py-2">
-                        <ColorPageContent
-                          hex={effectiveHex}
-                          mode="sectionsOnly"
-                        />
-                      </div>
-                    </section>
-                  ];
-                }
-
-                return mappedSections
-              })()}
-            </article>
-
-            {titleContainsColor && <FAQSection color={colorName} />}
-            {titleHex && <RelatedColorsSection hex={effectiveHex} />}
-            <div className="flex justify-between items-center py-6 border-t border-b border-border my-6">
-              {prevNext.previous ? (
-                <Link href={prevNext.previous.uri} className="flex flex-col items-start max-w-[45%] group">
-                  <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">← Previous Post</span>
-                  <span className="font-medium text-purple-600 group-hover:underline line-clamp-2">{prevNext.previous.title}</span>
-                </Link>
-              ) : <div></div>}
-              {prevNext.next ? (
-                <Link href={prevNext.next.uri} className="flex flex-col items-end max-w-[45%] text-right group">
-                  <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">Next Post →</span>
-                  <span className="font-medium text-purple-600 group-hover:underline line-clamp-2">{prevNext.next.title}</span>
-                </Link>
-              ) : <div></div>}
-            </div>
-            <Suspense fallback={<div className="flex justify-center py-4"><span className="h-6 w-24 rounded bg-muted animate-pulse" /></div>}>
-              <div className="flex justify-center py-4">
-                <ShareButtons title={node.title} url={`${site}${node.uri}`} />
-              </div>
-            </Suspense>
-            <HelpfulVote uri={uri} />
-            <Suspense
-              fallback={
-                <section className="rounded-xl border border-yellow-100 shadow-sm md:shadow p-1 sm:p-2 md:p-4 mt-8" style={{ backgroundColor: "#fff9e6" }}>
-                  <h3 className="text-2xl font-bold mb-4">Related Posts</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div key={i} className="rounded-lg overflow-hidden border-2 border-border">
-                        <div className="w-full aspect-[3/2] bg-muted animate-pulse" />
-                        <div className="p-4">
-                          <div className="h-4 w-3/4 bg-muted rounded animate-pulse" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              }
-            >
-              {related.length > 0 && (
-                <section className="rounded-xl border border-yellow-100 shadow-sm md:shadow p-1 sm:p-2 md:p-4 mt-8" style={{ backgroundColor: "#fff9e6" }}>
-                  <h3 className="text-2xl font-bold mb-4">Related Posts</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {related.map((p: any, i: number) => {
-                      const src = p?.featuredImage?.node?.sourceUrl || undefined
-                      return (
-                        <div key={i} className="rounded-lg overflow-hidden border-2 border-border hover:shadow-lg transition-shadow">
-                          <Link href={p.uri} className="block">
-                            {src && (
-                              <FeaturedImage
-                                src={src}
-                                alt={p.featuredImage.node.altText || p.title}
-                                className="w-full"
-                              />
-                            )}
-                            <div className="p-4">
-                              <h4 className="text-base font-semibold line-clamp-2">{p.title}</h4>
-                            </div>
-                          </Link>
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <div className="mt-6 flex justify-center">
-                    <Link href={moreLink} className="px-4 py-2 rounded-md border-2 border-border hover:bg-muted">
-                      More Posts
-                    </Link>
-                  </div>
-                </section>
-              )}
-            </Suspense>
+      {isColorMeaningCategory ? (
+        <>
+          <div className="lg:hidden w-full z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border mb-6">
+            <TableOfContents currentHex={effectiveHex || postColor} mobileOnly items={blogTocItems} />
           </div>
-          <ColorSidebar color={accentColor} showColorSchemes={hasColorUI} />
-        </div>
-      </main>
+          <main className="w-full max-w-[1430px] mx-auto px-4 py-12">
+            <div className="flex flex-col lg:flex-row gap-8 items-start">
+              <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
+                <TableOfContents currentHex={effectiveHex || postColor} items={blogTocItems} />
+              </aside>
+              <div className="flex-1 min-w-0 w-full space-y-6">
+                {mainContent}
+              </div>
+              <aside className="hidden xl:block w-[380px] shrink-0 sticky top-24 self-start">
+                <ColorSidebar 
+                  color={accentColor} 
+                  showColorSchemes={hasColorUI} 
+                  className="w-full space-y-6" 
+                />
+              </aside>
+            </div>
+          </main>
+        </>
+      ) : (
+        <>
+          {titleContainsColor && <AnchorHashNav />}
+          {/* Check if this is a Shades Meaning category post */}
+          {isShadesMeaningCategory ? (
+            <main className="w-full max-w-[1430px] mx-auto px-4 py-12">
+              <div className="flex flex-col lg:flex-row gap-8 items-start">
+                {/* Left Sidebar for Shades Meaning */}
+                <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
+                  <ShadesSidebarTOC 
+                    currentHex={effectiveHex || postColor} 
+                    shades={shadesList} 
+                    baseColorName={baseColorName || "Color"} 
+                  />
+                </aside>
+                
+                {/* Main Content Area */}
+                <div className="flex-1 min-w-0 w-full space-y-6">
+                  {mainContent}
+                </div>
+                
+                {/* Right Sidebar */}
+                <aside className="hidden xl:block w-[380px] shrink-0 sticky top-24 self-start">
+                  <ColorSidebar 
+                    color={accentColor} 
+                    showColorSchemes={hasColorUI} 
+                    className="w-full space-y-6" 
+                  />
+                </aside>
+              </div>
+            </main>
+          ) : (
+            <main className="w-full max-w-[1280px] mx-auto px-2 sm:px-4 py-12">
+              <div className="flex flex-col lg:flex-row gap-8 min-w-0">
+                <div className="flex-1 space-y-6 min-w-0">
+                  {mainContent}
+                </div>
+                <aside className="hidden xl:block w-[380px] shrink-0">
+                  <ColorSidebar color={accentColor} showColorSchemes={hasColorUI} />
+                </aside>
+              </div>
+            </main>
+          )}
+        </>
+      )}
+
       <Footer />
     </div>
   )
 }
+
 
 function parseContentPieces(
   html: string,
@@ -1642,7 +1754,7 @@ function parseContentPieces(
     .replace(/\u005B/g, "[")
     .replace(/\u005D/g, "]")
   const re =
-    /(\[)\s*colormean\b([\s\S]*?)(\])/gi
+    /(\[)\s*(?:colormean|hexcolormeans)\b([\s\S]*?)(\])/gi
   const out: Array<{ kind: "html"; html: string } | { kind: "shortcode"; hex: string }> = []
   let last = 0
   for (const m of norm.matchAll(re) as any) {
@@ -1702,7 +1814,7 @@ function extractSectionShortcodeHex(html: string): string | null {
     .replace(/&(amp;)?rbrack;?/gi, "]")
     .replace(/\u005B/g, "[")
     .replace(/\u005D/g, "]")
-  const re = /(\[)\s*colormean\b([\s\S]*?)(\])/i
+  const re = /(\[)\s*(?:colormean|hexcolormeans)\b([\s\S]*?)(\])/i
   const m = norm.match(re)
   if (!m) return null
   const attrs = m[2] as string
@@ -1714,7 +1826,7 @@ function extractShortcodeHexFromGutenberg(html: string): string | null {
   const block = content.match(/<!--\s*wp:shortcode\s*-->([\s\S]*?)<!--\s*\/wp:shortcode\s*-->/i)
   if (!block) return null
   const inner = String(block[1] || "")
-  const match = inner.match(/(\[)\s*colormean\b([\s\S]*?)(\])/i)
+  const match = inner.match(/(\[)\s*(?:colormean|hexcolormeans)\b([\s\S]*?)(\])/i)
   if (!match) return null
   const attrs = match[2] as string
   return parseAttrsHex(attrs)
@@ -1729,7 +1841,7 @@ function nearestShortcodeHexBeforeTechnical(html: string): string | null {
   const window = s.slice(start, idx)
   const g = extractShortcodeHexFromGutenberg(window)
   if (g) return g
-  const m = window.match(/(\[)\s*colormean\b([\s\S]*?)(\])/i)
+  const m = window.match(/(\[)\s*(?:colormean|hexcolormeans)\b([\s\S]*?)(\])/i)
   if (m) {
     const attrs = m[2] as string
     const h = parseAttrsHex(attrs)
@@ -1752,7 +1864,7 @@ function nearestShortcodeHexAroundTechnical(html: string): string | null {
   const forward = s.slice(start, forwardEnd)
   const g = extractShortcodeHexFromGutenberg(forward)
   if (g) return g
-  const m = forward.match(/(\[)\s*colormean\b([\s\S]*?)(\])/i)
+  const m = forward.match(/(\[)\s*(?:colormean|hexcolormeans)\b([\s\S]*?)(\])/i)
   if (m) {
     const attrs = m[2] as string
     const h = parseAttrsHex(attrs)
@@ -1883,10 +1995,10 @@ function enhanceContentHtml(html: string, accentColor: string): string {
         a = `${a} height="${height}"`
       }
 
-      // Convert WordPress URLs to Gumlet CDN URLs
+      // Convert WordPress URLs to configured Article Image URLs
       if (origSrc) {
-        const gumletUrl = convertToGumletUrl(origSrc)
-        a = a.replace(sMatch![0], `src="${gumletUrl}"`)
+        const articleUrl = convertToArticleImageUrl(origSrc)
+        a = a.replace(sMatch![0], `src="${articleUrl}"`)
       }
 
       // Handle class
@@ -1929,17 +2041,18 @@ function enhanceContentHtml(html: string, accentColor: string): string {
   out = addClass(out, "ul", ul)
   out = addClass(out, "ol", ol)
   const rewriteHref = (url: string) => {
-    const site = "https://colormean.com"
+    const site = "https://hexcolormeans.com"
     try {
       const u = new URL(url, site)
-      if (u.hostname === "localhost" || u.hostname === "cms.colormean.com") {
+      if (u.hostname === "localhost" || u.hostname === "blog.hexcolormeans.com" || u.hostname === "cms.colormean.com") {
         u.protocol = "https:"
-        u.hostname = "colormean.com"
+        u.hostname = "hexcolormeans.com"
         return u.toString()
       }
       return u.toString()
     } catch {
       if (/^http:\/\/localhost:3000/i.test(url)) return url.replace(/^http:\/\/localhost:3000/i, site)
+      if (/^https?:\/\/blog\.hexcolormeans\.com/i.test(url)) return url.replace(/^https?:\/\/blog\.hexcolormeans\.com/i, site)
       if (/^https?:\/\/cms\.colormean\.com/i.test(url)) return url.replace(/^https?:\/\/cms\.colormean\.com/i, site)
       return url
     }
@@ -2265,7 +2378,7 @@ function extractShortcodeHex(html: string): string | null {
     .replace(/&#x5d;/gi, "]")
     .replace(/\u005B/g, "[")
     .replace(/\u005D/g, "]")
-  const tag = pre.match(/\[\s*colormean\b([\s\S]*?)\]/i)
+  const tag = pre.match(/\[\s*(?:colormean|hexcolormeans)\b([\s\S]*?)\]/i)
   if (!tag) return null
   const attrs = tag[1] || ""
   const decoded = attrs
@@ -2316,5 +2429,5 @@ function removeShortcode(html: string): string {
     .replace(/&#x005d;/gi, "]")
     .replace(/&#x5b;/gi, "[")
     .replace(/&#x5d;/gi, "]")
-    .replace(/\[\s*colormean\b[\s\S]*?\]/gi, "")
+    .replace(/\[\s*(?:colormean|hexcolormeans)\b[\s\S]*?\]/gi, "")
 }

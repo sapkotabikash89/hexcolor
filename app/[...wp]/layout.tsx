@@ -11,10 +11,10 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://colormean.com"),
-  title: "ColorMean - Know Your Color | Color Information, Meanings & Tools",
+  metadataBase: new URL("https://hexcolormeans.com"),
+  title: "HexColorMeans - Where Every Color Has Meaning | Color Information, Meanings & Tools",
   description:
-    "Explore colors with ColorMean. Get detailed color information, meanings, conversions, harmonies, and use professional color tools including color picker, contrast checker, and more.",
+    "Explore colors with HexColorMeans. Get detailed color information, meanings, conversions, harmonies, and use professional color tools including color picker, contrast checker, and more.",
   keywords: [
     "color picker",
     "color codes",
@@ -26,30 +26,30 @@ export const metadata: Metadata = {
     "color palette",
     "contrast checker",
   ],
-  authors: [{ name: "ColorMean" }],
+  authors: [{ name: "HexColorMeans" }],
   alternates: {
-    canonical: "https://colormean.com",
+    canonical: "https://hexcolormeans.com",
   },
   openGraph: {
-    title: "ColorMean - Know Your Color",
+    title: "HexColorMeans - Where Every Color Has Meaning",
     description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
     type: "website",
-    url: "https://colormean.com",
-    siteName: "ColorMean",
+    url: "https://hexcolormeans.com",
+    siteName: "HexColorMeans",
     images: [
       {
-        url: "https://colormean.com/colormean-know%20your%20color.webp",
+        url: "https://hexcolormeans.com/colormean-know%20your%20color.webp",
         width: 1200,
         height: 630,
-        alt: "ColorMean homepage preview",
+        alt: "HexColorMeans homepage preview",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ColorMean - Know Your Color",
+    title: "HexColorMeans - Where Every Color Has Meaning",
     description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
-    images: ["https://colormean.com/colormean-know%20your%20color.webp"],
+    images: ["https://hexcolormeans.com/colormean-know%20your%20color.webp"],
   },
   icons: { icon: "/favicon.webp" },
   robots: {
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#5B6FD8",
+  themeColor: "#E0115F",
 }
 
 export default function BlogRootLayout({
@@ -78,7 +78,7 @@ export default function BlogRootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="max-w-[1200px] mx-auto">
+    <div className="w-full">
       {children}
     </div>
   )

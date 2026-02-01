@@ -8,7 +8,7 @@ import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
 import { CopyButton } from "@/components/copy-button"
 
 export function CompactColorPicker() {
-    const [selectedColor, setSelectedColor] = useState("#5B6FD8")
+    const [selectedColor, setSelectedColor] = useState("#E0115F")
     const [hue, setHue] = useState(230)
     const [saturation, setSaturation] = useState(70)
     const [lightness, setLightness] = useState(60)

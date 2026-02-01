@@ -5,10 +5,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const GRAPHQL_URL = 'https://cms.colormean.com/graphql';
+const WORDPRESS_API_URL = 'https://blog.hexcolormeans.com/graphql';
 
 async function fetchGraphQL(query, variables = {}) {
-    const response = await fetch(GRAPHQL_URL, {
+    const response = await fetch(WORDPRESS_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, variables }),
@@ -99,9 +99,12 @@ async function sync() {
         const postsDir = path.resolve(__dirname, '../lib/posts');
         const indexFile = path.resolve(__dirname, '../lib/blog-posts-data.json');
 
-        if (!fs.existsSync(postsDir)) {
-            fs.mkdirSync(postsDir, { recursive: true });
+        if (fs.existsSync(postsDir)) {
+            // Clean directory first to remove outdated content
+            console.log(`Cleaning existing directory: ${postsDir}`);
+            fs.rmSync(postsDir, { recursive: true, force: true });
         }
+        fs.mkdirSync(postsDir, { recursive: true });
 
         // 1. Update Index File (Blog posts only)
         fs.writeFileSync(indexFile, JSON.stringify(posts, null, 2));

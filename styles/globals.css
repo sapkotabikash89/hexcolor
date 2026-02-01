@@ -3,26 +3,27 @@
 
 /* Critical CSS for fast rendering - inlined */
 @layer base {
+
   /* Base styles for immediate rendering */
   html {
     content-visibility: auto;
     contain-intrinsic-size: 0 100vh;
   }
-  
+
   body {
     /* Optimize scrolling */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
-  
+
   /* Basic image optimization */
   img {
     content-visibility: auto;
     contain-intrinsic-size: auto;
     image-rendering: -webkit-optimize-contrast;
   }
-  
+
   /* Basic typography */
   * {
     box-sizing: border-box;
@@ -31,11 +32,14 @@
 
 /* Blog content wrapper styles */
 .cm-wrap {
+  max-width: 100%;
+  overflow-x: hidden;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-.cm-wrap p, .cm-wrap li {
+.cm-wrap p,
+.cm-wrap li {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
@@ -60,8 +64,14 @@
 
 .cm-wrap [style*="background-color"],
 .cm-wrap [style*="background:"] {
+  max-width: 100%;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+}
+
+.cm-wrap img {
+  max-width: 100%;
+  height: auto;
 }
 
 .cm-wrap [style*="background-color"],
@@ -85,7 +95,8 @@
   color: var(--page-accent-color, #000000);
 }
 
-.cm-wrap ul, .cm-wrap ol {
+.cm-wrap ul,
+.cm-wrap ol {
   padding-left: 1.5rem;
   margin: 1rem 0;
 }
@@ -121,7 +132,7 @@
   .cm-ul li::before {
     font-size: 0.95rem;
   }
-  
+
   .cm-ol li::before {
     width: 1.35rem;
     height: 1.35rem;
@@ -175,6 +186,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

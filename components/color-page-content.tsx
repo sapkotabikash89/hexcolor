@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { Select } from "@/components/ui/select"
 
 import { SelectItem, SelectContent, SelectValue, SelectTrigger } from "@/components/ui/select"
@@ -28,20 +29,26 @@ import {
   getContrastRatio,
   getRelatedColors,
   getContrastColor, // Declare the variable here
-  getColorMeaning,
+  getHexColorMeansing,
   getAdjacentColors,
   getHueFamily,
+  getClosestKnownColor,
+  isKnownHex,
 } from "@/lib/color-utils"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ColorCombination } from "@/components/color-combination"
 import { ColorSwatch as Swatch } from "@/components/color-swatch"
-import { Share, Heart, Check, Copy } from "lucide-react"
+import { Share, Heart, Check, Copy, Download, Pipette, Image as ImageIcon, Palette, Monitor } from "lucide-react"
 import { ColorExportDialog } from "@/components/color-export-dialog"
 import { CopyButton } from "@/components/copy-button"
 import { ShareButtons } from "@/components/share-buttons"
 import { ColorImage } from "@/components/color-image"
-import { getGumletImageUrl } from "@/lib/gumlet-utils"
+import { ColorIcons } from "@/components/color-icons"
+import { ColorPatterns } from "@/components/color-patterns"
+import { ColorMockups } from "@/components/color-mockups"
+import { getGumletColorImage } from "@/lib/image-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface ColorPageContentProps {
   hex: string
@@ -83,31 +90,14 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
     // Sync global components (Header, Sidebar) with current page color
     window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: hex } }))
 
-    // Fetch global love count
-    const fetchLoveCount = async () => {
-      try {
-        const res = await fetch(`/api/love?hex=${hex.replace("#", "")}`)
-        if (res.ok) {
-          const data = await res.json()
-          setLoveCount(data.count)
-        }
-      } catch (error) {
-        console.error("Failed to fetch love count", error)
-      }
-    }
-
-    fetchLoveCount()
-
     const key = `love:${hex.toUpperCase()}`
     const raw = typeof window !== "undefined" ? window.localStorage.getItem(key) : null
     if (raw) {
       try {
         const parsed = JSON.parse(raw)
-        // setLoveCount(parsed.count || 9) // We prefer server count if available
         setLiked(!!parsed.liked)
       } catch { }
     } else {
-      // setLoveCount(9) // Default set by server fetch or initial state
       setLiked(false)
     }
   }, [hex])
@@ -133,7 +123,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
   const yxy = rgbToYxy(rgb.r, rgb.g, rgb.b)
   const lab = rgbToLab(rgb.r, rgb.g, rgb.b)
   const hunter = rgbToHunterLab(rgb.r, rgb.g, rgb.b)
-  const colorMeaning = getColorMeaning(hex)
+  const colorMeaning = getHexColorMeansing(hex)
   const hueFamily = getHueFamily
   const tone = hsl.l < 30 ? "Dark" : hsl.l > 70 ? "Light" : "Medium"
   const family = hueFamily(hsl.h)
@@ -157,7 +147,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
     ctx.fillText(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`, canvas.width / 2, canvas.height / 2 + 80)
     ctx.font = "600 64px system-ui, -apple-system, Segoe UI, Roboto"
     ctx.textAlign = "right"
-    ctx.fillText("ColorMean", canvas.width - 40, canvas.height - 40)
+    ctx.fillText("HexColorMeans", canvas.width - 40, canvas.height - 40)
     canvas.toBlob((blob) => {
       if (blob) {
         const url = URL.createObjectURL(blob)
@@ -176,23 +166,12 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
     const nextLiked = !liked
     setLiked(nextLiked)
 
-    // Optimistic update
+    // Optimistic update of local UI count
     setLoveCount((prev) => (nextLiked ? prev + 1 : Math.max(0, prev - 1)))
 
-    try {
-      // Update server
-      await fetch("/api/love", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hex: hex.replace("#", ""), increment: nextLiked }),
-      })
-
-      // Update local storage for persistence of "liked" state
-      const payload = { liked: nextLiked }
-      if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify(payload))
-    } catch (error) {
-      console.error("Failed to update love count", error)
-    }
+    // Update local storage for persistence of "liked" state
+    const payload = { liked: nextLiked }
+    if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify(payload))
   }
 
   const swapColors = () => {
@@ -210,7 +189,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
     triadic: { name: "Triadic", colors: getColorHarmony(hex, "triadic") },
     tetradic: { name: "Tetradic", colors: getColorHarmony(hex, "tetradic") },
     square: { name: "Square", colors: getColorHarmony(hex, "square") },
-    "double-split-complementary": { name: "Double Split", colors: getColorHarmony(hex, "double-split-complementary") },
+    "double-split-complementary": { name: "Double Split Complementary", colors: getColorHarmony(hex, "double-split-complementary") },
     monochromatic: { name: "Monochromatic", colors: getColorHarmony(hex, "monochromatic") },
   }
 
@@ -246,6 +225,9 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
   const [openContrast, setOpenContrast] = useState(defaultOpen)
   const [openBlindness, setOpenBlindness] = useState(defaultOpen)
   const [openCss, setOpenCss] = useState(defaultOpen)
+  const [openPatterns, setOpenPatterns] = useState(defaultOpen)
+  const [openMockups, setOpenMockups] = useState(defaultOpen)
+  const [openIcons, setOpenIcons] = useState(defaultOpen)
   const [openRelated, setOpenRelated] = useState(defaultOpen)
 
   return (
@@ -256,9 +238,52 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
             <h2 className="text-3xl font-bold m-0 leading-tight">{label} Color Information</h2>
           </div>
           <div className="px-4 sm:px-6 py-2">
-            <p className="text-base leading-relaxed">
-              {`${label} RGB value is (${rgb.r}, ${rgb.g}, ${rgb.b}). The hex color red value is ${rgb.r}, green is ${rgb.g}, and blue is ${rgb.b}. Its HSL format shows a hue of ${hsl.h}°, saturation of ${hsl.s}%, and lightness of ${hsl.l}%. The CMYK process values are ${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%.`}
-            </p>
+            <div className="text-base leading-relaxed">
+              {(() => {
+                const getUniqueKnownColors = (colors: string[]) => {
+                  const known = colors.map(c => getClosestKnownColor(c))
+                  const unique = new Map<string, { name: string; hex: string }>()
+                  for (const c of known) {
+                    if (c.hex.toUpperCase() !== hex.toUpperCase() && !unique.has(c.hex.toUpperCase())) {
+                      unique.set(c.hex.toUpperCase(), c)
+                    }
+                  }
+                  return Array.from(unique.values()).slice(0, 3)
+                }
+
+                const analogous = getColorHarmony(hex, "analogous")
+                const splitComp = getColorHarmony(hex, "split-complementary")
+                const pairingColors = getUniqueKnownColors([...analogous, ...splitComp])
+
+                const triadic = getColorHarmony(hex, "triadic")
+                const complementaryColor = getColorHarmony(hex, "complementary")[1]
+                const conflictingColors = getUniqueKnownColors([...triadic, complementaryColor])
+
+                const renderColorLink = (c: { name: string; hex: string }, i: number, arr: any[]) => (
+                  <span key={c.hex}>
+                    <Link href={getColorPageLink(c.hex)} className="text-primary hover:underline">
+                      {c.name} ({c.hex})
+                    </Link>
+                    {i < arr.length - 1 ? (i === arr.length - 2 ? ", and " : ", ") : ""}
+                  </span>
+                )
+
+                return (
+                  <div className="space-y-4">
+                    <p>
+                      <span className="font-semibold">{label}</span> RGB value is ({rgb.r}, {rgb.g}, {rgb.b}). The hex color red value is {rgb.r}, green is {rgb.g}, and blue is {rgb.b}. Its HSL format shows a hue of {hsl.h}°, saturation of {hsl.s}%, and lightness of {hsl.l}%, while the CMYK process values are {cmyk.c}%, {cmyk.m}%, {cmyk.y}%, and {cmyk.k}%.
+                    </p>
+                    <p>
+                      Colors that pair well with <span className="font-semibold">{label}</span> include{" "}
+                      {pairingColors.map((c, i) => renderColorLink(c, i, pairingColors))}
+                      , as they maintain visual balance and harmony, whereas{" "}
+                      {conflictingColors.map((c, i) => renderColorLink(c, i, conflictingColors))}
+                      {" "}tend to conflict with this color due to strong contrast or opposing tonal characteristics.
+                    </p>
+                  </div>
+                )
+              })()}
+            </div>
           </div>
         </Card>
       ) : null}
@@ -267,38 +292,59 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         <Card className="p-4 sm:p-6 space-y-4">
           <div className="w-full flex justify-center">
             <div className="relative w-full max-w-xl aspect-[1200/630] rounded-lg border-2 border-border overflow-hidden">
-              {/* Try to render Gumlet CDN image first, fall back to CSS swatch */}
+              {/* Render Gumlet CDN SEO-friendly image */}
               {(() => {
-                const gumletUrl = getGumletImageUrl(hex);
+                const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+                const isKnown = colorExistsInDb !== undefined ? colorExistsInDb : isKnownHex(hex);
+                const gumlet = getGumletColorImage({
+                  colorName: name || hex,
+                  hex: hex,
+                  rgb: rgb
+                });
 
-                if (gumletUrl && !imageError) {
-                  // Has pre-generated image from Gumlet CDN - Single image for Google Image Search indexing
+                if (isKnown && gumlet.url && !imageError) {
                   return (
-                    <img
-                      src={gumletUrl}
-                      alt={`${name ? name + ' ' : ''}(${hex}) color swatch showing RGB(${rgb.r}, ${rgb.g}, ${rgb.b}) values`}
-                      width="1200"
-                      height="630"
-                      loading="eager"
+                    <Image
+                      src={gumlet.url}
+                      alt={gumlet.alt}
+                      width={1200}
+                      height={630}
+                      priority
                       className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                      unoptimized
+                      onError={() => setImageError(true)}
                     />
                   );
                 }
 
-                // Fall back to CSS-generated swatch
+                // Fall back to CSS-generated swatch: Exactly match reference image
+                const contrastColor = getContrastColor(hex);
                 return (
                   <div
-                    className="w-full h-full relative"
-                    style={{ backgroundColor: hex, color: getContrastColor(hex) }}
+                    className="w-full h-full relative font-sans select-none flex items-center justify-center"
+                    style={{ backgroundColor: hex, color: contrastColor }}
                   >
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                      {name ? (
-                        <div className="font-mono text-base sm:text-lg font-semibold mb-1">{name}</div>
-                      ) : null}
-                      <div className="font-mono text-xl font-bold">{hex.toUpperCase()}</div>
-                      <div className="font-mono text-sm">{`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}</div>
+                    {/* Double Border Effect */}
+                    <div
+                      className="absolute inset-2 sm:inset-4 border-2 opacity-20 pointer-events-none"
+                      style={{ borderColor: contrastColor }}
+                    />
+
+                    {/* Content */}
+                    <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
+                      <div className="text-4xl sm:text-7xl font-bold mb-1 tracking-tight">{hex.toUpperCase()}</div>
+                      <div className="text-lg sm:text-2xl font-medium opacity-80">{`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}</div>
                     </div>
-                    <div className="absolute bottom-2 right-3 font-semibold text-xs opacity-80">ColorMean</div>
+
+                    {/* Pill Watermark */}
+                    <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2">
+                      <div
+                        className="px-6 py-2 rounded-full text-sm sm:text-lg font-bold opacity-40 whitespace-nowrap"
+                        style={{ backgroundColor: contrastColor === "#000000" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.2)", color: contrastColor }}
+                      >
+                        HexColorMeans.com
+                      </div>
+                    </div>
                   </div>
                 );
               })()}
@@ -313,8 +359,13 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="outline" className="bg-transparent" onClick={downloadMainSwatch}>
-              Download image (1920x1080)
+            <Button
+              variant="outline"
+              className="bg-transparent border-border hover:bg-muted hover:text-foreground transition-all font-bold gap-3 group"
+              onClick={downloadMainSwatch}
+            >
+              <span>Download image (1920x1080)</span>
+              <Download className="w-4 h-4 transition-transform group-hover:scale-110" />
             </Button>
             <ShareButtons url={pageUrl} title={`Color ${label}`} />
           </div>
@@ -347,9 +398,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         {openConversion ? (
           <div className="px-4 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
-              Convert {label} across different color models and formats. These conversions help designers work seamlessly
-              between digital and print media, ensuring this color maintains its intended appearance across RGB screens,
-              CMYK printers, and HSL color manipulations.
+              Accurate conversions of {label} across RGB, Hex, CMYK, HSL, and Lab ensure consistent color fidelity across digital, print, and design applications.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <ColorCodeItem label="HEX" value={hex} />
@@ -377,14 +426,17 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         </div>
         {openBars ? (
           <div className="px-4 sm:px-6 py-2 space-y-6">
+            <p className="text-muted-foreground">
+              Detailed RGB and CMYK values of {label} displayed in a horizontal bar provide clear reference for digital and print color accuracy.
+            </p>
             <div className="space-y-3">
-              <h3 className="font-semibold text-2xl">RGB Values</h3>
+              <h3 className="font-semibold text-2xl">RGB Channels</h3>
               <ColorBar label="Red" value={rgb.r} max={255} color="#FF0000" />
               <ColorBar label="Green" value={rgb.g} max={255} color="#00FF00" />
               <ColorBar label="Blue" value={rgb.b} max={255} color="#0000FF" />
             </div>
             <div className="space-y-3">
-              <h3 className="font-semibold text-2xl">CMYK Values</h3>
+              <h3 className="font-semibold text-2xl">CMYK Ink Density</h3>
               <ColorBar label="Cyan" value={cmyk.c} max={100} color="#00FFFF" />
               <ColorBar label="Magenta" value={cmyk.m} max={100} color="#FF00FF" />
               <ColorBar label="Yellow" value={cmyk.y} max={100} color="#FFFF00" />
@@ -405,9 +457,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         {openVariations ? (
           <div className="px-4 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
-              {label} harmonies come to life through carefully balanced shades, tints, and tones, giving this color depth and
-              flexibility across light and dark variations. Shades add richness, tints bring an airy softness, and tones
-              soften intensity, making it easy to pair in clean, modern palettes.
+              A full range of {label} variations, including tints, shades, and tones, provides highlights, depth, and subtle desaturated options for UI design.
             </p>
             <div className="w-full flex justify-end">
               <Button
@@ -478,28 +528,36 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         {openHarmonies ? (
           <div className="px-4 sm:px-6 py-2 space-y-6">
             <p className="text-muted-foreground">
-              {label} harmonies create beautiful relationships with other colors based on their position on the color wheel.
-              Each harmony type offers unique design possibilities, enabling cohesive and visually appealing color schemes.
+              Harmonious color schemes for {label} created using the <Link href="/color-wheel" className="text-primary hover:underline">color wheel</Link> ensure visually balanced palettes.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {Object.entries(harmonies).map(([type, harmony]) => (
                 <div key={type} className="space-y-3 p-5 border-2 border-border rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-2xl">{harmony.name}</h3>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="gap-2"
-                      onClick={() => {
-                        setExportColors(harmony.colors)
-                        setExportTitle(`Export ${harmony.name}`)
-                        setExportLabel(type)
-                        setExportOpen(true)
-                      }}
-                    >
-                      <Share className="w-4 h-4" />
-                      Export
-                    </Button>
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="font-semibold text-2xl min-w-0">{harmony.name}</h3>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="shrink-0 h-8 w-8"
+                            onClick={() => {
+                              setExportColors(harmony.colors)
+                              setExportTitle(`Export ${harmony.name}`)
+                              setExportLabel(type)
+                              setExportOpen(true)
+                            }}
+                          >
+                            <Share className="w-4 h-4" />
+                            <span className="sr-only">Export</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          <p>Export</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   <p className="text-sm text-muted-foreground">{harmonyDescriptions[type]}</p>
                   <ColorCombination colors={harmony.colors} baseHex={hex} onColorChange={onColorChange} />
@@ -519,14 +577,12 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
             style={{ borderLeftColor: hex }}
             onClick={() => setOpenContrast((v) => !v)}
           >
-            <h2 className="text-3xl font-bold m-0 leading-tight">Contrast Checker</h2>
+            <h2 className="text-3xl font-bold m-0 leading-tight">Contrast Checker (WCAG)</h2>
           </div>
           {openContrast ? (
             <div className="px-6 py-2 space-y-4">
               <p className="text-muted-foreground">
-                (WCAG 2.1) Test {label} for accessibility compliance against white and black backgrounds. Proper contrast
-                ensures this color remains readable and usable for all audiences, meeting WCAG 2.1 standards for both normal
-                and large text applications.
+                Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
               </p>
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2">
@@ -584,8 +640,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
           {openBlindness ? (
             <div className="px-6 py-2 space-y-4">
               <p className="text-muted-foreground">
-                See how {hex} appears to people with different types of color vision deficiencies. These simulations help
-                create more inclusive designs that consider how this color is perceived across various visual abilities.
+                Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator" className="text-primary hover:underline">Color Blindness Simulator</Link>.
               </p>
               <Select value={colorBlindnessType} onValueChange={setColorBlindnessType}>
                 <SelectTrigger className="w-full md:w-64" aria-label="Select color blindness type">
@@ -693,6 +748,69 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         ) : null}
       </Card>
 
+      {/* Patterns */}
+      {mode !== "sectionsOnly" ? (
+        <Card id="patterns" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+          <div
+            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+            style={{ borderLeftColor: hex }}
+            onClick={() => setOpenPatterns((v) => !v)}
+          >
+            <h2 className={`text-3xl font-bold m-0 leading-tight ${openPatterns ? "" : "underline"}`}>Seamless Patterns</h2>
+          </div>
+          {openPatterns ? (
+            <div className="px-6 py-2 space-y-4">
+              <p className="text-muted-foreground">
+                High-resolution seamless patterns featuring {label} provide ready-to-use backgrounds, wallpapers, and print designs for any project.
+              </p>
+              <ColorPatterns color={hex} />
+            </div>
+          ) : null}
+        </Card>
+      ) : null}
+
+      {/* Icons */}
+      {mode !== "sectionsOnly" ? (
+        <Card id="icons" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+          <div
+            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+            style={{ borderLeftColor: hex }}
+            onClick={() => setOpenIcons((v) => !v)}
+          >
+            <h2 className={`text-3xl font-bold m-0 leading-tight ${openIcons ? "" : "underline"}`}>Icons</h2>
+          </div>
+          {openIcons ? (
+            <div className="px-6 py-2 space-y-4">
+              <p className="text-muted-foreground">
+                A collection of popular icons in {label} offers ready-to-use visuals for interfaces, designs, and creative projects.
+              </p>
+              <ColorIcons color={hex} />
+            </div>
+          ) : null}
+        </Card>
+      ) : null}
+
+      {/* Mockups */}
+      {mode !== "sectionsOnly" ? (
+        <Card id="mockups" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+          <div
+            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+            style={{ borderLeftColor: hex }}
+            onClick={() => setOpenMockups((v) => !v)}
+          >
+            <h2 className={`text-3xl font-bold m-0 leading-tight ${openMockups ? "" : "underline"}`}>Real-World Applications</h2>
+          </div>
+          {openMockups ? (
+            <div className="px-6 py-2 space-y-4">
+              <p className="text-muted-foreground">
+                Real-world mockups of {label} showcase its versatility across fashion, interiors, branding, and product packaging.
+              </p>
+              <ColorMockups color={hex} />
+            </div>
+          ) : null}
+        </Card>
+      ) : null}
+
       {/* Related Colors */}
       {mode !== "sectionsOnly" ? (
         <Card id="related-colors" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
@@ -706,9 +824,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
           {openRelated ? (
             <div className="px-6 py-2 space-y-4">
               <p className="text-muted-foreground">
-                Find out the colors closely related to {label} in hue, saturation, and lightness. These color relatives offer
-                harmonious alternatives and complementary options that work well alongside this color in comprehensive color
-                schemes.
+                Colors related to {label} in hue, saturation, and lightness provide harmonious and complementary options for cohesive color schemes.
               </p>
               <div className="flex justify-center">
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 w-full">
@@ -743,6 +859,35 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
         </Card>
       ) : null}
 
+      {/* Useful Color Tools */}
+      {mode !== "sectionsOnly" ? (
+        <Card id="useful-tools" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+          <div className="bg-muted-foreground/10 border-l-[10px] py-5 px-4" style={{ borderLeftColor: hex }}>
+            <h2 className="text-3xl font-bold m-0 leading-tight">Useful Color Tools</h2>
+          </div>
+          <div className="px-6 py-6 transition-all">
+            <p className="text-muted-foreground mb-6">A curated set of tools to help apply, analyze, and manage colors effectively in your projects</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { name: "Color Picker", href: "/html-color-picker", icon: Pipette },
+                { name: "Image Color Picker", href: "/image-color-picker", icon: ImageIcon },
+                { name: "Palette from Image", href: "/palette-from-image", icon: Palette },
+                { name: "Screen Color Picker", href: "/screen-color-picker", icon: Monitor },
+              ].map((tool) => (
+                <Link
+                  key={tool.href}
+                  href={tool.href}
+                  className="p-6 rounded-lg border-2 border-border hover:border-primary hover:bg-primary/5 transition-all text-center group flex flex-col items-center gap-3"
+                >
+                  <tool.icon className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="font-bold">{tool.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </Card>
+      ) : null}
+
       {mode !== "sectionsOnly" && faqs && faqs.length > 0 ? (
         <Card id="faqs" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
           <div className="bg-muted-foreground/10 border-l-[10px] py-5 px-4" style={{ borderLeftColor: hex }}>
@@ -767,15 +912,15 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
           <div className="flex justify-between items-center py-6 border-t border-b border-border">
             <a href={getColorPageLink(prev)} className="flex flex-col items-start max-w-[45%] group">
               <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">← Previous Color</span>
-              <span className="font-medium group-hover:underline">{prev}</span>
+              <span className="font-medium group-hover:underline">{getClosestKnownColor(prev).name} ({prev}) Color Meaning</span>
             </a>
             <a href={getColorPageLink(next)} className="flex flex-col items-end max-w-[45%] text-right group">
               <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">Next Color →</span>
-              <span className="font-medium group-hover:underline">{next}</span>
+              <span className="font-medium group-hover:underline">{getClosestKnownColor(next).name} ({next}) Color Meaning</span>
             </a>
           </div>
           <div className="flex justify-center">
-            <ShareButtons url={pageUrl} title={`Color ${hex} - ColorMean`} />
+            <ShareButtons url={pageUrl} title={`Color ${hex} - HexColorMeans`} />
           </div>
         </div>
       ) : null}

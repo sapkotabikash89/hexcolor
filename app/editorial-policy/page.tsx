@@ -4,12 +4,11 @@ import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbSchema, WebPageSchema } from "@/components/structured-data"
-
 import { ShareButtons } from "@/components/share-buttons"
 
 export const metadata: Metadata = {
-  title: "Editorial Policy - ColorMean",
-  description: "Editorial standards of ColorMean. Learn how we create, review, and maintain content.",
+  title: "Editorial Policy - HexColorMeans",
+  description: "Learn about HexColorMeans' editorial standards, research practices, and commitment to accurate color information.",
 }
 
 export default function EditorialPolicyPage() {
@@ -17,135 +16,103 @@ export default function EditorialPolicyPage() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name="Editorial Policy"
-        url="https://colormean.com/editorial-policy"
-        description="Editorial standards of ColorMean. Learn how we create, review, and maintain content."
+        url="https://hexcolormeans.com/editorial-policy"
+        description="Learn about HexColorMeans' editorial standards, research practices, and commitment to accurate color information."
       />
       <BreadcrumbSchema items={[
-        { name: "ColorMean", item: "https://colormean.com" },
-        { name: "Editorial Policy", item: "https://colormean.com/editorial-policy" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
+        { name: "Editorial Policy", item: "https://hexcolormeans.com/editorial-policy" }
       ]} />
       <Header />
-      <main className="container mx-auto px-4 py-12 flex-1">
+      <main className="w-full max-w-[1280px] mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Editorial Policy", href: "/editorial-policy" }]} />
-        <div className="flex flex-col lg:flex-row gap-8 mt-6">
+        <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
-            <h1 className="text-3xl font-bold mb-4">Editorial Policy</h1>
-            <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
-              <p>
-                At <strong>ColorMean</strong>, our mission is to provide accurate, meaningful, and well-researched information about colors, their symbolism, psychological impact, spiritual value, and technical properties. Every page published on this website follows a clear editorial standard focused on quality, clarity, and trust.
-              </p>
-              <p>
-                This Editorial Policy explains how our content is created, reviewed, updated, and maintained.
-              </p>
+            <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Editorial Policy</h1>
 
-              <h2 className="text-2xl font-bold text-foreground">1. Our Content Purpose</h2>
-              <p>ColorMean exists to help users understand:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Color meanings and symbolism</li>
-                <li>Psychological and emotional influence of colors</li>
-                <li>Spiritual interpretations of colors</li>
-                <li>Cultural and historical color significance</li>
-                <li>Technical color data such as HEX, RGB, CMYK, HSL, harmonies, contrast, and accessibility</li>
-              </ul>
-              <p>Our content is created strictly for educational and informational purposes.</p>
+            <div className="prose dark:prose-invert max-w-none space-y-8 text-muted-foreground leading-relaxed">
+              <section className="space-y-4">
+                <p>
+                  At <strong>HexColorMeans</strong>, our mission is to provide accurate, insightful, and well-researched information about colors, covering their meanings, psychological effects, cultural significance, spiritual relevance, and technical properties. Every article on this site is created with a focus on clarity, reliability, and educational value, ensuring that readers can trust the information presented.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">2. Research and Information Sources</h2>
-              <p>All content published on ColorMean is based on:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Established color theory principles</li>
-                <li>Visual perception and psychology research</li>
-                <li>Cultural symbolism references</li>
-                <li>Spiritual and traditional interpretations</li>
-                <li>Artistic and historical usage of colors</li>
-                <li>Standard digital color models and conversion systems</li>
-              </ul>
-              <p>We aim to present information in a balanced way that reflects both traditional meaning and modern interpretation.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Purpose of Our Content</h2>
+                <p>
+                  HexColorMeans exists to help readers understand colors in depth, from their symbolic and emotional impact to their cultural, historical, and spiritual significance. We also provide detailed technical information, including HEX, RGB, CMYK, HSL values, color harmonies, and accessibility considerations. All content is intended for educational and informational purposes, offering insights rather than prescriptive advice or professional guidance.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">3. Editorial Review Process</h2>
-              <p>Every page published on ColorMean goes through a structured review process that includes:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Language and clarity review</li>
-                <li>Fact validation for symbolism and psychology topics</li>
-                <li>Technical verification of color values</li>
-                <li>Internal consistency checks across related color pages</li>
-                <li>Readability and usability review for both desktop and mobile users</li>
-              </ul>
-              <p>No content is published without passing internal quality checks.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Research and Source Standards</h2>
+                <p>
+                  All content on HexColorMeans is grounded in established research and reputable sources. We draw upon color theory principles, studies in perception and psychology, cultural documentation, spiritual and traditional references, and standard digital color models. Our goal is to present a balanced perspective, honoring both traditional interpretations and contemporary applications, so readers can understand colors from multiple angles.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">4. Accuracy of Technical Color Data</h2>
-              <p>All technical color information displayed on ColorMean, including:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>HEX codes</li>
-                <li>RGB values</li>
-                <li>CMYK values</li>
-                <li>HSL values</li>
-                <li>Color harmonies</li>
-                <li>Shades, tints, and tones</li>
-                <li>Contrast ratios and accessibility checks</li>
-              </ul>
-              <p>Is generated using algorithmic color models and verified using standard industry formulas. We continuously test and validate these values to ensure accuracy.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Editorial Review Workflow</h2>
+                <p>
+                  Every article goes through a thorough editorial process to ensure quality. This includes reviewing language for clarity and readability, verifying facts for symbolism, psychology, and cultural claims, and validating technical color information. We also check for consistency across related topics and ensure content is accessible and user-friendly on all devices. Only after passing these internal standards is content published on HexColorMeans.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">5. Use of Automation and AI</h2>
-              <p>To support large scale content creation:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Certain drafts may be generated using automated systems or AI tools</li>
-                <li>Every AI-assisted page is manually reviewed, edited, and verified by our editorial team before publication</li>
-                <li>Automation is used only as a productivity aid, never as a replacement for human editorial judgment</li>
-              </ul>
-              <p>We do not publish fully unreviewed automated content.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Technical Accuracy</h2>
+                <p>
+                  Technical color information is a cornerstone of HexColorMeans. HEX codes, RGB, CMYK, HSL values, shades, tints, tones, harmonies, and contrast ratios are generated using industry-standard formulas and verified for accuracy. Our team continually tests and updates these values to maintain reliability, so readers can depend on the data for creative, educational, or professional purposes.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">6. Editorial Independence and Neutrality</h2>
-              <p>ColorMean maintains full editorial independence. We do not accept:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Paid symbolism interpretations</li>
-                <li>Sponsored psychological claims</li>
-                <li>Manipulated emotional narratives</li>
-                <li>Influenced spiritual meanings</li>
-              </ul>
-              <p>All interpretations are presented for educational understanding, not commercial persuasion.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Use of Automation and AI</h2>
+                <p>
+                  To manage content efficiently, some drafts may be generated using AI or automated tools. However, every AI-assisted page is carefully reviewed and edited by our editorial team before publication. Automation is used only as a productivity aid, never as a replacement for human judgment, ensuring that all content meets our standards of accuracy and clarity.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">7. Content Updates and Corrections</h2>
-              <p>Our editorial team regularly reviews older content to maintain relevance and accuracy. If an error is discovered:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>The content is corrected promptly</li>
-                <li>Technical values are revalidated</li>
-                <li>Interpretations are refined when required</li>
-              </ul>
-              <p>We encourage users to report inaccuracies through our Contact page.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Editorial Independence</h2>
+                <p>
+                  HexColorMeans operates with complete editorial autonomy. We do not accept sponsored interpretations of symbolism, paid claims about psychological effects, or external influence over cultural or spiritual content. Every article is designed for educational understanding, providing insights rather than promoting products, services, or specific viewpoints.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">8. No Medical, Psychological, or Legal Advice</h2>
-              <p>Although ColorMean discusses psychological and emotional color effects:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Our content does not constitute medical, therapeutic, legal, or professional advice</li>
-                <li>Users should always consult licensed professionals for clinical, medical, or legal concerns</li>
-              </ul>
-              <p>Our goal is educational insight, not diagnosis or treatment.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Content Updates and Corrections</h2>
+                <p>
+                  We regularly review older articles to maintain relevance and accuracy. If errors are discovered, technical values are revalidated and interpretations refined as necessary. Updates are applied promptly, and we encourage readers to report inaccuracies through our Contact page, fostering a collaborative approach to maintaining reliable content.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">9. Authorship and Editorial Responsibility</h2>
-              <p>ColorMean follows a team-based editorial model. Instead of listing individual authors on every page, all content is:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Researched</li>
-                <li>Reviewed</li>
-                <li>Curated by the ColorMean Editorial Team</li>
-              </ul>
-              <p>This ensures consistency, accuracy, and long-term accountability across the entire website.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">No Professional Advice</h2>
+                <p>
+                  While we explore the psychological and emotional effects of colors, HexColorMeans content does not constitute medical, therapeutic, legal, or professional advice. Readers should consult qualified professionals for clinical or legal concerns. Our goal is to provide educational insight, not guidance for personal or professional decisions.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">10. Transparency and User Trust</h2>
-              <p>We believe trust is the foundation of educational content. That is why we commit to:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Clear editorial standards</li>
-                <li>Transparent use of automation</li>
-                <li>Continuous accuracy improvements</li>
-                <li>Open feedback and corrections</li>
-                <li>Independent content creation</li>
-              </ul>
-              <p>ColorMean is built to be a reliable, long-term reference for color knowledge worldwide.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Authorship and Accountability</h2>
+                <p>
+                  HexColorMeans follows a team-based editorial model. All content is thoroughly researched, reviewed, and curated by the editorial team to ensure accuracy, consistency, and accountability across the website. This approach allows us to maintain long-term reliability and a uniform standard of quality for all readers.
+                </p>
+              </section>
+
+              <section className="pt-6 border-t space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Transparency and User Trust</h2>
+                <p>
+                  Trust is central to HexColorMeans. We commit to clear editorial standards, transparent use of AI tools, regular content updates, and responsiveness to user feedback. By maintaining independence and prioritizing accuracy, HexColorMeans aims to be a trusted, comprehensive reference for color knowledge worldwide.
+                </p>
+              </section>
             </div>
+
             <div className="flex justify-center py-4 mt-8 border-t pt-8">
-              <ShareButtons title="ColorMean Editorial Policy" />
+              <ShareButtons title="HexColorMeans Editorial Policy" />
             </div>
           </article>
-          <ColorSidebar color="#5B6FD8" />
+          <ColorSidebar color="#E0115F" />
         </div>
       </main>
       <Footer />

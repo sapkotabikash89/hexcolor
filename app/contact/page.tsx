@@ -4,87 +4,90 @@ import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbSchema } from "@/components/structured-data"
-
 import { ShareButtons } from "@/components/share-buttons"
 
 export const metadata: Metadata = {
-  title: "Contact Us - ColorMean",
-  description: "Get in touch with ColorMean. Edit this sample content later.",
+  title: "Contact Us - HexColorMeans",
+  description: "Get in touch with the HexColorMeans team for questions, feedback, or collaborations regarding color meanings and data.",
 }
 
 export default function ContactPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <BreadcrumbSchema items={[
-        { name: "ColorMean", item: "https://colormean.com" },
-        { name: "Contact", item: "https://colormean.com/contact" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
+        { name: "Contact", item: "https://hexcolormeans.com/contact" }
       ]} />
       <Header />
-      <main className="container mx-auto px-4 py-12 flex-1">
+      <main className="w-full max-w-[1280px] mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Contact", href: "/contact" }]} />
-        <div className="flex flex-col lg:flex-row gap-8 mt-6">
+        <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
-            <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
-            <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
-              <p>
-                We are always happy to hear from our readers, creators, researchers, and partners. Whether you have a question about color meanings, need technical clarification, want to suggest an improvement, or report an issue, the ColorMean team is here to help.
-              </p>
-              <p>
-                Your feedback helps us refine our content and improve the experience for everyone who uses ColorMean.
-              </p>
+            <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Contact Us</h1>
 
-              <h2 className="text-2xl font-bold text-foreground">How You Can Reach Us</h2>
-              <div className="bg-muted p-4 rounded-lg">
-                <p><strong>Email:</strong> <a href="mailto:info@colormean.com" className="text-primary hover:underline">info@colormean.com</a></p>
-                <p><strong>Website:</strong> <a href="https://colormean.com" className="text-primary hover:underline">https://colormean.com</a></p>
-              </div>
-              <p>For faster assistance, please include clear details in your message such as:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>The page URL you are referring to</li>
-                <li>The nature of your question or concern</li>
-                <li>Any supporting information if applicable</li>
-              </ul>
+            <div className="prose dark:prose-invert max-w-none space-y-8 text-muted-foreground leading-relaxed">
+              <section className="space-y-4">
+                <p>
+                  At <strong>HexColorMeans</strong>, communication matters. We enjoy hearing from designers, developers, researchers, and curious readers who spend time exploring color meanings on our site. Whether you have a question about a specific hex color, noticed something that needs correction, or want to share an idea, your message is always welcome.
+                </p>
+                <p>
+                  Feedback plays a key role in how this platform grows. Every suggestion, correction, or thoughtful note helps us improve accuracy, expand clarity, and refine the experience for everyone who relies on HexColorMeans.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">What You Can Contact Us About</h2>
-              <p>You may contact us for:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Content corrections or factual updates</li>
-                <li>Feedback on color meanings, symbolism, or technical data</li>
-                <li>Tool related issues or feature requests</li>
-                <li>Collaboration and partnership inquiries</li>
-                <li>Accessibility concerns</li>
-                <li>Legal or copyright related requests</li>
-              </ul>
-              <p>We review every message carefully and respond as quickly as possible.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">How to Reach Us</h2>
+                <p>
+                  The easiest way to get in touch is by email at <a href="mailto:info@hexcolormeans.com" className="text-primary hover:underline transition-colors">info@hexcolormeans.com</a>. You can also visit us anytime at <a href="https://hexcolormeans.com" className="text-primary hover:underline transition-colors">https://hexcolormeans.com</a> to explore our content or reference a specific page when contacting us.
+                </p>
+                <p>
+                  When writing, adding context helps a lot. Mentioning the page link you are referring to, explaining your concern clearly, and including any supporting details allows us to understand your message faster and respond more effectively.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Editorial and Content Queries</h2>
-              <p>
-                If you have questions about how our content is created, reviewed, or updated, you are welcome to reach out. Transparency is important to us, and we are always open to constructive discussion.
-              </p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Reasons People Contact Us</h2>
+                <p>
+                  Many readers reach out for content related reasons, such as pointing out factual updates, clarifying color symbolism, or discussing how a hex code meaning is interpreted. Others contact us about technical issues on the site, ideas for new features, or accessibility related concerns. We also handle copyright questions and legal requests with care and professionalism.
+                </p>
+                <p>
+                  No matter the topic, every message is reviewed thoughtfully and treated with respect.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Business and Collaboration</h2>
-              <p>If you are interested in working with ColorMean for:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Educational projects</li>
-                <li>Brand collaborations</li>
-                <li>Marketing partnerships</li>
-                <li>Technical integrations</li>
-              </ul>
-              <p>Please send a detailed proposal to our email so the appropriate team can review it.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Editorial Transparency</h2>
+                <p>
+                  If you are curious about how our color meanings are researched, reviewed, or updated over time, we are happy to explain. Transparency and accuracy guide our editorial process, and open conversations help us maintain trust with our audience.
+                </p>
+              </section>
 
-              <h2 className="text-2xl font-bold text-foreground">Response Time</h2>
-              <p>
-                We aim to reply to most queries within 24 to 72 business hours. During peak periods, response times may vary slightly.
-              </p>
-              <p className="font-medium text-lg pt-4 text-foreground">
-                Thank you for being part of the ColorMean audience. Your voice helps shape the future of this platform.
-              </p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Business and Collaboration</h2>
+                <p>
+                  HexColorMeans also works with educators, brands, and technical partners on meaningful collaborations. If you have an idea for educational content, a partnership proposal, or a technical integration, feel free to reach out with clear details. Well explained proposals help us connect you with the right people faster.
+                </p>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Response Time</h2>
+                <p>
+                  We aim to respond to most inquiries within 24 to 72 business hours. During periods of higher volume, replies may take slightly longer, but rest assured that every message is read.
+                </p>
+              </section>
+
+              <section className="pt-6 border-t font-medium italic text-center sm:text-left">
+                <p>
+                  Thank you for taking the time to contact HexColorMeans. Your voice helps shape this platform, and we genuinely appreciate your interest and support.
+                </p>
+              </section>
             </div>
+
             <div className="flex justify-center py-4 mt-8 border-t pt-8">
-              <ShareButtons title="Contact ColorMean" />
+              <ShareButtons title="Contact HexColorMeans" />
             </div>
           </article>
-          <ColorSidebar color="#5B6FD8" />
+          <ColorSidebar color="#E0115F" />
         </div>
       </main>
       <Footer />

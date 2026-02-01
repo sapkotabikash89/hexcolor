@@ -5,7 +5,27 @@ const colorCache = new Map<string, { rgb: RGB; hsl: HSL; meaning: string }>()
 const colorKeys = Object.keys(colorData) // Precompute keys array
 const colorValues = Object.values(colorData) // Precompute values array
 
-interface ColorMeaning {
+// Precompute sorted known colors array for efficient navigation
+let sortedKnownColors: Array<{ hex: string; name: string }> | null = null
+
+export function getSortedKnownColors(): Array<{ hex: string; name: string }> {
+  if (sortedKnownColors) return sortedKnownColors
+  
+  sortedKnownColors = Object.entries(colorData)
+    .map(([hex, data]: [string, any]) => ({
+      hex: `#${hex.toUpperCase()}`,
+      name: data.name || "Color"
+    }))
+    .sort((a, b) => {
+      const aVal = parseInt(a.hex.replace("#", ""), 16)
+      const bVal = parseInt(b.hex.replace("#", ""), 16)
+      return aVal - bVal
+    })
+  
+  return sortedKnownColors
+}
+
+interface HexColorMeansing {
   name: string
   hex: string
   meaning: string
@@ -13,16 +33,16 @@ interface ColorMeaning {
 }
 
 // OPTIMIZATION: Precompute color cache and use more efficient search algorithm
-export function getColorMeaning(hex: string): string {
+export function getHexColorMeansing(hex: string): string {
   const cleanHex = hex.replace("#", "").toUpperCase()
   const cacheKey = `meaning_${cleanHex}`
-  
+
   // Check cache first
   if (colorCache.has(cacheKey)) {
     return colorCache.get(cacheKey)!.meaning
   }
-  
-  const entry = colorData[cleanHex as keyof typeof colorData] as ColorMeaning | undefined
+
+  const entry = colorData[cleanHex as keyof typeof colorData] as HexColorMeansing | undefined
   if (entry) {
     const result = entry.meaning || ""
     colorCache.set(cacheKey, { rgb: hexToRgb(hex)!, hsl: entry.hsl, meaning: result })
@@ -31,21 +51,21 @@ export function getColorMeaning(hex: string): string {
 
   // OPTIMIZATION: Use precomputed arrays and more efficient search
   let minDistance = Number.MAX_VALUE
-  let closestColor: ColorMeaning | null = null
+  let closestColor: HexColorMeansing | null = null
   const targetRgb = hexToRgb(`#${cleanHex}`)
   if (!targetRgb) return "Color meaning not available."
-  
+
   // Use precomputed array instead of Object.values() for better performance
   for (let i = 0; i < colorValues.length; i++) {
     const color = colorValues[i] as any
     const currentRgb = hexToRgb(color.hex)
     if (currentRgb) {
       // OPTIMIZATION: Avoid Math.sqrt for distance comparison (relative ordering preserved)
-      const distanceSquared = 
+      const distanceSquared =
         Math.pow(targetRgb.r - currentRgb.r, 2) +
         Math.pow(targetRgb.g - currentRgb.g, 2) +
         Math.pow(targetRgb.b - currentRgb.b, 2)
-      
+
       if (distanceSquared < minDistance) {
         minDistance = distanceSquared
         closestColor = color
@@ -56,37 +76,37 @@ export function getColorMeaning(hex: string): string {
   // OPTIMIZATION: Cache the result for future use
   if (closestColor) {
     const HEX = `#${cleanHex}`
-    const origHex = (closestColor as ColorMeaning).hex || ""
-    const origName = (closestColor as ColorMeaning).name || ""
-    let text = ((closestColor as ColorMeaning).meaning || "")
-    
+    const origHex = (closestColor as HexColorMeansing).hex || ""
+    const origName = (closestColor as HexColorMeansing).name || ""
+    let text = ((closestColor as HexColorMeansing).meaning || "")
+
     // OPTIMIZATION: Precompile regex patterns to avoid repeated creation
     const origHexStripped = origHex.replace("#", "")
     const hexRegex = new RegExp(`#?${origHexStripped}`, "gi")
     text = text.replace(hexRegex, HEX)
-    
+
     const nameRegex = new RegExp(`\\b${origName.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")}\\b`, "gi")
     text = text.replace(nameRegex, HEX)
-    
+
     text = text.replace(/\b(it|this)\b/gi, HEX)
-    
+
     // OPTIMIZATION: More efficient paragraph processing with precompiled regex
     const paragraphs = text.split(/\n\n+/)
     if (paragraphs.length > 0) {
       const firstPara = paragraphs[0]
       const firstParaUpdated = firstPara.replace(/^\s*[A-Za-z][\w\s'&-]*\s*(\(#?[0-9A-Fa-f]{3,6}\))?/, `Color ${HEX}`)
       paragraphs[0] = firstParaUpdated
-      
+
       const esc = HEX.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")
       const doubleParenRe = new RegExp(`${esc}\\s*\\(\\s*${esc}\\s*\\)`, "g")
       const doubleSpaceRe = new RegExp(`${esc}\\s+${esc}`, "g")
       const doubleSepRe = new RegExp(`${esc}\\s*[—\\-:,]\\s*${esc}`, "g")
-      
+
       // OPTIMIZATION: Process paragraphs more efficiently
       const processParagraph = (p: string): string => {
         // Precompile start patterns
         const startsWithDoublePattern = new RegExp(`^${esc}\\s*\\(\\s*${esc}\\s*\\)|^${esc}\\s+${esc}|^${esc}\\s*[—\\-:,]\\s*${esc}`)
-        
+
         return p.replace(/([.!?])(\s+|$)/g, (match, punct, space) => {
           const startsWithDouble = startsWithDoublePattern.test(match.trimStart())
           const replacement = startsWithDouble ? `Color ${HEX}` : `color ${HEX}`
@@ -102,19 +122,28 @@ export function getColorMeaning(hex: string): string {
           return startsWithDouble ? `Color ${HEX}` : `color ${HEX}`
         })
       }
-      
+
       text = paragraphs.map(processParagraph).join("\n\n")
     }
-    
+
     // Cache the computed result
-    colorCache.set(cacheKey, { 
-      rgb: targetRgb, 
-      hsl: rgbToHsl(targetRgb.r, targetRgb.g, targetRgb.b), 
-      meaning: text 
+    colorCache.set(cacheKey, {
+      rgb: targetRgb,
+      hsl: rgbToHsl(targetRgb.r, targetRgb.g, targetRgb.b),
+      meaning: text
     })
     return text
   }
   return "Color meaning not available."
+}
+
+/**
+ * Check if a hex code is one of the 1364 pre-indexed colors.
+ */
+export function isKnownHex(hex: string): boolean {
+  if (!hex) return false
+  const cleanHex = hex.replace("#", "").toUpperCase()
+  return cleanHex in colorData
 }
 
 // Utility functions for color conversions and manipulations
@@ -174,10 +203,10 @@ export function hexToRgb(hex: string): RGB | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result
     ? {
-        r: Number.parseInt(result[1], 16),
-        g: Number.parseInt(result[2], 16),
-        b: Number.parseInt(result[3], 16),
-      }
+      r: Number.parseInt(result[1], 16),
+      g: Number.parseInt(result[2], 16),
+      b: Number.parseInt(result[3], 16),
+    }
     : null
 }
 
@@ -481,7 +510,7 @@ export function isValidHex(hex: string): boolean {
 // Normalize hex (add # if missing)
 export function normalizeHex(hex: string): string {
   hex = hex.replace("#", "")
-  return "#" + hex.toUpperCase()
+  return "#" + hex.toLowerCase()
 }
 
 export function getColorTints(hex: string, count = 10): string[] {
@@ -642,23 +671,23 @@ export function getRelatedColors(hex: string, count = 8): { hex: string; name: s
   if (!rgb) return []
   const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
   const family = getHueFamily(hsl.h)
-  
+
   // Filter colors from color-meaning.json that are in the same family
   const candidates = Object.values(colorData).filter((c: any) => {
     // Check if color exists in library (has name and meaning)
     if (!c.name || !c.meaning) return false
-    
+
     const cRgb = hexToRgb(c.hex)
     if (!cRgb) return false
     const cHsl = rgbToHsl(cRgb.r, cRgb.g, cRgb.b)
     const cFamily = getHueFamily(cHsl.h)
-    
+
     // Must be same hue family
     if (cFamily.name !== family.name) return false
-    
+
     // Exclude the color itself
     if (c.hex.toUpperCase() === hex.toUpperCase()) return false
-    
+
     return true
   })
 
@@ -763,21 +792,97 @@ export const generateTones = getColorTones
 export const getContrastRatio = calculateContrastRatio
 
 export function getAdjacentColors(hex: string): { prev: string; next: string } {
-  const clean = hex.replace("#", "")
-  if (!/^[0-9A-Fa-f]{6}$/.test(clean)) return { prev: hex, next: hex }
+  const cleanHex = hex.replace("#", "").toUpperCase()
+  if (!/^[0-9A-F]{6}$/.test(cleanHex)) return { prev: hex, next: hex }
+
+  const knownColors = getSortedKnownColors()
   
-  const intVal = parseInt(clean, 16)
+  // Find current color index
+  const currentIndex = knownColors.findIndex(c => c.hex.replace("#", "") === cleanHex)
   
-  let prevInt = intVal - 1
-  if (prevInt < 0) prevInt = 0xffffff
+  if (currentIndex === -1) {
+    // If current color is not in known colors, find the closest ones
+    const currentInt = parseInt(cleanHex, 16)
+    let prevIndex = -1
+    let nextIndex = -1
+    
+    // Find previous known color
+    for (let i = knownColors.length - 1; i >= 0; i--) {
+      const colorInt = parseInt(knownColors[i].hex.replace("#", ""), 16)
+      if (colorInt < currentInt) {
+        prevIndex = i
+        break
+      }
+    }
+    
+    // Find next known color
+    for (let i = 0; i < knownColors.length; i++) {
+      const colorInt = parseInt(knownColors[i].hex.replace("#", ""), 16)
+      if (colorInt > currentInt) {
+        nextIndex = i
+        break
+      }
+    }
+    
+    // Handle edge cases (wrap around)
+    if (prevIndex === -1) prevIndex = knownColors.length - 1
+    if (nextIndex === -1) nextIndex = 0
+    
+    return {
+      prev: knownColors[prevIndex].hex,
+      next: knownColors[nextIndex].hex
+    }
+  }
   
-  let nextInt = intVal + 1
-  if (nextInt > 0xffffff) nextInt = 0
+  // Current color is known, get adjacent known colors
+  const prevIndex = currentIndex === 0 ? knownColors.length - 1 : currentIndex - 1
+  const nextIndex = currentIndex === knownColors.length - 1 ? 0 : currentIndex + 1
   
-  const prevHex = `#${prevInt.toString(16).padStart(6, "0").toUpperCase()}`
-  const nextHex = `#${nextInt.toString(16).padStart(6, "0").toUpperCase()}`
-  
-  return { prev: prevHex, next: nextHex }
+  return {
+    prev: knownColors[prevIndex].hex,
+    next: knownColors[nextIndex].hex
+  }
 }
 
 
+export function getClosestKnownColor(hex: string): { name: string; hex: string } {
+  const cleanHex = hex.replace("#", "").toUpperCase()
+
+  // Directly known?
+  const entry = colorData[cleanHex as keyof typeof colorData] as HexColorMeansing | undefined
+  if (entry) {
+    return { name: entry.name, hex: entry.hex.startsWith("#") ? entry.hex.toUpperCase() : `#${entry.hex.toUpperCase()}` }
+  }
+
+  // Not directly known, find closest
+  const targetRgb = hexToRgb(`#${cleanHex}`)
+  if (!targetRgb) return { name: "Color", hex: "#" + cleanHex }
+
+  let minDistance = Number.MAX_VALUE
+  let closest: any = null
+
+  for (let i = 0; i < colorValues.length; i++) {
+    const color = colorValues[i] as any
+    const currentRgb = hexToRgb(color.hex)
+    if (currentRgb) {
+      const distanceSquared =
+        Math.pow(targetRgb.r - currentRgb.r, 2) +
+        Math.pow(targetRgb.g - currentRgb.g, 2) +
+        Math.pow(targetRgb.b - currentRgb.b, 2)
+
+      if (distanceSquared < minDistance) {
+        minDistance = distanceSquared
+        closest = color
+      }
+    }
+  }
+
+  if (closest) {
+    return {
+      name: closest.name,
+      hex: closest.hex.startsWith("#") ? closest.hex.toUpperCase() : `#${closest.hex.toUpperCase()}`
+    }
+  }
+
+  return { name: "Color", hex: "#" + cleanHex }
+}

@@ -180,7 +180,7 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
     // Return the blog post URL directly
     // Ensure the URI starts with / for proper URL construction
     const uri = blogMatch.uri.startsWith('/') ? blogMatch.uri : `/${blogMatch.uri}`
-    const baseUrl = "https://colormean.com"
+    const baseUrl = "https://hexcolormeans.com"
     return new URL(uri, baseUrl).toString()
   }
 
@@ -191,10 +191,10 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
     const cleanHex = jsonMatch.hex.replace('#', '').toUpperCase();
     if (isKnownColor(cleanHex)) {
       // Return static color page URL
-      return `https://colormean.com${generateColorSlug(cleanHex)}`;
+      return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
     } else {
       // For colors not in static pages, return HTML color picker
-      return `https://colormean.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
+      return `https://hexcolormeans.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
     }
   }
 
@@ -206,10 +206,10 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
       const cleanHex = normalizedInput.toUpperCase();
       if (isKnownColor(cleanHex)) {
         // Return static color page URL
-        return `https://colormean.com${generateColorSlug(cleanHex)}`;
+        return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
       } else {
         // For unknown hex, return HTML color picker
-        return `https://colormean.com/html-color-picker/?hex=${normalizedInput}`;
+        return `https://hexcolormeans.com/html-color-picker/?hex=${normalizedInput}`;
       }
     }
   }
@@ -250,10 +250,10 @@ export function performSimpleSearch(input: string): string | null {
     const cleanHex = jsonMatch.hex.replace('#', '').toUpperCase();
     if (isKnownColor(cleanHex)) {
       // Return static color page URL
-      return `https://colormean.com${generateColorSlug(cleanHex)}`;
+      return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
     } else {
       // For colors not in static pages, return HTML color picker
-      return `https://colormean.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
+      return `https://hexcolormeans.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
     }
   }
 
@@ -265,10 +265,10 @@ export function performSimpleSearch(input: string): string | null {
       const cleanHex = normalizedInput.toUpperCase();
       if (isKnownColor(cleanHex)) {
         // Return static color page URL
-        return `https://colormean.com${generateColorSlug(cleanHex)}`;
+        return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
       } else {
         // For unknown hex, return HTML color picker
-        return `https://colormean.com/html-color-picker/?hex=${normalizedInput}`;
+        return `https://hexcolormeans.com/html-color-picker/?hex=${normalizedInput}`;
       }
     }
   }

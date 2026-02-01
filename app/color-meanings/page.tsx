@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
-export default function ColorMeaningsRedirect() {
+export default function HexColorMeansingsRedirect() {
   redirect('/blog');
 }

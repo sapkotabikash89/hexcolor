@@ -10,11 +10,11 @@ export function LatestPosts() {
 
     return (
         <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-muted/30 border-y py-8 sm:py-12 mt-8 sm:mt-12">
-            <div className="container mx-auto px-4 space-y-8">
+            <div className="w-full max-w-[1430px] mx-auto px-4 space-y-8">
                 <div className="text-center space-y-2">
-                    <h2 className="text-3xl sm:text-4xl font-bold">Latest from the Blog</h2>
+                    <h2 className="text-3xl sm:text-4xl font-bold">Latest Blog Posts</h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">
-                        Insights, guides, and inspiration from the world of color psychology and design
+                        Clear insights, practical guides, and thoughtful perspectives on color meaning, psychology, and real-world use
                     </p>
                 </div>
 
@@ -57,7 +57,7 @@ export function LatestPosts() {
                 <div className="text-center pt-4">
                     <Link href="/blog">
                         <Button variant="outline" size="lg" className="h-12 px-8 rounded-full font-semibold">
-                            View all posts
+                            Explore All Articles
                         </Button>
                     </Link>
                 </div>

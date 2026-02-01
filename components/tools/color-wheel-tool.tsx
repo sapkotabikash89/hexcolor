@@ -21,8 +21,8 @@ import { getColorPageLink } from "@/lib/color-linking-utils"
 
 export function ColorWheelTool() {
   const router = useRouter()
-  const [baseColor, setBaseColor] = useState("#5B6FD8")
-  const [tempColor, setTempColor] = useState("#5B6FD8")
+  const [baseColor, setBaseColor] = useState("#E0115F")
+  const [tempColor, setTempColor] = useState("#E0115F")
   const [harmonyType, setHarmonyType] = useState("complementary")
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -212,7 +212,7 @@ export function ColorWheelTool() {
     if (!canvas) return
 
     const rect = canvas.getBoundingClientRect()
-    
+
     let clientX: number
     let clientY: number
 
@@ -392,103 +392,13 @@ export function ColorWheelTool() {
       )}
 
       <div className="flex justify-center py-4">
-        <ShareButtons title="Color Wheel Tool - ColorMean" />
+        <ShareButtons title="Color Wheel Tool - HexColorMeans" />
       </div>
       {(() => {
         // OPTIMIZATION: Pass the color hex directly without looking up name
         // The ColorPageContent component will handle unknown colors appropriately
         return <ColorPageContent hex={baseColor} name={undefined} mode="sectionsOnly" />
       })()}
-
-      <Card className="p-2 sm:p-6 space-y-3 sm:space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold">How to Use the Color Wheel</h2>
-        <ol className="list-decimal list-inside space-y-2 text-sm sm:text-base text-muted-foreground">
-          <li>Select your base color using the color picker, or pick color from the color wheel</li>
-          <li>Choose a harmony type from the dropdown menu</li>
-          <li>View the generated color combinations on the wheel with white markers</li>
-          <li>Click on any color to explore it in detail. Click "Explore" button, or scroll down to see everything about the picked color in detail.</li>
-          <li>Use these harmonious colors in your design projects</li>
-        </ol>
-      </Card>
-
-      <Card className="p-2 sm:p-6 space-y-3 sm:space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold">Understanding Color Harmonies</h2>
-        <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-muted-foreground">
-          <p>
-            Color harmonies are combinations of colors that are aesthetically pleasing and create visual balance. Based
-            on color theory, these relationships help designers create cohesive and professional color schemes.
-          </p>
-          <div className="space-y-2">
-            <p>
-              <strong className="text-foreground">Complementary:</strong> Colors opposite each other on the color wheel,
-              creating high contrast and vibrant combinations.
-            </p>
-            <p>
-              <strong className="text-foreground">Analogous:</strong> Colors adjacent to each other, creating serene and
-              comfortable designs.
-            </p>
-            <p>
-              <strong className="text-foreground">Triadic:</strong> Three colors evenly spaced on the wheel, offering
-              vibrant yet balanced schemes.
-            </p>
-            <p>
-              <strong className="text-foreground">Tetradic:</strong> Two sets of complementary colors 60 degrees apart,
-              offering rich color schemes.
-            </p>
-            <p>
-              <strong className="text-foreground">Square:</strong> Four colors evenly spaced (90 degrees) on the wheel,
-              creating bold and dynamic combinations.
-            </p>
-            <p>
-              <strong className="text-foreground">Double Split Complementary:</strong> Two sets of split complementary
-              colors, offering a balanced and dynamic scheme.
-            </p>
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-2 sm:p-6 space-y-3 sm:space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold">Why Use a Color Wheel?</h2>
-        <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-muted-foreground">
-          <li>Create professional and harmonious color schemes</li>
-          <li>Understand color relationships based on scientific color theory</li>
-          <li>Save time by quickly generating color combinations</li>
-          <li>Ensure visual balance in your designs</li>
-          <li>Learn which colors work well together naturally</li>
-        </ul>
-      </Card>
-
-      <Card className="p-2 sm:p-6 space-y-3 sm:space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold">Frequently Asked Questions</h2>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="text-base sm:text-lg">What is a color wheel?</AccordionTrigger>
-            <AccordionContent className="text-sm">
-              A color wheel is a circular diagram of colors arranged by their chromatic relationship. It's a visual
-              representation of colors arranged according to their hue, showing relationships between primary,
-              secondary, and tertiary colors.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="text-base sm:text-lg">
-              How do I choose the right color harmony?
-            </AccordionTrigger>
-            <AccordionContent className="text-sm">
-              The choice depends on your design goals. Use complementary for high contrast and energy, analogous for
-              harmony and calm, triadic for vibrant balance, and monochromatic for elegant sophistication. Consider your
-              brand, audience, and the mood you want to convey.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="text-base sm:text-lg">Can I use these colors commercially?</AccordionTrigger>
-            <AccordionContent className="text-sm">
-              Yes! Colors themselves cannot be copyrighted. The color combinations generated by our tool are free to use
-              in any personal or commercial project. However, be mindful of trademarked color combinations in specific
-              industries.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </Card>
     </div>
   )
 }

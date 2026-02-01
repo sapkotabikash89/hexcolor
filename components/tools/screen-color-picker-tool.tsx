@@ -13,7 +13,7 @@ import { getColorPageLink } from "@/lib/color-linking-utils"
 
 export function ScreenColorPickerTool() {
   const router = useRouter()
-  const [selectedColor, setSelectedColor] = useState("#5B6FD8")
+  const [selectedColor, setSelectedColor] = useState("#E0115F")
   const [pickedColors, setPickedColors] = useState<string[]>([])
   const [isSupported, setIsSupported] = useState(true)
 
@@ -154,58 +154,8 @@ export function ScreenColorPickerTool() {
       </Card>
 
       <div className="flex justify-center py-4">
-        <ShareButtons title="Screen Color Picker Tool - ColorMean" />
+        <ShareButtons title="Screen Color Picker Tool - HexColorMeans" />
       </div>
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">How to Use Screen Color Picker</h2>
-        <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-          <li>Click the &quot;Pick Color from Screen&quot; button to activate the color picker</li>
-          <li>Your cursor will change to a crosshair or color picker icon</li>
-          <li>Move your cursor over any element on your screen</li>
-          <li>Click to select the color at that exact pixel</li>
-          <li>The selected color will be displayed with all format codes</li>
-          <li>Click on any recently picked color to explore it further</li>
-        </ol>
-      </Card>
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">Use Cases</h2>
-        <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-          <li>Match colors from websites and applications</li>
-          <li>Extract brand colors from competitor sites</li>
-          <li>Pick colors from design references and inspiration</li>
-          <li>Identify colors in screenshots and images</li>
-          <li>Create color palettes from existing designs</li>
-        </ul>
-      </Card>
-
-      <Card className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">Frequently Asked Questions</h2>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="text-base sm:text-lg">Which browsers support the screen color picker?</AccordionTrigger>
-            <AccordionContent>
-              The EyeDropper API is supported in Chrome 95+, Edge 95+, and Opera 81+. Safari and Firefox do not
-              currently support this feature.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="text-base sm:text-lg">Can I pick colors from other applications?</AccordionTrigger>
-            <AccordionContent>
-              Yes! The screen color picker works across your entire screen, including other browser windows, desktop
-              applications, and even your desktop wallpaper.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="text-base sm:text-lg">Is this tool free to use?</AccordionTrigger>
-            <AccordionContent>
-              Yes, the screen color picker is completely free to use with no limitations. Pick as many colors as you
-              need for your projects.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </Card>
     </div>
   )
 }

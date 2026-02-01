@@ -1,20 +1,21 @@
 import Link from "next/link"
+import NextImage from "next/image"
 
 export function Footer() {
   return (
     <footer className="w-full border-t border-border bg-card mt-auto">
-      <div className="container max-w-7xl mx-auto px-[5px] sm:px-4 py-12">
+      <div className="w-full max-w-[1430px] mx-auto px-4 py-12 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-              <img src="/logo.webp" alt="ColorMean logo" className="h-8 w-auto rounded-lg" width="120" height="32" />
-              <span>ColorMean</span>
-          </Link>
-          <p className="text-sm text-muted-foreground">
-            We created ColorMean to go deeper than hex codes and palettes. Our focus is the emotional, psychological, cultural, and spiritual meaning of color, backed by accurate technical data. If you enjoy using ColorMean or have ideas to share, we would love to hear from you.
-          </p>
-        </div>
+              <NextImage src="/logo.webp" alt="HexColorMeans logo" width={120} height={32} className="h-8 w-auto rounded-lg" />
+              <span>HexColorMeans</span>
+            </Link>
+            <p className="text-sm text-muted-foreground">
+              We built HexColorMeans to go beyond basic hex values and color lists. The site focuses on the symbolism, psychological, and spiritual meaning of color, supported by accurate technical data you can trust. If HexColorMeans helps your work or sparks an idea, we would love to hear your thoughts and suggestions.
+            </p>
+          </div>
 
           {/* Tools */}
           <div>
@@ -60,6 +61,14 @@ export function Footer() {
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Palette from Image
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/screen-color-picker"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Screen Color Picker
                 </Link>
               </li>
             </ul>
@@ -142,7 +151,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>© 2026 ColorMean. All rights reserved.</p>
+          <p>© 2026 HexColorMeans. All rights reserved.</p>
         </div>
       </div>
     </footer>

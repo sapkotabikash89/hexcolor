@@ -3,13 +3,15 @@
 import type React from "react"
 import { useEffect } from "react"
 import Link from "next/link"
+import NextImage from "next/image"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Palette, Droplet, Contrast, Eye, ImageIcon, CircleDot, Search, Menu, Pipette } from "lucide-react"
+import { Palette, Droplet, Contrast, Eye, ImageIcon, CircleDot, Search, Menu, Pipette, Grid, Disc, LayoutGrid, Library, Layers, BookOpen, Mail, ShieldCheck } from "lucide-react"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { performStaticSearch, performSimpleSearch } from "@/lib/static-search-utils"
 import blogPostsData from "@/lib/blog-posts-data.json"
@@ -17,16 +19,16 @@ import blogPostsData from "@/lib/blog-posts-data.json"
 export function Header() {
   const router = useRouter()
   const [searchValue, setSearchValue] = useState("")
-  const [pickerColor, setPickerColor] = useState("#5B6FD8")
+  const [pickerColor, setPickerColor] = useState("#E0115F")
   const [showCustomPicker, setShowCustomPicker] = useState(false)
-  const [tempColor, setTempColor] = useState("#5B6FD8")
+  const [tempColor, setTempColor] = useState("#E0115F")
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  // Use a custom hook to detect outside clicks for the search bar
+  const searchRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    try {
-      const c = localStorage.getItem("currentPostColor")
-      if (c) setPickerColor(c)
-    } catch { }
     const handleColorUpdate = (e: CustomEvent) => {
       setPickerColor(e.detail.color)
     }
@@ -45,7 +47,7 @@ export function Header() {
 
     if (searchResult) {
       // Use Next.js router for navigation to avoid Cloudflare redirects
-      router.push(searchResult.replace('https://colormean.com', ''))
+      router.push(searchResult.replace('https://hexcolormeans.com', ''))
     } else {
       // Fallback for empty/invalid input - do nothing
       return
@@ -69,39 +71,46 @@ export function Header() {
     // Navigate to the appropriate color page using centralized linking logic
     // Use Next.js router to avoid Cloudflare redirects
     const link = getColorPageLink(selectedColor)
-    const relativeLink = link.replace('https://colormean.com', '')
+    const relativeLink = link.replace('https://hexcolormeans.com', '')
     router.push(relativeLink)
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
-      <div className="container max-w-[1200px] mx-auto flex justify-center h-16 items-center gap-4 px-4">
+    <header className="sticky top-0 z-[100] w-full border-b border-border bg-background">
+      <div className="w-full max-w-[1430px] mx-auto flex justify-between h-16 items-center gap-4 px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-          <img src="/logo.webp" alt="ColorMean logo" className="h-8 w-auto" width="120" height="32" />
-          <span className="hidden sm:inline-block">ColorMean</span>
+          <NextImage src="/logo.webp" alt="HexColorMeans logo" width={120} height={32} className="h-8 w-auto" priority />
+          <span className="hidden sm:inline-block">HexColorMeans</span>
         </Link>
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center justify-between gap-1 flex-1 max-w-[500px] xl:max-w-none">
           {/* Tools submenu */}
           <div className="relative group">
-            <Link href="/color-wheel">
-              <Button variant="ghost" size="sm" className="gap-2" aria-label="Tools">
-                <CircleDot className="w-4 h-4" aria-hidden="true" />
-                <span className="hidden xl:inline">Tools</span>
-              </Button>
-            </Link>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href="/color-wheel">
+                  <Button variant="ghost" size="sm" className="gap-2" aria-label="Tools">
+                    <Grid className="w-4 h-4" aria-hidden="true" />
+                    <span className="hidden xl:inline">Tools</span>
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="xl:hidden">
+                <p>Tools</p>
+              </TooltipContent>
+            </Tooltip>
             <div className="absolute left-0 mt-2 w-[240px] bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-200">
               <Link href="/color-wheel">
                 <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Wheel">
-                  <CircleDot className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <Disc className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Wheel
                 </Button>
               </Link>
               <Link href="/color-picker">
                 <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Picker">
-                  <Droplet className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <Pipette className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Picker
                 </Button>
               </Link>
@@ -125,49 +134,83 @@ export function Header() {
               </Link>
               <Link href="/palette-from-image">
                 <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Palette from Image">
-                  <Palette className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <LayoutGrid className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Palette from Image
+                </Button>
+              </Link>
+              <Link href="/screen-color-picker">
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Screen Color Picker">
+                  <Pipette className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  Screen Color Picker
                 </Button>
               </Link>
             </div>
           </div>
-          <Link href="/colors">
-            <Button variant="ghost" size="sm" className="gap-2" aria-label="Color Library">
-              <Palette className="w-4 h-4" aria-hidden="true" />
-              <span className="hidden xl:inline">Color Library</span>
-            </Button>
-          </Link>
-          <Link href="/category/shades-meaning">
-            <Button variant="ghost" size="sm" className="gap-2" aria-label="Shades">
-              <CircleDot className="w-4 h-4" aria-hidden="true" />
-              <span className="hidden xl:inline">Shades</span>
-            </Button>
-          </Link>
-          <Link href="/category/color-meaning">
-            <Button variant="ghost" size="sm" className="gap-2" aria-label="Color Meaning">
-              <Droplet className="w-4 h-4" aria-hidden="true" />
-              <span className="hidden xl:inline">Color Meaning</span>
-            </Button>
-          </Link>
-          <Link href="/contact">
-            <Button variant="ghost" size="sm" className="gap-2" aria-label="Contact">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden="true">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-              <span className="hidden xl:inline">Contact</span>
-            </Button>
-          </Link>
-          <Link href="/privacy-policy">
-            <Button variant="ghost" size="sm" className="gap-2" aria-hidden="true" aria-label="Privacy">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-              <span className="hidden xl:inline">Privacy</span>
-            </Button>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/colors">
+                <Button variant="ghost" size="sm" className="gap-2" aria-label="Color Library">
+                  <Library className="w-4 h-4" aria-hidden="true" />
+                  <span className="hidden xl:inline">Color Library</span>
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="xl:hidden">
+              <p>Color Library</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/category/shades-meaning">
+                <Button variant="ghost" size="sm" className="gap-2" aria-label="Shades">
+                  <Layers className="w-4 h-4" aria-hidden="true" />
+                  <span className="hidden xl:inline">Shades</span>
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="xl:hidden">
+              <p>Shades</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/category/color-meaning">
+                <Button variant="ghost" size="sm" className="gap-2" aria-label="Color Meaning">
+                  <BookOpen className="w-4 h-4" aria-hidden="true" />
+                  <span className="hidden xl:inline">Color Meaning</span>
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="xl:hidden">
+              <p>Color Meaning</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/contact">
+                <Button variant="ghost" size="sm" className="gap-2" aria-label="Contact">
+                  <Mail className="w-4 h-4" aria-hidden="true" />
+                  <span className="hidden xl:inline">Contact</span>
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="xl:hidden">
+              <p>Contact</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/privacy-policy">
+                <Button variant="ghost" size="sm" className="gap-2" aria-hidden="true" aria-label="Privacy">
+                  <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+                  <span className="hidden xl:inline">Privacy</span>
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="xl:hidden">
+              <p>Privacy</p>
+            </TooltipContent>
+          </Tooltip>
         </nav>
 
         {/* Color Picker & Search */}
@@ -187,7 +230,7 @@ export function Header() {
           {/* Search Bar */}
           <div className="flex items-center flex-1 md:flex-none md:w-auto">
             {/* Desktop Search */}
-            <form onSubmit={handleSearch} className="relative hidden md:block w-40 xl:w-64">
+            <form onSubmit={handleSearch} className="relative hidden md:block w-32 lg:w-48 xl:w-64">
               <Input
                 type="text"
                 placeholder="Search color..."
@@ -216,9 +259,9 @@ export function Header() {
           </div>
 
           {/* Mobile Menu Icon */}
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden h-10 w-10 border-2 border-black rounded-md flex-shrink-0" aria-label="Open menu">
+              <Button variant="ghost" size="icon" className="md:hidden h-10 w-10 border-2 border-black rounded-md flex-shrink-0 ml-2" aria-label="Open menu">
                 <Menu className="w-5 h-5" />
               </Button>
             </SheetTrigger>
@@ -227,76 +270,75 @@ export function Header() {
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-4 mt-8">
-                <Link href="/color-wheel">
+                <Link href="/color-wheel" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
-                    <CircleDot className="w-4 h-4" />
+                    <Disc className="w-4 h-4" />
                     Color Wheel
                   </Button>
                 </Link>
-                <Link href="/color-picker">
+                <Link href="/color-picker" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
-                    <Droplet className="w-4 h-4" />
+                    <Pipette className="w-4 h-4" />
                     Color Picker
                   </Button>
                 </Link>
-                <Link href="/contrast-checker">
+                <Link href="/contrast-checker" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
                     <Contrast className="w-4 h-4" />
                     Contrast Checker
                   </Button>
                 </Link>
-                <Link href="/color-blindness-simulator">
+                <Link href="/color-blindness-simulator" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
                     <Eye className="w-4 h-4" />
                     Color Blindness Simulator
                   </Button>
                 </Link>
-                <Link href="/image-color-picker">
+                <Link href="/image-color-picker" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
                     <ImageIcon className="w-4 h-4" />
                     Image Color Picker
                   </Button>
                 </Link>
-                <Link href="/palette-from-image">
+                <Link href="/palette-from-image" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
-                    <Palette className="w-4 h-4" />
+                    <LayoutGrid className="w-4 h-4" />
                     Palette from Image
                   </Button>
                 </Link>
-                <Link href="/colors">
+                <Link href="/screen-color-picker" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
-                    <Palette className="w-4 h-4" />
+                    <Pipette className="w-4 h-4" />
+                    Screen Color Picker
+                  </Button>
+                </Link>
+                <Link href="/colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2">
+                    <Library className="w-4 h-4" />
                     Color Library
                   </Button>
                 </Link>
-                <Link href="/category/shades-meaning">
+                <Link href="/category/shades-meaning" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
-                    <CircleDot className="w-4 h-4" />
+                    <Layers className="w-4 h-4" />
                     Shades
                   </Button>
                 </Link>
-                <Link href="/category/color-meaning">
+                <Link href="/category/color-meaning" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
-                    <Droplet className="w-4 h-4" />
+                    <BookOpen className="w-4 h-4" />
                     Color Meaning
                   </Button>
                 </Link>
-                <Link href="/contact">
+                <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                      <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
+                    <Mail className="w-4 h-4" />
                     Contact
                   </Button>
                 </Link>
-                <Link href="/privacy-policy">
+                <Link href="/privacy-policy" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="8" x2="12" y2="12"></line>
-                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
+                    <ShieldCheck className="w-4 h-4" />
                     Privacy
                   </Button>
                 </Link>

@@ -1,5 +1,16 @@
-# Redirects
-/color/*  /colors/:splat  301
+# Cloudflare Pages Redirects Configuration
+# https://developers.cloudflare.com/pages/platform/redirects/
 
-# Image rewrites try (might not work with mid-string wildcards)
-# /colors/*-image.webp /colors/:splat/image.webp 200
+# Redirect old color URL structure to new one
+/color/:hex  /colors/:hex  301
+
+# Ensure trailing slashes
+/colors/*  /colors/:splat/  301!
+/blog/*  /blog/:splat/  301!
+/categories/*  /categories/:splat/  301!
+
+# Redirect www to non-www (if needed)
+https://www.hexcolormeans.com/*  https://hexcolormeans.com/:splat  301
+
+# SPA fallback for client-side routing (if needed)
+# /*  /index.html  200

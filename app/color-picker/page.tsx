@@ -4,146 +4,242 @@ import { Footer } from "@/components/footer"
 import { ColorPickerClient } from "@/components/tool-wrappers"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
-import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema, HowToSchema } from "@/components/structured-data"
+import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
+import { Card } from "@/components/ui/card"
+import { CheckCircle2, Info, MousePointer2, HelpCircle, Zap, ShieldCheck, RefreshCw, Layers } from "lucide-react"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export const metadata: Metadata = {
-  title: "Color Picker - ColorMean",
-  description: "Advanced color picker tool to select and explore colors. Get HEX, RGB, HSL color codes instantly.",
+  title: "Color Picker - Free Online Hex, HTML & CSS Color Selector Tool | HexColorMeans",
+  description: "Select and explore colors with our professional-grade hex color picker. Get instant HEX, RGB, and HSL codes for HTML, CSS, and UI design projects with precise control.",
+  keywords: ["color picker", "hex color picker", "html color picker", "color selector", "rgb color picker", "css color picker", "online color tool"],
   alternates: {
-    canonical: "https://colormean.com/color-picker",
+    canonical: "https://hexcolormeans.com/color-picker",
   },
   openGraph: {
-    title: "Color Picker - ColorMean",
+    title: "Color Picker - Free Online Hex, HTML & CSS Color Selector Tool | HexColorMeans",
     description:
-      "Advanced color picker tool to select and explore colors. Get HEX, RGB, HSL color codes instantly.",
-    url: "https://colormean.com/color-picker",
-    siteName: "ColorMean",
+      "Professional online color picker for web designers. Extract HEX, RGB, and HSL codes instantly with our high-fidelity color selection tool. Fast and easy to use.",
+    url: "https://hexcolormeans.com/color-picker",
+    siteName: "HexColorMeans",
     type: "website",
     images: [
       {
-        url: "https://colormean.com/color%20picker%20online%20free.webp",
+        url: "https://hexcolormeans.com/advanced-color-picker-tool-online-free.webp",
         width: 1200,
         height: 630,
-        alt: "Interactive Color Picker Tool to sample and select colors",
+        alt: "Professional Online Color Picker Interface - Precision Hex & HTML Color Selector",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Color Picker - ColorMean",
+    title: "Color Picker - Professional Hex & HTML Color Selector | HexColorMeans",
     description:
-      "Advanced color picker tool to select and explore colors. Get HEX, RGB, HSL color codes instantly.",
-    images: ["https://colormean.com/color%20picker%20online%20free.webp"],
+      "Discover the perfect hue with our advanced hex color picker. Instant codes for HTML, CSS, and UI development.",
+    images: ["https://hexcolormeans.com/advanced-color-picker-tool-online-free.webp"],
   },
 }
 
 export default function ColorPickerPage() {
   const faqs = [
     {
-      question: "How do I select a color precisely?",
+      question: "What is a hex color picker?",
       answer:
-        "Drag on the color area and fine‑tune with sliders for hue, saturation, and lightness. Copy exact HEX, RGB, and HSL values.",
+        "A hex color picker is a digital tool that allows you to select any color and retrieve its unique Hexadecimal code (e.g., #FFFFFF). This code is the standard for web development, ensuring that the exact color you choose is rendered correctly in HTML and CSS across all modern browsers.",
     },
     {
-      question: "Can I explore related colors?",
+      question: "How do I use an HTML color picker for web design?",
       answer:
-        "Yes. Use the Explore action to open the color detail page with harmonies, tints, shades, tones, and accessibility info.",
+        "To use an HTML color picker, simply navigate the visual spectrum to find the desired hue. Once selected, copy the generated HEX code and paste it into your CSS stylesheet under the 'color' or 'background-color' properties. Our tool also provides RGB and HSL values for more complex design requirements.",
     },
     {
-      question: "Is the tool free to use?",
-      answer: "Yes. The Color Picker is completely free with no usage limits.",
+      question: "Why is an HSL color selector better than RGB?",
+      answer:
+        "An HSL color selector is often preferred by designers because it aligns with human perception. Unlike RGB, which combines light, HSL allows you to adjust Saturation and Lightness independently. This makes it much easier to create shades and tints of a base color while maintaining visual consistency.",
+    },
+    {
+      question: "Can I use these color codes in CSS and Photoshop?",
+      answer:
+        "Yes, the codes generated by our color selector are fully compatible with CSS, Photoshop, Figma, and all professional design software. You can simply copy the HEX, RGB, or HSL values and paste them directly into the color input fields of your preferred design or development environment.",
+    },
+    {
+      question: "How does a precision color picker ensure accessibility?",
+      answer:
+        "A precision color picker allows you to fine-tune color values to meet WCAG accessibility standards. By adjusting the lightness and saturation, you can ensure that your foreground text has enough contrast against the background. This makes your digital content readable for users with visual impairments.",
     },
   ]
+
+  const features = [
+    {
+      title: "Perceptual Control",
+      description: "Directly manipulate HSL values for intuitive color scaling, shadows, and state generation in your UI design system.",
+      icon: MousePointer2
+    },
+    {
+      title: "Format Flexibility",
+      description: "Export your selections instantly in HEX, RGB, or HSL formats—the global standards for modern web development and digital art.",
+      icon: RefreshCw
+    },
+    {
+      title: "Accessibility Ready",
+      description: "Use precision lightness controls to ensure your color choices meet contrast standards and provide an inclusive user experience.",
+      icon: ShieldCheck
+    },
+    {
+      title: "Real-time Preview",
+      description: "Visualize your color choices instantly on a large scale. See how your picked hue looks across different brightness levels.",
+      icon: Zap
+    }
+  ]
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background text-left font-sans">
       <WebPageSchema
         name="Color Picker"
-        url="https://colormean.com/color-picker"
-        description="Advanced color picker tool to select and explore colors. Get HEX, RGB, HSL color codes instantly."
+        url="https://hexcolormeans.com/color-picker"
+        description="Professional online color picker to select and explore colors. Get instant HEX, RGB, and HSL codes for web design and development."
       />
       <BreadcrumbSchema items={[
-        { name: "Home", item: "https://colormean.com" },
-        { name: "Color Picker", item: "https://colormean.com/color-picker" }
+        { name: "Home", item: "https://hexcolormeans.com" },
+        { name: "Color Picker", item: "https://hexcolormeans.com/color-picker" }
       ]} />
-      <FAQSchema faqs={faqs} />
       <Header />
-      <main className="container mx-auto px-4 py-8 flex-1">
-        <BreadcrumbNav items={[{ label: "Color Picker", href: "/color-picker" }]} />
 
-        <div className="mt-6 space-y-4">
-          <div>
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold">Color Picker</h1>
-            </div>
-            <p className="text-muted-foreground mt-2">
-              Select any color using our advanced color picker and get instant color codes
+      <section className="bg-muted/30 py-12 px-4 border-b">
+        <div className="container mx-auto">
+          <div className="mb-6">
+            <BreadcrumbNav items={[{ label: "Color Picker", href: "/color-picker" }]} />
+          </div>
+          <div className="text-center space-y-4 max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight">
+              Color Picker
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium text-pretty text-center">
+              Discover the perfect hue with our advanced hex color picker. Sample colors and get instant HTML/CSS codes for your projects.
             </p>
           </div>
+        </div>
+      </section>
 
-          <div className="flex flex-col lg:flex-row gap-8">
-            <article id="content" className="main-content grow-content flex-1 space-y-8">
-              <ToolApplicationSchema
-                name="Color Picker"
-                slug="color-picker"
-                description="Interactive Color Picker Tool to sample and select colors"
-              />
+      <main className="w-full max-w-[1280px] mx-auto px-4 py-12">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <article id="content" className="main-content grow-content flex-1 space-y-16">
+            <ToolApplicationSchema
+              name="Precision Color Picker"
+              slug="color-picker"
+              description="Professional-grade interface for color selection, analysis, and perceptual adjustment."
+            />
+
+            {/* Tool Area */}
+            <section className="space-y-8">
               <ColorPickerClient />
+            </section>
 
-              <div className="p-6 border-2 border-border rounded-lg space-y-4">
-                <h2 className="text-2xl font-bold">About the Color Picker</h2>
-                <p className="text-muted-foreground">
-                  Use the Color Picker to select precise colors and get immediate conversions in HEX, RGB, and HSL.
-                  Adjust hue, saturation, and lightness to refine your selection and copy values for design and code.
-                </p>
-              </div>
-
-              <div className="p-6 border-2 border-border rounded-lg space-y-4">
-                <h2 className="text-2xl font-bold">How to Use</h2>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Drag on the color area to select a color.</li>
-                  <li>Use sliders to fine‑tune hue, saturation, and lightness.</li>
-                  <li>Copy HEX, RGB, and HSL codes and paste into your project.</li>
-                  <li>Click Explore to open the color’s detailed information page.</li>
-                </ol>
-              </div>
-              <HowToSchema
-                name="How to use Color Picker"
-                steps={[
-                  "Drag on the color area to select a color.",
-                  "Use sliders to fine‑tune hue, saturation, and lightness.",
-                  "Copy HEX, RGB, and HSL codes and paste into your project.",
-                  "Click Explore to open the color’s detailed information page.",
-                ]}
-              />
-
-              <div className="p-6 border-2 border-border rounded-lg space-y-4">
-                <h2 className="text-2xl font-bold">Why This Tool Matters</h2>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Ensures accurate, consistent color values across design and code.</li>
-                  <li>Speeds up workflows with instant conversions and copy actions.</li>
-                  <li>Helps explore related colors and accessibility from the color page.</li>
-                </ul>
-              </div>
-
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold">FAQs</h2>
-                <div className="space-y-4">
-                  {faqs.map((faq, i) => (
-                    <details key={i} className="border border-border rounded-md p-4">
-                      <summary className="font-semibold text-lg cursor-pointer list-none">{faq.question}</summary>
-                      <div className="mt-2 text-muted-foreground">{faq.answer}</div>
-                    </details>
-                  ))}
+            {/* How to Use Area with border */}
+            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-8 h-8 text-primary" />
+                  <h2 className="text-4xl font-bold m-0">How to Use the Color Picker</h2>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-8 items-stretch">
+                  <div className="space-y-6">
+                    <p className="text-lg text-muted-foreground leading-relaxed">
+                      Using our interactive color selector is simple and fast. Follow these steps to find and export your perfect color:
+                    </p>
+                    <ul className="space-y-4">
+                      {[
+                        "Click or drag on the primary color canvas to find your base hue.",
+                        "Use the vertical slider to adjust the lightness and intensity of the color.",
+                        "View the real-time preview in the output box as you navigate the spectrum.",
+                        "Automatically generate HEX, RGB, and HSL codes as you make your choice.",
+                        "Copy the code with one click to use directly in your CSS, HTML, or design tool."
+                      ].map((step, i) => (
+                        <li key={i} className="flex gap-4">
+                          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">{i + 1}</span>
+                          <span className="text-muted-foreground pt-1 font-medium">{step}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-6 sm:p-10">
+                    <img
+                      src="/advanced-color-picker-tool-online-free.webp"
+                      alt="Professional user interface of the online color picker tool"
+                      className="w-full h-full object-contain transition-transform duration-700 hover:scale-105"
+                    />
+                  </Card>
                 </div>
               </div>
-            </article>
-            <ColorSidebar color="#5B6FD8" />
+            </section>
+
+            {/* Why Use Area with border */}
+            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-10 text-left bg-white">
+              <div className="flex items-center gap-3">
+                <Info className="w-8 h-8 text-primary" />
+                <h2 className="text-4xl font-bold m-0">Why Use a Precision Color Picker?</h2>
+              </div>
+              <div className="max-w-none space-y-12">
+                <p className="text-lg text-muted-foreground leading-relaxed font-normal">
+                  A precision color picker is more than just a selector; it is a fundamental tool for digital branding and UI consistency. By choosing colors based on exact mathematical values, you ensure that your brand identity remains uniform across every device, screen, and platform.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed font-normal">
+                  For developers, a reliable HTML color picker removes the guesswork from translating designs into code. It allows for the rapid generation of accessible color variants, ensuring your interface is not only beautiful but also inclusive. High-precision color selection is the key to building trust through visual professionalism.
+                </p>
+              </div>
+            </section>
+
+            {/* Professional Features Section with border */}
+            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+              <div className="flex items-center gap-3">
+                <Layers className="w-8 h-8 text-primary" />
+                <h2 className="text-4xl font-bold m-0">Key Tool Features</h2>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-8">
+                {features.map((feature, i) => (
+                  <Card key={i} className="p-8 space-y-4 border-2 border-border/50 hover:border-primary/30 transition-all shadow-md hover:shadow-xl rounded-2xl bg-white">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                      <feature.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-2xl font-bold">{feature.title}</h3>
+                    <p className="text-muted-foreground text-lg leading-relaxed">{feature.description}</p>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            {/* FAQs Area with border */}
+            <section id="faqs" className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-12 bg-white">
+              <div className="flex items-center gap-4">
+                <HelpCircle className="w-10 h-10 text-primary" />
+                <h2 className="text-4xl font-bold m-0 text-left">FAQs About Color Picker</h2>
+              </div>
+              <div className="max-w-5xl">
+                <Accordion type="single" collapsible className="w-full space-y-4">
+                  {faqs.map((faq, i) => (
+                    <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-6 bg-white transition-colors hover:bg-accent/5">
+                      <AccordionTrigger className="text-xl font-bold text-left hover:no-underline py-6">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-lg text-muted-foreground leading-relaxed pb-6 text-left">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            </section>
+          </article>
+          <div className="hidden lg:block w-[380px]">
+            <div className="sticky top-24">
+              <ColorSidebar color="#E0115F" />
+            </div>
           </div>
-
-
         </div>
       </main>
+
       <ExploreColorTools current="color-picker" />
       <Footer />
     </div>

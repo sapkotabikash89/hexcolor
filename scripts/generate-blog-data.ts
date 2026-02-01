@@ -36,7 +36,8 @@ interface ApiResponse {
 
 async function fetchBlogPosts(): Promise<BlogPost[]> {
   try {
-    const res = await fetch("https://cms.colormean.com/graphql", {
+    const WORDPRESS_API_URL = 'https://blog.hexcolormeans.com/graphql';
+    const res = await fetch(WORDPRESS_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -82,12 +83,12 @@ async function fetchBlogPosts(): Promise<BlogPost[]> {
 async function generateBlogData() {
   console.log('Fetching blog posts...');
   const posts = await fetchBlogPosts();
-  
+
   // Save the posts to a JSON file
   const outputPath = path.join(process.cwd(), 'lib', 'blog-posts-data.json');
-  
+
   await fs.writeFile(outputPath, JSON.stringify(posts, null, 2));
-  
+
   console.log(`Generated ${posts.length} blog posts in ${outputPath}`);
 }
 

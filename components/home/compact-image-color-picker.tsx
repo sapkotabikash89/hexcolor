@@ -14,7 +14,7 @@ import Link from "next/link"
 export function CompactImageColorPicker() {
     const router = useRouter()
     const [image, setImage] = useState<string | null>(null)
-    const [selectedColor, setSelectedColor] = useState("#5B6FD8")
+    const [selectedColor, setSelectedColor] = useState("#E0115F")
     const [isCustomImage, setIsCustomImage] = useState(false)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
@@ -38,8 +38,7 @@ export function CompactImageColorPicker() {
 
     useEffect(() => {
         if (!image) {
-            const defaultImg =
-                "https://images.unsplash.com/photo-1599345697595-2d1398084369?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            const defaultImg = "/default-image-for-image-color-picker.webp"
             setImage(defaultImg)
             setIsCustomImage(false)
         }
@@ -292,16 +291,6 @@ export function CompactImageColorPicker() {
                                 onTouchEnd={handleCanvasTouchEnd}
                                 className="w-full cursor-crosshair max-h-[500px] object-contain touch-none"
                             />
-                            {!isCustomImage && image && (
-                                <a
-                                    href={image}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="absolute bottom-2 right-2 text-[11px] px-2 py-1 rounded bg-black/50 text-white"
-                                >
-                                    Photo © Unsplash
-                                </a>
-                            )}
                             {showMagnifier && (
                                 <div
                                     className="absolute z-10 border-4 border-white bg-background rounded-full shadow-2xl pointer-events-none overflow-hidden"

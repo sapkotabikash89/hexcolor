@@ -6,56 +6,47 @@ import { CategoryPosts } from "@/components/category-posts";
 import fs from "fs";
 import path from "path";
 
-async function fetchAllPosts() {
-  try {
-    const dataPath = path.join(process.cwd(), 'lib/blog-posts-data.json');
-    if (fs.existsSync(dataPath)) {
-      return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-    }
-  } catch (e) {
-    console.error('Error reading local posts data:', e);
-  }
+import { fetchGraphQL, getLocalPosts } from "@/lib/wordpress";
 
-  // Fallback to fetch if local file doesn't exist (e.g. first build)
-  const res = await fetch("https://cms.colormean.com/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query AllPosts {
-          posts(first: 100) {
+async function fetchAllPosts() {
+  // Try live fetch first
+  const query = `
+    query AllPosts {
+      posts(first: 100) {
+        nodes {
+          title
+          excerpt
+          uri
+          date
+          featuredImage {
+            node {
+              sourceUrl
+              altText
+            }
+          }
+          categories {
             nodes {
-              title
-              excerpt
-              uri
-              date
-              featuredImage {
-                node {
-                  sourceUrl
-                  altText
-                }
-              }
-              categories {
-                nodes {
-                  name
-                  slug
-                }
-              }
+              name
+              slug
             }
           }
         }
-      `,
-    }),
-    next: { revalidate: 3600 }, // 1 hour cache
-  });
+      }
+    }
+  `;
 
-  const json = await res.json();
-  return json?.data?.posts?.nodes ?? [];
+  const json = await fetchGraphQL(query);
+  if (json?.data?.posts?.nodes) {
+    return json.data.posts.nodes;
+  }
+
+  // Fallback to local data
+  return await getLocalPosts();
 }
 
 export const metadata = {
   title: "Blog - Latest Articles on Color Meanings, Psychology & Design",
-  description: "Read all articles about colors, their meanings, psychology, spirituality, and cultural symbolism. Latest posts from ColorMean.",
+  description: "Read all articles about colors, their meanings, psychology, spirituality, and cultural symbolism. Latest posts from HexColorMeans.",
 };
 
 export default async function BlogPage() {
@@ -95,7 +86,7 @@ export default async function BlogPage() {
               categorySlug="blog"
             />
           </article>
-          <ColorSidebar color="#5B6FD8" />
+          <ColorSidebar color="#E0115F" />
         </div>
       </main>
       <Footer />

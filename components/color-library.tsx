@@ -11,6 +11,7 @@ import { getContrastColor } from "@/lib/color-utils"
 import { hexToRgb, rgbToHsl } from "@/lib/color-utils"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination"
 import { getColorPageLink } from "@/lib/color-linking-utils"
+import { LibraryColorSwatch } from "@/components/library-color-swatch"
 
 // Import the optimized color library data
 import colorLibraryData from "@/lib/color-library-data.json"
@@ -24,12 +25,12 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
   const [loading, setLoading] = useState(false)
   const debounceRef = useRef<number | null>(null)
   const [page, setPage] = useState(1)
-  const perPage = 100
-  
+  const perPage = 50
+
   // All colors from the optimized data file
   const allColors = colorLibraryData;
   const [isLoading, setIsLoading] = useState(false)
-  
+
   const buildMobileList = (pages: number) => {
     if (pages <= 4) return Array.from({ length: pages }, (_, i) => i + 1)
     return [1, 2, "ellipsis", pages - 1, pages]
@@ -51,29 +52,29 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
       try {
         const query = searchQuery.trim().toLowerCase()
         const results: Array<{ name: string; hex: string }> = []
-        
+
         // Search through all colors
         for (let i = 0; i < allColors.length; i++) {
           const color = allColors[i]
           const name = color.name.toLowerCase()
-          
+
           if (name.startsWith(query)) {
             results.push({ name: color.name, hex: color.hex })
           }
         }
-        
+
         // Add contains matches (limit to 200 total results)
         if (results.length < 200) {
           for (let i = 0; i < allColors.length && results.length < 200; i++) {
             const color = allColors[i]
             const name = color.name.toLowerCase()
-            
+
             if (name.includes(query) && !name.startsWith(query)) {
               results.push({ name: color.name, hex: color.hex })
             }
           }
         }
-        
+
         setPreviewResults(results)
       } catch {
         setPreviewResults([])
@@ -283,27 +284,12 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
               </div>
             )
           })()}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {filteredColors()
               .slice((page - 1) * perPage, page * perPage)
               .map((color, index) => (
-              <Link key={index} href={getColorPageLink(color.hex)}>
-                <Card className="group hover:shadow-lg transition-all hover:scale-105 cursor-pointer overflow-hidden">
-                  <div
-                    className="aspect-square flex items-center justify-center p-4 text-center font-mono text-sm font-semibold"
-                    style={{
-                      backgroundColor: color.hex,
-                      color: getContrastColor(color.hex),
-                    }}
-                  >
-                    {color.hex}
-                  </div>
-                  <div className="p-3 bg-card">
-                    <p className="text-sm font-medium text-center truncate">{color.name}</p>
-                  </div>
-                </Card>
-              </Link>
-            ))}
+                <LibraryColorSwatch key={index} name={color.name} hex={color.hex} />
+              ))}
           </div>
           {(() => {
             const total = filteredColors().length

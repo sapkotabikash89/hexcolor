@@ -13,7 +13,7 @@ import Link from "next/link"
 
 export function CompactColorWheel() {
     const router = useRouter()
-    const [baseColor, setBaseColor] = useState("#5B6FD8")
+    const [baseColor, setBaseColor] = useState("#E0115F")
     const [harmonyType, setHarmonyType] = useState("complementary")
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [isDragging, setIsDragging] = useState(false)

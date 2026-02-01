@@ -153,88 +153,12 @@ export function ContrastCheckerTool() {
       </Card>
 
       <div className="flex justify-center py-4">
-        <ShareButtons title="Contrast Checker Tool - ColorMean" />
+        <ShareButtons title="Contrast Checker Tool - HexColorMeans" />
       </div>
 
-      <Card className="p-4 sm:p-6 space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold">How to Use the Contrast Checker</h2>
-        <ol className="list-decimal list-inside space-y-2 text-sm sm:text-base text-muted-foreground">
-          <li>Select your foreground (text) color using the color picker or enter a hex code</li>
-          <li>Select your background color</li>
-          <li>View the contrast ratio and WCAG compliance levels instantly</li>
-          <li>Use the swap button to quickly test the inverse combination</li>
-          <li>Ensure your combination meets at least AA standards for accessibility</li>
-        </ol>
-      </Card>
 
-      <Card className="p-4 sm:p-6 space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold">Understanding WCAG Standards</h2>
-        <div className="space-y-4 text-sm sm:text-base text-muted-foreground">
-          <p>
-            The Web Content Accessibility Guidelines (WCAG) provide standards for making web content more accessible to
-            people with disabilities, including those with visual impairments.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-muted rounded-lg">
-              <h3 className="font-semibold text-foreground mb-2">WCAG AA (Minimum)</h3>
-              <ul className="space-y-1 text-sm">
-                <li>• Normal text: 4.5:1 contrast ratio</li>
-                <li>• Large text: 3:1 contrast ratio</li>
-                <li>• Required for most websites</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-muted rounded-lg">
-              <h3 className="font-semibold text-foreground mb-2">WCAG AAA (Enhanced)</h3>
-              <ul className="space-y-1 text-sm">
-                <li>• Normal text: 7:1 contrast ratio</li>
-                <li>• Large text: 4.5:1 contrast ratio</li>
-                <li>• Highest accessibility standard</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </Card>
 
-      <Card className="p-4 sm:p-6 space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold">Why Contrast Matters</h2>
-        <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-muted-foreground">
-          <li>Ensures readability for users with visual impairments</li>
-          <li>Improves usability in different lighting conditions</li>
-          <li>Required for ADA and Section 508 compliance</li>
-          <li>Enhances overall user experience for everyone</li>
-          <li>Prevents legal issues related to accessibility</li>
-          <li>Shows consideration for all users regardless of ability</li>
-        </ul>
-      </Card>
 
-      <Card className="p-4 sm:p-6 space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold">Frequently Asked Questions</h2>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="text-base sm:text-lg">What is a good contrast ratio?</AccordionTrigger>
-            <AccordionContent>
-              For normal text, aim for at least 4.5:1 (WCAG AA) or 7:1 (WCAG AAA). For large text (18pt+ or 14pt+ bold),
-              3:1 (AA) or 4.5:1 (AAA) is acceptable. Higher ratios provide better accessibility.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="text-base sm:text-lg">Do I need to meet AAA standards?</AccordionTrigger>
-            <AccordionContent>
-              AA is the legal requirement for most websites. AAA is recommended but not required, as it can be difficult
-              to achieve with brand colors. However, critical content and government sites should aim for AAA when
-              possible.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="text-base sm:text-lg">What if my brand colors don't meet standards?</AccordionTrigger>
-            <AccordionContent>
-              You can use your brand colors for decorative elements and adjust shades for text. Consider using darker or
-              lighter versions of your brand colors, or ensure sufficient contrast by pairing them with appropriate
-              backgrounds.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </Card>
 
       {showForegroundPicker && (
         <CustomColorPicker

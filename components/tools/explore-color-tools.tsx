@@ -17,11 +17,11 @@ export function ExploreColorTools({ current }: { current: string }) {
 
   return (
     <section className="w-full bg-muted/30">
-      <div className="container mx-auto px-4 py-12">
+      <div className="w-full max-w-[1430px] mx-auto px-4 py-12">
         <div className="mb-6">
           <h2 className="text-3xl font-bold">Explore Color Tools</h2>
           <p className="text-muted-foreground">
-            Discover more professional tools that connect color theory with practical workflows.
+            Access professional tools that link color theory with practical design workflows.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
