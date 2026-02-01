@@ -251,14 +251,20 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
                 <ShareButtons url={`https://hexcolormeans.com/html-color-picker?hex=${currentHex.replace("#", "").toLowerCase()}`} title={`${currentHex.toUpperCase()} HTML Color Code - HexColorMeans`} />
               </div>
 
-              <ColorPageContent
-                key={currentHex}
-                hex={currentHex}
-                mode="full"
-                faqs={[]}
-                onColorChange={updateCurrentHex}
-                pageUrl={`https://hexcolormeans.com/html-color-picker?hex=${currentHex.replace("#", "").toUpperCase()}`}
-              />
+              {/* Color Information - Expanded by default */}
+              <details open className="border border-border rounded-lg p-4 sm:p-8">
+                <summary className="font-semibold text-xl cursor-pointer list-none mb-4">
+                  Color Information
+                </summary>
+                <ColorPageContent
+                  key={currentHex}
+                  hex={currentHex}
+                  mode="full"
+                  faqs={[]}
+                  onColorChange={updateCurrentHex}
+                  pageUrl={`https://hexcolormeans.com/html-color-picker?hex=${currentHex.replace("#", "").toUpperCase()}`}
+                />
+              </details>
             </div>
           </article>
 

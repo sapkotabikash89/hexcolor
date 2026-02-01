@@ -163,7 +163,7 @@ function PickerContent() {
           <article id="content" className="main-content grow-content flex-1">
             <div className="space-y-8">
               {/* Color Picker Section */}
-              <div className="bg-card border border-border rounded-lg p-6">
+              <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
                 <h2 className="text-2xl font-bold mb-4">Interactive Color Picker</h2>
                 <p className="text-muted-foreground mb-6">
                   Select any color using our advanced color picker and get instant color codes
@@ -221,7 +221,7 @@ function PickerContent() {
               </div>
 
               {/* Color Information - Expanded by default */}
-              <details open className="border border-border rounded-lg p-6">
+              <details open className="border border-border rounded-lg p-4 sm:p-8">
                 <summary className="font-semibold text-xl cursor-pointer list-none mb-4">
                   Color Information
                 </summary>
@@ -253,7 +253,7 @@ function PickerContent() {
               </details>
 
               {/* Color Meanings - Expanded by default */}
-              <details open className="border border-border rounded-lg p-6">
+              <details open className="border border-border rounded-lg p-4 sm:p-8">
                 <summary className="font-semibold text-xl cursor-pointer list-none mb-4">
                   Color Meanings
                 </summary>
@@ -276,7 +276,7 @@ function PickerContent() {
               </details>
 
               {/* Color Palettes - Expanded by default */}
-              <details open className="border border-border rounded-lg p-6">
+              <details open className="border border-border rounded-lg p-4 sm:p-8">
                 <summary className="font-semibold text-xl cursor-pointer list-none mb-4">
                   Color Palettes
                 </summary>

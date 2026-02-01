@@ -159,7 +159,7 @@ export default function ColorBlindnessSimulatorPage() {
                       ))}
                     </ul>
                   </div>
-                  <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-6 sm:p-10">
+                  <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-4 sm:p-10">
                     <img
                       src="/advanced-color-blindness-simulator-tool-online-free.webp"
                       alt="Professional user interface of the online color blindness simulator tool"
@@ -171,7 +171,7 @@ export default function ColorBlindnessSimulatorPage() {
             </section>
 
             {/* Comprehensive Guide to Color Vision Deficiency */}
-            <section className="border-2 border-border/60 rounded-3xl p-8 sm:p-12 space-y-10 bg-white">
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-10 bg-white">
               <div className="flex items-center gap-3">
                 <ShieldAlert className="w-8 h-8 text-primary" />
                 <h2 className="text-4xl font-bold m-0">Guide to Color Vision Deficiency</h2>

@@ -187,7 +187,7 @@ export default function ContrastCheckerPage() {
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
                 {features.map((feature, i) => (
-                  <Card key={i} className="p-8 space-y-4 border-2 border-border/50 hover:border-primary/30 transition-all shadow-md hover:shadow-xl rounded-2xl bg-white">
+                  <Card key={i} className="p-5 sm:p-8 space-y-4 border-2 border-border/50 hover:border-primary/30 transition-all shadow-md hover:shadow-xl rounded-2xl bg-white">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                       <feature.icon className="w-6 h-6" />
                     </div>

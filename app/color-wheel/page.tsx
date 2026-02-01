@@ -185,7 +185,7 @@ export default function ColorWheelPage() {
                                             ))}
                                         </ul>
                                     </div>
-                                    <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-6 sm:p-10">
+                                    <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-4 sm:p-10">
                                         <img
                                             src="/advanced-chromatic-or-color-wheel-tool-online-free.webp"
                                             alt="Professional user interface of the online color wheel tool"
@@ -228,7 +228,7 @@ export default function ColorWheelPage() {
                                             <p className="text-lg text-muted-foreground leading-relaxed font-normal">{harmony.description}</p>
                                         </div>
                                         <div className="flex-1 w-full flex justify-center">
-                                            <Card className="overflow-hidden border-2 border-border shadow-2xl transition-all hover:scale-[1.02] duration-500 max-w-lg w-full rounded-2xl bg-white p-6 sm:p-10">
+                                            <Card className="overflow-hidden border-2 border-border shadow-2xl transition-all hover:scale-[1.02] duration-500 max-w-lg w-full rounded-2xl bg-white p-5 sm:p-8">
                                                 <img
                                                     src={`/${harmony.image}`}
                                                     alt={`${harmony.title} color harmony pattern`}
