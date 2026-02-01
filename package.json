@@ -7,11 +7,11 @@
   "scripts": {
     "prebuild": "npm run sync || echo 'Sync failed, continuing build...' && node scripts/generate-sitemaps.mjs",
     "build": "next build",
-    "postbuild": "node scripts/verify-static-export.mjs",
+    "postbuild": "echo 'Skipping static export verification for Edge Runtime'",
     "export": "npm run build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "npx serve out",
+    "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "sync": "node scripts/sync-wp.mjs",
