@@ -183,7 +183,7 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
           color: contrastColor,
         }}
       >
-        <div className="w-full max-w-[1430px] mx-auto overflow-hidden">
+        <div className="w-full max-w-[1350px] mx-auto overflow-hidden">
           <BreadcrumbNav
             items={[
               { label: "Color Names", href: "/colors" },
@@ -229,7 +229,7 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
       </div>
 
       {/* Main Content */}
-      <main className="w-full max-w-[1430px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Left Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}

@@ -267,7 +267,8 @@ export function ArticleSchema({
   dateModified,
   url,
   articleSection,
-  color,
+  colorName,
+  colorHex,
 }: {
   title: string
   description?: string
@@ -280,7 +281,8 @@ export function ArticleSchema({
   dateModified?: string
   url: string
   articleSection?: string
-  color?: string
+  colorName?: string
+  colorHex?: string
 }) {
   const schema: any = {
     "@context": "https://schema.org",
@@ -325,8 +327,20 @@ export function ArticleSchema({
     schema.articleSection = articleSection
   }
 
-  if (color) {
-    schema.color = color
+  if (colorName || colorHex) {
+    schema.mainEntity = {
+      "@type": "Thing",
+      name: colorName || "Color",
+      description: colorHex || undefined,
+    }
+    
+    if (colorHex) {
+      schema.mainEntity.additionalProperty = {
+        "@type": "PropertyValue",
+        name: "Hex Code",
+        value: colorHex
+      }
+    }
   }
 
   const id = `article-schema-${url.split('/').filter(Boolean).pop() || 'index'}`
@@ -353,8 +367,8 @@ export function ToolApplicationSchema({
   description: string
   applicationCategory?: string
 }) {
-  const url = `https://www.hexcolormeans.com/${slug}`
-  const image = `https://www.hexcolormeans.com/tools/${slug}-snapshot.webp`
+  const url = `https://hexcolormeans.com/${slug}`
+  const image = `https://hexcolormeans.com/tools/${slug}-snapshot.webp`
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",

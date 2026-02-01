@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
         { name: "Privacy Policy", item: "https://hexcolormeans.com/privacy-policy" }
       ]} />
       <Header />
-      <main className="w-full max-w-[1280px] mx-auto px-4 py-12 flex-1">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Privacy Policy", href: "/privacy-policy" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">

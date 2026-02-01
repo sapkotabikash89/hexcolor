@@ -17,7 +17,7 @@ export function BreadcrumbNav({ items }: BreadcrumbNavProps) {
     : [{ label: "HexColorMeans", href: "/" }, ...items]
 
   return (
-    <div className="w-full max-w-[1430px] mx-auto px-4">
+    <div className="w-full max-w-[1350px] mx-auto px-4">
       <nav className="text-sm mb-6" aria-label="Breadcrumb" itemScope itemType="https://schema.org/BreadcrumbList">
         <ol className="flex flex-wrap items-center gap-x-1 gap-y-1">
           {allItems.map((item, index) => {

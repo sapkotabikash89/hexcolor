@@ -97,12 +97,9 @@ export default function RootLayout({
         <meta name="google-site-verification" content="tiT0KL3QCJ4bLgDI-k7s8vphX4Sx6LQCFmkflXUe4pU" />
         <meta name="p:domain_verify" content="2f0be474874f515dce302624f3919d26" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <WebsiteSchema />
-        <OrganizationSchema />
-        <SoftwareApplicationSchema />
       </head>
       <body className={`${inter.className} px-0`}>
-        <div className="max-w-[1430px] mx-auto w-full bg-background shadow-xl min-h-screen relative">
+        <div className="min-h-screen relative bg-background font-sans antialiased">
           {children}
         </div>
 

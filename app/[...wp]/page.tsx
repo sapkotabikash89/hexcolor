@@ -1595,19 +1595,20 @@ export default async function WPPostPage({ params }: WPPageProps) {
         const dateModified = node?.seo?.opengraphModifiedTime || node?.date
         return (
           <ArticleSchema
-            title={node.title}
-            description={description}
-            authorName={author}
-            authorType="Person"
-            publisherName="HexColorMeans"
-            publisherLogo={`${site}/logo.webp`}
-            image={articleImageUrl}
-            datePublished={datePublished}
-            dateModified={dateModified}
-            url={canonical || `${site}${node.uri}`}
-            articleSection={node?.categories?.nodes?.[0]?.name || "Blog"}
-            color={effectiveHex || undefined}
-          />
+              title={node.title}
+              description={description}
+              authorName={author || undefined}
+              authorType="Person"
+              publisherName="HexColorMeans"
+              publisherLogo={`${site}/logo.webp`}
+              image={articleImageUrl}
+              datePublished={datePublished || undefined}
+              dateModified={dateModified || undefined}
+              url={canonical || `${site}${node.uri}`}
+              articleSection={node?.categories?.nodes?.[0]?.name || "Blog"}
+              colorName={colorName || undefined}
+              colorHex={effectiveHex || undefined}
+            />
         )
       })()}
       {hasColorUI && <WPColorContext color={accentColor || '#000000'} />}
@@ -1619,7 +1620,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
           color: hasColorUI ? getContrastColor(effectiveHex || postColor) : '#000000',
         }}
       >
-        <div className={cn("w-full mx-auto", isColorMeaningCategory ? "max-w-[1430px]" : "max-w-[1280px]")}>
+        <div className={cn("w-full mx-auto", isColorMeaningCategory ? "max-w-[1350px]" : "max-w-[1350px]")}>
           <BreadcrumbNav items={crumbs} />
           <BreadcrumbSchema
             items={[
@@ -1675,7 +1676,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
           <div className="lg:hidden w-full z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border mb-6">
             <TableOfContents currentHex={effectiveHex || postColor} mobileOnly items={blogTocItems} />
           </div>
-          <main className="w-full max-w-[1430px] mx-auto px-4 py-12">
+          <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
             <div className="flex flex-col lg:flex-row gap-8 items-start">
               <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
                 <TableOfContents currentHex={effectiveHex || postColor} items={blogTocItems} />
@@ -1698,7 +1699,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
           {titleContainsColor && <AnchorHashNav />}
           {/* Check if this is a Shades Meaning category post */}
           {isShadesMeaningCategory ? (
-            <main className="w-full max-w-[1430px] mx-auto px-4 py-12">
+            <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
               <div className="flex flex-col lg:flex-row gap-8 items-start">
                 {/* Left Sidebar for Shades Meaning */}
                 <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
@@ -1725,7 +1726,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               </div>
             </main>
           ) : (
-            <main className="w-full max-w-[1280px] mx-auto px-2 sm:px-4 py-12">
+            <main className="w-full max-w-[1350px] mx-auto px-2 sm:px-4 py-12">
               <div className="flex flex-col lg:flex-row gap-8 min-w-0">
                 <div className="flex-1 space-y-6 min-w-0">
                   {mainContent}

@@ -34,7 +34,7 @@ export default async function AllCategoriesPage() {
           </div>
         </div>
       </section>
-      <main className="w-full max-w-[1280px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           <article id="content" className="main-content grow-content flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

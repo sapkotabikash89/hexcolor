@@ -77,7 +77,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-[100] w-full border-b border-border bg-background">
-      <div className="w-full max-w-[1430px] mx-auto flex justify-between h-16 items-center gap-4 px-4">
+      <div className="w-full max-w-[1350px] mx-auto flex justify-between h-16 items-center gap-4 px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-lg">
           <NextImage src="/logo.webp" alt="HexColorMeans logo" width={120} height={32} className="h-8 w-auto" priority />

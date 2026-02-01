@@ -8,7 +8,7 @@ import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCm
 import { getGumletColorImage } from "@/lib/image-utils"
 import { KNOWN_COLOR_HEXES } from "@/lib/known-colors-complete"
 import { notFound, redirect } from "next/navigation"
-import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, WebPageSchema, ArticleSchema } from "@/components/structured-data"
+import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
 import { generateFAQs } from "@/lib/category-utils"
 import { TableOfContents } from "@/components/table-of-contents"
@@ -188,7 +188,6 @@ export default async function ColorPage({ params }: ColorPageProps) {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <WebPageSchema name={`${displayLabel} Color`} url={pageUrl} description={pageDescription} />
       <BreadcrumbSchema items={breadcrumbItems} />
       <FAQSchema faqs={faqItems} />
       <ArticleSchema
@@ -199,7 +198,8 @@ export default async function ColorPage({ params }: ColorPageProps) {
         url={pageUrl}
         image={imageUrl}
         articleSection="Color Meanings"
-        color={normalizedHex}
+        colorName={colorName}
+        colorHex={normalizedHex}
       />
 
       <Header />
@@ -224,7 +224,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
           color: contrastColor,
         }}
       >
-        <div className="w-full max-w-[1430px] mx-auto overflow-hidden">
+        <div className="w-full max-w-[1350px] mx-auto overflow-hidden">
           <BreadcrumbNav
             items={[
               { label: "Color Names", href: "/colors" },
@@ -274,7 +274,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
       </div>
 
       {/* Main Content */}
-      <main className="w-full max-w-[1430px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Left Sidebar Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}

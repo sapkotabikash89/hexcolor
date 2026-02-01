@@ -9,7 +9,7 @@ export function LatestPosts({ posts }: { posts: any[] }) {
 
     return (
         <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-muted/30 border-y py-8 sm:py-12 mt-8 sm:mt-12">
-            <div className="w-full max-w-[1430px] mx-auto px-4 space-y-8">
+            <div className="w-full max-w-[1350px] mx-auto px-4 space-y-8">
                 <div className="text-center space-y-2">
                     <h2 className="text-3xl sm:text-4xl font-bold">Latest Blog Posts</h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">

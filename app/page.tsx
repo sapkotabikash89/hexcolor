@@ -66,7 +66,7 @@ export default async function HomePage() {
       <Hero />
 
       {/* Main Content */}
-      <main className="w-full max-w-[1280px] mx-auto px-4 py-8 sm:py-12">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-8 sm:py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Content Area */}
           <article id="content" className="main-content grow-content flex-1 space-y-12">
