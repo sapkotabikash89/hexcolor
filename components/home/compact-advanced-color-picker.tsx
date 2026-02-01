@@ -13,9 +13,9 @@ import Link from "next/link"
 export function CompactAdvancedColorPicker() {
     const router = useRouter()
     const [selectedColor, setSelectedColor] = useState("#E0115F")
-    const [hue, setHue] = useState(230)
-    const [saturation, setSaturation] = useState(70)
-    const [lightness, setLightness] = useState(60)
+    const [hue, setHue] = useState(337)
+    const [saturation, setSaturation] = useState(86)
+    const [lightness, setLightness] = useState(47)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [isDragging, setIsDragging] = useState(false)
 
@@ -90,6 +90,20 @@ export function CompactAdvancedColorPicker() {
         setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
     }
 
+    const handleSaturationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newSaturation = Number.parseInt(e.target.value)
+        setSaturation(newSaturation)
+        const rgb = hslToRgb(hue, newSaturation, lightness)
+        setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
+    }
+
+    const handleLightnessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newLightness = Number.parseInt(e.target.value)
+        setLightness(newLightness)
+        const rgb = hslToRgb(hue, saturation, newLightness)
+        setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
+    }
+
     const handleExplore = () => {
         router.push(getColorPageLink(selectedColor))
     }
@@ -102,9 +116,9 @@ export function CompactAdvancedColorPicker() {
 
     return (
         <Card className="p-4 sm:p-6 space-y-4">
-            <div className="space-y-6">
+            <div className="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-8 md:items-start lg:items-center xl:items-start">
                 {/* Color Space Canvas and Hue Slider */}
-                <div className="flex flex-col items-center space-y-3 sm:space-y-4">
+                <div className="flex flex-col items-center space-y-3 sm:space-y-4 md:w-auto lg:w-full xl:w-auto flex-shrink-0">
                     <div className="relative w-full max-w-[320px] sm:max-w-[400px]">
                         <canvas
                             ref={canvasRef}
@@ -140,36 +154,72 @@ export function CompactAdvancedColorPicker() {
                         />
                     </div>
 
-                    {/* Hue Slider */}
-                    <div className="space-y-2 w-full max-w-[320px] sm:max-w-[400px]">
-                        <label className="text-sm font-medium">Hue: {hue}°</label>
-                        <input
-                            type="range"
-                            min="0"
-                            max="360"
-                            value={hue}
-                            onChange={handleHueChange}
-                            className="w-full h-3 sm:h-4 rounded-lg appearance-none cursor-pointer"
-                            style={{
-                                background: `linear-gradient(to right, 
-                  hsl(0, 100%, 50%), 
-                  hsl(60, 100%, 50%), 
-                  hsl(120, 100%, 50%), 
-                  hsl(180, 100%, 50%), 
-                  hsl(240, 100%, 50%), 
-                  hsl(300, 100%, 50%), 
-                  hsl(360, 100%, 50%))`,
-                            }}
-                        />
+                    {/* Sliders */}
+                    <div className="space-y-4 w-full max-w-[320px] sm:max-w-[400px]">
+                        {/* Hue Slider */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Hue: {hue}°</label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="360"
+                                value={hue}
+                                onChange={handleHueChange}
+                                className="w-full h-3 sm:h-4 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-transparent [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-[0_0_0_1px_rgba(0,0,0,0.2)] [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-transparent [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_0_0_1px_rgba(0,0,0,0.2)]"
+                                style={{
+                                    background: `linear-gradient(to right, 
+                      hsl(0, 100%, 50%), 
+                      hsl(60, 100%, 50%), 
+                      hsl(120, 100%, 50%), 
+                      hsl(180, 100%, 50%), 
+                      hsl(240, 100%, 50%), 
+                      hsl(300, 100%, 50%), 
+                      hsl(360, 100%, 50%))`,
+                                }}
+                            />
+                        </div>
+
+                        {/* Saturation Slider */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Saturation: {saturation}%</label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={saturation}
+                                onChange={handleSaturationChange}
+                                className="w-full h-3 sm:h-4 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-transparent [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-[0_0_0_1px_rgba(0,0,0,0.2)] [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-transparent [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_0_0_1px_rgba(0,0,0,0.2)]"
+                                style={{
+                                    background: `linear-gradient(to right, hsl(${hue}, 0%, ${lightness}%), hsl(${hue}, 100%, ${lightness}%))`,
+                                }}
+                            />
+                        </div>
+
+                        {/* Lightness Slider */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Lightness: {lightness}%</label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={lightness}
+                                onChange={handleLightnessChange}
+                                className="w-full h-3 sm:h-4 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-transparent [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-[0_0_0_1px_rgba(0,0,0,0.2)] [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-transparent [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_0_0_1px_rgba(0,0,0,0.2)]"
+                                style={{
+                                    background: `linear-gradient(to right, hsl(${hue}, ${saturation}%, 0%), hsl(${hue}, ${saturation}%, 50%), hsl(${hue}, ${saturation}%, 100%))`,
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
 
                 {/* Color Display and Values */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="flex-1 min-w-0 w-full lg:w-full xl:flex-1 xl:min-w-0">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-4 sm:gap-6 w-full">
                     {/* Left Column: Color Preview */}
                     <div className="space-y-3">
                         <div
-                            className="w-full h-32 sm:h-40 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg"
+                            className="w-full h-24 sm:h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg"
                             style={{ backgroundColor: selectedColor, color: getContrastColor(selectedColor) }}
                         >
                             {selectedColor.toUpperCase()}
@@ -181,7 +231,7 @@ export function CompactAdvancedColorPicker() {
                     </div>
 
                     {/* Right Column: Color Values */}
-                    <div className="space-y-3">
+                    <div className="space-y-3 w-full">
                         <div className="flex items-center justify-between p-3 bg-muted rounded-md">
                             <div className="min-w-0 flex-1">
                                 <span className="text-xs sm:text-sm text-muted-foreground">HEX</span>
@@ -215,16 +265,17 @@ export function CompactAdvancedColorPicker() {
                         )}
                     </div>
                 </div>
+                </div>
             </div>
 
             {/* Link to Full Tool */}
-            <div className="pt-4 flex justify-start border-t mt-6">
+            <div className="pt-4 flex justify-center border-t mt-6">
                 <Link
                     href="/color-picker"
-                    className="inline-flex items-center gap-2 px-8 py-3 bg-primary text-primary-foreground rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg mt-4"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md mt-4 text-sm"
                 >
-                    Open full Interactive Color Picker tool
-                    <span className="text-xl">→</span>
+                    Open Color Picker
+                    <span className="text-lg">→</span>
                 </Link>
             </div>
         </Card>

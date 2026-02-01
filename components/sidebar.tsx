@@ -127,7 +127,7 @@ export function ColorSidebar({
             </SelectContent>
           </Select>
 
-          <ColorCombination colors={harmonies} baseHex={color} height={72} onColorChange={onColorChange} />
+          <ColorCombination colors={harmonies} baseHex={color} height={120} onColorChange={onColorChange} />
         </div>
       )}
 

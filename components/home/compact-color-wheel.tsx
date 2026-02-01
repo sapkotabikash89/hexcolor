@@ -7,14 +7,28 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getColorHarmony, hslToRgb, rgbToHex, hexToRgb, rgbToHsl } from "@/lib/color-utils"
+import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ColorCombination } from "@/components/color-combination"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import Link from "next/link"
+import { Share, Shuffle, Pipette } from "lucide-react"
 
 export function CompactColorWheel() {
     const router = useRouter()
     const [baseColor, setBaseColor] = useState("#E0115F")
     const [harmonyType, setHarmonyType] = useState("complementary")
+    const [colorValueType, setColorValueType] = useState("hex") // State for dropdown - default to hex
+    
+    // Update harmony type setter to clear random palette when harmony type changes
+    const setHarmonyTypeAndClearRandom = (newHarmonyType: string) => {
+        setHarmonyType(newHarmonyType);
+        setShowRandomPalette(false); // Clear random palette when changing harmony type
+    }
+    const [randomPalette, setRandomPalette] = useState<string[]>([]) // State for random palette
+    const [showRandomPalette, setShowRandomPalette] = useState(false) // State to show random palette
+    const [showCustomPicker, setShowCustomPicker] = useState(false) // State for custom color picker
+    const [tempColor, setTempColor] = useState(baseColor) // Temporary color for picker
+    const [copiedValue, setCopiedValue] = useState<string | null>(null) // State for copy notification
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [isDragging, setIsDragging] = useState(false)
     const [canvasSize, setCanvasSize] = useState(450)
@@ -26,20 +40,22 @@ export function CompactColorWheel() {
     }, [baseColor])
 
     useEffect(() => {
-        const updateCanvasSize = () => {
-            if (window.innerWidth < 640) {
-                const size = Math.min(window.innerWidth - 40, 360)
+        const updateLayout = () => {
+            const width = window.innerWidth
+
+            if (width < 640) {
+                const size = Math.min(width - 40, 360)
                 setCanvasSize(size)
-            } else if (window.innerWidth < 1024) {
+            } else if (width < 1024) {
                 setCanvasSize(380)
             } else {
                 setCanvasSize(450)
             }
         }
 
-        updateCanvasSize()
-        window.addEventListener("resize", updateCanvasSize)
-        return () => window.removeEventListener("resize", updateCanvasSize)
+        updateLayout()
+        window.addEventListener("resize", updateLayout)
+        return () => window.removeEventListener("resize", updateLayout)
     }, [])
 
     useEffect(() => {
@@ -242,13 +258,98 @@ export function CompactColorWheel() {
         setBaseColor(newColor)
     }
 
+    // Utility function to convert RGB to CMYK
+    const rgbToCmyk = (r: number, g: number, b: number) => {
+        const rPercent = r / 255
+        const gPercent = g / 255
+        const bPercent = b / 255
+        
+        const k = 1 - Math.max(rPercent, gPercent, bPercent)
+        
+        if (k === 1) {
+            return { c: 0, m: 0, y: 0, k: 1 }
+        }
+        
+        const c = (1 - rPercent - k) / (1 - k)
+        const m = (1 - gPercent - k) / (1 - k)
+        const y = (1 - bPercent - k) / (1 - k)
+        
+        return { c: Math.round(c * 100), m: Math.round(m * 100), y: Math.round(y * 100), k: Math.round(k * 100) }
+    }
+
+    // Utility function to get color value based on selected type
+    const getColorValue = (hex: string) => {
+        const rgb = hexToRgb(hex)
+        if (!rgb) return hex
+        
+        switch (colorValueType) {
+            case "hex":
+                return hex.toUpperCase()
+            case "rgb":
+                return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
+            case "hsl":
+                const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
+                return `hsl(${Math.round(hsl.h)}, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%)`
+            case "cmyk":
+                const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b)
+                return `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`
+            default:
+                return hex.toUpperCase()
+        }
+    }
+
+    // Function to copy color value to clipboard
+    const copyToClipboard = async (value: string, e: React.MouseEvent) => {
+        e.stopPropagation()
+        try {
+            await navigator.clipboard.writeText(value)
+            setCopiedValue(value)
+            setTimeout(() => setCopiedValue(null), 2000) // Clear after 2 seconds
+        } catch (err) {
+            console.error('Failed to copy text: ', err)
+        }
+    }
+
+    // Function to get contrast color for the color picker icon
+    const getContrastColor = (hex: string): string => {
+        const rgb = hexToRgb(hex)
+        if (!rgb) return "#000000"
+        const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000
+        return brightness > 128 ? "#000000" : "#FFFFFF"
+    }
+
+    // Function to generate random palette
+    const generateRandomPalette = () => {
+        // Randomly select a harmony type
+        const harmonyTypes = ['complementary', 'analogous', 'triadic', 'tetradic', 'split-complementary', 'square', 'monochromatic'];
+        const randomHarmonyType = harmonyTypes[Math.floor(Math.random() * harmonyTypes.length)];
+        
+        // Generate a random base color
+        const randomHue = Math.floor(Math.random() * 360);
+        const randomSaturation = 50 + Math.floor(Math.random() * 50); // 50-100 for vibrant colors
+        const randomLightness = 30 + Math.floor(Math.random() * 50); // 30-80 for good visibility
+        
+        const rgb = hslToRgb(randomHue, randomSaturation, randomLightness);
+        const randomBaseColor = rgbToHex(rgb.r, rgb.g, rgb.b);
+        
+        // Generate the harmony based on the random color and random harmony type
+        const palette = getColorHarmony(randomBaseColor, randomHarmonyType);
+        
+        // Set the base color and harmony type to match the random palette
+        setBaseColor(randomBaseColor);
+        setHarmonyType(randomHarmonyType);
+        
+        setRandomPalette(palette);
+        setShowRandomPalette(true);
+    };
+
     const harmonies = getColorHarmony(baseColor, harmonyType)
 
     return (
         <Card className="p-2 sm:p-6 space-y-3 sm:space-y-4">
-            <div className="space-y-6">
+            <div className="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-8 md:items-stretch lg:items-center xl:items-stretch min-h-[400px] md:min-h-[350px] lg:min-h-[400px] xl:min-h-[350px]">
                 {/* Color Wheel - Centered */}
-                <div className="flex justify-center items-center">
+                <div className="flex flex-col justify-center items-center md:w-auto lg:w-full xl:w-auto flex-shrink-0 gap-4">
                     <canvas
                         ref={canvasRef}
                         width={canvasSize}
@@ -275,63 +376,138 @@ export function CompactColorWheel() {
                         }}
                         onTouchEnd={() => setIsDragging(false)}
                     />
+                    {/* Base Color Info - Moved below wheel */}
+                    <div className="w-full space-y-2" style={{ maxWidth: `${canvasSize}px` }}>
+                        <label className="font-medium text-sm sm:text-base">Base Color:</label>
+                        <div className="flex items-center gap-3 px-3 py-2 border border-input rounded-md shadow-xs">
+                            <button
+                                onClick={() => {
+                                    setTempColor(baseColor);
+                                    setShowCustomPicker(true);
+                                }}
+                                className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative"
+                                style={{ backgroundColor: baseColor }}
+                                aria-label={`Open color picker for base color ${baseColor.toUpperCase()}`}>
+                                <Pipette 
+                                    className="absolute inset-0 m-auto w-4 h-4" 
+                                    style={{ color: getContrastColor(baseColor) }}
+                                />
+                            </button>
+                            <div className="flex-1 flex items-center gap-2">
+                                <Select value={colorValueType} onValueChange={setColorValueType}>
+                                    <SelectTrigger className="w-24 h-8">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="hex">HEX</SelectItem>
+                                        <SelectItem value="rgb">RGB</SelectItem>
+                                        <SelectItem value="hsl">HSL</SelectItem>
+                                        <SelectItem value="cmyk">CMYK</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <span 
+                                    className="font-mono font-semibold text-sm sm:text-base truncate"
+                                    style={{ color: getContrastColor(baseColor) }}
+                                >
+                                    {getColorValue(baseColor)}
+                                </span>
+                            </div>
+                            <button 
+                                onClick={(e) => copyToClipboard(getColorValue(baseColor), e)}
+                                className="p-1.5 rounded-md hover:bg-accent transition-colors relative"
+                                aria-label="Copy color value"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                                </svg>
+                                {copiedValue === getColorValue(baseColor) && (
+                                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-xs rounded font-sans whitespace-nowrap">
+                                        Copied!
+                                    </span>
+                                )}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Controls */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                    {/* Left Column: Base Color and Harmony Type */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                            <label className="font-medium text-sm sm:text-base">Base Color:</label>
-                            <div
-                                className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border"
-                                style={{ backgroundColor: baseColor }}
-                            />
-                            <span className="font-mono font-semibold text-sm sm:text-base">{baseColor.toUpperCase()}</span>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="font-medium text-sm sm:text-base">Harmony Type:</label>
-                            <Select value={harmonyType} onValueChange={setHarmonyType}>
-                                <SelectTrigger className="w-full">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="complementary">Complementary</SelectItem>
-                                    <SelectItem value="analogous">Analogous</SelectItem>
-                                    <SelectItem value="triadic">Triadic</SelectItem>
-                                    <SelectItem value="tetradic">Tetradic</SelectItem>
-                                    <SelectItem value="split-complementary">Split Complementary</SelectItem>
-                                    <SelectItem value="square">Square</SelectItem>
-                                    <SelectItem value="double-split-complementary">Double Split Complementary</SelectItem>
-                                    <SelectItem value="monochromatic">Monochromatic</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
+                <div className="flex-1 min-w-0 h-full flex flex-col w-full lg:w-full xl:flex-1 xl:min-w-0">
+                    <div className="flex flex-col gap-4 flex-1 min-h-0">
+                    {/* Harmony Type */}
+                    <div className="space-y-2 flex-shrink-0">
+                        <label className="font-medium text-sm sm:text-base">Harmony Type:</label>
+                        <Select value={harmonyType} onValueChange={setHarmonyTypeAndClearRandom}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="complementary">Complementary</SelectItem>
+                                <SelectItem value="analogous">Analogous</SelectItem>
+                                <SelectItem value="triadic">Triadic</SelectItem>
+                                <SelectItem value="tetradic">Tetradic</SelectItem>
+                                <SelectItem value="split-complementary">Split Complementary</SelectItem>
+                                <SelectItem value="square">Square</SelectItem>
+                                <SelectItem value="double-split-complementary">Double Split Complementary</SelectItem>
+                                <SelectItem value="monochromatic">Monochromatic</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
 
-                    {/* Right Column: Color Harmony */}
-                    <div className="space-y-3">
-                        <h3 className="font-semibold text-sm sm:text-base">Color Harmony</h3>
-                        <div className="space-y-2">
-                            <div className="w-full">
-                                <ColorCombination colors={harmonies} baseHex={baseColor} height={56} />
-                            </div>
+                    {/* Color Harmony */}
+                    <div className="flex flex-col gap-3 flex-1 min-h-0 w-full">
+                        <div className="flex items-center justify-between flex-shrink-0">
+                            <h3 className="font-semibold text-sm sm:text-base">Color Harmony</h3>
+                            <Button size="sm" variant="ghost" className="gap-2" onClick={() => router.push(getColorPageLink(showRandomPalette ? randomPalette[0] : baseColor))}>
+                                <Share className="w-4 h-4" />
+                                Export
+                            </Button>
+                        </div>
+                        <ColorCombination 
+                            colors={showRandomPalette ? randomPalette : harmonies} 
+                            baseHex={baseColor} 
+                            height={320}
+                            vertical={true}
+                            className="flex-1"
+                        />
+                        
+                        {/* Random Palette Box - Equal height to base color box */}
+                        <div className="mt-4">
+                            <Button 
+                                onClick={generateRandomPalette}
+                                className="w-full h-12 flex items-center gap-2"
+                                variant="outline"
+                            >
+                                <Shuffle className="w-4 h-4" />
+                                Random Palette
+                            </Button>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
 
             {/* Link to Full Tool */}
-            <div className="pt-4 flex justify-start border-t mt-6">
+            <div className="pt-4 flex justify-center border-t mt-6">
                 <Link
                     href="/color-wheel"
-                    className="inline-flex items-center gap-2 px-8 py-3 bg-primary text-primary-foreground rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg mt-4"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md mt-4 text-sm"
                 >
-                    Open full Color Wheel tool
-                    <span className="text-xl">→</span>
+                    Open Color Wheel
+                    <span className="text-lg">→</span>
                 </Link>
             </div>
+            {showCustomPicker && (
+                <CustomColorPicker
+                    value={tempColor}
+                    onChange={setTempColor}
+                    onClose={() => setShowCustomPicker(false)}
+                    onApply={(color) => {
+                        setBaseColor(color)
+                        setShowCustomPicker(false)
+                    }}
+                />
+            )}
         </Card>
     )
 }

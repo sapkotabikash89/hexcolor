@@ -4,8 +4,8 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { RefreshCw } from "lucide-react"
-import { hexToRgb } from "@/lib/color-utils"
+import { RefreshCw, Pipette } from "lucide-react"
+import { hexToRgb, getContrastColor } from "@/lib/color-utils"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ShareButtons } from "@/components/share-buttons"
 
@@ -63,10 +63,15 @@ export function ContrastCheckerTool() {
                     e.stopPropagation()
                     setShowForegroundPicker(true)
                   }}
-                  className="w-12 h-10 sm:w-14 sm:h-12 rounded-md border-2 border-border cursor-pointer flex-shrink-0"
+                  className="w-12 h-10 sm:w-14 sm:h-12 rounded-md border-2 border-border cursor-pointer flex-shrink-0 relative"
                   style={{ backgroundColor: foreground }}
                   aria-label="Select foreground color"
-                />
+                >
+                  <Pipette 
+                    className="absolute inset-0 m-auto w-4 h-4" 
+                    style={{ color: getContrastColor(foreground) }}
+                  />
+                </button>
                 <input
                   type="text"
                   value={foreground}
@@ -96,10 +101,15 @@ export function ContrastCheckerTool() {
                     e.stopPropagation()
                     setShowBackgroundPicker(true)
                   }}
-                  className="w-12 h-10 sm:w-14 sm:h-12 rounded-md border-2 border-border cursor-pointer flex-shrink-0"
+                  className="w-12 h-10 sm:w-14 sm:h-12 rounded-md border-2 border-border cursor-pointer flex-shrink-0 relative"
                   style={{ backgroundColor: background }}
                   aria-label="Select background color"
-                />
+                >
+                  <Pipette 
+                    className="absolute inset-0 m-auto w-4 h-4" 
+                    style={{ color: getContrastColor(background) }}
+                  />
+                </button>
                 <input
                   type="text"
                   value={background}

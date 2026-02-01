@@ -592,9 +592,14 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                       setTempForeground(foreground)
                       setShowForegroundPicker(true)
                     }}
-                    className="w-16 h-10 rounded-md border-2 border-border cursor-pointer"
+                    className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
                     style={{ backgroundColor: foreground }}
-                  />
+                  >
+                    <Pipette 
+                      className="absolute inset-0 m-auto w-4 h-4" 
+                      style={{ color: getContrastColor(foreground) }}
+                    />
+                  </button>
                   <span className="font-mono text-sm">{foreground}</span>
                 </div>
                 <Button variant="outline" size="sm" onClick={swapColors} className="gap-2 bg-transparent">
@@ -607,9 +612,14 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                       setTempBackground(background)
                       setShowBackgroundPicker(true)
                     }}
-                    className="w-16 h-10 rounded-md border-2 border-border cursor-pointer"
+                    className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
                     style={{ backgroundColor: background }}
-                  />
+                  >
+                    <Pipette 
+                      className="absolute inset-0 m-auto w-4 h-4" 
+                      style={{ color: getContrastColor(background) }}
+                    />
+                  </button>
                   <span className="font-mono text-sm">{background}</span>
                 </div>
               </div>

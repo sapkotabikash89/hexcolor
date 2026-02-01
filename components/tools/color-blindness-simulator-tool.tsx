@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { simulateColorBlindness, getContrastColor } from "@/lib/color-utils"
+import { Pipette } from "lucide-react"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ShareButtons } from "@/components/share-buttons"
 
@@ -42,10 +43,15 @@ export function ColorBlindnessSimulatorTool() {
             <label className="font-medium">Select Color:</label>
             <button
               onClick={() => setShowCustomPicker(true)}
-              className="w-20 h-12 rounded-md border-2 border-border cursor-pointer transition-transform hover:scale-105"
+              className="w-20 h-12 rounded-md border-2 border-border cursor-pointer relative transition-transform hover:scale-105"
               style={{ backgroundColor: color }}
               aria-label="Pick a color to simulate"
-            />
+            >
+              <Pipette 
+                className="absolute inset-0 m-auto w-5 h-5" 
+                style={{ color: getContrastColor(color) }}
+              />
+            </button>
             <span className="font-mono font-bold text-lg">{color.toUpperCase()}</span>
           </div>
 

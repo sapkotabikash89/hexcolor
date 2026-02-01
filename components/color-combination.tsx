@@ -10,11 +10,15 @@ export function ColorCombination({
   baseHex,
   height = 64,
   onColorChange,
+  vertical = false,
+  className = "",
 }: {
   colors: string[]
   baseHex?: string
-  height?: number
+  height?: number | string
   onColorChange?: (color: string) => void
+  vertical?: boolean
+  className?: string
 }) {
   const router = useRouter()
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
@@ -27,10 +31,15 @@ export function ColorCombination({
     }
   }
   return (
-    <div className="w-full rounded-2xl overflow-hidden flex" style={{ height }}>
+    <div 
+      className={`w-full rounded-2xl overflow-hidden flex ${vertical ? "flex-col" : "flex-row"} ${className}`} 
+      style={{ height: vertical ? (typeof height === 'number' ? `${height}px` : height) : height, minHeight: vertical ? (typeof height === 'number' ? `${height}px` : "300px") : undefined }}
+    >
       {colors.map((hex, i) => {
         const isOriginal = baseHex && hex.toUpperCase() === baseHex.toUpperCase()
         const contrast = getContrastColor(hex)
+        // Use flex-1 for even distribution in vertical layouts
+        const itemFlex = vertical ? "flex-1" : ""
         const handleCopy = async (e?: React.MouseEvent) => {
           e?.stopPropagation()
           let success = false
@@ -67,8 +76,8 @@ export function ColorCombination({
         return (
           <button
             key={`${hex}-${i}`}
-            className="flex-1 h-full relative"
-            style={{ backgroundColor: hex }}
+            className={`relative ${vertical ? "w-full flex-1" : "h-full flex-1"}`}
+            style={{ backgroundColor: hex, border: "1px solid white", minHeight: vertical ? "50px" : undefined }}
             onClick={() => navigate(hex)}
             title={hex}
           >
