@@ -4,8 +4,7 @@ import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { ColorLibrary } from "@/components/color-library"
-import { BreadcrumbSchema, CollectionPageSchema, ItemListSchema } from "@/components/structured-data"
-import data from "@/lib/color-meaning.json"
+import { BreadcrumbSchema, CollectionPageSchema } from "@/components/structured-data"
 
 import { ShareButtons } from "@/components/share-buttons"
 
@@ -44,28 +43,9 @@ export const metadata: Metadata = {
 
 export default function ColorsPage() {
   const baseUrl = "https://hexcolormeans.com"
-  const allColors = (() => {
-    const entries: Array<{ name: string; hex: string }> = []
-    for (const key of Object.keys(data as any)) {
-      const item = (data as any)[key]
-      const hex = String(item?.hex || `#${key}`).toUpperCase()
-      const name = String(item?.name || `#${key}`)
-      entries.push({ name, hex })
-    }
-    return entries
-  })()
-  const q = "" // For static export, search is not supported
-  const filtered = q
-    ? allColors.filter((c) => c.name.toLowerCase().includes(q) || c.hex.toLowerCase().includes(q))
-    : allColors
-  const initialPageItems = filtered.slice(0, 100).map((c) => ({
-    name: c.name,
-    url: `${baseUrl}/colors/${c.hex.replace("#", "").toLowerCase()}`,
-  }))
   return (
     <div className="flex flex-col min-h-screen">
       <CollectionPageSchema name="Color Library" url={`${baseUrl}/colors`} />
-      <ItemListSchema items={initialPageItems} />
       <BreadcrumbSchema items={[
         { name: "Home", item: "https://hexcolormeans.com" },
         { name: "Color Library", item: "https://hexcolormeans.com/colors" }
