@@ -10,7 +10,7 @@ import { GrowRefresh } from "@/components/grow-refresh"
 
 const inter = Inter({ subsets: ["latin"] })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com";
+const SITE_URL = "https://hexcolormeans.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

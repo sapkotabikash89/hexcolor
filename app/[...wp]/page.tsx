@@ -213,9 +213,10 @@ async function fetchPostByUri(uri: string) {
       `,
           variables: { uri: u },
         }),
-        // OPTIMIZATION: Increased revalidate time for Vercel free plan
-        next: { revalidate: 3600, tags: [`wp:node:${u}`] },  // 1 hour instead of 10 min
-      })
+        // OPTIMIZATION: Incremental Static Regeneration (ISR)
+    // Revalidate every 60 seconds to keep content fresh without full rebuilds
+    next: { revalidate: 60, tags: [`wp:node:${u}`] },
+  })
       const json = await res.json()
       if (json?.data?.nodeByUri) return json.data.nodeByUri
     } catch { }
@@ -280,8 +281,8 @@ async function fetchPostBySlug(slug: string) {
         `,
         variables: { slug },
       }),
-      // OPTIMIZATION: Increased revalidate time for Vercel free plan
-      next: { revalidate: 3600, tags: [`wp:slug:${slug}`] },  // 1 hour instead of 10 min
+      // OPTIMIZATION: Incremental Static Regeneration (ISR)
+      next: { revalidate: 60, tags: [`wp:slug:${slug}`] },
     })
     const json = await res.json()
     return json?.data?.post ?? null
@@ -386,8 +387,8 @@ async function fetchContentByUri(uri: string) {
         `,
         variables: { uri },
       }),
-      // OPTIMIZATION: Increased revalidate time for Vercel free plan
-      next: { revalidate: 3600, tags: [`wp:uri:${uri}`] },  // 1 hour instead of 10 min
+      // OPTIMIZATION: Incremental Static Regeneration (ISR)
+      next: { revalidate: 60, tags: [`wp:uri:${uri}`] },
     })
     const json = await res.json()
     return json?.data?.post ?? json?.data?.page ?? null
@@ -494,8 +495,8 @@ async function fetchAnyBySearch(term: string) {
         `,
         variables: { q: term },
       }),
-      // OPTIMIZATION: Increased revalidate time for Vercel free plan
-      next: { revalidate: 3600, tags: [`wp:search:${term}`] },  // 1 hour instead of 10 min
+      // OPTIMIZATION: Incremental Static Regeneration (ISR)
+      next: { revalidate: 60, tags: [`wp:search:${term}`] },
     })
     const json = await res.json()
     const post = json?.data?.posts?.nodes?.[0]
@@ -567,7 +568,7 @@ async function fetchRestCategories(ids: number[]) {
   try {
     const res = await fetch(
       `${REST_ENDPOINT}/wp/v2/categories?include=${ids.join(",")}&_fields=id,name,slug,link`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 60 } }
     )
     const json = await res.json()
     if (!Array.isArray(json)) return []
@@ -623,8 +624,8 @@ async function fetchRestPageBySlug(slug: string) {
   try {
     const res = await fetch(
       `https://blog.hexcolormeans.com/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,yoast_head_json`,
-      // OPTIMIZATION: Increased revalidate time for Vercel free plan
-      { next: { revalidate: 3600, tags: [`wp:rest:page:${slug}`] } }  // 1 hour instead of 10 min
+      // OPTIMIZATION: Incremental Static Regeneration (ISR)
+      { next: { revalidate: 60, tags: [`wp:rest:page:${slug}`] } }
     )
     const arr = await res.json()
     const page = Array.isArray(arr) ? arr[0] : null
@@ -849,7 +850,7 @@ interface WPPageProps {
   params: Promise<{ wp: string[] }>
 }
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 // Generate static paths for blog posts and pages from local JSON cache
 export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
@@ -922,7 +923,16 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
     (node.seo?.twitterImage?.mediaItemUrl ? convertToArticleImageUrl(node.seo.twitterImage.mediaItemUrl) : undefined) ||
     (node.seo?.twitterImage?.sourceUrl ? convertToArticleImageUrl(node.seo.twitterImage.sourceUrl) : undefined) ||
     undefined
-  const canonical = node?.uri ? new URL(node.uri, site).toString() : node.seo?.canonical || node.seo?.opengraphUrl || undefined
+  let canonical = node?.uri ? new URL(node.uri, site).toString() : node.seo?.canonical || node.seo?.opengraphUrl || undefined
+  if (canonical) {
+    try {
+      const u = new URL(canonical, site)
+      u.hostname = "hexcolormeans.com"
+      u.protocol = "https:"
+      u.port = ""
+      canonical = u.toString()
+    } catch {}
+  }
   const robotsIndex = node.seo?.metaRobotsNoindex === "noindex" ? false : true
   const robotsFollow = node.seo?.metaRobotsNofollow === "nofollow" ? false : true
   const adv = node.seo?.metaRobotsAdvanced || ""

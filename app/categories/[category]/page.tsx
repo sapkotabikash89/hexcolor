@@ -7,7 +7,7 @@ import { CollectionPageSchema, BreadcrumbSchema } from "@/components/structured-
 
 import { getPostsByCategory, getAllCategories } from "@/lib/wordpress";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   console.log("Generating static params for categories...");

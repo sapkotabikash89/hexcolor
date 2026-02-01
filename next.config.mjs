@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // STATIC EXPORT CONFIGURATION
-  output: 'export', // Always use static export
-  trailingSlash: true, // Required for consistent routing in static export
+  trailingSlash: true, // Required for consistent routing
 
-  // Image configuration for static export
+  // Image configuration
   images: {
-    unoptimized: true, // Required - Next.js image optimization not available in static export
+    unoptimized: true, // Required for OpenNext/Cloudflare Pages compatibility if not using paid image optimization
     formats: ["image/webp"],
     minimumCacheTTL: 31536000,
     remotePatterns: [
@@ -30,9 +28,6 @@ const nextConfig = {
       '@radix-ui/react-tooltip'
     ],
   },
-
-  // Note: headers(), rewrites(), and redirects() are NOT supported in static export
-  // Use Cloudflare Pages _headers and _redirects files instead
 }
 
 export default nextConfig
