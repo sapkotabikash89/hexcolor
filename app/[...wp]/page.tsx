@@ -37,29 +37,7 @@ const HelpfulVote = dynamic(() => import("@/components/helpful-vote").then((mod)
 const GRAPHQL_ENDPOINT = process.env.WORDPRESS_API_URL || "https://blog.hexcolormeans.com/graphql";
 const REST_ENDPOINT = GRAPHQL_ENDPOINT.replace(/\/graphql\/?$/, "/wp-json");
 
-export async function generateStaticParams() {
-  const postsDir = path.join(process.cwd(), 'lib/posts');
-  if (!fs.existsSync(postsDir)) return [];
 
-  const files = fs.readdirSync(postsDir);
-  const params = files.map(file => {
-    if (!file.endsWith('.json')) return null;
-    try {
-      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
-      const json = JSON.parse(content);
-      if (json.uri) {
-        // Remove leading/trailing slashes and split
-        const parts = json.uri.replace(/^\/|\/$/g, '').split('/');
-        return { wp: parts };
-      }
-    } catch (e) {
-      console.error(`Error processing ${file} for static params:`, e);
-    }
-    return null;
-  }).filter((p): p is { wp: string[] } => p !== null);
-
-  return params;
-}
 
 async function fetchPostByUri(uri: string) {
   const variants = Array.from(
