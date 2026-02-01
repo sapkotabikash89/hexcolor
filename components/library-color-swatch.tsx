@@ -62,10 +62,10 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
         >
             {/* Background Color Area - Square Shape */}
             <div
-                className="flex-1 p-6 flex flex-col justify-end"
+                className="flex-1 p-4 flex flex-col justify-end"
                 style={{ backgroundColor: hex, color: contrastColor }}
             >
-                <div className="space-y-3">
+                <div className="space-y-2">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="text-xs uppercase font-bold opacity-70">Hex</span>
@@ -116,7 +116,7 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
             </div>
 
             {/* Information Area - Love icon on the right of the name */}
-            <div className="p-4 bg-white border-t flex items-center justify-between">
+            <div className="p-3 bg-white border-t flex items-center justify-between">
                 <p className="text-sm font-bold truncate pr-4">{name}</p>
                 <button
                     onClick={handleLove}
