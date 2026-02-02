@@ -1230,9 +1230,63 @@ export default async function WPPostPage({ params }: WPPageProps) {
     baseColorName = colorName || node.title.replace(/Shades/i, "").trim()
   }
 
+  // Helper to render the featured image
+  const renderFeaturedImage = () => {
+    if (!img) return null
+
+    return (
+      <section key="featured-image" className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4 min-w-0">
+        <FeaturedImage
+          src={img}
+          alt={
+            isSingleColor
+              ? `${alt || ""} – Featured image for color ${colorName}`
+              : `${alt || ""}`
+          }
+          priority={true}
+          className="w-full"
+        />
+        <ImageObjectSchema
+          url={articleImageUrl!}
+          width={1200}
+          height={800}
+          caption={
+            isSingleColor
+              ? `Infographic showing color meaning, psychology and spirituality association of color ${colorName}`
+              : (node?.seo?.opengraphImage?.altText || alt || undefined)
+          }
+          description={
+            isSingleColor
+              ? `A visual guide for understanding color ${colorName} meaning, symbolism, psychology, and informational data for your next project.`
+              : (node?.seo?.opengraphDescription || node?.seo?.metaDesc || undefined)
+          }
+          author="HexColorMeans"
+          representativeOfPage={true}
+        />
+        {hasColorUI && (
+          <BlogPostActions
+            loveKey={(effectiveHex || postColor).replace("#", "")}
+            shareUrl={`${site}${node.uri}`}
+            shareTitle={node.title}
+          />
+        )}
+      </section>
+    )
+  }
+
   const mainContent = (
     <>
       <article id="content" className="main-content grow-content max-w-none space-y-6 min-w-0" itemProp="articleBody">
+        {renderFeaturedImage()}
+        {isShadesMeaningCategory && shadesList.length > 0 && (
+          <div className="xl:hidden">
+            <ShadesTOC
+              key="shades-toc"
+              shades={shadesList}
+              baseColorName={baseColorName}
+            />
+          </div>
+        )}
         {(() => {
           const contentHtml = node.content || ""
           const secs = splitSectionsByH2(contentHtml)
@@ -1240,49 +1294,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
           const preferNearestForYellow = (colorName || "").toLowerCase() === "yellow"
           const nearestHexForYellow = preferNearestForYellow ? nearestShortcodeHexAroundTechnical(contentHtml) : null
 
-          // Helper to render the featured image
-          const renderFeaturedImage = () => {
-            if (!img) return null
 
-            return (
-              <section key="featured-image" className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4 min-w-0">
-                <FeaturedImage
-                  src={img}
-                  alt={
-                    isSingleColor
-                      ? `${alt || ""} – Featured image for color ${colorName}`
-                      : `${alt || ""}`
-                  }
-                  priority={true}
-                  className="w-full"
-                />
-                <ImageObjectSchema
-                  url={articleImageUrl!}
-                  width={1200}
-                  height={800}
-                  caption={
-                    isSingleColor
-                      ? `Infographic showing color meaning, psychology and spirituality association of color ${colorName}`
-                      : (node?.seo?.opengraphImage?.altText || alt || undefined)
-                  }
-                  description={
-                    isSingleColor
-                      ? `A visual guide for understanding color ${colorName} meaning, symbolism, psychology, and informational data for your next project.`
-                      : (node?.seo?.opengraphDescription || node?.seo?.metaDesc || undefined)
-                  }
-                  author="HexColorMeans"
-                  representativeOfPage={true}
-                />
-                {hasColorUI && (
-                  <BlogPostActions
-                    loveKey={(effectiveHex || postColor).replace("#", "")}
-                    shareUrl={`${site}${node.uri}`}
-                    shareTitle={node.title}
-                  />
-                )}
-              </section>
-            )
-          }
 
           // Check if we have a technical section in the content
           const hasTechnicalSection = secs.some(sec => isTechnical(sec));
@@ -1291,10 +1303,6 @@ export default async function WPPostPage({ params }: WPPageProps) {
             const sectionContent = (() => {
               // Check for Shades Meaning category to apply Swatch enhancement
               const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
-              console.log("DEBUG: isShadesMeaning check result:", isShadesMeaning);
-              console.log("DEBUG: Categories:", node.categories?.nodes);
-              console.log("DEBUG: Section HTML length:", sec.length);
-              console.log("DEBUG: Section preview:", sec.substring(0, 100) + "...");
 
               if (isShadesMeaning) {
                 // Parse values from the section content
@@ -1451,29 +1459,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               )
             })()
 
-            // Render featured image at the top of the content section
-            if (i === 0) {
-              const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
-              let tocElement: React.ReactNode = null
 
-              if (isShadesMeaning) {
-                // Only show ShadesTOC on mobile/small screens where left sidebar is not visible
-                // On desktop (xl+), the left sidebar provides navigation
-                if (shadesList.length > 0) {
-                  tocElement = (
-                    <div className="xl:hidden">
-                      <ShadesTOC
-                        key="shades-toc"
-                        shades={shadesList}
-                        baseColorName={baseColorName}
-                      />
-                    </div>
-                  )
-                }
-              }
-
-              return [renderFeaturedImage(), sectionContent, tocElement]
-            }
             return sectionContent
           });
 
