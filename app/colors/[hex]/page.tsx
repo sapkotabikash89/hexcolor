@@ -169,7 +169,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
     { name: normalizedHex, item: `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}` },
   ]
 
-  const faqItems = rgb && hsl ? generateFAQs(normalizedHex, rgb, hsl) : []
+  const faqItems = rgb && hsl ? generateFAQs(normalizedHex, rgb, hsl, colorName) : []
   const pageUrl = `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}`
   const pageDescription = `Explore ${normalizedHex} color information, conversions, harmonies, variations, and accessibility.`
 

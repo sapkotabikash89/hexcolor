@@ -194,26 +194,27 @@ function getBroadFamily(h: number, s: number, l: number): string {
   return 'gray'
 }
 
-export function generateFAQs(hex: string, rgb: { r: number, g: number, b: number }, hsl: { h: number, s: number, l: number }): FAQItem[] {
+export function generateFAQs(hex: string, rgb: { r: number, g: number, b: number }, hsl: { h: number, s: number, l: number }, name?: string): FAQItem[] {
   const familyKey = getBroadFamily(hsl.h, hsl.s, hsl.l)
   const data = COLOR_FAMILIES[familyKey] || COLOR_FAMILIES['gray']
   
   const hexText = hex.toUpperCase()
+  const displayName = name ? `${name} (${hexText})` : hexText
 
-  const q1 = `What is the meaning and symbolism of ${hexText} color?`
-  const a1 = `${hexText} is a specific shade that belongs to the ${familyKey} color family. It represents ${data.keywords}. As a variant of ${familyKey}, it signifies ${data.psychology}. In color psychology, ${hexText} is often associated with these qualities, offering a unique balance of saturation and light that conveys ${data.keywords.split(',')[0].trim()} and ${data.keywords.split(',')[1].trim()}.`
+  const q1 = `What is the meaning and symbolism of ${displayName} color?`
+  const a1 = `${displayName} is a specific shade that belongs to the ${familyKey} color family. It represents ${data.keywords}. As a variant of ${familyKey}, it signifies ${data.psychology}. In color psychology, ${displayName} is often associated with these qualities, offering a unique balance of saturation and light that conveys ${data.keywords.split(',')[0].trim()} and ${data.keywords.split(',')[1].trim()}.`
 
-  const q2 = `What is the spiritual meaning of ${hexText} color?`
-  const a2 = `Spiritually, the color ${hexText} symbolizes ${data.spiritual}. It is believed to bring a sense of ${data.psychology} to the spirit. Many traditions view ${hexText} as a sign of ${data.spiritual.split(',')[0].trim()}, serving as a bridge between the physical world and spiritual realms. Its specific vibration is thought to enhance ${data.chakraMeaning}.`
+  const q2 = `What is the spiritual meaning of ${displayName} color?`
+  const a2 = `Spiritually, the color ${displayName} symbolizes ${data.spiritual}. It is believed to bring a sense of ${data.psychology} to the spirit. Many traditions view ${displayName} as a sign of ${data.spiritual.split(',')[0].trim()}, serving as a bridge between the physical world and spiritual realms. Its specific vibration is thought to enhance ${data.chakraMeaning}.`
 
-  const q3 = `What chakra is connected to the color ${hexText}?`
-  const a3 = `${hexText} is linked to the ${data.chakra} Chakra, known in Sanskrit as ${data.chakraSanskrit}. This energy center governs ${data.chakraMeaning}. Balancing this chakra with the color ${hexText} can help improve emotional well-being and spiritual alignment, allowing for better ${data.chakraMeaning.split(',')[0].trim()}.`
+  const q3 = `What chakra is connected to the color ${displayName}?`
+  const a3 = `${displayName} is linked to the ${data.chakra} Chakra, known in Sanskrit as ${data.chakraSanskrit}. This energy center governs ${data.chakraMeaning}. Balancing this chakra with the color ${displayName} can help improve emotional well-being and spiritual alignment, allowing for better ${data.chakraMeaning.split(',')[0].trim()}.`
 
-  const q4 = `What does ${hexText} mean in personality?`
-  const a4 = `A personality type attracted to ${hexText} is typically ${data.personality}. People who resonate with this specific hue often value ${data.keywords.split(',')[0].trim()} and ${data.keywords.split(',')[1].trim()}. They are frequently seen as ${data.personality.split(',')[0].trim()} individuals who bring a unique, ${familyKey}-influenced energy to their surroundings.`
+  const q4 = `What does ${displayName} mean in personality?`
+  const a4 = `A personality type attracted to ${displayName} is typically ${data.personality}. People who resonate with this specific hue often value ${data.keywords.split(',')[0].trim()} and ${data.keywords.split(',')[1].trim()}. They are frequently seen as ${data.personality.split(',')[0].trim()} individuals who bring a unique, ${familyKey}-influenced energy to their surroundings.`
 
-  const q5 = `What does the color ${hexText} symbolize in the Bible?`
-  const a5 = `In the Bible, colors related to ${hexText} symbolize ${data.bible}. It appears in scriptures to represent these spiritual truths. The color ${hexText} is often used to signify ${data.bible.split(',')[0].trim()} and divine messages, reflecting the deeper biblical meanings associated with the ${familyKey} spectrum.`
+  const q5 = `What does the color ${displayName} symbolize in the Bible?`
+  const a5 = `In the Bible, colors related to ${displayName} symbolize ${data.bible}. It appears in scriptures to represent these spiritual truths. The color ${displayName} is often used to signify ${data.bible.split(',')[0].trim()} and divine messages, reflecting the deeper biblical meanings associated with the ${familyKey} spectrum.`
 
   return [
     { question: q1, answer: a1 },
