@@ -13,6 +13,7 @@ import { CopyButton } from "@/components/copy-button"
 import { generateFAQs } from "@/lib/category-utils"
 import { TableOfContents } from "@/components/table-of-contents"
 import { URLNormalizer } from "@/components/url-normalizer"
+import { Suspense } from "react"
 
 // export const runtime = 'nodejs' // Not needed for static export
 
@@ -189,7 +190,9 @@ export default async function ColorPage({ params }: ColorPageProps) {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <URLNormalizer />
+      <Suspense fallback={null}>
+        <URLNormalizer />
+      </Suspense>
       <BreadcrumbSchema items={breadcrumbItems} />
       <FAQSchema faqs={faqItems} />
       <ArticleSchema
