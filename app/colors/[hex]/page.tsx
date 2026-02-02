@@ -120,9 +120,6 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       index: isKnownColor, // Only index known colors
       follow: true,
     },
-    verification: {
-      google: "tiT0KL3QCJ4bLgDI-k7s8vphX4Sx6LQCFmkflXUe4pU",
-    },
   }
 }
 

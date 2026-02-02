@@ -94,7 +94,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://blog.hexcolormeans.com" />
         <link rel="dns-prefetch" href="https://blog.hexcolormeans.com" />
-        <meta name="google-site-verification" content="6aCCEUx0SvVPIKAgXUdb96PSZ48p0WJNzj0074iCNnY" />
         <meta name="p:domain_verify" content="2f0be474874f515dce302624f3919d26" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </head>
