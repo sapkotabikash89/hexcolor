@@ -6,18 +6,14 @@
   "packageManager": "npm@10.0.0",
   "scripts": {
     "prebuild": "rm -rf .next/cache && npm run sync || echo 'Sync failed, continuing build...' && node scripts/generate-sitemaps.mjs",
-    "build": "opennextjs-cloudflare build",
-    "postbuild": "echo 'Skipping static export verification for Edge Runtime'",
-    "export": "npm run build",
+    "build": "next build",
+    "export": "next build",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "sync": "node scripts/sync-wp.mjs",
     "publish-new-posts": "node scripts/auto-publish.mjs",
-    "detect-and-deploy": "node scripts/detect-and-deploy-new-posts.mjs",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "detect-and-deploy": "node scripts/detect-and-deploy-new-posts.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -76,7 +72,6 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.14.8",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22.19.7",
     "@types/react": "^18.3.27",

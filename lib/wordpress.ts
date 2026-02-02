@@ -11,9 +11,8 @@ export async function fetchGraphQL(query: string, variables: any = {}) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),
-      // OPTIMIZATION: Incremental Static Regeneration (ISR)
-      // Revalidate every 60 seconds
-      next: { revalidate: 60 },
+      // Static export - cache at build time
+      cache: 'force-cache'
     });
 
     if (!res.ok) {

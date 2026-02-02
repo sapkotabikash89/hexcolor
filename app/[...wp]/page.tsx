@@ -281,8 +281,7 @@ async function fetchPostBySlug(slug: string) {
         `,
         variables: { slug },
       }),
-      // OPTIMIZATION: Incremental Static Regeneration (ISR)
-      next: { revalidate: 60, tags: [`wp:slug:${slug}`] },
+      cache: 'force-cache'
     })
     const json = await res.json()
     return json?.data?.post ?? null
@@ -716,8 +715,7 @@ async function fetchRandomPosts(count: number) {
       `,
       variables: { count },
     }),
-    // OPTIMIZATION: Increased revalidate time for Vercel free plan
-    next: { revalidate: 3600, tags: [`wp:related`] },  // 1 hour instead of 10 min
+    cache: 'force-cache'
   })
   const json = await res.json()
   return json?.data?.posts?.nodes ?? []
@@ -850,14 +848,7 @@ interface WPPageProps {
   params: Promise<{ wp: string[] }>
 }
 
-export const dynamicParams = true;
-
-// Generate static paths for blog posts and pages from local JSON cache
 export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
-  if (process.env.NODE_ENV === 'development') {
-    return []
-  }
-
   try {
     const fs = await import("fs")
     const path = await import("path")
