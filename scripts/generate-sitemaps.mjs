@@ -67,7 +67,6 @@ function generateToolsSitemap() {
         { url: `${BASE_URL}/colors/`, priority: 0.9 },
         { url: `${BASE_URL}/color-meanings/`, priority: 0.8 },
         { url: `${BASE_URL}/blog/`, priority: 0.7 },
-        { url: `${BASE_URL}/categories/`, priority: 0.6 },
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -189,41 +188,114 @@ ${posts.map(post => {
 }
 
 /**
+ * Helper: Convert Hex to RGB
+ */
+function hexToRgb(hex) {
+    const cleanHex = hex.replace('#', '');
+    const r = parseInt(cleanHex.substring(0, 2), 16);
+    const g = parseInt(cleanHex.substring(2, 4), 16);
+    const b = parseInt(cleanHex.substring(4, 6), 16);
+    return { r, g, b };
+}
+
+/**
+ * Helper: Generate Gumlet Color Image Data
+ * Matches logic in lib/image-utils.ts
+ */
+function getGumletColorImage(params) {
+    const { colorName, hex, rgb } = params;
+    const cleanHex = hex.replace('#', '').toLowerCase();
+    const GUMLET_BASE_URL = 'https://hexcolormeans.gumlet.io';
+    const WORDPRESS_UPLOADS_PATH = '/wp-content/uploads/';
+
+    // Generate SEO friendly slug
+    const slug = colorName.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+
+    const filename = `${slug}-${cleanHex}.webp`;
+    const url = `${GUMLET_BASE_URL}${WORDPRESS_UPLOADS_PATH}colors/${cleanHex}/${filename}`;
+
+    const hexWithHash = hex.startsWith('#') ? hex.toUpperCase() : `#${hex.toUpperCase()}`;
+    const rgbText = rgb ? `(${rgb.r},${rgb.g},${rgb.b})` : '(0,0,0)';
+
+    const alt = `Clear image showing ${colorName} color swatch with hex value ${hexWithHash} and RGB value ${rgbText}`;
+
+    return { url, alt, filename };
+}
+
+/**
  * Generate sitemap-images.xml
  */
 function generateImagesSitemap() {
     try {
-        // Load blog posts to extract images
+        let allImageUrls = [];
+
+        // 1. Process Blog Posts
         const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
-        let posts = [];
-
         if (fs.existsSync(blogPostsDataPath)) {
-            posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
-        }
+            const posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
+            
+            const postsWithImages = posts.filter(post => 
+                post.featuredImage && 
+                post.featuredImage.node && 
+                post.featuredImage.node.sourceUrl
+            );
 
-        // Filter posts that have featured images
-        const postsWithImages = posts.filter(post => 
-            post.featuredImage && 
-            post.featuredImage.node && 
-            post.featuredImage.node.sourceUrl
-        );
-
-        if (postsWithImages.length > 0) {
-            const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-${postsWithImages.map(post => {
+            const postEntries = postsWithImages.map(post => {
                 const uri = post.uri || '';
                 const pageUrl = uri.startsWith('http') ? uri : `${BASE_URL}${uri}`;
                 const imageUrl = post.featuredImage.node.sourceUrl;
                 const imageTitle = post.featuredImage.node.altText || post.title || 'Image';
                 
+                return { pageUrl, imageUrl, imageTitle };
+            });
+
+            allImageUrls = [...allImageUrls, ...postEntries];
+        }
+
+        // 2. Process Color Pages
+        const colorMeaningPath = path.join(__dirname, '..', 'lib', 'color-meaning.json');
+        if (fs.existsSync(colorMeaningPath)) {
+            const colorData = JSON.parse(fs.readFileSync(colorMeaningPath, 'utf8'));
+            
+            const colorEntries = Object.keys(colorData).map(key => {
+                const hex = `#${key}`;
+                const data = colorData[key];
+                const name = data.name || 'Color';
+                const rgb = hexToRgb(key);
+                
+                // Construct Page URL
+                const pageUrl = `${BASE_URL}/colors/${key.toLowerCase()}/`;
+                
+                // Construct Image URL
+                const gumletImage = getGumletColorImage({
+                    colorName: name,
+                    hex: key, // passing clean hex without hash as per original key
+                    rgb: rgb
+                });
+
+                return {
+                    pageUrl: pageUrl,
+                    imageUrl: gumletImage.url,
+                    imageTitle: gumletImage.alt
+                };
+            });
+
+            allImageUrls = [...allImageUrls, ...colorEntries];
+        }
+
+        if (allImageUrls.length > 0) {
+            const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${allImageUrls.map(entry => {
                 // Escape special characters in XML
-                const safeImageUrl = imageUrl.replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
-                const safeImageTitle = imageTitle.replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
+                const safeImageUrl = entry.imageUrl.replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
+                const safeImageTitle = entry.imageTitle.replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
 
                 return `  <url>
-    <loc>${pageUrl}</loc>
+    <loc>${entry.pageUrl}</loc>
     <image:image>
       <image:loc>${safeImageUrl}</image:loc>
       <image:title>${safeImageTitle}</image:title>
@@ -233,12 +305,9 @@ ${postsWithImages.map(post => {
 </urlset>`;
 
             fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-images.xml'), xml);
-            console.log(`✅ Generated sitemap-images.xml (${postsWithImages.length} images)`);
+            console.log(`✅ Generated sitemap-images.xml (${allImageUrls.length} images)`);
         } else {
-            // If no images found, create a minimal valid sitemap with just the home page logo or similar
-            // Or just an empty one but with a comment to avoid "missing tag" if possible, 
-            // but Google requires at least one URL. 
-            // Let's add the home page with a placeholder logo if no posts exist.
+            // Fallback
             const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
