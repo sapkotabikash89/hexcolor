@@ -1458,10 +1458,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
 
               if (isShadesMeaning) {
                 // Only show ShadesTOC on mobile/small screens where left sidebar is not visible
-                // On desktop (lg+), the left sidebar provides navigation
+                // On desktop (xl+), the left sidebar provides navigation
                 if (shadesList.length > 0) {
                   tocElement = (
-                    <div className="lg:hidden">
+                    <div className="xl:hidden">
                       <ShadesTOC
                         key="shades-toc"
                         shades={shadesList}
@@ -1677,18 +1677,18 @@ export default async function WPPostPage({ params }: WPPageProps) {
 
       {isColorMeaningCategory ? (
         <>
-          <div className="lg:hidden w-full z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border mb-6">
+          <div className="xl:hidden w-full z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border mb-6">
             <TableOfContents currentHex={effectiveHex || postColor} mobileOnly items={blogTocItems} />
           </div>
           <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-              <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
+              <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
                 <TableOfContents currentHex={effectiveHex || postColor} items={blogTocItems} />
               </aside>
               <div className="flex-1 min-w-0 w-full space-y-6">
                 {mainContent}
               </div>
-              <aside className="hidden xl:block w-[340px] shrink-0 sticky top-24 self-start">
+              <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
                 <ColorSidebar 
                   color={accentColor} 
                   showColorSchemes={hasColorUI} 
@@ -1706,7 +1706,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
             <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
               <div className="flex flex-col lg:flex-row gap-8 items-start">
                 {/* Left Sidebar for Shades Meaning */}
-                <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
+                <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
                   <ShadesSidebarTOC 
                     currentHex={effectiveHex || postColor} 
                     shades={shadesList} 
@@ -1720,7 +1720,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 </div>
                 
                 {/* Right Sidebar */}
-                <aside className="hidden xl:block w-[340px] shrink-0 sticky top-24 self-start">
+                <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
                   <ColorSidebar 
                     color={accentColor} 
                     showColorSchemes={hasColorUI} 
@@ -1735,7 +1735,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 <div className="flex-1 space-y-6 min-w-0">
                   {mainContent}
                 </div>
-                <aside className="hidden xl:block w-[340px] shrink-0">
+                <aside className="hidden lg:block w-[340px] shrink-0">
                   <ColorSidebar color={accentColor} showColorSchemes={hasColorUI} />
                 </aside>
               </div>

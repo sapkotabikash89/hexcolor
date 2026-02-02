@@ -315,7 +315,9 @@ function PickerContent() {
           </article>
 
           {/* Sidebar - 1/3 */}
-          <ColorSidebar color={currentHex} />
+          <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
+            <ColorSidebar color={currentHex} />
+          </aside>
         </div>
       </main>
 

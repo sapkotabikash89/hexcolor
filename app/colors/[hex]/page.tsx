@@ -266,7 +266,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
       </section>
 
       {/* Mobile-only horizontal navigation strip */}
-      <div className="lg:hidden z-40">
+      <div className="xl:hidden z-40">
         <TableOfContents currentHex={normalizedHex} mobileOnly />
       </div>
 
@@ -275,7 +275,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Left Sidebar Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}
-          <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
+          <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
             <TableOfContents currentHex={normalizedHex} />
           </aside>
 
@@ -284,8 +284,8 @@ export default async function ColorPage({ params }: ColorPageProps) {
             <ColorPageContent key={normalizedHex} hex={normalizedHex} faqs={faqItems} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
           </article>
 
-          {/* Right Sidebar - Hidden below xl to prioritize content width */}
-          <aside className="hidden xl:block w-[340px] shrink-0 sticky top-24 self-start">
+          {/* Right Sidebar - Hidden below lg to prioritize content width */}
+          <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
             <ColorSidebar color={normalizedHex} />
           </aside>
         </div>
