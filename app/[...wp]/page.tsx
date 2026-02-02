@@ -51,11 +51,12 @@ async function fetchPostByUri(uri: string) {
     ])
   )
   for (const u of variants) {
-    // Try local JSON cache first - SKIPPED FOR EDGE RUNTIME
-    /*
+    // Try local JSON cache first
     const slug = u.replace(/^\/|\/$/g, '').replace(/\//g, '-');
     if (slug) {
       try {
+        const fs = await import("fs")
+        const path = await import("path")
         const dataPath = path.join(process.cwd(), 'lib/posts', `${slug}.json`);
         if (fs.existsSync(dataPath)) {
           return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
@@ -64,7 +65,6 @@ async function fetchPostByUri(uri: string) {
         // Ignore error and fall back to fetch
       }
     }
-    */
 
     try {
       const apiUrl = GRAPHQL_ENDPOINT;
@@ -1230,54 +1230,29 @@ export default async function WPPostPage({ params }: WPPageProps) {
     baseColorName = colorName || node.title.replace(/Shades/i, "").trim()
   }
 
-  // Helper to render the featured image
-  const renderFeaturedImage = () => {
-    if (!img) return null
-
-    return (
-      <section key="featured-image" className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4 min-w-0">
-        <FeaturedImage
-          src={img}
-          alt={
-            isSingleColor
-              ? `${alt || ""} – Featured image for color ${colorName}`
-              : `${alt || ""}`
-          }
-          priority={true}
-          className="w-full"
-        />
-        <ImageObjectSchema
-          url={articleImageUrl!}
-          width={1200}
-          height={800}
-          caption={
-            isSingleColor
-              ? `Infographic showing color meaning, psychology and spirituality association of color ${colorName}`
-              : (node?.seo?.opengraphImage?.altText || alt || undefined)
-          }
-          description={
-            isSingleColor
-              ? `A visual guide for understanding color ${colorName} meaning, symbolism, psychology, and informational data for your next project.`
-              : (node?.seo?.opengraphDescription || node?.seo?.metaDesc || undefined)
-          }
-          author="HexColorMeans"
-          representativeOfPage={true}
-        />
-        {hasColorUI && (
-          <BlogPostActions
-            loveKey={(effectiveHex || postColor).replace("#", "")}
-            shareUrl={`${site}${node.uri}`}
-            shareTitle={node.title}
-          />
-        )}
-      </section>
-    )
-  }
-
   const mainContent = (
     <>
       <article id="content" className="main-content grow-content max-w-none space-y-6 min-w-0" itemProp="articleBody">
-        {renderFeaturedImage()}
+        {/* Featured Image - Always show at the top if available */}
+        {img && (
+          <section key="featured-image" className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4 min-w-0 mb-6">
+            <FeaturedImage
+              src={img}
+              alt={alt || "Featured image"}
+              priority={true}
+              className="w-full"
+            />
+            <ImageObjectSchema
+              url={articleImageUrl!}
+              width={1200}
+              height={800}
+              caption={alt || undefined}
+              description={node?.seo?.opengraphDescription || node?.seo?.metaDesc || undefined}
+              author="HexColorMeans"
+              representativeOfPage={true}
+            />
+          </section>
+        )}
         {isShadesMeaningCategory && shadesList.length > 0 && (
           <div className="xl:hidden">
             <ShadesTOC
@@ -1304,7 +1279,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               // Check for Shades Meaning category to apply Swatch enhancement
               const isShadesMeaning = node.categories?.nodes?.some((c: any) => c.name === "Shades Meaning")
 
-              if (isShadesMeaning) {
+              if (isShadesMeaning && i > 0) {
                 // Parse values from the section content
                 let blockHtml = ""
                 let found = false

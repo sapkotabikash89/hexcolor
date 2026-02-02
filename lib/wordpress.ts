@@ -31,6 +31,41 @@ export async function fetchGraphQL(query: string, variables: any = {}) {
  * Get posts by category - ISR Version
  */
 export async function getPostsByCategory(categorySlug: string) {
+  // Try local JSON cache first
+  try {
+    const fs = await import("fs");
+    const path = await import("path");
+    const dataPath = path.join(process.cwd(), 'lib/blog-posts-data.json');
+    
+    if (fs.existsSync(dataPath)) {
+      const allPosts = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+      const posts = allPosts.filter((post: any) => 
+        post.categories?.nodes?.some((c: any) => c.slug === categorySlug)
+      );
+
+      if (posts.length > 0) {
+        // Find category name from the first post that has this category
+        const category = posts[0].categories.nodes.find((c: any) => c.slug === categorySlug);
+        
+        return {
+          posts,
+          categoryName: category ? category.name : categorySlug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+          categorySlug,
+        };
+      }
+      
+      // If no posts found in cache, return empty but valid structure
+      // This prevents build errors if category exists but has no posts
+      return {
+        posts: [],
+        categoryName: categorySlug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+        categorySlug,
+      };
+    }
+  } catch (e) {
+    console.warn(`Local cache read failed for category ${categorySlug}, falling back to API:`, e);
+  }
+
   const query = `
     query PostsByCategory($slug: String!) {
       category(id: $slug, idType: SLUG) {

@@ -118,6 +118,10 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  a {
+    @apply text-primary hover:opacity-80 transition-opacity;
+  }
 }
 
 /* Custom scrollbar */
@@ -183,7 +187,14 @@
 
 /* WordPress Content List Styles */
 .wp-content a:not(.wp-block-button__link):not(.button):not(.btn) {
-  @apply text-blue-700 hover:underline hover:text-blue-800 transition-colors;
+  color: #E0115F;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.wp-content a:not(.wp-block-button__link):not(.button):not(.btn):hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 
 .wp-content ul {

@@ -45,12 +45,12 @@ export function AnchorHashNav({ items, className }: AnchorHashNavProps) {
             <div key={item.href} className="flex items-center">
               <a 
                 href={item.href} 
-                className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                className="text-primary hover:text-primary/80 font-medium transition-colors"
               >
                 {item.label}
               </a>
               {index < navItems.length - 1 && (
-                <span className="ml-1 text-blue-600/40 inline">|</span>
+                <span className="ml-1 text-primary/40 inline">|</span>
               )}
             </div>
           ))}
