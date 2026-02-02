@@ -12,6 +12,7 @@ import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, ArticleSchema } from "@
 import { CopyButton } from "@/components/copy-button"
 import { generateFAQs } from "@/lib/category-utils"
 import { TableOfContents } from "@/components/table-of-contents"
+import { URLNormalizer } from "@/components/url-normalizer"
 
 // export const runtime = 'nodejs' // Not needed for static export
 
@@ -29,7 +30,10 @@ export async function generateStaticParams() {
   // Combine all sources
   const allHexes = new Set([
     ...meaningHexes.map(h => h.toLowerCase()),
-    ...knownHexes.map(h => h.toLowerCase())
+    ...knownHexes.map(h => h.toLowerCase()),
+    // Add uppercase versions to prevent 404s and allow client-side normalization
+    ...meaningHexes.map(h => h.replace('#', '').toUpperCase()),
+    ...knownHexes.map(h => h.replace('#', '').toUpperCase())
   ])
 
   return Array.from(allHexes).map((hex) => ({
@@ -128,12 +132,12 @@ export default async function ColorPage({ params }: ColorPageProps) {
   const normalizedHex = normalizeHex(hex)
 
   // Check if this is a known static color - ensure lowercase URL
-  const lowerHex = normalizedHex.replace("#", "").toLowerCase();
-  const upperHex = normalizedHex.replace("#", "").toUpperCase();
-  if (isValidHex(normalizedHex) && KNOWN_COLOR_HEXES.has(upperHex) && hex !== lowerHex) {
-    // Redirect to lowercase version for consistency and to match static export
-    redirect(`/colors/${lowerHex}`);
-  }
+  // const lowerHex = normalizedHex.replace("#", "").toLowerCase();
+  // const upperHex = normalizedHex.replace("#", "").toUpperCase();
+  // if (isValidHex(normalizedHex) && KNOWN_COLOR_HEXES.has(upperHex) && hex !== lowerHex) {
+  //   // Redirect to lowercase version for consistency and to match static export
+  //   redirect(`/colors/${lowerHex}`);
+  // }
 
   if (!isValidHex(normalizedHex)) {
     notFound()
@@ -185,6 +189,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <URLNormalizer />
       <BreadcrumbSchema items={breadcrumbItems} />
       <FAQSchema faqs={faqItems} />
       <ArticleSchema
