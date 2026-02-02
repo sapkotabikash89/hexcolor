@@ -1688,7 +1688,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               <div className="flex-1 min-w-0 w-full space-y-6">
                 {mainContent}
               </div>
-              <aside className="hidden xl:block w-[380px] shrink-0 sticky top-24 self-start">
+              <aside className="hidden xl:block w-[340px] shrink-0 sticky top-24 self-start">
                 <ColorSidebar 
                   color={accentColor} 
                   showColorSchemes={hasColorUI} 
@@ -1720,7 +1720,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 </div>
                 
                 {/* Right Sidebar */}
-                <aside className="hidden xl:block w-[380px] shrink-0 sticky top-24 self-start">
+                <aside className="hidden xl:block w-[340px] shrink-0 sticky top-24 self-start">
                   <ColorSidebar 
                     color={accentColor} 
                     showColorSchemes={hasColorUI} 
@@ -1735,7 +1735,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 <div className="flex-1 space-y-6 min-w-0">
                   {mainContent}
                 </div>
-                <aside className="hidden xl:block w-[380px] shrink-0">
+                <aside className="hidden xl:block w-[340px] shrink-0">
                   <ColorSidebar color={accentColor} showColorSchemes={hasColorUI} />
                 </aside>
               </div>

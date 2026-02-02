@@ -234,7 +234,7 @@ export default function ColorPickerPage() {
               </div>
             </section>
           </article>
-          <div className="hidden lg:block w-[380px]">
+          <div className="hidden lg:block w-[340px]">
             <div className="sticky top-24">
               <ColorSidebar color="#E0115F" />
             </div>

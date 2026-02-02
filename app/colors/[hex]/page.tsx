@@ -288,7 +288,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
           </article>
 
           {/* Right Sidebar - Hidden below xl to prioritize content width */}
-          <aside className="hidden xl:block w-[380px] shrink-0 sticky top-24 self-start">
+          <aside className="hidden xl:block w-[340px] shrink-0 sticky top-24 self-start">
             <ColorSidebar color={normalizedHex} />
           </aside>
         </div>
