@@ -24,7 +24,7 @@ export default async function AllCategoriesPage() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <section className="bg-muted/30 py-12 px-4 border-b">
-        <div className="container mx-auto">
+        <div className="w-full max-w-[1350px] mx-auto">
           <BreadcrumbNav items={crumbs} />
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">Taxonomy of Color Intelligence</h1>

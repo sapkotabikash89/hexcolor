@@ -29,7 +29,7 @@ export default async function BlogPage() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <section className="bg-muted/30 py-12 px-4">
-        <div className="container mx-auto">
+        <div className="w-full max-w-[1350px] mx-auto">
           <BreadcrumbNav items={crumbs} />
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold">Blog</h1>
@@ -39,7 +39,7 @@ export default async function BlogPage() {
           </div>
         </div>
       </section>
-      <main className="container mx-auto px-4 py-12">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           <article id="content" className="main-content grow-content flex-1" itemProp="articleBody">
             <CategoryPosts

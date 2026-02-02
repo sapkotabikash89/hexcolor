@@ -98,7 +98,7 @@ export default function ImageColorPickerPage() {
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
-        <div className="container mx-auto">
+        <div className="w-full max-w-[1350px] mx-auto">
           <div className="mb-6">
             <BreadcrumbNav items={[{ label: "Image Color Picker", href: "/image-color-picker" }]} />
           </div>

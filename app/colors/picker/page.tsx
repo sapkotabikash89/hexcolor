@@ -98,7 +98,7 @@ function PickerContent() {
           color: contrastColor,
         }}
       >
-        <div className="container mx-auto">
+        <div className="w-full max-w-[1350px] mx-auto">
           <BreadcrumbNav
             items={[
               { label: "Color Names", href: "/colors" },
@@ -157,10 +157,10 @@ function PickerContent() {
       />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
+      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Content Area - 2/3 */}
-          <article id="content" className="main-content grow-content flex-1">
+          <article id="content" className="main-content grow-content flex-1 min-w-0">
             <div className="space-y-8">
               {/* Color Picker Section */}
               <div className="bg-card border border-border rounded-lg p-4 sm:p-6">

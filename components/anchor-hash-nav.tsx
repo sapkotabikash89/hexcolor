@@ -39,7 +39,7 @@ export function AnchorHashNav({ items, className }: AnchorHashNavProps) {
 
   return (
     <div className={cn("w-full bg-muted/30 border-b border-border z-40", className)} onClick={handleClick}>
-      <div className="container mx-auto px-4">
+      <div className="w-full max-w-[1350px] mx-auto px-4">
         <div className="flex overflow-x-auto no-scrollbar md:flex-wrap items-center whitespace-nowrap md:whitespace-normal py-4 gap-x-1.5 gap-y-1 text-base justify-start md:justify-center">
           {navItems.map((item, index) => (
             <div key={item.href} className="flex items-center">

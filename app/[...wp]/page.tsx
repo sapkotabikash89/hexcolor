@@ -998,7 +998,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
     return (
       <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="container mx-auto px-4 py-12">
+        <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
           <h1 className="text-3xl font-bold">Content not available</h1>
           <p className="mt-4">The requested post could not be loaded.</p>
         </main>
@@ -1020,14 +1020,14 @@ export default async function WPPostPage({ params }: WPPageProps) {
       <div className="flex flex-col min-h-screen">
         <Header />
         <section className="bg-muted/30 py-12 px-4">
-          <div className="container mx-auto">
+          <div className="w-full max-w-[1350px] mx-auto">
             <BreadcrumbNav items={crumbs} />
             <div className="text-center space-y-4">
               <h1 className="text-4xl md:text-5xl font-bold">{node.name}</h1>
             </div>
           </div>
         </section>
-        <main className="container mx-auto px-4 py-12">
+        <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {related.map((p: any, i: number) => {
               const src = p?.featuredImage?.node?.sourceUrl
