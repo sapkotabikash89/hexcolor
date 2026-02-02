@@ -155,9 +155,19 @@ function generatePostsSitemap() {
 ${posts.map(post => {
                 const uri = post.uri || '';
                 const url = uri.startsWith('http') ? uri : `${BASE_URL}${uri}`;
+                // Ensure date is in ISO 8601 format (YYYY-MM-DDThh:mm:ssTZD)
+                let dateStr = post.date || now;
+                try {
+                    // If date string doesn't have timezone, assume UTC or append Z if needed
+                    // But safest is to let Date object parse it and output ISO string
+                    dateStr = new Date(dateStr).toISOString();
+                } catch (e) {
+                    dateStr = now; // Fallback to now if invalid
+                }
+                
                 return `  <url>
     <loc>${url}</loc>
-    <lastmod>${post.date || now}</lastmod>
+    <lastmod>${dateStr}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>`;
@@ -182,15 +192,70 @@ ${posts.map(post => {
  * Generate sitemap-images.xml
  */
 function generateImagesSitemap() {
-    // For now, create an empty images sitemap
-    // You can enhance this to include actual images if needed
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    try {
+        // Load blog posts to extract images
+        const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
+        let posts = [];
+
+        if (fs.existsSync(blogPostsDataPath)) {
+            posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
+        }
+
+        // Filter posts that have featured images
+        const postsWithImages = posts.filter(post => 
+            post.featuredImage && 
+            post.featuredImage.node && 
+            post.featuredImage.node.sourceUrl
+        );
+
+        if (postsWithImages.length > 0) {
+            const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${postsWithImages.map(post => {
+                const uri = post.uri || '';
+                const pageUrl = uri.startsWith('http') ? uri : `${BASE_URL}${uri}`;
+                const imageUrl = post.featuredImage.node.sourceUrl;
+                const imageTitle = post.featuredImage.node.altText || post.title || 'Image';
+                
+                // Escape special characters in XML
+                const safeImageUrl = imageUrl.replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
+                const safeImageTitle = imageTitle.replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
+
+                return `  <url>
+    <loc>${pageUrl}</loc>
+    <image:image>
+      <image:loc>${safeImageUrl}</image:loc>
+      <image:title>${safeImageTitle}</image:title>
+    </image:image>
+  </url>`;
+            }).join('\n')}
 </urlset>`;
 
-    fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-images.xml'), xml);
-    console.log('✅ Generated sitemap-images.xml');
+            fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-images.xml'), xml);
+            console.log(`✅ Generated sitemap-images.xml (${postsWithImages.length} images)`);
+        } else {
+            // If no images found, create a minimal valid sitemap with just the home page logo or similar
+            // Or just an empty one but with a comment to avoid "missing tag" if possible, 
+            // but Google requires at least one URL. 
+            // Let's add the home page with a placeholder logo if no posts exist.
+            const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>${BASE_URL}/</loc>
+    <image:image>
+      <image:loc>${BASE_URL}/logo.png</image:loc>
+      <image:title>HexColorMeans Logo</image:title>
+    </image:image>
+  </url>
+</urlset>`;
+            fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-images.xml'), xml);
+            console.log('✅ Generated sitemap-images.xml (fallback)');
+        }
+    } catch (error) {
+        console.error('❌ Error generating images sitemap:', error.message);
+    }
 }
 
 /**

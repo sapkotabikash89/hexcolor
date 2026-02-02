@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://hexcolormeans.com/shades-of-red-color/</loc>
+    <image:image>
+      <image:loc>https://blog.hexcolormeans.com/wp-content/uploads/2026/02/over-100-popular-shades-of-red-color.webp</image:loc>
+      <image:title>over 100 popular shades of red color</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://hexcolormeans.com/color-red-meaning/</loc>
+    <image:image>
+      <image:loc>https://blog.hexcolormeans.com/wp-content/uploads/2026/01/image-showing-color-red-meaning-spirituality-psychology-and-personality.webp</image:loc>
+      <image:title>image showing color red meaning, spirituality, psychology and personality</image:title>
+    </image:image>
+  </url>
 </urlset>
