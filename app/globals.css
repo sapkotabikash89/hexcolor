@@ -119,7 +119,13 @@
     @apply bg-background text-foreground;
   }
 
-  a {
+  /* Scoped link styling for blog post content */
+  article.main-content a {
+    @apply text-primary hover:opacity-80 transition-opacity;
+  }
+
+  /* Also target legacy content wrapper if used */
+  .cm-wrap a {
     @apply text-primary hover:opacity-80 transition-opacity;
   }
 }
