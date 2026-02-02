@@ -58,7 +58,7 @@
       <div class="flex flex-col min-h-screen">
         <!-- Color Hero Section -->
         <section class="py-12 px-4" style="background-color: #${hex}; color: ${getContrastColor('#' + hex)};">
-          <div class="w-full max-w-[1350px] mx-auto">
+          <div class="w-full max-w-[1300px] mx-auto">
             <div class="text-center space-y-4">
               <h1 class="text-4xl md:text-5xl font-bold">#${hex} Color Information</h1>
               <p class="max-w-3xl mx-auto text-sm md:text-base opacity-90">
@@ -74,7 +74,7 @@
         </section>
         
         <!-- Main Content -->
-        <main class="w-full max-w-[1350px] mx-auto px-4 py-12">
+        <main class="w-full max-w-[1300px] mx-auto px-4 py-12">
           <div class="flex flex-col lg:flex-row gap-8">
             <div class="flex-1">
               <div class="space-y-8">

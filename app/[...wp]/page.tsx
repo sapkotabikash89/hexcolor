@@ -998,7 +998,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
     return (
       <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+        <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
           <h1 className="text-3xl font-bold">Content not available</h1>
           <p className="mt-4">The requested post could not be loaded.</p>
         </main>
@@ -1020,14 +1020,14 @@ export default async function WPPostPage({ params }: WPPageProps) {
       <div className="flex flex-col min-h-screen">
         <Header />
         <section className="bg-muted/30 py-12 px-4">
-          <div className="w-full max-w-[1350px] mx-auto">
+          <div className="w-full max-w-[1300px] mx-auto">
             <BreadcrumbNav items={crumbs} />
             <div className="text-center space-y-4">
               <h1 className="text-4xl md:text-5xl font-bold">{node.name}</h1>
             </div>
           </div>
         </section>
-        <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+        <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {related.map((p: any, i: number) => {
               const src = p?.featuredImage?.node?.sourceUrl
@@ -1624,7 +1624,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
           color: hasColorUI ? getContrastColor(effectiveHex || postColor) : '#000000',
         }}
       >
-        <div className={cn("w-full mx-auto", isColorMeaningCategory ? "max-w-[1350px]" : "max-w-[1350px]")}>
+        <div className={cn("w-full mx-auto", isColorMeaningCategory ? "max-w-[1300px]" : "max-w-[1300px]")}>
           <BreadcrumbNav items={crumbs} />
           <BreadcrumbSchema
             items={[
@@ -1680,7 +1680,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
           <div className="xl:hidden w-full z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border mb-6">
             <TableOfContents currentHex={effectiveHex || postColor} mobileOnly items={blogTocItems} />
           </div>
-          <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+          <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
             <div className="flex flex-col lg:flex-row gap-8 items-start">
               <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
                 <TableOfContents currentHex={effectiveHex || postColor} items={blogTocItems} />
@@ -1703,7 +1703,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
           {titleContainsColor && <AnchorHashNav />}
           {/* Check if this is a Shades Meaning category post */}
           {isShadesMeaningCategory ? (
-            <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+            <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
               <div className="flex flex-col lg:flex-row gap-8 items-start">
                 {/* Left Sidebar for Shades Meaning */}
                 <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
@@ -1720,17 +1720,17 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 </div>
                 
                 {/* Right Sidebar */}
-                <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-                  <ColorSidebar 
-                    color={accentColor} 
-                    showColorSchemes={hasColorUI} 
-                    className="w-full space-y-6" 
-                  />
-                </aside>
+      <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
+        <ColorSidebar 
+          color={accentColor} 
+          showColorSchemes={hasColorUI} 
+          className="w-full space-y-6" 
+        />
+      </aside>
               </div>
             </main>
           ) : (
-            <main className="w-full max-w-[1350px] mx-auto px-2 sm:px-4 py-12">
+            <main className="w-full max-w-[1300px] mx-auto px-2 sm:px-4 py-12">
               <div className="flex flex-col lg:flex-row gap-8 min-w-0">
                 <div className="flex-1 space-y-6 min-w-0">
                   {mainContent}

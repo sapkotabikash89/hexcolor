@@ -24,7 +24,7 @@ export default async function AllCategoriesPage() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <section className="bg-muted/30 py-12 px-4 border-b">
-        <div className="w-full max-w-[1350px] mx-auto">
+        <div className="w-full max-w-[1300px] mx-auto">
           <BreadcrumbNav items={crumbs} />
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">Taxonomy of Color Intelligence</h1>
@@ -34,7 +34,7 @@ export default async function AllCategoriesPage() {
           </div>
         </div>
       </section>
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           <article id="content" className="main-content grow-content flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

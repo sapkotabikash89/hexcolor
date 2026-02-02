@@ -100,7 +100,7 @@ export default function ContrastCheckerPage() {
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
-        <div className="w-full max-w-[1350px] mx-auto">
+        <div className="w-full max-w-[1300px] mx-auto">
           <div className="mb-6">
             <BreadcrumbNav items={[{ label: "Color Contrast Checker", href: "/contrast-checker" }]} />
           </div>
@@ -115,7 +115,7 @@ export default function ContrastCheckerPage() {
         </div>
       </section>
 
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           <article id="content" className="main-content grow-content flex-1 space-y-16">
             <ToolApplicationSchema

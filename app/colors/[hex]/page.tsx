@@ -221,7 +221,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
           color: contrastColor,
         }}
       >
-        <div className="w-full max-w-[1350px] mx-auto overflow-hidden">
+        <div className="w-full max-w-[1300px] mx-auto overflow-hidden">
           <BreadcrumbNav
             items={[
               { label: "Color Names", href: "/colors" },
@@ -271,7 +271,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
       </div>
 
       {/* Main Content */}
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Left Sidebar Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}
@@ -285,9 +285,9 @@ export default async function ColorPage({ params }: ColorPageProps) {
           </article>
 
           {/* Right Sidebar - Hidden below lg to prioritize content width */}
-          <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-            <ColorSidebar color={normalizedHex} />
-          </aside>
+      <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
+        <ColorSidebar color={normalizedHex} />
+      </aside>
         </div>
       </main>
 

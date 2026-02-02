@@ -23,7 +23,7 @@ export function Hero() {
             className="relative w-full overflow-hidden bg-background py-12 lg:py-20 border-b"
             onMouseMove={handleMouseMove}
         >
-            <div className="w-full max-w-[1350px] mx-auto px-4 flex flex-col lg:flex-row items-center gap-12 relative z-10">
+            <div className="w-full max-w-[1300px] mx-auto px-4 flex flex-col lg:flex-row items-center gap-12 relative z-10">
                 <div className="w-full lg:w-1/2 space-y-8 text-left">
                     <div className="space-y-4">
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-balance leading-[1.1]">

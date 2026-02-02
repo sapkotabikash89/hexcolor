@@ -55,7 +55,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       ]} />
       <Header />
       <section className="bg-muted/30 py-12 px-4">
-        <div className="w-full max-w-[1350px] mx-auto">
+        <div className="w-full max-w-[1300px] mx-auto">
           <BreadcrumbNav items={crumbs} />
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold">{categoryName}</h1>
@@ -65,7 +65,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         </div>
       </section>
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           <article id="content" className="main-content grow-content flex-1">
             <CategoryPosts

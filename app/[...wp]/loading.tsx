@@ -2,14 +2,14 @@ export default function Loading() {
   return (
     <div className="flex flex-col min-h-screen">
       <section className="bg-muted/30 py-12 px-4">
-        <div className="w-full max-w-[1350px] mx-auto">
+        <div className="w-full max-w-[1300px] mx-auto">
           <div className="text-center space-y-4">
             <div className="mx-auto h-8 w-2/3 max-w-md rounded bg-muted animate-pulse" />
             <div className="mx-auto h-4 w-1/2 max-w-sm rounded bg-muted animate-pulse" />
           </div>
         </div>
       </section>
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
         <div className="space-y-6">
           <div className="rounded-xl border border-border p-2 md:p-4">
             <div className="w-full aspect-[3/2] bg-muted rounded-md animate-pulse" />

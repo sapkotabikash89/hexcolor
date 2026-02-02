@@ -26,7 +26,7 @@ export default function TermsAndConditionsPage() {
         { name: "Terms and Conditions", item: "https://hexcolormeans.com/terms-and-conditions" }
       ]} />
       <Header />
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12 flex-1">
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
         <BreadcrumbNav items={[{ label: "Terms and Conditions", href: "/terms-and-conditions" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">

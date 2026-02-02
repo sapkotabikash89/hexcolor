@@ -10,6 +10,7 @@ import { BreadcrumbSchema, FAQSchema, WebPageSchema } from "@/components/structu
 import { hexToRgb, rgbToHsl, getContrastColor, normalizeHex, isValidHex } from "@/lib/color-utils";
 import { CopyButton } from "@/components/copy-button";
 import { ColorPageContent } from "@/components/color-page-content";
+import { TableOfContents } from "@/components/table-of-contents";
 import { AnchorHashNav } from "@/components/anchor-hash-nav";
 import { Button } from "@/components/ui/button";
 import { Palette } from "lucide-react";
@@ -98,7 +99,7 @@ function PickerContent() {
           color: contrastColor,
         }}
       >
-        <div className="w-full max-w-[1350px] mx-auto">
+        <div className="w-full max-w-[1300px] mx-auto">
           <BreadcrumbNav
             items={[
               { label: "Color Names", href: "/colors" },
@@ -156,10 +157,20 @@ function PickerContent() {
         ]}
       />
 
+      {/* Mobile-only horizontal navigation strip */}
+      <div className="xl:hidden z-40">
+        <TableOfContents currentHex={currentHex} mobileOnly hideFaqs />
+      </div>
+
       {/* Main Content */}
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Content Area - 2/3 */}
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Left Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}
+          <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
+            <TableOfContents currentHex={currentHex} hideFaqs />
+          </aside>
+
+          {/* Content Area - Flexible width */}
           <article id="content" className="main-content grow-content flex-1 min-w-0">
             <div className="space-y-8">
               {/* Color Picker Section */}

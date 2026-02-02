@@ -183,7 +183,7 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
           color: contrastColor,
         }}
       >
-        <div className="w-full max-w-[1350px] mx-auto overflow-hidden">
+        <div className="w-full max-w-[1300px] mx-auto overflow-hidden">
           <BreadcrumbNav
             items={[
               { label: "Color Names", href: "/colors" },
@@ -224,16 +224,16 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
         </div>
       </section>
 
-      <div className="lg:hidden z-40">
+      <div className="xl:hidden z-40">
         <TableOfContents currentHex={currentHex} mobileOnly hideFaqs />
       </div>
 
       {/* Main Content */}
-      <main className="w-full max-w-[1350px] mx-auto px-4 py-12">
+      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Left Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}
-          <aside className="hidden lg:block w-52 sticky top-28 self-start shrink-0">
+          <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
             <TableOfContents currentHex={currentHex} hideFaqs />
           </aside>
 
@@ -269,7 +269,7 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
           </article>
 
           {/* Right Sidebar - Hidden below xl to prioritize content width */}
-          <aside className="hidden xl:block w-[340px] shrink-0 sticky top-24 self-start">
+          <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
             <ColorSidebar color={currentHex} onColorChange={updateCurrentHex} />
           </aside>
         </div>
