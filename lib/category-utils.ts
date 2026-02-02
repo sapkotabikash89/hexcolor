@@ -2,6 +2,7 @@
 import categoryData from './color-categories.json'
 import { hexToRgb, rgbToHsl, getColorHarmony } from './color-utils'
 import colorData from './color-meaning.json'
+import { COLOR_FAMILIES, type ColorFamilyData } from './faqs/faq-generator'
 
 export interface ColorCategory {
   id: number
@@ -174,31 +175,45 @@ export interface FAQItem {
   answer: string
 }
 
+function getBroadFamily(h: number, s: number, l: number): string {
+  // Achromatic checks
+  if (l < 12) return 'black'
+  if (l > 93) return 'white'
+  if (s < 10) return 'gray'
+
+  // Hue checks
+  if (h >= 345 || h < 15) return 'red'
+  if (h >= 15 && h < 45) return 'orange'
+  if (h >= 45 && h < 70) return 'yellow'
+  if (h >= 70 && h < 165) return 'green'
+  if (h >= 165 && h < 195) return 'teal'
+  if (h >= 195 && h < 255) return 'blue'
+  if (h >= 255 && h < 300) return 'purple'
+  if (h >= 300 && h < 345) return 'pink'
+  
+  return 'gray'
+}
+
 export function generateFAQs(hex: string, rgb: { r: number, g: number, b: number }, hsl: { h: number, s: number, l: number }): FAQItem[] {
-  const category = getCategory(hsl.h, hsl.s, hsl.l)
-  const complementary = getColorHarmony(hex, "complementary")[1]
+  const familyKey = getBroadFamily(hsl.h, hsl.s, hsl.l)
+  const data = COLOR_FAMILIES[familyKey] || COLOR_FAMILIES['gray']
   
-  const tone = hsl.l < 30 ? "Dark" : hsl.l > 70 ? "Light" : "Medium"
-  const isWarm = (hsl.h >= 0 && hsl.h < 90) || (hsl.h >= 270 && hsl.h <= 360)
-  const temp = isWarm ? "warm" : "cool"
-  
-  // Clean hex for text
   const hexText = hex.toUpperCase()
 
   const q1 = `What is the meaning and symbolism of ${hexText} color?`
-  const a1 = `${hexText} belongs to the ${category.name} category, shaped by an HSL profile of (${hsl.h}°, ${hsl.s}%, ${hsl.l}%) and an RGB composition of (${rgb.r}, ${rgb.g}, ${rgb.b}). The ${temp} hue character of ${hexText} establishes temperature, while saturation defines chromatic intensity and lightness regulates perceived depth. In this configuration of ${hexText}, saturation provides clarity without exaggeration, and ${tone.toLowerCase()} lightness moderates contrast to avoid harshness. Within the ${category.name} family, ${hexText} inherits associations such as ${category.spiritualMeaning.toLowerCase()}, refined by its specific values rather than generic symbolism. The interaction of hue, saturation, and lightness in ${hexText} produces a steady visual cadence that reads as intentional rather than loud, making ${hexText} feel balanced, articulate, and adaptable across contexts.`
+  const a1 = `${hexText} is a specific shade that belongs to the ${familyKey} color family. It represents ${data.keywords}. As a variant of ${familyKey}, it signifies ${data.psychology}. In color psychology, ${hexText} is often associated with these qualities, offering a unique balance of saturation and light that conveys ${data.keywords.split(',')[0].trim()} and ${data.keywords.split(',')[1].trim()}.`
 
-  const q2 = `What psychological effects does ${hexText} color have?`
-  const a2 = `Psychologically, ${hexText} sets a focused perceptual frame that stabilizes attention through its ${tone.toLowerCase()} luminance and ${temp} identity, often evoking ${category.psychologicalEffect.toLowerCase()}. The lower lightness components of ${hexText} introduce seriousness and visual weight, while saturation maintains a defined edge that prevents the color from collapsing into neutrality. This combination in ${hexText} supports cues of clarity, self‑control, and purpose. Subtly, the RGB configuration (${rgb.r}, ${rgb.g}, ${rgb.b}) influences how ${hexText} interacts with light on digital displays, reinforcing its firmness without glare. The effect of ${hexText} is effective for interface accents, informational markers, and brand elements where confidence and precision are preferred over exuberance, producing an emotional tone that is alert, composed, and intentionally directive. In contrast systems, pairing ${hexText} with ${complementary} can heighten focus while preserving readability.`
+  const q2 = `What is the spiritual meaning of ${hexText} color?`
+  const a2 = `Spiritually, the color ${hexText} symbolizes ${data.spiritual}. It is believed to bring a sense of ${data.psychology} to the spirit. Many traditions view ${hexText} as a sign of ${data.spiritual.split(',')[0].trim()}, serving as a bridge between the physical world and spiritual realms. Its specific vibration is thought to enhance ${data.chakraMeaning}.`
 
-  const q3 = `What is the spiritual meaning of ${hexText} color?`
-  const a3 = `Spiritually, ${hexText} aligns with grounded attention and structured awareness, resonating with systems that prioritize clarity and steadiness over volatility, symbolizing ${category.spiritualMeaning.toLowerCase()}. The ${temp} temperature of ${hexText} reads as physically centering, while ${tone.toLowerCase()} lightness deepens contemplative intensity without becoming opaque. The hue degree at ${hsl.h}° positions ${hexText} along a spectrum that balances outward cognition with inward focus, encouraging disciplined presence and measured reflection. In practice, ${hexText} suits meditative interfaces, study environments, and quiet branding where intention and continuity are emphasized, serving as a visual anchor that supports routine, accountability, and calm recalibration.`
+  const q3 = `What chakra is connected to the color ${hexText}?`
+  const a3 = `${hexText} is linked to the ${data.chakra} Chakra, known in Sanskrit as ${data.chakraSanskrit}. This energy center governs ${data.chakraMeaning}. Balancing this chakra with the color ${hexText} can help improve emotional well-being and spiritual alignment, allowing for better ${data.chakraMeaning.split(',')[0].trim()}.`
 
-  const q4 = `What is the cultural significance of ${hexText} color?`
-  const a4 = `Colors within the ${category.name.toLowerCase()} spectrum have appeared in signals of trust, structure, and institutional continuity, and ${hexText} maintains this lineage through moderated saturation and ${tone.toLowerCase()} depth. ${hexText} is significant because ${category.culturalSignificance.toLowerCase()}. In contemporary visual communication, ${hexText} reads as reliable and methodical, conveying information with clarity rather than spectacle. While interpretations of ${hexText} vary across regions and traditions, the RGB identity (${rgb.r}, ${rgb.g}, ${rgb.b}) and ${category.name} categorization establish a broadly intelligible signal of professionalism and restraint. This adaptability allows ${hexText} to move between editorial, corporate, and educational contexts without losing coherence, sustaining recognition while avoiding cultural overstatement.`
+  const q4 = `What does ${hexText} mean in personality?`
+  const a4 = `A personality type attracted to ${hexText} is typically ${data.personality}. People who resonate with this specific hue often value ${data.keywords.split(',')[0].trim()} and ${data.keywords.split(',')[1].trim()}. They are frequently seen as ${data.personality.split(',')[0].trim()} individuals who bring a unique, ${familyKey}-influenced energy to their surroundings.`
 
-  const q5 = `How is ${hexText} used in design, branding, and art?`
-  const a5 = `In design and branding, ${hexText} communicates intention, craft, and consistency, and is often used for ${category.designBrandingUse.toLowerCase()}. ${hexText} performs in functional roles that benefit from legibility and continuity—navigation states, typographic accents, diagrams, and data visualization frames—where ${tone.toLowerCase()} luminance and controlled saturation produce clean separations without visual strain. In artistic contexts, ${category.artUse.toLowerCase()} using ${hexText}. Pairing ${hexText} with its complementary color ${complementary} creates structured contrast useful for callouts, dual‑tone systems, and hierarchical emphasis. In art, ${hexText} builds atmosphere through layered value transitions, supporting spatial clarity and measured tension. Its technical profile translates predictably across digital RGB (${rgb.r}, ${rgb.g}, ${rgb.b}), print workflows, and environmental graphics, making ${hexText} versatile from small‑scale identity systems to large‑format installations.`
+  const q5 = `What does the color ${hexText} symbolize in the Bible?`
+  const a5 = `In the Bible, colors related to ${hexText} symbolize ${data.bible}. It appears in scriptures to represent these spiritual truths. The color ${hexText} is often used to signify ${data.bible.split(',')[0].trim()} and divine messages, reflecting the deeper biblical meanings associated with the ${familyKey} spectrum.`
 
   return [
     { question: q1, answer: a1 },
