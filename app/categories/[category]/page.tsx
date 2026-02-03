@@ -38,7 +38,19 @@ export async function generateMetadata({ params }: CategoryPageProps) {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category: categorySlug } = await params;
-  const { posts, categoryName } = await getPostsByCategory(categorySlug);
+  const { posts: rawPosts, categoryName } = await getPostsByCategory(categorySlug);
+  
+  // Ensure strict type compatibility with CategoryPosts component
+  const posts = rawPosts.map(post => ({
+    ...post,
+    excerpt: post.excerpt || "",
+    featuredImage: post.featuredImage ? {
+      node: {
+        sourceUrl: post.featuredImage.node.sourceUrl,
+        altText: post.featuredImage.node.altText
+      }
+    } : undefined
+  }));
 
   // Define breadcrumbs
   const crumbs = [

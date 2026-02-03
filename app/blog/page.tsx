@@ -17,6 +17,13 @@ export default async function BlogPage() {
   // Transform posts to include category information
   const transformedPosts = posts.map((post: any) => ({
     ...post,
+    excerpt: post.excerpt || "",
+    featuredImage: post.featuredImage ? {
+      node: {
+        sourceUrl: post.featuredImage.node.sourceUrl,
+        altText: post.featuredImage.node.altText
+      }
+    } : undefined,
     categoryName: post?.categories?.nodes?.[0]?.name || "Uncategorized",
     categorySlug: post?.categories?.nodes?.[0]?.slug || "uncategorized"
   }));

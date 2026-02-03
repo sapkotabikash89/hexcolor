@@ -16,7 +16,18 @@ export const metadata = {
 };
 
 export default async function HexColorMeansingCategoryPage() {
-  const { posts, categoryName } = await fetchPostsByCategory();
+  const { posts: rawPosts, categoryName } = await fetchPostsByCategory();
+
+  const posts = rawPosts.map(post => ({
+    ...post,
+    excerpt: post.excerpt || "",
+    featuredImage: post.featuredImage ? {
+      node: {
+        sourceUrl: post.featuredImage.node.sourceUrl,
+        altText: post.featuredImage.node.altText
+      }
+    } : undefined
+  }));
 
   // Define breadcrumbs
   const crumbs = [
