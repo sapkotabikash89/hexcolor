@@ -7,9 +7,7 @@ import dynamic from "next/dynamic"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
-import { ColorSidebar } from "@/components/sidebar"
 import { WPColorContext } from "@/components/wp-color-context"
-import { ColorPageContent } from "@/components/color-page-content"
 import { WPSEOHead } from "@/components/wpseo-head"
 import { BreadcrumbSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
@@ -17,8 +15,6 @@ import { getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk } from "@/lib/color-uti
 import { AnchorHashNav } from "@/components/anchor-hash-nav"
 import { BLOG_NAV_ITEMS } from "@/lib/blog-nav-data"
 import { TableOfContents } from "@/components/table-of-contents"
-import { FAQSection } from "@/components/faq-section"
-import { RelatedColorsSection } from "@/components/related-colors-section"
 import { BlogPostActions } from "@/components/blog-post-actions"
 import { ShadesTOC } from "@/components/shades-toc"
 import { ShadesSidebarTOC } from "@/components/shades-sidebar-toc"
@@ -31,6 +27,18 @@ import { cn, autoLinkShadeNames } from "@/lib/utils"
 
 const ShareButtons = dynamic(() => import("@/components/share-buttons").then((mod) => mod.ShareButtons))
 const HelpfulVote = dynamic(() => import("@/components/helpful-vote").then((mod) => mod.HelpfulVote))
+const ColorPageContent = dynamic(() => import("@/components/color-page-content").then((mod) => mod.ColorPageContent), {
+  loading: () => <div className="h-96 w-full animate-pulse bg-muted/20 rounded-xl" />
+})
+const FAQSection = dynamic(() => import("@/components/faq-section").then((mod) => mod.FAQSection), {
+  loading: () => <div className="h-48 w-full animate-pulse bg-muted/20 rounded-xl" />
+})
+const RelatedColorsSection = dynamic(() => import("@/components/related-colors-section").then((mod) => mod.RelatedColorsSection), {
+  loading: () => <div className="h-48 w-full animate-pulse bg-muted/20 rounded-xl" />
+})
+const ColorSidebar = dynamic(() => import("@/components/sidebar").then((mod) => mod.ColorSidebar), {
+  loading: () => <div className="w-full h-96 animate-pulse bg-muted/20 rounded-xl" />
+})
 
 const GRAPHQL_ENDPOINT = "";
 const REST_ENDPOINT = "";

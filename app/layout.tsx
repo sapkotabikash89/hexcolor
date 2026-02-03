@@ -89,7 +89,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://hexcolormeans.gumlet.io" />
+        <link rel="preconnect" href="https://hexcolormeans.gumlet.io" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://hexcolormeans.gumlet.io" />
         <meta name="p:domain_verify" content="2f0be474874f515dce302624f3919d26" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />

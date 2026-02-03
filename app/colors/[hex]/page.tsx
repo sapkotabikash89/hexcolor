@@ -1,9 +1,12 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import dynamic from "next/dynamic"
+
+const ColorSidebar = dynamic(() => import("@/components/sidebar").then((mod) => mod.ColorSidebar), {
+  loading: () => <div className="w-full h-96 animate-pulse bg-muted/20 rounded-xl" />
+})
 
 const ColorPageContent = dynamic(() => import("@/components/color-page-content").then(mod => mod.ColorPageContent), {
   loading: () => <div className="h-96 w-full animate-pulse bg-muted rounded-lg" />
