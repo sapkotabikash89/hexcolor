@@ -337,9 +337,9 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                     </div>
 
                     {/* Pill Watermark */}
-                    <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2">
+                    <div className="absolute bottom-2 sm:bottom-10 left-1/2 -translate-x-1/2">
                       <div
-                        className="px-6 py-2 rounded-full text-sm sm:text-lg font-bold opacity-40 whitespace-nowrap"
+                        className="px-4 py-1 sm:px-6 sm:py-2 rounded-full text-xs sm:text-lg font-bold opacity-40 whitespace-nowrap"
                         style={{ backgroundColor: contrastColor === "#000000" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.2)", color: contrastColor }}
                       >
                         HexColorMeans.com
