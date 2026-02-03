@@ -5,8 +5,9 @@ const nextConfig = {
 
   // Image configuration
   images: {
-    unoptimized: true, // Required for OpenNext/Cloudflare Pages compatibility if not using paid image optimization
-    formats: ["image/webp"],
+    loader: "custom",
+    loaderFile: "./lib/image-loader.ts",
+    formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
     remotePatterns: [
       { protocol: "https", hostname: "hexcolormeans.gumlet.io", pathname: "/**" },
@@ -19,7 +20,11 @@ const nextConfig = {
   },
 
   // Performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   experimental: {
+    optimizeCss: true,
     optimizePackageImports: [
       'lucide-react',
       'date-fns',

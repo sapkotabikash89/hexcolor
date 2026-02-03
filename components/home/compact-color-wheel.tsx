@@ -35,6 +35,27 @@ export function CompactColorWheel() {
     const [isDragging, setIsDragging] = useState(false)
     const [canvasSize, setCanvasSize] = useState(450)
     const staticCanvasRef = useRef<HTMLCanvasElement | null>(null)
+    const rectRef = useRef<DOMRect | null>(null)
+
+    useEffect(() => {
+        const updateRect = () => {
+            if (canvasRef.current) {
+                rectRef.current = canvasRef.current.getBoundingClientRect()
+            }
+        }
+
+        updateRect()
+        const resizeObserver = new ResizeObserver(updateRect)
+        if (canvasRef.current) resizeObserver.observe(canvasRef.current)
+        window.addEventListener("scroll", updateRect, { passive: true })
+        window.addEventListener("resize", updateRect, { passive: true })
+
+        return () => {
+            resizeObserver.disconnect()
+            window.removeEventListener("scroll", updateRect)
+            window.removeEventListener("resize", updateRect)
+        }
+    }, [])
 
     useEffect(() => {
         const event = new CustomEvent("colorUpdate", { detail: { color: baseColor } })
@@ -217,7 +238,12 @@ export function CompactColorWheel() {
         const canvas = canvasRef.current
         if (!canvas) return
 
-        const rect = canvas.getBoundingClientRect()
+        // Use cached rect if available (during drag), otherwise get fresh rect (click)
+        let rect = rectRef.current
+        if (!rect || (!isDragging && e.type !== 'mousemove' && e.type !== 'touchmove')) {
+             rect = canvas.getBoundingClientRect()
+             rectRef.current = rect
+        }
 
         let clientX: number
         let clientY: number
@@ -356,6 +382,8 @@ export function CompactColorWheel() {
                         ref={canvasRef}
                         width={canvasSize}
                         height={canvasSize}
+                        aria-label="Interactive color wheel: click or drag to select a base color"
+                        role="img"
                         className="border-2 border-border rounded-lg cursor-crosshair"
                         style={{
                             width: `${canvasSize}px`,
@@ -365,10 +393,14 @@ export function CompactColorWheel() {
                         }}
                         onClick={handleCanvasInteraction}
                         onMouseMove={(e) => isDragging && handleCanvasInteraction(e)}
-                        onMouseDown={() => setIsDragging(true)}
+                        onMouseDown={(e) => {
+                            if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
+                            setIsDragging(true)
+                        }}
                         onMouseUp={() => setIsDragging(false)}
                         onMouseLeave={() => setIsDragging(false)}
                         onTouchStart={(e) => {
+                            if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
                             setIsDragging(true)
                             handleCanvasInteraction(e)
                         }}

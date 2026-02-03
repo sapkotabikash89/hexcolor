@@ -6,10 +6,18 @@ import { Hero } from "@/components/home/hero"
 import { ColorLibraryPreview } from "@/components/home/color-library-preview"
 import { AboutSection } from "@/components/home/about-section"
 import { LatestPosts } from "@/components/home/latest-posts"
-import { CompactAdvancedColorPicker } from "@/components/home/compact-advanced-color-picker"
-import { CompactImageColorPicker } from "@/components/home/compact-image-color-picker"
-import { CompactColorWheel } from "@/components/home/compact-color-wheel"
 import Link from "next/link"
+import nextDynamic from "next/dynamic"
+
+const CompactAdvancedColorPicker = nextDynamic(() => import("@/components/home/compact-advanced-color-picker").then(mod => mod.CompactAdvancedColorPicker), {
+  loading: () => <div className="h-[400px] w-full bg-muted/20 animate-pulse rounded-lg" />
+})
+const CompactImageColorPicker = nextDynamic(() => import("@/components/home/compact-image-color-picker").then(mod => mod.CompactImageColorPicker), {
+  loading: () => <div className="h-[400px] w-full bg-muted/20 animate-pulse rounded-lg" />
+})
+const CompactColorWheel = nextDynamic(() => import("@/components/home/compact-color-wheel").then(mod => mod.CompactColorWheel), {
+  loading: () => <div className="h-[400px] w-full bg-muted/20 animate-pulse rounded-lg" />
+})
 import {
   WebsiteSchema,
   OrganizationSchema,

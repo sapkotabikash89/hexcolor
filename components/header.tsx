@@ -80,7 +80,7 @@ export function Header() {
       <div className="w-full max-w-[1300px] mx-auto flex justify-between h-16 items-center gap-4 px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-          <NextImage src="/logo.webp" alt="HexColorMeans logo" width={120} height={32} className="h-8 w-auto" priority />
+          <NextImage src="/logo.webp" alt="HexColorMeans logo" width={120} height={32} className="h-8 w-auto" priority fetchPriority="high" />
           <span className="hidden sm:inline-block">HexColorMeans</span>
         </Link>
 

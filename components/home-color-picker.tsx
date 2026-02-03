@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Palette, Shuffle, Pipette } from "lucide-react"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
-import { CopyButton } from "@/components/copy-button"
 import Link from "next/link"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 
@@ -17,7 +16,28 @@ export function HomeColorPicker() {
   const [saturation, setSaturation] = useState(70)
   const [lightness, setLightness] = useState(60)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const rectRef = useRef<DOMRect | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+
+  useEffect(() => {
+    const updateRect = () => {
+      if (canvasRef.current) {
+        rectRef.current = canvasRef.current.getBoundingClientRect()
+      }
+    }
+
+    updateRect()
+    const resizeObserver = new ResizeObserver(updateRect)
+    if (canvasRef.current) resizeObserver.observe(canvasRef.current)
+    window.addEventListener("scroll", updateRect, { passive: true })
+    window.addEventListener("resize", updateRect, { passive: true })
+
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener("scroll", updateRect)
+      window.removeEventListener("resize", updateRect)
+    }
+  }, [])
 
   useEffect(() => {
     const event = new CustomEvent("colorUpdate", { detail: { color: selectedColor } })
@@ -55,7 +75,11 @@ export function HomeColorPicker() {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const rect = canvas.getBoundingClientRect()
+    let rect = rectRef.current
+    if (!rect) {
+      rect = canvas.getBoundingClientRect()
+      rectRef.current = rect
+    }
 
     let clientX: number
     let clientY: number

@@ -38,6 +38,7 @@ export function ColorImage({ hex, name, alt, priority = false, className = '' }:
       width={1200}
       height={630}
       priority={priority}
+      fetchPriority={priority ? "high" : "auto"}
       loading={priority ? undefined : 'lazy'}
       sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, (max-width: 1024px) 100vw, 1200px"
       className={className}
@@ -45,7 +46,6 @@ export function ColorImage({ hex, name, alt, priority = false, className = '' }:
         maxWidth: '100%',
         height: 'auto',
       }}
-      unoptimized // Gumlet already serves optimized WebP
       placeholder="blur"
       blurDataURL="data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAADAAQDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
     />

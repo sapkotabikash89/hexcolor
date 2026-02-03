@@ -89,10 +89,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://blog.hexcolormeans.com" />
-        <link rel="dns-prefetch" href="https://blog.hexcolormeans.com" />
         <meta name="p:domain_verify" content="2f0be474874f515dce302624f3919d26" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </head>
@@ -103,7 +99,6 @@ export default function RootLayout({
 
         <ScrollToTop />
         <SonnerToaster />
-        <Script src="/color-fallback-handler.js" strategy="beforeInteractive" />
 
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (
           <Script id="ga-defer-on-first-interaction" strategy="lazyOnload">

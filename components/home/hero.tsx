@@ -8,13 +8,56 @@ import { Palette, Grid, BookOpen } from "lucide-react"
 export function Hero() {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
     const containerRef = useRef<HTMLDivElement>(null)
+    const requestRef = useRef<number>()
+    const rectRef = useRef<DOMRect | null>(null)
+
+    useEffect(() => {
+        if (!containerRef.current) return
+        
+        const updateRect = () => {
+            if (containerRef.current) {
+                rectRef.current = containerRef.current.getBoundingClientRect()
+            }
+        }
+        
+        // Initial update
+        updateRect()
+        
+        // Update on resize
+        const resizeObserver = new ResizeObserver(updateRect)
+        resizeObserver.observe(containerRef.current)
+        
+        // Update on scroll (if needed, though hero is usually static relative to viewport top until scrolled away)
+        window.addEventListener('scroll', updateRect, { passive: true })
+        
+        return () => {
+            resizeObserver.disconnect()
+            window.removeEventListener('scroll', updateRect)
+        }
+    }, [])
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        if (!containerRef.current) return
-        const rect = containerRef.current.getBoundingClientRect()
-        setMousePos({
-            x: ((e.clientX - rect.left) / rect.width) * 100,
-            y: ((e.clientY - rect.top) / rect.height) * 100,
+        if (!containerRef.current || requestRef.current) return
+        
+        // Persist the synthetic event values we need
+        const clientX = e.clientX
+        const clientY = e.clientY
+        
+        requestRef.current = requestAnimationFrame(() => {
+            if (!containerRef.current) return
+            
+            // Use cached rect or fallback to fresh one
+            let rect = rectRef.current
+            if (!rect) {
+                rect = containerRef.current.getBoundingClientRect()
+                rectRef.current = rect
+            }
+            
+            setMousePos({
+                x: ((clientX - rect.left) / rect.width) * 100,
+                y: ((clientY - rect.top) / rect.height) * 100,
+            })
+            requestRef.current = undefined
         })
     }
 

@@ -40,6 +40,7 @@ export function ColorWheelTool() {
   const [exportOpen, setExportOpen] = useState(false)
   const [copiedValue, setCopiedValue] = useState<string | null>(null) // State for copied feedback
   const staticCanvasRef = useRef<HTMLCanvasElement | null>(null)
+  const rectRef = useRef<DOMRect | null>(null)
 
   useEffect(() => {
     const event = new CustomEvent("colorUpdate", { detail: { color: baseColor } })
@@ -65,6 +66,31 @@ export function ColorWheelTool() {
     window.addEventListener("resize", updateLayout)
     return () => window.removeEventListener("resize", updateLayout)
   }, [])
+
+  useEffect(() => {
+    const updateRect = () => {
+        if (canvasRef.current) {
+            rectRef.current = canvasRef.current.getBoundingClientRect()
+        }
+    }
+    
+    // Initial update
+    updateRect()
+    
+    // Update on resize and scroll
+    const resizeObserver = new ResizeObserver(updateRect)
+    if (canvasRef.current) {
+        resizeObserver.observe(canvasRef.current)
+    }
+    window.addEventListener('scroll', updateRect, { passive: true })
+    window.addEventListener('resize', updateRect, { passive: true })
+    
+    return () => {
+        resizeObserver.disconnect()
+        window.removeEventListener('scroll', updateRect)
+        window.removeEventListener('resize', updateRect)
+    }
+  }, [canvasSize])
 
   useEffect(() => {
     drawStaticWheel()
@@ -223,7 +249,11 @@ export function ColorWheelTool() {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const rect = canvas.getBoundingClientRect()
+    let rect = rectRef.current
+    if (!rect) {
+        rect = canvas.getBoundingClientRect()
+        rectRef.current = rect
+    }
 
     let clientX: number
     let clientY: number

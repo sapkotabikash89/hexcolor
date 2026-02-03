@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,29 @@ export function CompactImagePicker() {
     const [imageUrl, setImageUrl] = useState<string | null>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const rectRef = useRef<DOMRect | null>(null)
+
+    useEffect(() => {
+        const updateRect = () => {
+            if (canvasRef.current) {
+                rectRef.current = canvasRef.current.getBoundingClientRect()
+            }
+        }
+        
+        if (imageUrl) {
+            updateRect()
+            const resizeObserver = new ResizeObserver(updateRect)
+            if (canvasRef.current) resizeObserver.observe(canvasRef.current)
+            window.addEventListener('scroll', updateRect, { passive: true })
+            window.addEventListener('resize', updateRect, { passive: true })
+            
+            return () => {
+                resizeObserver.disconnect()
+                window.removeEventListener('scroll', updateRect)
+                window.removeEventListener('resize', updateRect)
+            }
+        }
+    }, [imageUrl])
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -45,7 +68,11 @@ export function CompactImagePicker() {
         const ctx = canvas.getContext("2d")
         if (!ctx) return
 
-        const rect = canvas.getBoundingClientRect()
+        let rect = rectRef.current
+        if (!rect) {
+            rect = canvas.getBoundingClientRect()
+            rectRef.current = rect
+        }
         const x = (e.clientX - rect.left) * (canvas.width / rect.width)
         const y = (e.clientY - rect.top) * (canvas.height / rect.height)
 

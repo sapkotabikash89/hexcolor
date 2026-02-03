@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Card } from "@/components/ui/card"
 
 export function LatestPosts({ posts }: { posts: any[] }) {
@@ -18,7 +19,7 @@ export function LatestPosts({ posts }: { posts: any[] }) {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    {posts.map((post: any) => {
+                    {posts.map((post: any, index: number) => {
                         const img = post?.featuredImage?.node?.sourceUrl || post?.seo?.opengraphImage?.sourceUrl;
                         const excerpt = (post?.excerpt || "")
                             .replace(/<[^>]*>/g, "")
@@ -29,11 +30,21 @@ export function LatestPosts({ posts }: { posts: any[] }) {
                         return (
                             <Link key={post.id} href={post.uri} className="group flex flex-col h-full bg-background rounded-xl overflow-hidden border hover:shadow-lg transition-all hover:border-primary/50">
                                 <div className="aspect-[4/3] overflow-hidden relative">
-                                    <img
-                                        src={img}
-                                        alt={post.title}
-                                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-                                    />
+                                    {img ? (
+                                        <Image
+                                            src={img}
+                                            alt={post.title}
+                                            fill
+                                            priority={index === 0}
+                                            fetchPriority={index === 0 ? "high" : "auto"}
+                                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                                            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">
+                                            No Image
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="p-4 flex flex-col flex-1 space-y-2">
                                     <h3 className="line-clamp-2 text-base font-bold group-hover:text-primary transition-colors">

@@ -23,6 +23,33 @@ export function CompactImageColorPicker() {
     const [showMagnifier, setShowMagnifier] = useState(false)
     const [magnifierPos, setMagnifierPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
     const [imageLoaded, setImageLoaded] = useState(false)
+    const rectRef = useRef<DOMRect | null>(null)
+
+    // Update rect on scroll/resize
+    useEffect(() => {
+        const updateRect = () => {
+            if (canvasRef.current) {
+                rectRef.current = canvasRef.current.getBoundingClientRect()
+            }
+        }
+        
+        // Initial update
+        updateRect()
+        
+        // Update on resize and scroll
+        const resizeObserver = new ResizeObserver(updateRect)
+        if (canvasRef.current) {
+            resizeObserver.observe(canvasRef.current)
+        }
+        window.addEventListener('scroll', updateRect, { passive: true })
+        window.addEventListener('resize', updateRect, { passive: true })
+        
+        return () => {
+            resizeObserver.disconnect()
+            window.removeEventListener('scroll', updateRect)
+            window.removeEventListener('resize', updateRect)
+        }
+    }, [imageLoaded])
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -65,7 +92,12 @@ export function CompactImageColorPicker() {
         const canvas = canvasRef.current
         if (!canvas) return
 
-        const rect = canvas.getBoundingClientRect()
+        let rect = rectRef.current
+        if (!rect) {
+            rect = canvas.getBoundingClientRect()
+            rectRef.current = rect
+        }
+        
         const scaleX = canvas.width / rect.width
         const scaleY = canvas.height / rect.height
         const x = (e.clientX - rect.left) * scaleX
@@ -89,7 +121,12 @@ export function CompactImageColorPicker() {
         const mag = magnifierRef.current
         if (!canvas || !mag || !imageLoaded) return
 
-        const rect = canvas.getBoundingClientRect()
+        let rect = rectRef.current
+        if (!rect) {
+            rect = canvas.getBoundingClientRect()
+            rectRef.current = rect
+        }
+        
         const scaleX = canvas.width / rect.width
         const scaleY = canvas.height / rect.height
         const x = (clientX - rect.left) * scaleX

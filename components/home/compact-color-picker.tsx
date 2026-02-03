@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
 import { CopyButton } from "@/components/copy-button"
 
@@ -13,7 +12,27 @@ export function CompactColorPicker() {
     const [saturation, setSaturation] = useState(70)
     const [lightness, setLightness] = useState(60)
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [isDragging, setIsDragging] = useState(false)
+    const rectRef = useRef<DOMRect | null>(null)
+
+    useEffect(() => {
+        const updateRect = () => {
+            if (canvasRef.current) {
+                rectRef.current = canvasRef.current.getBoundingClientRect()
+            }
+        }
+
+        updateRect()
+        const resizeObserver = new ResizeObserver(updateRect)
+        if (canvasRef.current) resizeObserver.observe(canvasRef.current)
+        window.addEventListener("scroll", updateRect, { passive: true })
+        window.addEventListener("resize", updateRect, { passive: true })
+
+        return () => {
+            resizeObserver.disconnect()
+            window.removeEventListener("scroll", updateRect)
+            window.removeEventListener("resize", updateRect)
+        }
+    }, [])
 
     useEffect(() => {
         drawColorSpace()
@@ -39,7 +58,13 @@ export function CompactColorPicker() {
     const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current
         if (!canvas) return
-        const rect = canvas.getBoundingClientRect()
+        
+        let rect = rectRef.current
+        if (!rect) {
+            rect = canvas.getBoundingClientRect()
+            rectRef.current = rect
+        }
+
         const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width))
         const y = Math.max(0, Math.min(e.clientY - rect.top, rect.height))
         const newSaturation = (x / rect.width) * 100

@@ -17,7 +17,33 @@ export function CompactAdvancedColorPicker() {
     const [saturation, setSaturation] = useState(86)
     const [lightness, setLightness] = useState(47)
     const canvasRef = useRef<HTMLCanvasElement>(null)
+    const rectRef = useRef<DOMRect | null>(null)
     const [isDragging, setIsDragging] = useState(false)
+
+    useEffect(() => {
+        const updateRect = () => {
+            if (canvasRef.current) {
+                rectRef.current = canvasRef.current.getBoundingClientRect()
+            }
+        }
+        
+        // Initial update
+        updateRect()
+        
+        // Update on resize and scroll
+        const resizeObserver = new ResizeObserver(updateRect)
+        if (canvasRef.current) {
+            resizeObserver.observe(canvasRef.current)
+        }
+        window.addEventListener('scroll', updateRect, { passive: true })
+        window.addEventListener('resize', updateRect, { passive: true })
+        
+        return () => {
+            resizeObserver.disconnect()
+            window.removeEventListener('scroll', updateRect)
+            window.removeEventListener('resize', updateRect)
+        }
+    }, [])
 
     useEffect(() => {
         const event = new CustomEvent("colorUpdate", { detail: { color: selectedColor } })
@@ -53,7 +79,12 @@ export function CompactAdvancedColorPicker() {
         const canvas = canvasRef.current
         if (!canvas) return
 
-        const rect = canvas.getBoundingClientRect()
+        let rect = rectRef.current
+        if (!rect) {
+            rect = canvas.getBoundingClientRect()
+            rectRef.current = rect
+        }
+        
         let clientX: number, clientY: number
 
         if ("touches" in e) {

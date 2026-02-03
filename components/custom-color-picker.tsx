@@ -23,6 +23,7 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
   const [hexInput, setHexInput] = useState(value)
   const [tempColor, setTempColor] = useState(value)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const rectRef = useRef<DOMRect | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
   useEffect(() => {
@@ -67,7 +68,12 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const rect = canvas.getBoundingClientRect()
+    // Use cached rect if available (during drag), otherwise get fresh rect
+    let rect = rectRef.current
+    if (!rect) {
+         rect = canvas.getBoundingClientRect()
+         rectRef.current = rect
+    }
 
     let clientX: number
     let clientY: number
@@ -183,6 +189,7 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
                 }
               }}
               onMouseDown={(e) => {
+                if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
                 setIsDragging(true)
                 handleCanvasInteraction(e)
                 // Prevent default to avoid text selection
@@ -191,6 +198,7 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
               onMouseUp={() => setIsDragging(false)}
               onMouseLeave={() => setIsDragging(false)}
               onTouchStart={(e) => {
+                if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
                 setIsDragging(true)
                 handleCanvasInteraction(e)
                 // Prevent default to avoid text selection

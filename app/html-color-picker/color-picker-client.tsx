@@ -306,6 +306,7 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
   const [lightness, setLightness] = useState(60);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
   const animationFrameRef = useRef<number>(0);
   const isDraggingRef = useRef(false);
 
@@ -315,6 +316,26 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
   const lightnessRef = useRef(lightness);
 
   // Update refs when state changes
+  useEffect(() => {
+    const updateRect = () => {
+        if (canvasRef.current) {
+            rectRef.current = canvasRef.current.getBoundingClientRect();
+        }
+    };
+    
+    updateRect();
+    const resizeObserver = new ResizeObserver(updateRect);
+    if (canvasRef.current) resizeObserver.observe(canvasRef.current);
+    window.addEventListener('scroll', updateRect, { passive: true });
+    window.addEventListener('resize', updateRect, { passive: true });
+    
+    return () => {
+        resizeObserver.disconnect();
+        window.removeEventListener('scroll', updateRect);
+        window.removeEventListener('resize', updateRect);
+    };
+  }, []);
+
   useEffect(() => {
     hueRef.current = hue;
     saturationRef.current = saturation;
@@ -395,7 +416,11 @@ function AdvancedColorPickerComponent({ selectedColor, onColorChange }: { select
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
+    let rect = rectRef.current;
+    if (!rect) {
+        rect = canvas.getBoundingClientRect();
+        rectRef.current = rect;
+    }
 
     let clientX: number;
     let clientY: number;

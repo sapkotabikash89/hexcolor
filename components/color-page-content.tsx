@@ -35,19 +35,27 @@ import {
   getClosestKnownColor,
   isKnownHex,
 } from "@/lib/color-utils"
-import { CustomColorPicker } from "@/components/custom-color-picker"
+import { ShareButtons } from "@/components/share-buttons"
+import { ColorImage } from "@/components/color-image"
+import { getGumletColorImage } from "@/lib/image-utils"
+import { getColorPageLink } from "@/lib/color-linking-utils"
 import { ColorCombination } from "@/components/color-combination"
 import { ColorSwatch as Swatch } from "@/components/color-swatch"
 import { Share, Heart, Check, Copy, Download, Pipette, Image as ImageIcon, Palette, Monitor } from "lucide-react"
-import { ColorExportDialog } from "@/components/color-export-dialog"
 import { CopyButton } from "@/components/copy-button"
-import { ShareButtons } from "@/components/share-buttons"
-import { ColorImage } from "@/components/color-image"
-import { ColorIcons } from "@/components/color-icons"
-import { ColorPatterns } from "@/components/color-patterns"
-import { ColorMockups } from "@/components/color-mockups"
-import { getGumletColorImage } from "@/lib/image-utils"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import nextDynamic from "next/dynamic"
+
+const CustomColorPicker = nextDynamic(() => import("@/components/custom-color-picker").then(mod => mod.CustomColorPicker))
+const ColorExportDialog = nextDynamic(() => import("@/components/color-export-dialog").then(mod => mod.ColorExportDialog))
+const ColorIcons = nextDynamic(() => import("@/components/color-icons").then(mod => mod.ColorIcons), {
+  loading: () => <div className="h-[200px] w-full bg-muted/20 animate-pulse rounded-lg" />
+})
+const ColorPatterns = nextDynamic(() => import("@/components/color-patterns").then(mod => mod.ColorPatterns), {
+  loading: () => <div className="h-[200px] w-full bg-muted/20 animate-pulse rounded-lg" />
+})
+const ColorMockups = nextDynamic(() => import("@/components/color-mockups").then(mod => mod.ColorMockups), {
+  loading: () => <div className="h-[200px] w-full bg-muted/20 animate-pulse rounded-lg" />
+})
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface ColorPageContentProps {
@@ -310,8 +318,9 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                       width={1200}
                       height={630}
                       priority
+                      fetchPriority="high"
                       className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                      unoptimized
+                      sizes="(max-width: 640px) 100vw, 600px"
                       onError={() => setImageError(true)}
                     />
                   );
