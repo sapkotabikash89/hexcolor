@@ -10,7 +10,8 @@
     "export": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "sync": "node scripts/fetch-posts.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

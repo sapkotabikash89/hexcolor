@@ -71,22 +71,10 @@ export function ColorSidebar({
 
     const fetchLatest = async () => {
       try {
-        const res = await fetch("https://blog.hexcolormeans.com/graphql", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            query: `
-              query LatestPosts {
-                posts(first: 4, where: { orderby: { field: DATE, order: DESC } }) {
-                  nodes { title uri }
-                }
-              }
-            `,
-          }),
-        })
-        const json = await res.json()
-        const nodes = json?.data?.posts?.nodes || []
-        setLatestPosts(nodes.filter((n: any) => !!n?.title && !!n?.uri))
+        const res = await fetch("/latest-posts.json")
+        if (!res.ok) throw new Error("Failed to fetch posts")
+        const posts = await res.json()
+        setLatestPosts(posts)
       } catch {
         setLatestPosts([])
       }
