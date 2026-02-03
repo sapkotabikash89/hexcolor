@@ -3,7 +3,11 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
-import { ColorPageContent } from "@/components/color-page-content"
+import dynamic from "next/dynamic"
+
+const ColorPageContent = dynamic(() => import("@/components/color-page-content").then(mod => mod.ColorPageContent), {
+  loading: () => <div className="h-96 w-full animate-pulse bg-muted rounded-lg" />
+})
 import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk, getColorHarmony } from "@/lib/color-utils"
 import { getGumletColorImage } from "@/lib/image-utils"
 import { KNOWN_COLOR_HEXES } from "@/lib/known-colors-complete"
