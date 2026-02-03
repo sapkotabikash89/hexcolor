@@ -32,10 +32,22 @@ import { cn, autoLinkShadeNames } from "@/lib/utils"
 const ShareButtons = dynamic(() => import("@/components/share-buttons").then((mod) => mod.ShareButtons))
 const HelpfulVote = dynamic(() => import("@/components/helpful-vote").then((mod) => mod.HelpfulVote))
 
-const GRAPHQL_ENDPOINT = process.env.WORDPRESS_API_URL || "https://blog.hexcolormeans.com/graphql";
-const REST_ENDPOINT = GRAPHQL_ENDPOINT.replace(/\/graphql\/?$/, "/wp-json");
+const GRAPHQL_ENDPOINT = "";
+const REST_ENDPOINT = "";
 
-
+async function getAllPosts() {
+  try {
+    const fs = await import("fs")
+    const path = await import("path")
+    const dataPath = path.join(process.cwd(), 'lib/blog-posts-data.json');
+    if (fs.existsSync(dataPath)) {
+      return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    }
+  } catch (e) {
+    // Ignore error
+  }
+  return [];
+}
 
 async function fetchPostByUri(uri: string) {
   const variants = Array.from(
@@ -51,7 +63,7 @@ async function fetchPostByUri(uri: string) {
     ])
   )
   for (const u of variants) {
-    // Try local JSON cache first
+    // Try local JSON cache ONLY
     const slug = u.replace(/^\/|\/$/g, '').replace(/\//g, '-');
     if (slug) {
       try {
@@ -62,164 +74,9 @@ async function fetchPostByUri(uri: string) {
           return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
         }
       } catch (e) {
-        // Ignore error and fall back to fetch
+        // Ignore error
       }
     }
-
-    try {
-      const apiUrl = GRAPHQL_ENDPOINT;
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: `
-            query NodeByUri($uri: String!) {
-          nodeByUri(uri: $uri) {
-            __typename
-            ... on Post {
-              title
-              content
-              uri
-              date
-              colormeanHex
-              featuredImage {
-                node {
-                  sourceUrl
-                  altText
-                }
-              }
-              tags { nodes { name uri databaseId } }
-              categories { nodes { name uri slug databaseId } }
-              previousPost {
-                title
-                uri
-              }
-              nextPost {
-                title
-                uri
-              }
-              seo {
-                title
-                metaDesc
-                canonical
-                focuskw
-                metaRobotsNoindex
-                metaRobotsNofollow
-                metaRobotsAdvanced
-                opengraphTitle
-                opengraphDescription
-                opengraphType
-                opengraphUrl
-                opengraphSiteName
-                opengraphPublishedTime
-                opengraphModifiedTime
-                opengraphAuthor
-                opengraphSection
-                opengraphTags
-                opengraphLocale
-                opengraphLocaleAlternate
-                opengraphImage {
-                  mediaItemUrl
-                  altText
-                  mediaDetails { width height }
-                  sourceUrl
-                }
-                twitterTitle
-                twitterDescription
-                twitterCard
-                twitterSite
-                twitterCreator
-                twitterImage {
-                  mediaItemUrl
-                  altText
-                  sourceUrl
-                }
-                breadcrumbs {
-                  text
-                  url
-                }
-                schema {
-                  raw
-                }
-                cornerstone
-                estimatedReadingTime
-              }
-            }
-            ... on Page {
-              title
-              content
-              uri
-              date
-              featuredImage {
-                node {
-                  sourceUrl
-                  altText
-                }
-              }
-              seo {
-                title
-                metaDesc
-                canonical
-                focuskw
-                metaRobotsNoindex
-                metaRobotsNofollow
-                metaRobotsAdvanced
-                opengraphTitle
-                opengraphDescription
-                opengraphType
-                opengraphUrl
-                opengraphSiteName
-                opengraphPublishedTime
-                opengraphModifiedTime
-                opengraphAuthor
-                opengraphSection
-                opengraphTags
-                opengraphLocale
-                opengraphLocaleAlternate
-                opengraphImage {
-                  mediaItemUrl
-                  altText
-                  mediaDetails { width height }
-                  sourceUrl
-                }
-                twitterTitle
-                twitterDescription
-                twitterCard
-                twitterSite
-                twitterCreator
-                twitterImage {
-                  mediaItemUrl
-                  altText
-                  sourceUrl
-                }
-                breadcrumbs {
-                  text
-                  url
-                }
-                schema {
-                  raw
-                }
-                cornerstone
-                estimatedReadingTime
-              }
-            }
-            ... on Category {
-              name
-              uri
-              description
-            }
-          }
-        }
-      `,
-          variables: { uri: u },
-        }),
-        // OPTIMIZATION: Incremental Static Regeneration (ISR)
-    // Revalidate every 60 seconds to keep content fresh without full rebuilds
-    next: { revalidate: 60, tags: [`wp:node:${u}`] },
-  })
-      const json = await res.json()
-      if (json?.data?.nodeByUri) return json.data.nodeByUri
-    } catch { }
   }
   return null
 }
@@ -228,302 +85,39 @@ async function fetchPostByUri(uri: string) {
 
 async function fetchPostBySlug(slug: string) {
   try {
-    const res = await fetch(GRAPHQL_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: `
-          query PostBySlug($slug: ID!) {
-            post(id: $slug, idType: SLUG) {
-              __typename
-              title
-              content
-              uri
-              date
-              colormeanHex
-              featuredImage { node { sourceUrl altText } }
-              tags { nodes { name uri databaseId } }
-              categories { nodes { name uri slug databaseId } }
-              seo {
-                title
-                metaDesc
-                canonical
-                focuskw
-                metaRobotsNoindex
-                metaRobotsNofollow
-                metaRobotsAdvanced
-                opengraphTitle
-                opengraphDescription
-                opengraphType
-                opengraphUrl
-                opengraphSiteName
-                opengraphPublishedTime
-                opengraphModifiedTime
-                opengraphAuthor
-                opengraphSection
-                opengraphTags
-                opengraphLocale
-                opengraphLocaleAlternate
-                opengraphImage { mediaItemUrl altText mediaDetails { width height } sourceUrl }
-                twitterTitle
-                twitterDescription
-                twitterCard
-                twitterSite
-                twitterCreator
-                twitterImage { mediaItemUrl altText sourceUrl }
-                breadcrumbs { text url }
-                schema { raw }
-                cornerstone
-                estimatedReadingTime
-              }
-            }
-          }
-        `,
-        variables: { slug },
-      }),
-      cache: 'force-cache'
-    })
-    const json = await res.json()
-    return json?.data?.post ?? null
+    const fs = await import("fs")
+    const path = await import("path")
+    const dataPath = path.join(process.cwd(), 'lib/posts', `${slug}.json`);
+    if (fs.existsSync(dataPath)) {
+      return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    }
+    return null
   } catch {
     return null
   }
 }
 
 async function fetchContentByUri(uri: string) {
-  try {
-    const res = await fetch(GRAPHQL_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: `
-          query ContentByUri($uri: ID!) {
-            post(id: $uri, idType: URI) {
-              __typename
-              title
-              content
-              uri
-              date
-              colormeanHex
-              featuredImage { node { sourceUrl altText } }
-              tags { nodes { name uri databaseId } }
-              categories { nodes { name uri slug databaseId } }
-              seo {
-                title
-                metaDesc
-                canonical
-                focuskw
-                metaRobotsNoindex
-                metaRobotsNofollow
-                metaRobotsAdvanced
-                opengraphTitle
-                opengraphDescription
-                opengraphType
-                opengraphUrl
-                opengraphSiteName
-                opengraphPublishedTime
-                opengraphModifiedTime
-                opengraphAuthor
-                opengraphSection
-                opengraphTags
-                opengraphLocale
-                opengraphLocaleAlternate
-                opengraphImage { mediaItemUrl altText mediaDetails { width height } sourceUrl }
-                twitterTitle
-                twitterDescription
-                twitterCard
-                twitterSite
-                twitterCreator
-                twitterImage { mediaItemUrl altText sourceUrl }
-                breadcrumbs { text url }
-                schema { raw }
-                cornerstone
-                estimatedReadingTime
-              }
-            }
-            page(id: $uri, idType: URI) {
-              __typename
-              title
-              content
-              uri
-              date
-              colormeanHex
-              featuredImage { node { sourceUrl altText } }
-              seo {
-                title
-                metaDesc
-                canonical
-                focuskw
-                metaRobotsNoindex
-                metaRobotsNofollow
-                metaRobotsAdvanced
-                opengraphTitle
-                opengraphDescription
-                opengraphType
-                opengraphUrl
-                opengraphSiteName
-                opengraphPublishedTime
-                opengraphModifiedTime
-                opengraphAuthor
-                opengraphSection
-                opengraphTags
-                opengraphLocale
-                opengraphLocaleAlternate
-                opengraphImage { mediaItemUrl altText mediaDetails { width height } sourceUrl }
-                twitterTitle
-                twitterDescription
-                twitterCard
-                twitterSite
-                twitterCreator
-                twitterImage { mediaItemUrl altText sourceUrl }
-                breadcrumbs { text url }
-                schema { raw }
-                cornerstone
-                estimatedReadingTime
-              }
-            }
-          }
-        `,
-        variables: { uri },
-      }),
-      // OPTIMIZATION: Incremental Static Regeneration (ISR)
-      next: { revalidate: 60, tags: [`wp:uri:${uri}`] },
-    })
-    const json = await res.json()
-    return json?.data?.post ?? json?.data?.page ?? null
-  } catch {
-    return null
-  }
+  return fetchPostByUri(uri);
 }
 
 async function fetchAnyBySearch(term: string) {
   try {
-    const res = await fetch(GRAPHQL_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: `
-          query SearchContent($q: String!) {
-            posts(where: { search: $q }, first: 1) {
-              nodes {
-                __typename
-                title
-                content
-                uri
-                date
-                featuredImage { node { sourceUrl altText } }
-                tags { nodes { name uri databaseId } }
-                categories { nodes { name uri slug databaseId } }
-                seo {
-                  title
-                  metaDesc
-                  canonical
-                  focuskw
-                  metaRobotsNoindex
-                  metaRobotsNofollow
-                  metaRobotsAdvanced
-                  opengraphTitle
-                  opengraphDescription
-                  opengraphType
-                  opengraphUrl
-                  opengraphSiteName
-                  opengraphPublishedTime
-                  opengraphModifiedTime
-                  opengraphAuthor
-                  opengraphSection
-                  opengraphTags
-                  opengraphLocale
-                  opengraphLocaleAlternate
-                  opengraphImage { mediaItemUrl altText mediaDetails { width height } sourceUrl }
-                  twitterTitle
-                  twitterDescription
-                  twitterCard
-                  twitterSite
-                  twitterCreator
-                  twitterImage { mediaItemUrl altText sourceUrl }
-                  breadcrumbs { text url }
-                  schema { raw }
-                  cornerstone
-                  estimatedReadingTime
-                }
-              }
-            }
-            pages(where: { search: $q }, first: 1) {
-              nodes {
-                __typename
-                title
-                content
-                uri
-                date
-                featuredImage { node { sourceUrl altText } }
-                seo {
-                  title
-                  metaDesc
-                  canonical
-                  focuskw
-                  metaRobotsNoindex
-                  metaRobotsNofollow
-                  metaRobotsAdvanced
-                  opengraphTitle
-                  opengraphDescription
-                  opengraphType
-                  opengraphUrl
-                  opengraphSiteName
-                  opengraphPublishedTime
-                  opengraphModifiedTime
-                  opengraphAuthor
-                  opengraphSection
-                  opengraphTags
-                  opengraphLocale
-                  opengraphLocaleAlternate
-                  opengraphImage { mediaItemUrl altText mediaDetails { width height } sourceUrl }
-                  twitterTitle
-                  twitterDescription
-                  twitterCard
-                  twitterSite
-                  twitterCreator
-                  twitterImage { mediaItemUrl altText sourceUrl }
-                  breadcrumbs { text url }
-                  schema { raw }
-                  cornerstone
-                  estimatedReadingTime
-                }
-              }
-            }
-          }
-        `,
-        variables: { q: term },
-      }),
-      // OPTIMIZATION: Incremental Static Regeneration (ISR)
-      next: { revalidate: 60, tags: [`wp:search:${term}`] },
-    })
-    const json = await res.json()
-    const post = json?.data?.posts?.nodes?.[0]
-    const page = json?.data?.pages?.nodes?.[0]
-    return post ?? page ?? null
+    const posts = await getAllPosts();
+    const found = posts.find((p: any) => 
+      p.title?.toLowerCase().includes(term.toLowerCase()) || 
+      p.content?.toLowerCase().includes(term.toLowerCase())
+    );
+    return found || null;
   } catch {
     return null
   }
 }
+
 
 function lastSegment(path: string) {
   const parts = path.split("/").filter(Boolean)
   return parts[parts.length - 1] || ""
-}
-
-async function fetchRestFeaturedMedia(id: number) {
-  if (!id || id <= 0) return null
-  try {
-    const res = await fetch(`https:c/blog.hexcolormeans.com/ol-jsonowp/rmeans.com/wp-json/wp/v2/media/${id}?_fields=source_url,alt_text`, {
-      // OPTIMIZATION: Increased revalidate time for Vercel free plan
-      next: { revalidate: 3600 },  // 1 hour instead of 10 min
-    })
-    const json = await res.json()
-    if (!json || !json.source_url) return null
-    return { sourceUrl: json.source_url, altText: json.alt_text || "" }
-  } catch {
-    return null
-  }
 }
 
 function mapYoastToSeo(yoast: any, link: string) {
@@ -562,163 +156,36 @@ function mapYoastToSeo(yoast: any, link: string) {
   }
 }
 
-async function fetchRestCategories(ids: number[]) {
-  if (!ids || ids.length === 0) return []
-  try {
-    const res = await fetch(
-      `${REST_ENDPOINT}/wp/v2/categories?include=${ids.join(",")}&_fields=id,name,slug,link`,
-      { next: { revalidate: 60 } }
-    )
-    const json = await res.json()
-    if (!Array.isArray(json)) return []
-    return json.map((c: any) => {
-      let uri = ""
-      try {
-        if (c.link) uri = new URL(c.link).pathname
-      } catch { }
-      return {
-        name: c.name,
-        slug: c.slug,
-        uri: uri || `/category/${c.slug}/`, // Fallback with singular category path
-        databaseId: c.id
-      }
-    })
-  } catch {
-    return []
-  }
-}
-
 async function fetchRestPostBySlug(slug: string) {
-  try {
-    const res = await fetch(
-      `${REST_ENDPOINT}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,categories,yoast_head_json`,
-      // OPTIMIZATION: Increased revalidate time for Vercel free plan
-      { next: { revalidate: 3600, tags: [`wp:rest:post:${slug}`] } }  // 1 hour instead of 10 min
-    )
-    const arr = await res.json()
-    const post = Array.isArray(arr) ? arr[0] : null
-    if (!post) return null
-    const [media, categories] = await Promise.all([
-      fetchRestFeaturedMedia(post.featured_media),
-      post.categories && post.categories.length ? fetchRestCategories(post.categories) : Promise.resolve([])
-    ])
-    const url = new URL(post.link)
-    const uri = url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`
-    return {
-      __typename: "Post",
-      title: post.title?.rendered || "",
-      content: post.content?.rendered || "",
-      uri,
-      featuredImage: media ? { node: media } : undefined,
-      tags: { nodes: [] },
-      categories: { nodes: categories },
-      seo: mapYoastToSeo(post.yoast_head_json, post.link),
-    }
-  } catch {
-    return null
-  }
+  return fetchPostBySlug(slug);
 }
 
 async function fetchRestPageBySlug(slug: string) {
-  try {
-    const res = await fetch(
-      `https://blog.hexcolormeans.com/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=title,content,link,featured_media,yoast_head_json`,
-      // OPTIMIZATION: Incremental Static Regeneration (ISR)
-      { next: { revalidate: 60, tags: [`wp:rest:page:${slug}`] } }
-    )
-    const arr = await res.json()
-    const page = Array.isArray(arr) ? arr[0] : null
-    if (!page) return null
-    const media = await fetchRestFeaturedMedia(page.featured_media)
-    const url = new URL(page.link)
-    const uri = url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`
-    return {
-      __typename: "Page",
-      title: page.title?.rendered || "",
-      content: page.content?.rendered || "",
-      uri,
-      featuredImage: media ? { node: media } : undefined,
-      seo: mapYoastToSeo(page.yoast_head_json, page.link),
-    }
-  } catch {
-    return null
-  }
+  // Try to find page in posts folder as well, as we treat them similarly in static export
+  return fetchPostBySlug(slug);
 }
 
-async function fetchPostsByTagIds(tagIds: number[], count: number) {
-  const res = await fetch(GRAPHQL_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query RelatedByTags($tagIds: [ID], $count: Int) {
-          posts(where: { tagIn: $tagIds }, first: $count) {
-            nodes {
-              title
-              uri
-              date
-              featuredImage { node { sourceUrl altText } }
-            }
-          }
-        }
-      `,
-      variables: { tagIds, count },
-    }),
-    // OPTIMIZATION: Increased revalidate time for Vercel free plan
-    next: { revalidate: 3600, tags: [`wp:related`] },  // 1 hour instead of 10 min
-  })
-  const json = await res.json()
-  return json?.data?.posts?.nodes ?? []
+async function fetchPostsByTagSlugs(tagSlugs: string[], count: number) {
+  const posts = await getAllPosts();
+  return posts.filter((p: any) => {
+    const pTags = p.tags?.nodes?.map((t: any) => t.slug) || [];
+    return pTags.some((slug: string) => tagSlugs.includes(slug));
+  }).slice(0, count);
 }
 
-async function fetchPostsByCategoryIds(catIds: number[], count: number) {
-  const res = await fetch(GRAPHQL_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query RelatedByCats($catIds: [ID], $count: Int) {
-          posts(where: { categoryIn: $catIds }, first: $count) {
-            nodes {
-              title
-              uri
-              date
-              featuredImage { node { sourceUrl altText } }
-            }
-          }
-        }
-      `,
-      variables: { catIds, count },
-    }),
-    // OPTIMIZATION: Increased revalidate time for Vercel free plan
-    next: { revalidate: 3600, tags: [`wp:related`] },  // 1 hour instead of 10 min
-  })
-  const json = await res.json()
-  return json?.data?.posts?.nodes ?? []
+async function fetchPostsByCategorySlugs(catSlugs: string[], count: number) {
+  const posts = await getAllPosts();
+  return posts.filter((p: any) => {
+    const pCats = p.categories?.nodes?.map((c: any) => c.slug) || [];
+    return pCats.some((slug: string) => catSlugs.includes(slug));
+  }).slice(0, count);
 }
 
 async function fetchRandomPosts(count: number) {
-  const res = await fetch(GRAPHQL_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query RandomPosts($count: Int) {
-          posts(first: $count) {
-            nodes {
-              title
-              uri
-              featuredImage { node { sourceUrl altText } }
-            }
-          }
-        }
-      `,
-      variables: { count },
-    }),
-    cache: 'force-cache'
-  })
-  const json = await res.json()
-  return json?.data?.posts?.nodes ?? []
+  const posts = await getAllPosts();
+  // Simple random shuffle
+  const shuffled = [...posts].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
 }
 
 async function resolvePrevNext(node: any): Promise<{ previous: { title: string; uri: string } | null; next: { title: string; uri: string } | null }> {
@@ -729,11 +196,15 @@ async function resolvePrevNext(node: any): Promise<{ previous: { title: string; 
       if (previous || next) return { previous, next }
     }
     const currentUri: string | undefined = node?.uri
-    const catIds: number[] = Array.from(new Set(((node?.categories?.nodes as any[]) || []).map((c) => c?.databaseId).filter(Boolean)))
-    const tagIds: number[] = Array.from(new Set(((node?.tags?.nodes as any[]) || []).map((t) => t?.databaseId).filter(Boolean)))
+    
+    // Use slugs instead of IDs for local data matching
+    const catSlugs: string[] = Array.from(new Set(((node?.categories?.nodes as any[]) || []).map((c) => c?.slug).filter(Boolean)))
+    const tagSlugs: string[] = Array.from(new Set(((node?.tags?.nodes as any[]) || []).map((t) => t?.slug).filter(Boolean)))
+    
     let list: Array<{ title: string; uri: string; date?: string }> = []
-    if (catIds.length) list = await fetchPostsByCategoryIds(catIds, 100)
-    if ((!list || list.length === 0) && tagIds.length) list = await fetchPostsByTagIds(tagIds, 100)
+    if (catSlugs.length) list = await fetchPostsByCategorySlugs(catSlugs, 100)
+    if ((!list || list.length === 0) && tagSlugs.length) list = await fetchPostsByTagSlugs(tagSlugs, 100)
+    
     if (!list || list.length === 0 || !currentUri) return { previous: null, next: null }
     list = list.slice().sort((a, b) => {
       const da = a.date ? Date.parse(a.date) : 0
@@ -1113,12 +584,12 @@ export default async function WPPostPage({ params }: WPPageProps) {
       { label: shortTitle(node.title), href: node.uri },
     ]
   }
-  const catIds = (node?.categories?.nodes || []).map((c: any) => c.databaseId)
-  const tagIds = (node?.tags?.nodes || []).map((t: any) => t.databaseId)
+  const catSlugs = (node?.categories?.nodes || []).map((c: any) => c.slug).filter(Boolean)
+  const tagSlugs = (node?.tags?.nodes || []).map((t: any) => t.slug).filter(Boolean)
   const seen = new Set<string>([node.uri])
   let related: any[] = []
-  if (catIds.length) {
-    const catPosts = (await fetchPostsByCategoryIds(catIds, 12)) || []
+  if (catSlugs.length) {
+    const catPosts = (await fetchPostsByCategorySlugs(catSlugs, 12)) || []
     for (const p of catPosts) {
       if (p?.uri && !seen.has(p.uri)) {
         related.push(p)
@@ -1127,8 +598,8 @@ export default async function WPPostPage({ params }: WPPageProps) {
       }
     }
   }
-  if (related.length < 6 && tagIds.length) {
-    const tagPosts = (await fetchPostsByTagIds(tagIds, 12)) || []
+  if (related.length < 6 && tagSlugs.length) {
+    const tagPosts = (await fetchPostsByTagSlugs(tagSlugs, 12)) || []
     for (const p of tagPosts) {
       if (p?.uri && !seen.has(p.uri)) {
         related.push(p)

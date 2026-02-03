@@ -5,15 +5,12 @@
   "type": "module",
   "packageManager": "npm@10.0.0",
   "scripts": {
-    "prebuild": "rm -rf .next/cache && npm run sync || echo 'Sync failed, continuing build...' && node scripts/generate-sitemaps.mjs",
+    "prebuild": "rm -rf .next/cache && node scripts/generate-sitemaps.mjs",
     "build": "next build",
     "export": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start",
-    "sync": "node scripts/sync-wp.mjs",
-    "publish-new-posts": "node scripts/auto-publish.mjs",
-    "detect-and-deploy": "node scripts/detect-and-deploy-new-posts.mjs"
+    "start": "next start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
