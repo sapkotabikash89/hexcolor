@@ -721,6 +721,11 @@ export default async function WPPostPage({ params }: WPPageProps) {
               priority={true}
               className="w-full"
             />
+            <BlogPostActions
+              loveKey={`post-${node?.databaseId || node?.slug || node?.uri || ''}`}
+              shareUrl=""
+              shareTitle={node?.title || ""}
+            />
             <ImageObjectSchema
               url={articleImageUrl!}
               width={1200}

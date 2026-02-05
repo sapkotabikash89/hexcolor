@@ -12,7 +12,7 @@ interface BlogPostActionsProps {
 }
 
 export function BlogPostActions({ loveKey, shareUrl, shareTitle }: BlogPostActionsProps) {
-  const [loveCount, setLoveCount] = useState(12)
+  const [loveCount, setLoveCount] = useState(16)
   const [liked, setLiked] = useState(false)
   const [hydratedUrl, setHydratedUrl] = useState(shareUrl)
 
@@ -25,7 +25,6 @@ export function BlogPostActions({ loveKey, shareUrl, shareTitle }: BlogPostActio
   const finalShareUrl = shareUrl || hydratedUrl
 
   useEffect(() => {
-    // If no key provided, we can't track love
     if (!loveKey) return
 
     const key = `love:${loveKey}`
@@ -40,16 +39,31 @@ export function BlogPostActions({ loveKey, shareUrl, shareTitle }: BlogPostActio
     }
   }, [loveKey])
 
+  useEffect(() => {
+    let aborted = false
+    const load = async () => {
+      try {
+        const res = await fetch(`/api/love?key=${encodeURIComponent(loveKey)}`, { method: 'GET' })
+        if (!res.ok) return
+        const data = await res.json()
+        if (!aborted && typeof data.count === 'number') setLoveCount(data.count)
+      } catch { }
+    }
+    if (loveKey) load()
+    return () => { aborted = true }
+  }, [loveKey])
+
   const toggleLove = async () => {
     if (!loveKey) return
 
     const key = `love:${loveKey}`
-    const nextLiked = !liked
-    setLiked(nextLiked)
-    setLoveCount((prev) => (nextLiked ? prev + 1 : Math.max(0, prev - 1)))
-
-    const payload = { liked: nextLiked }
-    if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify(payload))
+    if (liked) return
+    setLiked(true)
+    setLoveCount((prev) => prev + 1)
+    if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify({ liked: true }))
+    try {
+      await fetch(`/api/love?key=${encodeURIComponent(loveKey)}`, { method: 'POST' })
+    } catch { }
   }
 
   const copyToClipboard = () => {
