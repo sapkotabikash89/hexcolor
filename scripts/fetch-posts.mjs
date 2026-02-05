@@ -140,6 +140,11 @@ async function savePosts() {
         continue;
     }
     
+    // Rewrite inline images to use Gumlet CDN
+    if (post.content) {
+      post.content = rewriteInlineImages(post.content);
+    }
+
     const filePath = path.join(postsDir, `${slug}.json`);
     fs.writeFileSync(filePath, JSON.stringify(post, null, 2));
   }
@@ -160,6 +165,36 @@ async function savePosts() {
   const latestPostsPath = path.join(publicDir, 'latest-posts.json');
   fs.writeFileSync(latestPostsPath, JSON.stringify(latestPosts, null, 2));
   console.log(`Saved latest posts to ${latestPostsPath}`);
+}
+
+// Helper function to rewrite inline image URLs to Gumlet CDN
+function rewriteInlineImages(html) {
+  if (!html) return html;
+  
+  const WP_UPLOADS_BASE = "https://blog.hexcolormeans.com/wp-content/uploads/";
+  const GUMLET_BASE = "https://hexcolormeans.gumlet.io/wp-content/uploads/";
+  
+  return html.replace(/<img\s+[^>]*>/gi, (imgTag) => {
+    let newTag = imgTag;
+
+    // Rewrite src
+    newTag = newTag.replace(/src=["']([^"']+)["']/i, (match, url) => {
+      if (url.startsWith(WP_UPLOADS_BASE)) {
+        return match.replace(WP_UPLOADS_BASE, GUMLET_BASE);
+      }
+      return match;
+    });
+
+    // Rewrite srcset
+    newTag = newTag.replace(/srcset=["']([^"']+)["']/i, (match, srcset) => {
+      if (srcset.includes(WP_UPLOADS_BASE)) {
+        return match.split(WP_UPLOADS_BASE).join(GUMLET_BASE);
+      }
+      return match;
+    });
+
+    return newTag;
+  });
 }
 
 savePosts();
