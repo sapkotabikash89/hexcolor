@@ -100,6 +100,36 @@ function generateColorsSitemap() {
             colorHexes = Object.keys(colorData).map(hex => hex.toLowerCase());
         }
 
+        // Load blog posts to exclude their hexes (prevent duplicate content)
+        const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
+        const excludedHexes = new Set();
+        if (fs.existsSync(blogPostsDataPath)) {
+            try {
+                const posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
+                posts.forEach(post => {
+                    // Extract hex from title: "0000FF Color Blue Meaning..." -> "0000FF"
+                    const match = post.title.trim().match(/^([0-9A-Fa-f]{6})\b/);
+                    if (match) excludedHexes.add(match[1].toLowerCase());
+                    
+                    const matchHash = post.title.trim().match(/^#([0-9A-Fa-f]{6})\b/);
+                    if (matchHash) excludedHexes.add(matchHash[1].toLowerCase());
+                });
+                console.log(`ℹ️  Found ${excludedHexes.size} hex codes with blog posts to exclude from sitemap`);
+            } catch (e) {
+                console.error('Error reading blog posts for sitemap exclusion:', e.message);
+            }
+        }
+
+        // Filter excluded hexes
+        if (excludedHexes.size > 0) {
+            const originalCount = colorHexes.length;
+            colorHexes = colorHexes.filter(hex => {
+                const cleanHex = hex.replace('#', '').toLowerCase();
+                return !excludedHexes.has(cleanHex);
+            });
+            console.log(`ℹ️  Excluded ${originalCount - colorHexes.length} colors that have dedicated blog posts`);
+        }
+
         // If we have colors, generate sitemap
         if (colorHexes.length > 0) {
             // Limit to first 50,000 URLs (sitemap limit)

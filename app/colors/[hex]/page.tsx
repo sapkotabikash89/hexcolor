@@ -31,22 +31,79 @@ interface ColorPageProps {
 }
 
 export async function generateStaticParams() {
-  const data = (await import('@/lib/color-meaning.json')).default
-  const meaningHexes = Object.keys(data)
-  const knownHexes = Array.from(KNOWN_COLOR_HEXES)
+  console.log('Generating static params for colors...');
+  try {
+    const data = (await import('@/lib/color-meaning.json')).default
+    const meaningHexes = Object.keys(data)
+    const knownHexes = Array.from(KNOWN_COLOR_HEXES)
 
-  // Combine all sources
-  const allHexes = new Set([
-    ...meaningHexes.map(h => h.toLowerCase()),
-    ...knownHexes.map(h => h.toLowerCase()),
-    // Add uppercase versions to prevent 404s and allow client-side normalization
-    ...meaningHexes.map(h => h.replace('#', '').toUpperCase()),
-    ...knownHexes.map(h => h.replace('#', '').toUpperCase())
-  ])
+    // Fetch blog posts to identify hex codes that should be excluded
+    // because they have a dedicated blog post
+    let excludedHexes = new Set<string>()
+    try {
+      const fs = await import('fs')
+      const path = await import('path')
+      const postsPath = path.join(process.cwd(), 'lib/blog-posts-data.json')
+      
+      if (fs.existsSync(postsPath)) {
+        const postsData = JSON.parse(fs.readFileSync(postsPath, 'utf8'))
+        
+        postsData.forEach((post: any) => {
+          // Extract hex from title: "0000FF Color Blue Meaning..." -> "0000FF"
+          // Look for 6-digit hex at start of title
+          const match = post.title.trim().match(/^([0-9A-Fa-f]{6})\b/)
+          if (match) {
+            excludedHexes.add(match[1].toUpperCase())
+          }
+          
+          // Also check for #HEX format just in case
+          const matchHash = post.title.trim().match(/^#([0-9A-Fa-f]{6})\b/);
+          if (matchHash) {
+            excludedHexes.add(matchHash[1].toUpperCase())
+          }
+        })
+      }
+    } catch (e) {
+      console.error('Error reading blog posts for hex exclusion:', e)
+    }
 
-  return Array.from(allHexes).map((hex) => ({
-    hex: hex,
-  }))
+    // Combine all sources
+    const allHexes = new Set([
+      ...meaningHexes.map(h => h.toLowerCase()),
+      ...knownHexes.map(h => h.toLowerCase()),
+      // Add uppercase versions to prevent 404s and allow client-side normalization
+      ...meaningHexes.map(h => h.replace('#', '').toUpperCase()),
+      ...knownHexes.map(h => h.replace('#', '').toUpperCase())
+    ])
+
+    // Filter out hexes that have blog posts
+    const filteredHexes = Array.from(allHexes).filter(hex => {
+      const cleanHex = hex.replace('#', '').toUpperCase()
+      return !excludedHexes.has(cleanHex)
+    })
+
+    console.log(`Total hexes: ${allHexes.size}, Excluded: ${excludedHexes.size}, Filtered: ${filteredHexes.length}`);
+
+    if (filteredHexes.length === 0) {
+      console.warn('WARNING: No static params generated for colors!');
+      // Return at least one fallback to avoid "missing param" error if that's the cause?
+      // No, empty array is valid, but let's see.
+    }
+
+    const params = filteredHexes.map((hex) => ({
+      hex: hex,
+    }));
+    
+    // Verify param structure
+    if (params.length > 0 && !params[0].hex) {
+      console.error('Invalid param structure:', params[0]);
+    }
+
+    return params;
+  } catch (error) {
+    console.error('Error in generateStaticParams:', error);
+    return [];
+  }
 }
 
 

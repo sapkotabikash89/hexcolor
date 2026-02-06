@@ -4,6 +4,7 @@
  */
 
 import { KNOWN_COLOR_HEXES } from './known-colors-complete';
+import { HEX_REDIRECTS } from './hex-redirects';
 
 // Use the existing known color set
 
@@ -14,6 +15,10 @@ import { KNOWN_COLOR_HEXES } from './known-colors-complete';
  */
 export function isStaticColor(hex: string): boolean {
   const cleanHex = hex.replace('#', '').toUpperCase();
+  // If it has a blog post, it's effectively NOT a standard static color page 
+  // (it's a blog post page), but for validity checks it might still be "known".
+  // However, this function is often used to decide whether to show a link to /colors/
+  // or handle it differently.
   return KNOWN_COLOR_HEXES.has(cleanHex);
 }
 
@@ -24,6 +29,11 @@ export function isStaticColor(hex: string): boolean {
  */
 export function getColorPageLink(hex: string): string {
   const cleanHex = hex.replace('#', '').toUpperCase();
+
+  // Check if we have a blog post for this hex
+  if (HEX_REDIRECTS[cleanHex]) {
+    return HEX_REDIRECTS[cleanHex];
+  }
 
   if (isStaticColor(hex)) {
     // Link to static color page - normalize to lowercase for URL consistency
