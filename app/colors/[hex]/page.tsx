@@ -14,7 +14,7 @@ const ColorPageContent = dynamic(() => import("@/components/color-page-content")
 import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk, getColorHarmony } from "@/lib/color-utils"
 import { getGumletColorImage } from "@/lib/image-utils"
 import { KNOWN_COLOR_HEXES } from "@/lib/known-colors-complete"
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
 import { generateFAQs } from "@/lib/category-utils"
@@ -86,8 +86,6 @@ export async function generateStaticParams() {
 
     if (filteredHexes.length === 0) {
       console.warn('WARNING: No static params generated for colors!');
-      // Return at least one fallback to avoid "missing param" error if that's the cause?
-      // No, empty array is valid, but let's see.
     }
 
     const params = filteredHexes.map((hex) => ({
@@ -196,14 +194,6 @@ export default async function ColorPage({ params }: ColorPageProps) {
   const { hex } = await params
   const normalizedHex = normalizeHex(hex)
 
-  // Check if this is a known static color - ensure lowercase URL
-  // const lowerHex = normalizedHex.replace("#", "").toLowerCase();
-  // const upperHex = normalizedHex.replace("#", "").toUpperCase();
-  // if (isValidHex(normalizedHex) && KNOWN_COLOR_HEXES.has(upperHex) && hex !== lowerHex) {
-  //   // Redirect to lowercase version for consistency and to match static export
-  //   redirect(`/colors/${lowerHex}`);
-  // }
-
   if (!isValidHex(normalizedHex)) {
     notFound()
   }
@@ -216,11 +206,6 @@ export default async function ColorPage({ params }: ColorPageProps) {
   // If the color doesn't exist in our JSON, we'll still render the page but with minimal data
   const colorName: string | undefined = meta?.name || undefined
   const displayLabel = colorName ? `${colorName} (${normalizedHex})` : normalizedHex
-
-  const redirected = await maybeRedirectToBlog(normalizedHex)
-  if (redirected) {
-    redirect(redirected)
-  }
 
   const contrastColor = getContrastColor(normalizedHex)
   const rgb = hexToRgb(normalizedHex)
@@ -366,115 +351,4 @@ export default async function ColorPage({ params }: ColorPageProps) {
       <Footer />
     </div>
   );
-}
-
-async function maybeRedirectToBlog(hex: string): Promise<string | null> {
-  const normalizedHex = normalizeHex(hex)
-  const cleanHex = normalizedHex.replace("#", "").toUpperCase()
-
-  // CRITICAL: Never redirect known static colors
-  // These are authoritative static pages that must not redirect
-  if (KNOWN_COLOR_HEXES.has(cleanHex)) {
-    return null
-  }
-
-  const site = "https://hexcolormeans.com"
-  const searchTerm = hex.toUpperCase()
-  const clean = searchTerm.replace("#", "")
-  try {
-    const res = await fetch("https://blog.hexcolormeans.com/graphql", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: `
-          query SearchByHex($q: String!) {
-            posts(where: { search: $q }, first: 3) {
-              nodes { uri content }
-            }
-            pages(where: { search: $q }, first: 3) {
-              nodes { uri content }
-            }
-          }
-        `,
-        variables: { q: clean },
-      }),
-
-    })
-    const json = await res.json()
-    const nodes: Array<{ uri: string; content: string }> = [
-      ...((json?.data?.posts?.nodes as any[]) || []),
-      ...((json?.data?.pages?.nodes as any[]) || []),
-    ]
-    for (const n of nodes) {
-      const html = String(n?.content || "")
-      const found = findHexInContent(html, searchTerm)
-      if (found) {
-        if (n?.uri) return new URL(n.uri, site).toString()
-      }
-    }
-  } catch { }
-  return null
-}
-
-function findHexInContent(html: string, target: string): boolean {
-  const t = target.toUpperCase()
-  const noHash = t.replace("#", "")
-  const patterns = [
-    new RegExp(`\\b${t}\\b`, "i"),
-    new RegExp(`#${noHash}\\b`, "i"),
-    new RegExp(`\\b${noHash}\\b`, "i"),
-  ]
-  for (const re of patterns) {
-    if (re.test(html)) return true
-  }
-  return !!parseShortcodeHex(html) && parseShortcodeHex(html)!.toUpperCase() === t
-}
-
-function parseShortcodeHex(html: string): string | null {
-  const pre = (html || "")
-    .replace(/&(amp;)?#91;?/gi, "[")
-    .replace(/&(amp;)?#93;?/gi, "]")
-    .replace(/&(amp;)?#x0*5[bB];?/gi, "[")
-    .replace(/&(amp;)?#x0*5[dD];?/gi, "]")
-    .replace(/&(amp;)?lsqb;?/gi, "[")
-    .replace(/&(amp;)?rsqb;?/gi, "]")
-    .replace(/&(amp;)?lbrack;?/gi, "[")
-    .replace(/&(amp;)?rbrack;?/gi, "]")
-    .replace(/\u005B/g, "[")
-    .replace(/\u005D/g, "]")
-  const tag = pre.match(/\[\s*(?:colormean|hexcolormeans)\b([\s\S]*?)\]/i)
-  if (!tag) return null
-  const attrs = tag[1] || ""
-  const decoded = attrs
-    .replace(/&quot;/gi, '"')
-    .replace(/&apos;/gi, "'")
-    .replace(/&ldquo;/gi, '"')
-    .replace(/&rdquo;/gi, '"')
-    .replace(/&lsquo;/gi, "'")
-    .replace(/&rsquo;/gi, "'")
-    .replace(/&#34;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/&#8220;/gi, '"')
-    .replace(/&#8221;/gi, '"')
-    .replace(/&#8216;/gi, "'")
-    .replace(/&#8217;/gi, "'")
-    .replace(/\u201C|\u201D/g, '"')
-    .replace(/\u2018|\u2019/g, "'")
-  let val: string | undefined
-  const re = /([a-zA-Z0-9_-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"']+))/g
-  for (const m of decoded.matchAll(re) as any) {
-    const key = String(m[1] || "").trim().toLowerCase()
-    if (key === "hex") {
-      val = (m[2] ?? m[3] ?? m[4] ?? "").trim()
-      break
-    }
-  }
-  if (!val) return null
-  const raw = val.replace(/^#/, "").toLowerCase()
-  if (/^[0-9a-f]{6}$/.test(raw)) return `#${raw.toUpperCase()}`
-  if (/^[0-9a-f]{3}$/.test(raw)) {
-    const exp = `${raw[0]}${raw[0]}${raw[1]}${raw[1]}${raw[2]}${raw[2]}`
-    return `#${exp.toUpperCase()}`
-  }
-  return null
 }

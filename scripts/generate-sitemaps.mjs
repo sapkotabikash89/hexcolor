@@ -358,6 +358,57 @@ ${allImageUrls.map(entry => {
 }
 
 /**
+ * Generate _redirects file for Cloudflare Pages
+ */
+function generateRedirects() {
+    try {
+        const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
+        if (!fs.existsSync(blogPostsDataPath)) {
+            console.warn('⚠️  No blog posts found, skipping _redirects generation');
+            return;
+        }
+
+        const posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
+        const redirects = [];
+
+        posts.forEach(post => {
+            // Extract hex from title
+            const match = post.title.trim().match(/^([0-9A-Fa-f]{6})\b/);
+            const matchHash = post.title.trim().match(/^#([0-9A-Fa-f]{6})\b/);
+            
+            let hex = null;
+            if (match) hex = match[1];
+            else if (matchHash) hex = matchHash[1];
+
+            if (hex) {
+                const targetPath = post.uri || `/`; // Fallback to root if no uri
+                
+                // Cloudflare _redirects format: /source /target code
+                // Generate for both uppercase and lowercase to be safe
+                // Case 1: Uppercase hex
+                redirects.push(`/colors/${hex.toUpperCase()} ${targetPath} 301`);
+                
+                // Case 2: Lowercase hex (if different)
+                if (hex.toUpperCase() !== hex.toLowerCase()) {
+                    redirects.push(`/colors/${hex.toLowerCase()} ${targetPath} 301`);
+                }
+            }
+        });
+
+        if (redirects.length > 0) {
+            const content = redirects.join('\n');
+            fs.writeFileSync(path.join(PUBLIC_DIR, '_redirects'), content);
+            console.log(`✅ Generated _redirects (${redirects.length} rules)`);
+        } else {
+             console.log('ℹ️  No hex-specific redirects needed.');
+        }
+
+    } catch (error) {
+        console.error('❌ Error generating _redirects:', error.message);
+    }
+}
+
+/**
  * Generate main sitemap.xml (sitemap index)
  */
 function generateMainSitemap() {
@@ -388,6 +439,7 @@ try {
     generateColorsSitemap();
     generatePostsSitemap();
     generateImagesSitemap();
+    generateRedirects();
     generateMainSitemap();
 
     console.log('\n✨ All sitemaps generated successfully!');

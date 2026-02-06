@@ -1,16 +1,7 @@
-# Cloudflare Pages Redirects Configuration
-# https://developers.cloudflare.com/pages/platform/redirects/
-
-# Redirect old color URL structure to new one
-/color/:hex  /colors/:hex  301
-
-# Ensure trailing slashes
-/colors/*  /colors/:splat/  301!
-/blog/*  /blog/:splat/  301!
-/categories/*  /categories/:splat/  301!
-
-# Redirect www to non-www (if needed)
-https://www.hexcolormeans.com/*  https://hexcolormeans.com/:splat  301
-
-# SPA fallback for client-side routing (if needed)
-# /*  /index.html  200
+/colors/FFFF00 /color-yellow-meaning/ 301
+/colors/ffff00 /color-yellow-meaning/ 301
+/colors/0000FF /color-blue-meaning/ 301
+/colors/0000ff /color-blue-meaning/ 301
+/colors/008000 /color-green-meaning/ 301
+/colors/FF0000 /color-red-meaning/ 301
+/colors/ff0000 /color-red-meaning/ 301
