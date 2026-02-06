@@ -58,17 +58,36 @@ const ColorMockups = nextDynamic(() => import("@/components/color-mockups").then
 })
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
+const MarkdownText = ({ content }: { content: string }) => {
+  if (!content) return null;
+  // Split by link pattern [text](url)
+  const parts = content.split(/(\[[^\]]+\]\([^)]+\))/g);
+  
+  return (
+    <>
+      {parts.map((part, i) => {
+        const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+        if (match) {
+          return <Link key={i} href={match[2]} className="text-primary hover:underline font-medium">{match[1]}</Link>;
+        }
+        return part;
+      })}
+    </>
+  );
+};
+
 interface ColorPageContentProps {
   hex: string
   mode?: "full" | "sectionsOnly"
   faqs?: { question: string; answer: string }[]
+  colorInformation?: { paragraph1: string; paragraph2: string }
   name?: string
   colorExistsInDb?: boolean
   onColorChange?: (color: string) => void
   pageUrl?: string
 }
 
-export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsInDb, onColorChange, pageUrl }: ColorPageContentProps) {
+export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, name, colorExistsInDb, onColorChange, pageUrl }: ColorPageContentProps) {
   const router = useRouter()
   const label = name ? `${name} (${hex})` : hex
   const [selectedHarmony, setSelectedHarmony] = useState("analogous")
@@ -247,7 +266,13 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
           </div>
           <div className="px-4 sm:px-6 py-2">
             <div className="text-base leading-relaxed">
-              {(() => {
+              {colorInformation ? (
+                <div className="space-y-4">
+                  <p><MarkdownText content={colorInformation.paragraph1} /></p>
+                  <p><MarkdownText content={colorInformation.paragraph2} /></p>
+                </div>
+              ) : (
+                (() => {
                 const getUniqueKnownColors = (colors: string[]) => {
                   const known = colors.map(c => getClosestKnownColor(c))
                   const unique = new Map<string, { name: string; hex: string }>()
@@ -290,7 +315,8 @@ export function ColorPageContent({ hex, mode = "full", faqs, name, colorExistsIn
                     </p>
                   </div>
                 )
-              })()}
+              })()
+              )}
             </div>
           </div>
         </Card>

@@ -11,13 +11,13 @@ const ColorSidebar = dynamic(() => import("@/components/sidebar").then((mod) => 
 const ColorPageContent = dynamic(() => import("@/components/color-page-content").then(mod => mod.ColorPageContent), {
   loading: () => <div className="h-96 w-full animate-pulse bg-muted rounded-lg" />
 })
-import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk, getColorHarmony } from "@/lib/color-utils"
+import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk, getAdjacentColors, getClosestKnownColor, getColorHarmony } from "@/lib/color-utils"
 import { getGumletColorImage } from "@/lib/image-utils"
 import { KNOWN_COLOR_HEXES } from "@/lib/known-colors-complete"
 import { notFound } from "next/navigation"
 import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
-import { generateFAQs } from "@/lib/category-utils"
+import { generateColorInformation, generateColorFAQs } from "@/lib/generateColorContent"
 import { TableOfContents } from "@/components/table-of-contents"
 import { URLNormalizer } from "@/components/url-normalizer"
 import { Suspense } from "react"
@@ -212,13 +212,63 @@ export default async function ColorPage({ params }: ColorPageProps) {
   const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null
   const cmyk = rgb ? rgbToCmyk(rgb.r, rgb.g, rgb.b) : null
 
+  // Helper for neighbors (used in content generation)
+  const neighbors = getAdjacentColors(normalizedHex)
+  // Ensure we have name for neighbor display if possible
+  const neighborsWithNames = {
+      prev: neighbors.prev ? { hex: neighbors.prev, name: getClosestKnownColor(neighbors.prev).name } : undefined,
+      next: neighbors.next ? { hex: neighbors.next, name: getClosestKnownColor(neighbors.next).name } : undefined
+  }
+
   const breadcrumbItems = [
     { name: "HexColorMeans", item: "https://hexcolormeans.com" },
     { name: "Color Names", item: "https://hexcolormeans.com/colors" },
     { name: normalizedHex, item: `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}` },
   ]
 
-  const faqItems = rgb && hsl ? generateFAQs(normalizedHex, rgb, hsl, colorName) : []
+  let faqItems: { question: string; answer: string }[] = []
+  let colorInformation = null
+
+  if (rgb && hsl && cmyk) {
+      // Fetch pairings (Analogous + Split Complementary)
+      const analogous = getColorHarmony(normalizedHex, "analogous");
+      const splitComp = getColorHarmony(normalizedHex, "split-complementary");
+      
+      // Filter out self and duplicates, and ensure we only use KNOWN colors
+      const uniquePairings = Array.from(new Set([...analogous, ...splitComp]))
+          .map(h => getClosestKnownColor(h)) // Map to closest known color (both name and hex)
+          .filter((c, index, self) => 
+              c.hex.toUpperCase() !== normalizedHex.toUpperCase() && // Not self
+              self.findIndex(t => t.hex === c.hex) === index // Unique known colors
+          )
+          .slice(0, 3);
+
+      // Fetch conflicts (Triadic + Complementary)
+      const triadic = getColorHarmony(normalizedHex, "triadic");
+      const complementary = getColorHarmony(normalizedHex, "complementary");
+      
+      const uniqueConflicts = Array.from(new Set([...triadic, ...complementary]))
+          .map(h => getClosestKnownColor(h)) // Map to closest known color
+          .filter((c, index, self) => 
+              c.hex.toUpperCase() !== normalizedHex.toUpperCase() && 
+              self.findIndex(t => t.hex === c.hex) === index
+          )
+          .slice(0, 3);
+
+      const contentData = {
+          hex: normalizedHex,
+          name: colorName || "Color",
+          rgb,
+          hsl,
+          cmyk,
+          neighbors: neighborsWithNames,
+          pairings: uniquePairings,
+          conflicts: uniqueConflicts
+      }
+      faqItems = generateColorFAQs(contentData)
+      colorInformation = generateColorInformation(contentData)
+  }
+  
   const pageUrl = `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}`
   const pageDescription = `Explore ${normalizedHex} color information, conversions, harmonies, variations, and accessibility.`
 
@@ -338,7 +388,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
 
           {/* Center Article Content - Flexible width */}
           <article className="flex-1 min-w-0 w-full">
-            <ColorPageContent key={normalizedHex} hex={normalizedHex} faqs={faqItems} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
+            <ColorPageContent key={normalizedHex} hex={normalizedHex} faqs={faqItems} colorInformation={colorInformation || undefined} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
           </article>
 
           {/* Right Sidebar - Hidden below lg to prioritize content width */}
