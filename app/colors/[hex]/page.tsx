@@ -235,25 +235,29 @@ export default async function ColorPage({ params }: ColorPageProps) {
       const splitComp = getColorHarmony(normalizedHex, "split-complementary");
       
       // Filter out self and duplicates, and ensure we only use KNOWN colors
-      const uniquePairings = Array.from(new Set([...analogous, ...splitComp]))
-          .map(h => getClosestKnownColor(h)) // Map to closest known color (both name and hex)
+      const pairingCandidates = Array.from(new Set([...analogous, ...splitComp]))
+          .map(h => getClosestKnownColor(h))
           .filter((c, index, self) => 
-              c.hex.toUpperCase() !== normalizedHex.toUpperCase() && // Not self
-              self.findIndex(t => t.hex === c.hex) === index // Unique known colors
-          )
-          .slice(0, 3);
+              c.hex.toUpperCase() !== normalizedHex.toUpperCase() && 
+              self.findIndex(t => t.hex === c.hex) === index
+          );
+      
+      const uniquePairings = pairingCandidates.slice(0, 5);
 
       // Fetch conflicts (Triadic + Complementary)
       const triadic = getColorHarmony(normalizedHex, "triadic");
       const complementary = getColorHarmony(normalizedHex, "complementary");
       
-      const uniqueConflicts = Array.from(new Set([...triadic, ...complementary]))
-          .map(h => getClosestKnownColor(h)) // Map to closest known color
+      const conflictCandidates = Array.from(new Set([...triadic, ...complementary]))
+          .map(h => getClosestKnownColor(h))
           .filter((c, index, self) => 
               c.hex.toUpperCase() !== normalizedHex.toUpperCase() && 
-              self.findIndex(t => t.hex === c.hex) === index
-          )
-          .slice(0, 3);
+              self.findIndex(t => t.hex === c.hex) === index &&
+              // Ensure no overlap with pairings
+              !pairingCandidates.some(p => p.hex === c.hex)
+          );
+
+      const uniqueConflicts = conflictCandidates.slice(0, 5);
 
       const contentData = {
           hex: normalizedHex,

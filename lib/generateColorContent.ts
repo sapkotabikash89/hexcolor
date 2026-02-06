@@ -69,6 +69,52 @@ const CONFLICT_TEMPLATES = [
   (links: string, synonym: string) => `, whereas ${links} often ${synonym} with this hue, offering strong contrast`
 ];
 
+// FAQ Templates
+const MEANING_TEMPLATES = [
+  (name: string, hex: string, symbolism: string, hue: string, usage: string) => 
+    `${name} (${hex}) symbolizes ${symbolism}, serving as a visual representation of these core qualities. Its ${hue} character communicates a specific emotional weight, often associated with ${symbolism}. In design and art, ${name} (${hex}) is frequently utilized for ${usage}, where its distinct presence can make a lasting impact.`,
+  (name: string, hex: string, symbolism: string, hue: string, usage: string) => 
+    `The meaning of ${name} (${hex}) is deeply tied to ${symbolism}, reflecting its inherent chromatic nature. As a shade of ${hue}, it embodies a unique vibration that resonates with viewers on a subconscious level. Consequently, ${name} (${hex}) finds its best application in ${usage}, where it can effectively convey its intended message.`,
+  (name: string, hex: string, symbolism: string, hue: string, usage: string) => 
+    `Representing ${symbolism}, ${name} (${hex}) stands as a testament to the power of color psychology. This particular ${hue} variant offers a nuanced perspective, blending traditional associations with modern interpretations. Designers often turn to ${name} (${hex}) for ${usage} to leverage its specific visual and emotional appeal.`
+];
+
+const SPIRITUAL_TEMPLATES = [
+  (name: string, hex: string, meaning: string, effect: string) => 
+    `Spiritually, ${name} (${hex}) encourages ${meaning}, acting as a catalyst for inner growth. This color's vibration is believed to resonate with the soul, fostering a sense of connection and purpose. Practitioners often use ${name} (${hex}) to support ${effect}, allowing for deeper meditation and spiritual alignment.`,
+  (name: string, hex: string, meaning: string, effect: string) => 
+    `In spiritual practices, ${name} (${hex}) is revered for its ability to promote ${meaning}. It serves as a bridge between the physical and metaphysical, guiding individuals toward higher states of consciousness. By meditating on ${name} (${hex}), one may experience enhanced ${effect}, leading to a more balanced and harmonious state of being.`,
+  (name: string, hex: string, meaning: string, effect: string) => 
+    `The spiritual significance of ${name} (${hex}) lies in its power to facilitate ${meaning}. It is often seen as a protective and enlightening force, helping to clear negative energies. Integrating ${name} (${hex}) into one's environment can actively support ${effect}, creating a sanctuary for spiritual development.`
+];
+
+const CHAKRA_TEMPLATES = [
+  (name: string, hex: string, chakra: string, hueVal: number) => 
+    `Based on its hue value of ${hueVal}°, ${name} (${hex}) is most closely aligned with the ${chakra}. This energy center governs specific physical and emotional functions, which this color helps to stimulate and balance. Working with ${name} (${hex}) can therefore aid in unblocking the ${chakra}, promoting a free flow of vital life force energy.`,
+  (name: string, hex: string, chakra: string, hueVal: number) => 
+    `${name} (${hex}) resonates strongly with the ${chakra}, a connection determined by its specific chromatic frequency of ${hueVal}°. This alignment suggests that the color can be a powerful tool for healing issues related to this chakra. By visualizing ${name} (${hex}), individuals may find it easier to center themselves and restore equilibrium to the ${chakra}.`,
+  (name: string, hex: string, chakra: string, hueVal: number) => 
+    `The energetic signature of ${name} (${hex}) corresponds directly to the ${chakra}, consistent with its hue of ${hueVal}°. This relationship highlights the color's potential to influence the attributes associated with this chakra. Consequently, incorporating ${name} (${hex}) into therapeutic practices can be beneficial for nurturing the health and vitality of the ${chakra}.`
+];
+
+const PERSONALITY_TEMPLATES = [
+  (name: string, hex: string, trait1: string, trait2: string) => 
+    `Individuals drawn to ${name} (${hex}) often value ${trait1}, given its specific composition and allure. This preference suggests a personality that is deeply in tune with their environment and appreciates ${trait2}. Furthermore, those who favor ${name} (${hex}) tends to possess a unique perspective, finding beauty and meaning in aspects of life that others might overlook.`,
+  (name: string, hex: string, trait1: string, trait2: string) => 
+    `A preference for ${name} (${hex}) typically indicates a personality that prioritizes ${trait1}. Such individuals are likely to be introspective yet expressive, balancing a desire for ${trait2} with practical grounding. Embracing ${name} (${hex}) reflects a confidence in one's own taste and a willingness to stand out through subtle yet powerful choices.`,
+  (name: string, hex: string, trait1: string, trait2: string) => 
+    `Choosing ${name} (${hex}) as a favorite color points to a character that seeks ${trait1} in their daily life. It reveals a temperament that enjoys ${trait2}, often approaching challenges with a distinct and creative mindset. Ultimately, the resonance with ${name} (${hex}) showcases a complex and multifaceted personality.`
+];
+
+const WARM_COOL_TEMPLATES = [
+  (name: string, hex: string, temp: string, hueVal: number, saturation: number) => 
+    `With a hue of ${hueVal}°, ${name} (${hex}) is considered a ${temp} color. Its visual temperature is further defined by its ${saturation}% saturation, which influences how it is perceived in various lighting conditions. While primarily ${temp}, ${name} (${hex}) can adapt to different palettes, offering versatility while maintaining its core thermal identity.`,
+  (name: string, hex: string, temp: string, hueVal: number, saturation: number) => 
+    `${name} (${hex}) falls into the category of ${temp} colors, a classification based on its hue angle of ${hueVal}°. This designation implies certain psychological effects, such as inducing feelings of ${temp === 'warm' ? 'energy and comfort' : 'calm and focus'}. Additionally, the ${saturation}% saturation of ${name} (${hex}) adds depth, making its ${temp} nature feel more nuanced and sophisticated.`,
+  (name: string, hex: string, temp: string, hueVal: number, saturation: number) => 
+    `Technically, ${name} (${hex}) is a ${temp} shade, determined by its position at ${hueVal}° on the color wheel. This suggests it brings a sense of ${temp === 'warm' ? 'warmth and vibrancy' : 'coolness and serenity'} to any space it occupies. The impact of this ${temp} characteristic is modulated by the color's saturation of ${saturation}%, ensuring that ${name} (${hex}) remains balanced and pleasing to the eye.`
+];
+
 // Deterministic random selection based on hex string
 function getDeterministicIndex(count: number, seed: string): number {
   let hash = 0;
@@ -122,8 +168,19 @@ export function generateColorInformation(data: ColorContentData): {
 
     // 4. Comparison Detail
     const comparisonTemplate = getDeterministicItem(COMPARISON_TEMPLATES, cleanHex + "C");
-    const subtleDiff = getSubtleDifference(hsl, neighbors.prev.hex);
-    const comparisonNeighborLink = `[${neighbors.prev.name} (${neighbors.prev.hex})](/colors/${neighbors.prev.hex.replace('#','').toLowerCase()})`;
+    
+    // Use a pairing color for comparison if available to avoid repetition
+    // We try to use the 4th pairing (index 3) since only first 3 are shown in paragraph 2
+    let comparisonColor = neighbors.prev;
+    if (pairings && pairings.length > 3) {
+        comparisonColor = pairings[3];
+    } else if (pairings && pairings.length > 0) {
+        // Fallback to first pairing if we don't have enough
+        comparisonColor = pairings[0];
+    }
+
+    const subtleDiff = getSubtleDifference(hsl, comparisonColor.hex);
+    const comparisonNeighborLink = `[${comparisonColor.name} (${comparisonColor.hex})](/colors/${comparisonColor.hex.replace('#','').toLowerCase()})`;
     neighborText += " " + comparisonTemplate(comparisonNeighborLink, cleanHex, subtleDiff);
 
   } else if (neighbors?.prev) {
@@ -178,26 +235,57 @@ export function generateColorFAQs(data: ColorContentData): { question: string; a
   const cleanHex = hex.toUpperCase();
   const nameStr = name && name !== "Color" ? name : cleanHex;
 
+  // Data preparation for templates
+  const hueName = getHueName(hsl.h);
+  const symbolism = getSymbolism(hsl);
+  const usage = hsl.s > 70 ? 'high-visibility designs' : 'professional and subtle applications';
+  
+  const spiritualMeaning = getSpiritualMeaning(hsl);
+  const spiritualEffect = hsl.h < 180 ? 'proactive energy and grounded emotional expression' : 'mental clarity and spiritual connection';
+  
+  const chakra = getChakra(hsl.h);
+  
+  const trait1 = cmyk.k > 50 ? 'depth and mystery' : 'clarity and openness';
+  const trait2 = hsl.s > 50 ? 'bold expressions' : 'nuanced subtleties';
+  
+  const temp = isWarm(hsl.h) ? "warm" : "cool";
+
+  // Generate answers using deterministic templates
+  const q1Template = getDeterministicItem(MEANING_TEMPLATES, cleanHex + "Q1");
+  const a1 = q1Template(nameStr, cleanHex, symbolism, hueName, usage);
+
+  const q2Template = getDeterministicItem(SPIRITUAL_TEMPLATES, cleanHex + "Q2");
+  const a2 = q2Template(nameStr, cleanHex, spiritualMeaning, spiritualEffect);
+
+  const q3Template = getDeterministicItem(CHAKRA_TEMPLATES, cleanHex + "Q3");
+  const a3 = q3Template(nameStr, cleanHex, chakra, fmt(hsl.h));
+
+  const q4Template = getDeterministicItem(PERSONALITY_TEMPLATES, cleanHex + "Q4");
+  const a4 = q4Template(nameStr, cleanHex, trait1, trait2);
+
+  const q5Template = getDeterministicItem(WARM_COOL_TEMPLATES, cleanHex + "Q5");
+  const a5 = q5Template(nameStr, cleanHex, temp, fmt(hsl.h), fmt(hsl.s));
+
   const faqs = [
     {
       question: `What is the meaning and symbolism of ${nameStr} (${cleanHex})?`,
-      answer: `${nameStr} (${cleanHex}) symbolizes ${getSymbolism(hsl)}. Its ${hsl.l < 50 ? 'deep' : 'bright'} ${getHueName(hsl.h)} tone communicates ${hsl.s > 70 ? 'urgency and energy' : 'calmness and reliability'}, making it ideal for ${hsl.s > 70 ? 'high-visibility designs' : 'professional and subtle applications'}.`
+      answer: a1
     },
     {
       question: `What is the spiritual meaning of ${nameStr} (${cleanHex})?`,
-      answer: `Spiritually, ${nameStr} (${cleanHex}) encourages ${getSpiritualMeaning(hsl)}. Its ${hsl.s > 50 ? 'intensity' : 'softness'} supports ${hsl.h < 180 ? 'proactive energy and grounded emotional expression' : 'mental clarity and spiritual connection'}.`
+      answer: a2
     },
     {
       question: `What chakra is connected to ${nameStr} (${cleanHex})?`,
-      answer: `Based on its hue value of ${fmt(hsl.h)}°, ${nameStr} (${cleanHex}) is most closely aligned with the ${getChakra(hsl.h)}. This connection suggests it may help in balancing emotional centers related to that specific energy frequency.`
+      answer: a3
     },
     {
       question: `What does ${nameStr} (${cleanHex}) mean in personality?`,
-      answer: `Individuals drawn to ${nameStr} (${cleanHex}) often value ${cmyk.k > 50 ? 'depth and mystery' : 'clarity and openness'}, given its specific composition. This preference suggests a personality that appreciates ${hsl.s > 50 ? 'bold expressions' : 'nuanced subtleties'} and ${hsl.l > 50 ? 'optimistic outlooks' : 'grounded realism'}.`
+      answer: a4
     },
     {
       question: `Is ${cleanHex} a warm or cool color?`,
-      answer: `With a hue of ${fmt(hsl.h)}°, ${nameStr} (${cleanHex}) is considered a ${isWarm(hsl.h) ? "warm" : "cool"} color. Its visual temperature is further defined by its ${fmt(hsl.s)}% saturation, which can ${hsl.s > 50 ? 'intensify' : 'moderate'} its perceived ${isWarm(hsl.h) ? "warmth" : "coolness"} in practical application.`
+      answer: a5
     }
   ];
 
@@ -236,8 +324,8 @@ function getHueName(hue: number): string {
   if (hue < 15) return "red";
   if (hue < 45) return "orange";
   if (hue < 70) return "yellow";
-  if (hue < 150) return "green";
-  if (hue < 190) return "cyan";
+  if (hue < 165) return "green";
+  if (hue < 200) return "cyan";
   if (hue < 260) return "blue";
   if (hue < 300) return "purple";
   if (hue < 340) return "magenta";
