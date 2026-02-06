@@ -795,52 +795,72 @@ export function getAdjacentColors(hex: string): { prev: string; next: string } {
   const cleanHex = hex.replace("#", "").toUpperCase()
   if (!/^[0-9A-F]{6}$/.test(cleanHex)) return { prev: hex, next: hex }
 
-  const knownColors = getSortedKnownColors()
-  
-  // Find current color index
-  const currentIndex = knownColors.findIndex(c => c.hex.replace("#", "") === cleanHex)
-  
-  if (currentIndex === -1) {
-    // If current color is not in known colors, find the closest ones
-    const currentInt = parseInt(cleanHex, 16)
-    let prevIndex = -1
-    let nextIndex = -1
-    
-    // Find previous known color
-    for (let i = knownColors.length - 1; i >= 0; i--) {
-      const colorInt = parseInt(knownColors[i].hex.replace("#", ""), 16)
-      if (colorInt < currentInt) {
-        prevIndex = i
-        break
-      }
-    }
-    
-    // Find next known color
-    for (let i = 0; i < knownColors.length; i++) {
-      const colorInt = parseInt(knownColors[i].hex.replace("#", ""), 16)
-      if (colorInt > currentInt) {
-        nextIndex = i
-        break
-      }
-    }
-    
-    // Handle edge cases (wrap around)
-    if (prevIndex === -1) prevIndex = knownColors.length - 1
-    if (nextIndex === -1) nextIndex = 0
-    
+  const rgb = hexToRgb(hex)
+  if (!rgb) return { prev: hex, next: hex }
+  const targetHsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
+
+  // Get all known colors with their HSL values
+  // We compute HSL on the fly as it's not in the default sortedKnownColors
+  const candidates = Object.values(colorData).map((c: any) => {
+    const cRgb = hexToRgb(c.hex)!
     return {
-      prev: knownColors[prevIndex].hex,
-      next: knownColors[nextIndex].hex
+      hex: c.hex.startsWith("#") ? c.hex : `#${c.hex}`,
+      name: c.name,
+      hsl: rgbToHsl(cRgb.r, cRgb.g, cRgb.b)
     }
+  })
+
+  // Filter for Hue within +/- 30 degrees
+  // This ensures we stay within the same color family (spectrum neighborhood)
+  const hueFiltered = candidates.filter(c => {
+    const diff = Math.abs(c.hsl.h - targetHsl.h)
+    const shortestDiff = Math.min(diff, 360 - diff)
+    return shortestDiff <= 30
+  })
+
+  // Fallback to all candidates if we don't have enough neighbors in the hue range
+  // (Should be rare given ~1300 colors, but handles edge cases)
+  const pool = hueFiltered.length > 2 ? hueFiltered : candidates
+
+  // Sort by Lightness then Saturation to create a logical "spectrum" progression
+  // within the hue family. This avoids jumping between unrelated colors.
+  pool.sort((a, b) => {
+    if (a.hsl.l !== b.hsl.l) return a.hsl.l - b.hsl.l
+    return a.hsl.s - b.hsl.s
+  })
+
+  // Find where our target fits in this sorted spectrum
+  const targetHexFull = `#${cleanHex}`
+  const exactMatchIndex = pool.findIndex(c => c.hex.toUpperCase() === targetHexFull)
+  
+  let prevIndex: number
+  let nextIndex: number
+  
+  if (exactMatchIndex !== -1) {
+    // Target is a known color: get immediate neighbors
+    prevIndex = exactMatchIndex === 0 ? pool.length - 1 : exactMatchIndex - 1
+    nextIndex = exactMatchIndex === pool.length - 1 ? 0 : exactMatchIndex + 1
+  } else {
+    // Target is unknown: find insertion point based on sort criteria (L then S)
+    let insertIndex = pool.findIndex(c => {
+      if (c.hsl.l > targetHsl.l) return true
+      if (c.hsl.l === targetHsl.l) return c.hsl.s > targetHsl.s
+      return false
+    })
+
+    if (insertIndex === -1) insertIndex = pool.length // Append to end
+
+    // prev is the item before insertion, next is the item at insertion
+    prevIndex = insertIndex === 0 ? pool.length - 1 : insertIndex - 1
+    nextIndex = insertIndex === pool.length ? 0 : insertIndex
   }
-  
-  // Current color is known, get adjacent known colors
-  const prevIndex = currentIndex === 0 ? knownColors.length - 1 : currentIndex - 1
-  const nextIndex = currentIndex === knownColors.length - 1 ? 0 : currentIndex + 1
-  
+
+  // Safety check for empty pool
+  if (pool.length === 0) return { prev: hex, next: hex }
+
   return {
-    prev: knownColors[prevIndex].hex,
-    next: knownColors[nextIndex].hex
+    prev: pool[prevIndex].hex,
+    next: pool[nextIndex].hex
   }
 }
 

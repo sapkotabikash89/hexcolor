@@ -23,17 +23,17 @@ interface ColorContentData {
 const CLASH_SYNONYMS = [
   "conflict",
   "contrast sharply",
-  "oppose",
+  "clash",
   "create tension",
-  "mismatch"
+  "discord"
 ];
 
 // Sentence Templates
 const INTRO_TEMPLATES = [
-  (name: string, hex: string, adj: string, hue: string) => `${name} (${hex}) is a ${adj} ${hue} with commanding intensity.`,
-  (name: string, hex: string, adj: string, hue: string) => `${name} (${hex}) presents as a ${adj} ${hue}, characterized by its distinct presence.`,
-  (name: string, hex: string, adj: string, hue: string) => `With its ${adj} ${hue} appearance, ${name} (${hex}) exudes a defined energy.`,
-  (name: string, hex: string, adj: string, hue: string) => `${name} (${hex}) is a ${adj} ${hue} that naturally draws the eye.`
+  (name: string, hex: string, adj: string, hue: string) => `${name} (${hex}) is a ${adj} ${hue}.`,
+  (name: string, hex: string, adj: string, hue: string) => `${name} (${hex}) is a ${adj} ${hue} color.`,
+  (name: string, hex: string, adj: string, hue: string) => `The color ${name} (${hex}) is a ${adj} ${hue}.`,
+  (name: string, hex: string, adj: string, hue: string) => `${name} (${hex}) is defined as a ${adj} ${hue}.`
 ];
 
 const VALUE_TEMPLATES = [
@@ -64,9 +64,15 @@ const PAIRING_TEMPLATES = [
 ];
 
 const CONFLICT_TEMPLATES = [
-  (links: string, synonym: string) => `, while colors like ${links} may ${synonym} each other due to differing tones`,
+  (links: string, synonym: string) => `, while colors like ${links} may ${synonym} with it due to differing tones`,
   (links: string, synonym: string) => `; however, shades such as ${links} tend to ${synonym} with it, creating visual tension`,
   (links: string, synonym: string) => `, whereas ${links} often ${synonym} with this hue, offering strong contrast`
+];
+
+const USAGE_TEMPLATES = [
+  (hex: string, usage: string) => `Designers often use ${hex} in ${usage} where a specific visual weight is required.`,
+  (hex: string, usage: string) => `In professional settings, ${hex} is frequently applied in ${usage}.`,
+  (hex: string, usage: string) => `This color is suitable for ${usage}, often utilized to create a distinct atmosphere.`
 ];
 
 // FAQ Templates
@@ -146,7 +152,7 @@ export function generateColorInformation(data: ColorContentData): {
   
   // 1. Intro Sentence
   const adj = getAdjectives(hsl);
-  const hueName = getHueName(hsl.h);
+  const hueName = getHueName(hsl.h, hsl.s, hsl.l);
   const introTemplate = getDeterministicItem(INTRO_TEMPLATES, cleanHex);
   const intro = introTemplate(nameStr, cleanHex, adj, hueName);
 
@@ -222,7 +228,12 @@ export function generateColorInformation(data: ColorContentData): {
       conflictText = `, while opposing hues may create strong visual tension`;
   }
 
-  const paragraph2 = `${pairText}${conflictText}.`;
+  // Practical Usage
+  const usage = getUsage(hsl);
+  const usageTemplate = getDeterministicItem(USAGE_TEMPLATES, cleanHex + "U");
+  const usageText = usageTemplate(cleanHex, usage);
+
+  const paragraph2 = `${pairText}${conflictText}. ${usageText}`;
 
   return { paragraph1, paragraph2 };
 }
@@ -236,7 +247,7 @@ export function generateColorFAQs(data: ColorContentData): { question: string; a
   const nameStr = name && name !== "Color" ? name : cleanHex;
 
   // Data preparation for templates
-  const hueName = getHueName(hsl.h);
+  const hueName = getHueName(hsl.h, hsl.s, hsl.l);
   const symbolism = getSymbolism(hsl);
   const usage = hsl.s > 70 ? 'high-visibility designs' : 'professional and subtle applications';
   
@@ -320,7 +331,8 @@ function getSubtleDifference(hsl: HSL, otherHex: string): string {
   return diffs[hash % diffs.length];
 }
 
-function getHueName(hue: number): string {
+function getHueName(hue: number, s: number = 100, l: number = 50): string {
+  if (s < 10 || l > 95 || l < 5) return "neutral";
   if (hue < 15) return "red";
   if (hue < 45) return "orange";
   if (hue < 70) return "yellow";
@@ -358,4 +370,11 @@ function getChakra(hue: number): string {
 
 function isWarm(hue: number): boolean {
   return (hue >= 0 && hue < 90) || (hue >= 270 && hue <= 360);
+}
+
+function getUsage(hsl: HSL): string {
+  if (hsl.s > 70) return 'branding, signage, and high-visibility designs';
+  if (hsl.l > 80) return 'backgrounds, interfaces, and subtle design elements';
+  if (hsl.l < 20) return 'typography, borders, and structural elements';
+  return 'branding, environmental graphics, and design systems';
 }
