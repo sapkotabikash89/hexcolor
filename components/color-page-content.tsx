@@ -415,7 +415,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           <div className="bg-muted-foreground/10 border-l-[10px] py-5 px-4" style={{ borderLeftColor: hex }}>
             <h2 className="text-3xl font-bold m-0 leading-tight">{label} Color Meaning</h2>
           </div>
-          <div className="px-4 sm:px-6 py-2">
+          <div className="px-2 sm:px-6 py-2">
             <div className="prose prose-sm max-w-none dark:prose-invert">
               <p className="whitespace-pre-line leading-relaxed">{colorMeaning}</p>
             </div>
@@ -464,7 +464,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           <ChevronDown className={`w-6 h-6 transition-transform ${openBars ? "rotate-180" : ""}`} />
         </div>
         {openBars ? (
-          <div className="px-4 sm:px-6 py-2 space-y-6">
+          <div className="px-2 sm:px-6 py-2 space-y-6">
             <p className="text-muted-foreground">
               Detailed RGB and CMYK values of {label} displayed in a horizontal bar provide clear reference for digital and print color accuracy.
             </p>
@@ -567,13 +567,13 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           <ChevronDown className={`w-6 h-6 transition-transform ${openHarmonies ? "rotate-180" : ""}`} />
         </div>
         {openHarmonies ? (
-          <div className="px-4 sm:px-6 py-2 space-y-6">
+          <div className="px-2 sm:px-6 py-2 space-y-6">
             <p className="text-muted-foreground">
               Harmonious color schemes for {label} created using the <Link href="/color-wheel" className="text-primary hover:underline">color wheel</Link> ensure visually balanced palettes.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {Object.entries(harmonies).map(([type, harmony]) => (
-                <div key={type} className="space-y-3 p-5 border-2 border-border rounded-lg">
+                <div key={type} className="space-y-3 p-3 sm:p-5 border-2 border-border rounded-lg">
                   <div className="flex items-start justify-between gap-4">
                     <h3 className="font-semibold text-2xl min-w-0">{harmony.name}</h3>
                     <TooltipProvider>
@@ -621,7 +621,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           <ChevronDown className={`w-6 h-6 transition-transform ${openContrast ? "rotate-180" : ""}`} />
         </div>
         {openContrast ? (
-          <div className="px-6 py-2 space-y-4">
+          <div className="px-2 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
               Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
             </p>
@@ -664,7 +664,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
                 <span className="font-mono text-sm">{background}</span>
               </div>
             </div>
-            <div className="p-8 rounded-lg" style={{ backgroundColor: background, color: foreground }}>
+            <div className="p-4 sm:p-8 rounded-lg" style={{ backgroundColor: background, color: foreground }}>
               <p className="text-3xl font-bold mb-2">Sample Text</p>
               <p className="text-lg">This is how your text will look with these colors.</p>
             </div>
@@ -750,7 +750,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           <ChevronDown className={`w-6 h-6 transition-transform ${openCss ? "rotate-180" : ""}`} />
         </div>
         {openCss ? (
-          <div className="px-6 py-2 space-y-4">
+          <div className="px-3 sm:px-6 py-2 space-y-4">
             <CSSExample
               title="Background Color"
               code={`background-color: ${hex};`}
@@ -809,7 +809,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           <ChevronDown className={`w-6 h-6 transition-transform ${openPatterns ? "rotate-180" : ""}`} />
         </div>
         {openPatterns ? (
-          <div className="px-6 py-2 space-y-4">
+          <div className="px-3 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
               High-resolution seamless patterns featuring {label} provide ready-to-use backgrounds, wallpapers, and print designs for any project.
             </p>
@@ -913,7 +913,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           <div className="bg-muted-foreground/10 border-l-[10px] py-5 px-4" style={{ borderLeftColor: hex }}>
             <h2 className="text-3xl font-bold m-0 leading-tight">Useful Color Tools</h2>
           </div>
-          <div className="px-6 py-6 transition-all">
+          <div className="px-3 sm:px-6 py-6 transition-all">
             <p className="text-muted-foreground mb-6">A curated set of tools to help apply, analyze, and manage colors effectively in your projects</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
@@ -941,7 +941,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           <div className="bg-muted-foreground/10 border-l-[10px] py-5 px-4" style={{ borderLeftColor: hex }}>
             <h2 className="text-3xl font-bold m-0 leading-tight">{label} Color FAQs</h2>
           </div>
-          <div className="px-6 py-2 space-y-4">
+          <div className="px-3 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">Frequently asked questions about {label} color meaning, symbolism, and applications. Click on any question to expand detailed answers.</p>
             <Accordion type="single" collapsible className="w-full">
               {faqs.map((faq, idx) => (
@@ -1029,7 +1029,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
 // Helper components
 function ColorCodeItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="p-4 bg-muted rounded-lg flex items-center justify-between">
+    <div className="p-3 sm:p-4 bg-muted rounded-lg flex items-center justify-between">
       <div className="space-y-1">
         <div className="text-sm font-medium text-muted-foreground">{label}</div>
         <div className="font-mono text-sm">{value}</div>
@@ -1083,7 +1083,7 @@ function ContrastResult({
   const passAAA = ratio >= aaaThreshold
 
   return (
-    <div className="p-4 bg-muted rounded-lg space-y-2">
+    <div className="p-3 sm:p-4 bg-muted rounded-lg space-y-2">
       <h4 className="font-medium">{label}</h4>
       <div className="text-2xl font-bold">{ratio.toFixed(2)}:1</div>
       <div className="space-y-1 text-sm">
@@ -1107,7 +1107,7 @@ function CSSExample({ title, code, preview }: { title: string; code: string; pre
         <h4 className="font-medium text-xl">{title}</h4>
       </div>
       <div className="p-3 bg-muted rounded-md font-mono text-sm">{code}</div>
-      <div className="p-4 bg-background border-2 border-dashed border-border rounded-md">{preview}</div>
+      <div className="p-3 sm:p-4 bg-background border-2 border-dashed border-border rounded-md">{preview}</div>
     </div>
   )
 }
