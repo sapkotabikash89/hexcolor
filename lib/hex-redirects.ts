@@ -3,6 +3,7 @@
  * Do not edit manually.
  */
 export const HEX_REDIRECTS: Record<string, string> = {
+  "FFA500": "/color-orange-meaning/",
   "FFFF00": "/color-yellow-meaning/",
   "0000FF": "/color-blue-meaning/",
   "008000": "/color-green-meaning/",
