@@ -36,6 +36,12 @@ export function Header() {
     return () => window.removeEventListener("colorUpdate", handleColorUpdate as EventListener)
   }, [])
 
+  useEffect(() => {
+    if (showCustomPicker) {
+      setTempColor(pickerColor)
+    }
+  }, [showCustomPicker, pickerColor])
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -351,7 +357,7 @@ export function Header() {
       {/* Custom Color Picker Dialog */}
       {showCustomPicker && (
         <CustomColorPicker
-          value={pickerColor}
+          value={tempColor}
           onChange={handleColorChange}
           onApply={handleColorApply}
           onClose={() => setShowCustomPicker(false)}

@@ -1,4 +1,4 @@
-import { RGB, HSL, CMYK } from "./color-utils";
+import { RGB, HSL, CMYK, getSortedKnownColors, hexToRgb, rgbToHsl } from "./color-utils";
 
 interface LinkedColor {
   hex: string;
@@ -52,9 +52,9 @@ const NEIGHBOR_TEMPLATES = [
 ];
 
 const COMPARISON_TEMPLATES = [
-  (prevHex: string, hex: string, diff: string) => `Compared to ${prevHex}, ${hex} appears ${diff}, giving it a deeper and more authoritative appearance.`,
-  (prevHex: string, hex: string, diff: string) => `Against ${prevHex}, ${hex} leans ${diff}, marked by its distinct tonal shift.`,
-  (prevHex: string, hex: string, diff: string) => `When viewed beside ${prevHex}, ${hex} displays a ${diff} quality due to its unique composition.`
+  (prevHex: string, hex: string, diff: string) => `Compared to ${prevHex}, ${hex} appears ${diff}.`,
+  (prevHex: string, hex: string, diff: string) => `Against ${prevHex}, ${hex} looks ${diff}.`,
+  (prevHex: string, hex: string, diff: string) => `When viewed next to ${prevHex}, ${hex} is ${diff}.`
 ];
 
 const PAIRING_TEMPLATES = [
@@ -173,21 +173,15 @@ export function generateColorInformation(data: ColorContentData): {
     neighborText = neighborTemplate(prevLink, nextLink, diff);
 
     // 4. Comparison Detail
-    const comparisonTemplate = getDeterministicItem(COMPARISON_TEMPLATES, cleanHex + "C");
+    // Find a strictly same-hue family color for comparison
+    const comparisonColorInfo = findBestComparisonColor(cleanHex, hsl);
     
-    // Use a pairing color for comparison if available to avoid repetition
-    // We try to use the 4th pairing (index 3) since only first 3 are shown in paragraph 2
-    let comparisonColor = neighbors.prev;
-    if (pairings && pairings.length > 3) {
-        comparisonColor = pairings[3];
-    } else if (pairings && pairings.length > 0) {
-        // Fallback to first pairing if we don't have enough
-        comparisonColor = pairings[0];
+    if (comparisonColorInfo) {
+        const comparisonTemplate = getDeterministicItem(COMPARISON_TEMPLATES, cleanHex + "C");
+        const diffDescription = getComparisonDescription(hsl, comparisonColorInfo.hex);
+        const comparisonLink = `[${comparisonColorInfo.name} (${comparisonColorInfo.hex})](/colors/${comparisonColorInfo.hex.replace('#','').toLowerCase()})`;
+        neighborText += " " + comparisonTemplate(comparisonLink, cleanHex, diffDescription);
     }
-
-    const subtleDiff = getSubtleDifference(hsl, comparisonColor.hex);
-    const comparisonNeighborLink = `[${comparisonColor.name} (${comparisonColor.hex})](/colors/${comparisonColor.hex.replace('#','').toLowerCase()})`;
-    neighborText += " " + comparisonTemplate(comparisonNeighborLink, cleanHex, subtleDiff);
 
   } else if (neighbors?.prev) {
     const prevLink = `[${neighbors.prev.name} (${neighbors.prev.hex})](/colors/${neighbors.prev.hex.replace('#','').toLowerCase()})`;
@@ -322,13 +316,92 @@ function getComparisonAdjective(hsl: HSL, otherHex: string): string {
   return "distinct"; 
 }
 
-function getSubtleDifference(hsl: HSL, otherHex: string): string {
-  // In a real implementation we would parse otherHex and compare values.
-  // For now, we return varied strings based on the input string hash to avoid repetition
-  // but maintain consistency.
-  const hash = otherHex.split('').reduce((a,b)=>a+b.charCodeAt(0),0);
-  const diffs = ["more saturated", "richer", "more vibrant", "softer", "deeper"];
-  return diffs[hash % diffs.length];
+function findBestComparisonColor(targetHex: string, targetHsl: HSL): { hex: string, name: string } | null {
+  const knownColors = getSortedKnownColors();
+  const targetHue = targetHsl.h;
+  
+  // Filter for colors within hue range and exclude self
+  const candidates = knownColors.filter(c => {
+    if (c.hex.toLowerCase() === targetHex.toLowerCase()) return false;
+    
+    const rgb = hexToRgb(c.hex);
+    if (!rgb) return false;
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    
+    // Check hue distance (handling wrap around 360)
+    let hueDiff = Math.abs(targetHue - hsl.h);
+    if (hueDiff > 180) hueDiff = 360 - hueDiff;
+    
+    return hueDiff <= 15;
+  });
+  
+  if (candidates.length === 0) return null;
+  
+  // Find closest in terms of lightness, then hue
+  candidates.sort((a, b) => {
+    const rgbA = hexToRgb(a.hex)!;
+    const hslA = rgbToHsl(rgbA.r, rgbA.g, rgbA.b);
+    const rgbB = hexToRgb(b.hex)!;
+    const hslB = rgbToHsl(rgbB.r, rgbB.g, rgbB.b);
+    
+    const lDiffA = Math.abs(targetHsl.l - hslA.l);
+    const lDiffB = Math.abs(targetHsl.l - hslB.l);
+    
+    // Prioritize closer lightness but not identical
+    if (Math.abs(lDiffA - lDiffB) > 5) {
+       return lDiffA - lDiffB; 
+    }
+    
+    let hDiffA = Math.abs(targetHue - hslA.h);
+    if (hDiffA > 180) hDiffA = 360 - hDiffA;
+    let hDiffB = Math.abs(targetHue - hslB.h);
+    if (hDiffB > 180) hDiffB = 360 - hDiffB;
+    
+    return hDiffA - hDiffB;
+  });
+  
+  return candidates[0];
+}
+
+function getComparisonDescription(targetHsl: HSL, compareHex: string): string {
+    const rgb = hexToRgb(compareHex);
+    if (!rgb) return "distinct";
+    const compHsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    
+    const parts = [];
+    
+    // Lightness
+    const lDiff = targetHsl.l - compHsl.l;
+    if (lDiff > 10) parts.push("brighter");
+    else if (lDiff > 3) parts.push("slightly brighter");
+    else if (lDiff < -10) parts.push("deeper");
+    else if (lDiff < -3) parts.push("slightly deeper");
+    
+    // Saturation
+    const sDiff = targetHsl.s - compHsl.s;
+    if (sDiff > 10) parts.push("more saturated");
+    else if (sDiff > 3) parts.push("slightly more saturated");
+    else if (sDiff < -10) parts.push("softer"); 
+    else if (sDiff < -3) parts.push("slightly softer");
+
+    // Warmth (simplified)
+    const getWarmth = (h: number) => {
+        let distWarm = Math.min(Math.abs(h - 45), 360 - Math.abs(h - 45));
+        return -distWarm;
+    };
+    
+    const warm1 = getWarmth(targetHsl.h);
+    const warm2 = getWarmth(compHsl.h);
+    
+    if (Math.abs(warm1 - warm2) > 10) {
+        if (warm1 > warm2) parts.push("warmer");
+        else parts.push("cooler");
+    }
+
+    if (parts.length === 0) return "visually similar";
+    if (parts.length === 1) return parts[0];
+    if (parts.length === 2) return parts.join(" and ");
+    return parts.slice(0, 2).join(", ") + ", and " + parts[2];
 }
 
 function getHueName(hue: number, s: number = 100, l: number = 50): string {

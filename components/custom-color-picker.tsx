@@ -27,6 +27,8 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
   const [isDragging, setIsDragging] = useState(false)
 
   useEffect(() => {
+    if (isDragging) return
+
     const rgb = hexToRgb(value)
     if (rgb) {
       const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
@@ -36,7 +38,7 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
       setHexInput(value)
       setTempColor(value)
     }
-  }, [value])
+  }, [value, isDragging])
 
   useEffect(() => {
     drawColorSpace()
@@ -105,6 +107,7 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
     const hex = rgbToHex(rgb.r, rgb.g, rgb.b)
     setHexInput(hex)
     setTempColor(hex)
+    onChange(hex)
     
     // Dispatch color update event for sidebar - only when dragging
     if (!disableGlobalUpdate) {
@@ -120,6 +123,7 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
     const hex = rgbToHex(rgb.r, rgb.g, rgb.b)
     setHexInput(hex)
     setTempColor(hex)
+    onChange(hex)
     
     // Dispatch color update event for sidebar
     if (!disableGlobalUpdate) {
@@ -133,6 +137,7 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
     setHexInput(input)
     if (/^#[0-9A-F]{6}$/i.test(input)) {
       setTempColor(input)
+      onChange(input)
       const rgb = hexToRgb(input)
       if (rgb) {
         const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
@@ -180,7 +185,6 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
               width={300}
               height={200}
               className="w-full rounded-lg border-2 border-border cursor-crosshair touch-none"
-              onClick={handleCanvasInteraction}
               onMouseMove={(e) => {
                 if (isDragging) {
                   handleCanvasInteraction(e)
@@ -189,19 +193,21 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
                 }
               }}
               onMouseDown={(e) => {
+                // Always update rect on interaction start to handle layout shifts/scrolls
                 if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
                 setIsDragging(true)
                 handleCanvasInteraction(e)
-                // Prevent default to avoid text selection
+                // Prevent default to avoid text selection and focus jumps
                 e.preventDefault();
               }}
               onMouseUp={() => setIsDragging(false)}
               onMouseLeave={() => setIsDragging(false)}
               onTouchStart={(e) => {
+                // Always update rect on interaction start
                 if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
                 setIsDragging(true)
                 handleCanvasInteraction(e)
-                // Prevent default to avoid text selection
+                // Prevent default to avoid scrolling while picking
                 e.preventDefault();
               }}
               onTouchMove={(e) => {

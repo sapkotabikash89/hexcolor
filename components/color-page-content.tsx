@@ -41,7 +41,7 @@ import { getGumletColorImage } from "@/lib/image-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { ColorCombination } from "@/components/color-combination"
 import { ColorSwatch as Swatch } from "@/components/color-swatch"
-import { Share, Heart, Check, Copy, Download, Pipette, Image as ImageIcon, Palette, Monitor } from "lucide-react"
+import { Share, Heart, Check, Copy, Download, Pipette, Image as ImageIcon, Palette, Monitor, ChevronDown } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import nextDynamic from "next/dynamic"
 
@@ -89,7 +89,9 @@ interface ColorPageContentProps {
 
 export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, name, colorExistsInDb, onColorChange, pageUrl }: ColorPageContentProps) {
   const router = useRouter()
-  const label = name ? `${name} (${hex})` : hex
+  const label = name 
+    ? `${name.charAt(0).toUpperCase() + name.slice(1)} (${hex})` 
+    : hex
   const [selectedHarmony, setSelectedHarmony] = useState("analogous")
   const [colorBlindnessType, setColorBlindnessType] = useState("protanopia")
   const [foreground, setForeground] = useState("#FFFFFF")
@@ -425,10 +427,11 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       <Card id="conversion" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
         <div
           onClick={() => setOpenConversion((v) => !v)}
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
         >
           <h2 className={`text-3xl font-bold m-0 leading-tight ${openConversion ? "" : "underline"}`}>Color Conversion</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openConversion ? "rotate-180" : ""}`} />
         </div>
         {openConversion ? (
           <div className="px-4 sm:px-6 py-2 space-y-4">
@@ -454,10 +457,11 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       <Card className="p-0 overflow-hidden space-y-0">
         <div
           onClick={() => setOpenBars((v) => !v)}
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
         >
           <h2 className={`text-3xl font-bold m-0 leading-tight ${openBars ? "" : "underline"}`}>RGB Values & CMYK Values</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openBars ? "rotate-180" : ""}`} />
         </div>
         {openBars ? (
           <div className="px-4 sm:px-6 py-2 space-y-6">
@@ -484,10 +488,11 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       <Card id="variations" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
         <div
           onClick={() => setOpenVariations((v) => !v)}
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
         >
           <h2 className={`text-3xl font-bold m-0 leading-tight ${openVariations ? "" : "underline"}`}>Color Variations</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openVariations ? "rotate-180" : ""}`} />
         </div>
         {openVariations ? (
           <div className="px-4 sm:px-6 py-2 space-y-4">
@@ -555,10 +560,11 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       <Card id="harmonies" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
         <div
           onClick={() => setOpenHarmonies((v) => !v)}
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
         >
           <h2 className={`text-3xl font-bold m-0 leading-tight ${openHarmonies ? "" : "underline"}`}>Color Harmonies</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openHarmonies ? "rotate-180" : ""}`} />
         </div>
         {openHarmonies ? (
           <div className="px-4 sm:px-6 py-2 space-y-6">
@@ -605,144 +611,143 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
 
 
       {/* Contrast Checker */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="contrast-checker" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenContrast((v) => !v)}
-          >
-            <h2 className="text-3xl font-bold m-0 leading-tight">Contrast Checker (WCAG)</h2>
-          </div>
-          {openContrast ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium">Foreground:</label>
-                  <button
-                    onClick={() => {
-                      setTempForeground(foreground)
-                      setShowForegroundPicker(true)
-                    }}
-                    className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
-                    style={{ backgroundColor: foreground }}
-                  >
-                    <Pipette 
-                      className="absolute inset-0 m-auto w-4 h-4" 
-                      style={{ color: getContrastColor(foreground) }}
-                    />
-                  </button>
-                  <span className="font-mono text-sm">{foreground}</span>
-                </div>
-                <Button variant="outline" size="sm" onClick={swapColors} className="gap-2 bg-transparent">
-                  Swap
-                </Button>
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium">Background:</label>
-                  <button
-                    onClick={() => {
-                      setTempBackground(background)
-                      setShowBackgroundPicker(true)
-                    }}
-                    className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
-                    style={{ backgroundColor: background }}
-                  >
-                    <Pipette 
-                      className="absolute inset-0 m-auto w-4 h-4" 
-                      style={{ color: getContrastColor(background) }}
-                    />
-                  </button>
-                  <span className="font-mono text-sm">{background}</span>
-                </div>
+      <Card id="contrast-checker" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenContrast((v) => !v)}
+        >
+          <h2 className={`text-3xl font-bold m-0 leading-tight ${openContrast ? "" : "underline"}`}>Contrast Checker (WCAG)</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openContrast ? "rotate-180" : ""}`} />
+        </div>
+        {openContrast ? (
+          <div className="px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium">Foreground:</label>
+                <button
+                  onClick={() => {
+                    setTempForeground(foreground)
+                    setShowForegroundPicker(true)
+                  }}
+                  className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
+                  style={{ backgroundColor: foreground }}
+                >
+                  <Pipette 
+                    className="absolute inset-0 m-auto w-4 h-4" 
+                    style={{ color: getContrastColor(foreground) }}
+                  />
+                </button>
+                <span className="font-mono text-sm">{foreground}</span>
               </div>
-              <div className="p-8 rounded-lg" style={{ backgroundColor: background, color: foreground }}>
-                <p className="text-3xl font-bold mb-2">Sample Text</p>
-                <p className="text-lg">This is how your text will look with these colors.</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <ContrastResult label="Large Text (18pt+)" ratio={contrastRatio} aaThreshold={3} aaaThreshold={4.5} />
-                <ContrastResult label="Normal Text" ratio={contrastRatio} aaThreshold={4.5} aaaThreshold={7} />
-                <ContrastResult label="UI Components" ratio={contrastRatio} aaThreshold={3} aaaThreshold={4.5} />
+              <Button variant="outline" size="sm" onClick={swapColors} className="gap-2 bg-transparent">
+                Swap
+              </Button>
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium">Background:</label>
+                <button
+                  onClick={() => {
+                    setTempBackground(background)
+                    setShowBackgroundPicker(true)
+                  }}
+                  className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
+                  style={{ backgroundColor: background }}
+                >
+                  <Pipette 
+                    className="absolute inset-0 m-auto w-4 h-4" 
+                    style={{ color: getContrastColor(background) }}
+                  />
+                </button>
+                <span className="font-mono text-sm">{background}</span>
               </div>
             </div>
-          ) : null}
-        </Card>
-      ) : null}
+            <div className="p-8 rounded-lg" style={{ backgroundColor: background, color: foreground }}>
+              <p className="text-3xl font-bold mb-2">Sample Text</p>
+              <p className="text-lg">This is how your text will look with these colors.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <ContrastResult label="Large Text (18pt+)" ratio={contrastRatio} aaThreshold={3} aaaThreshold={4.5} />
+              <ContrastResult label="Normal Text" ratio={contrastRatio} aaThreshold={4.5} aaaThreshold={7} />
+              <ContrastResult label="UI Components" ratio={contrastRatio} aaThreshold={3} aaaThreshold={4.5} />
+            </div>
+          </div>
+        ) : null}
+      </Card>
 
       {/* Color Blindness Simulator */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="blindness-simulator" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenBlindness((v) => !v)}
-          >
-            <h2 className="text-3xl font-bold m-0 leading-tight">Color Blindness Simulator</h2>
-          </div>
-          {openBlindness ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator" className="text-primary hover:underline">Color Blindness Simulator</Link>.
-              </p>
-              <Select value={colorBlindnessType} onValueChange={setColorBlindnessType}>
-                <SelectTrigger className="w-full md:w-64" aria-label="Select color blindness type">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="protanopia">Protanopia (Red-Blind)</SelectItem>
-                  <SelectItem value="protanomaly">Protanomaly (Red-Weak)</SelectItem>
-                  <SelectItem value="deuteranopia">Deuteranopia (Green-Blind)</SelectItem>
-                  <SelectItem value="deuteranomaly">Deuteranomaly (Green-Weak)</SelectItem>
-                  <SelectItem value="tritanopia">Tritanopia (Blue-Blind)</SelectItem>
-                  <SelectItem value="tritanomaly">Tritanomaly (Blue-Weak)</SelectItem>
-                  <SelectItem value="achromatopsia">Achromatopsia (Total Color Blind)</SelectItem>
-                  <SelectItem value="achromatomaly">Achromatomaly (Partial Color Blind)</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-center">Normal Vision</h4>
-                  <div
-                    className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
-                    style={{ backgroundColor: hex, color: getContrastColor(hex) }}
-                  >
-                    {label}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-center capitalize">
-                    {colorBlindnessType.replace(/([A-Z])/g, " $1").trim()}
-                  </h4>
-                  <div
-                    className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
-                    style={{
-                      backgroundColor: simulateColorBlindness(hex, colorBlindnessType),
-                      color: getContrastColor(simulateColorBlindness(hex, colorBlindnessType)),
-                    }}
-                  >
-                    {simulateColorBlindness(hex, colorBlindnessType)}
-                  </div>
+      <Card id="blindness-simulator" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenBlindness((v) => !v)}
+        >
+          <h2 className={`text-3xl font-bold m-0 leading-tight ${openBlindness ? "" : "underline"}`}>Color Blindness Simulator</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openBlindness ? "rotate-180" : ""}`} />
+        </div>
+        {openBlindness ? (
+          <div className="px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator" className="text-primary hover:underline">Color Blindness Simulator</Link>.
+            </p>
+            <Select value={colorBlindnessType} onValueChange={setColorBlindnessType}>
+              <SelectTrigger className="w-full md:w-64" aria-label="Select color blindness type">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="protanopia">Protanopia (Red-Blind)</SelectItem>
+                <SelectItem value="protanomaly">Protanomaly (Red-Weak)</SelectItem>
+                <SelectItem value="deuteranopia">Deuteranopia (Green-Blind)</SelectItem>
+                <SelectItem value="deuteranomaly">Deuteranomaly (Green-Weak)</SelectItem>
+                <SelectItem value="tritanopia">Tritanopia (Blue-Blind)</SelectItem>
+                <SelectItem value="tritanomaly">Tritanomaly (Blue-Weak)</SelectItem>
+                <SelectItem value="achromatopsia">Achromatopsia (Total Color Blind)</SelectItem>
+                <SelectItem value="achromatomaly">Achromatomaly (Partial Color Blind)</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <h4 className="font-medium text-center">Normal Vision</h4>
+                <div
+                  className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
+                  style={{ backgroundColor: hex, color: getContrastColor(hex) }}
+                >
+                  {label}
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Note: These simulations are approximations. Actual color vision deficiency varies by individual.
-              </p>
+              <div className="space-y-2">
+                <h4 className="font-medium text-center capitalize">
+                  {colorBlindnessType.replace(/([A-Z])/g, " $1").trim()}
+                </h4>
+                <div
+                  className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
+                  style={{
+                    backgroundColor: simulateColorBlindness(hex, colorBlindnessType),
+                    color: getContrastColor(simulateColorBlindness(hex, colorBlindnessType)),
+                  }}
+                >
+                  {simulateColorBlindness(hex, colorBlindnessType)}
+                </div>
+              </div>
             </div>
-          ) : null}
-        </Card>
-      ) : null}
+            <p className="text-xs text-muted-foreground">
+              Note: These simulations are approximations. Actual color vision deficiency varies by individual.
+            </p>
+          </div>
+        ) : null}
+      </Card>
 
       {/* CSS Examples */}
       <Card id="css-examples" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
         <div
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
           onClick={() => setOpenCss((v) => !v)}
         >
-          <h2 className="text-3xl font-bold m-0 leading-tight">CSS Examples</h2>
+          <h2 className={`text-3xl font-bold m-0 leading-tight ${openCss ? "" : "underline"}`}>CSS Examples</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openCss ? "rotate-180" : ""}`} />
         </div>
         {openCss ? (
           <div className="px-6 py-2 space-y-4">
@@ -794,77 +799,75 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       </Card>
 
       {/* Patterns */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="patterns" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenPatterns((v) => !v)}
-          >
-            <h2 className={`text-3xl font-bold m-0 leading-tight ${openPatterns ? "" : "underline"}`}>Seamless Patterns</h2>
+      <Card id="patterns" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenPatterns((v) => !v)}
+        >
+          <h2 className={`text-3xl font-bold m-0 leading-tight ${openPatterns ? "" : "underline"}`}>Seamless Patterns</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openPatterns ? "rotate-180" : ""}`} />
+        </div>
+        {openPatterns ? (
+          <div className="px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              High-resolution seamless patterns featuring {label} provide ready-to-use backgrounds, wallpapers, and print designs for any project.
+            </p>
+            <ColorPatterns color={hex} />
           </div>
-          {openPatterns ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                High-resolution seamless patterns featuring {label} provide ready-to-use backgrounds, wallpapers, and print designs for any project.
-              </p>
-              <ColorPatterns color={hex} />
-            </div>
-          ) : null}
-        </Card>
-      ) : null}
+        ) : null}
+      </Card>
 
       {/* Icons */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="icons" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenIcons((v) => !v)}
-          >
-            <h2 className={`text-3xl font-bold m-0 leading-tight ${openIcons ? "" : "underline"}`}>Icons</h2>
+      <Card id="icons" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenIcons((v) => !v)}
+        >
+          <h2 className={`text-3xl font-bold m-0 leading-tight ${openIcons ? "" : "underline"}`}>Icons</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openIcons ? "rotate-180" : ""}`} />
+        </div>
+        {openIcons ? (
+          <div className="px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              A collection of popular icons in {label} offers ready-to-use visuals for interfaces, designs, and creative projects.
+            </p>
+            <ColorIcons color={hex} />
           </div>
-          {openIcons ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                A collection of popular icons in {label} offers ready-to-use visuals for interfaces, designs, and creative projects.
-              </p>
-              <ColorIcons color={hex} />
-            </div>
-          ) : null}
-        </Card>
-      ) : null}
+        ) : null}
+      </Card>
 
       {/* Mockups */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="mockups" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenMockups((v) => !v)}
-          >
-            <h2 className={`text-3xl font-bold m-0 leading-tight ${openMockups ? "" : "underline"}`}>Real-World Applications</h2>
+      <Card id="mockups" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenMockups((v) => !v)}
+        >
+          <h2 className={`text-3xl font-bold m-0 leading-tight ${openMockups ? "" : "underline"}`}>Real-World Applications</h2>
+          <ChevronDown className={`w-6 h-6 transition-transform ${openMockups ? "rotate-180" : ""}`} />
+        </div>
+        {openMockups ? (
+          <div className="px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              Real-world mockups of {label} showcase its versatility across fashion, interiors, branding, and product packaging.
+            </p>
+            <ColorMockups color={hex} />
           </div>
-          {openMockups ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                Real-world mockups of {label} showcase its versatility across fashion, interiors, branding, and product packaging.
-              </p>
-              <ColorMockups color={hex} />
-            </div>
-          ) : null}
-        </Card>
-      ) : null}
+        ) : null}
+      </Card>
 
       {/* Related Colors */}
       {mode !== "sectionsOnly" ? (
         <Card id="related-colors" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
           <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
-            style={{ borderLeftColor: hex }}
             onClick={() => setOpenRelated((v) => !v)}
+            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+            style={{ borderLeftColor: hex }}
           >
-            <h2 className="text-3xl font-bold m-0 leading-tight">Related Colors</h2>
+            <h2 className={`text-3xl font-bold m-0 leading-tight ${openRelated ? "" : "underline"}`}>Related Colors</h2>
+            <ChevronDown className={`w-6 h-6 transition-transform ${openRelated ? "rotate-180" : ""}`} />
           </div>
           {openRelated ? (
             <div className="px-6 py-2 space-y-4">
@@ -974,7 +977,10 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       {showForegroundPicker && (
         <CustomColorPicker
           value={tempForeground}
-          onChange={setTempForeground}
+          onChange={(c) => {
+            setTempForeground(c)
+            setForeground(c)
+          }}
           disableGlobalUpdate={true}
           onApply={(color) => {
             const finalColor = color || tempForeground
@@ -991,7 +997,10 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       {showBackgroundPicker && (
         <CustomColorPicker
           value={tempBackground}
-          onChange={setTempBackground}
+          onChange={(c) => {
+            setTempBackground(c)
+            setBackground(c)
+          }}
           disableGlobalUpdate={true}
           onApply={(color) => {
             const finalColor = color || tempBackground

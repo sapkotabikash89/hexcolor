@@ -77,6 +77,12 @@ export function TableOfContents({ currentHex, mobileOnly = false, hideFaqs = fal
         return () => sections.forEach((section) => observer.unobserve(section))
     }, [])
 
+    useEffect(() => {
+        if (showCustomPicker) {
+            setTempColor(currentHex)
+        }
+    }, [showCustomPicker, currentHex])
+
     let navItems = items || [
         { id: "information", label: "Color Codes", icon: FileText },
         { id: "meaning", label: "Meaning", icon: BookOpen },

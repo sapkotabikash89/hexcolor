@@ -545,10 +545,13 @@ export function CompactColorWheel() {
             {showCustomPicker && (
                 <CustomColorPicker
                     value={tempColor}
-                    onChange={setTempColor}
+                    onChange={(c) => {
+                        setTempColor(c)
+                        setBaseColor(c)
+                    }}
                     onClose={() => setShowCustomPicker(false)}
                     onApply={(color) => {
-                        setBaseColor(color)
+                        setBaseColor(color || tempColor)
                         setShowCustomPicker(false)
                     }}
                 />

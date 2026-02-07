@@ -418,7 +418,10 @@ export function ColorWheelTool() {
               <label className="font-medium text-sm sm:text-base">Base Color:</label>
               <div className="flex items-center gap-3 px-3 py-2 border border-input rounded-md shadow-xs">
                 <button
-                  onClick={() => setShowCustomPicker(true)}
+                  onClick={() => {
+                    setTempColor(baseColor)
+                    setShowCustomPicker(true)
+                  }}
                   className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative"
                   style={{ backgroundColor: baseColor }}
                   aria-label={`Open color picker for base color ${baseColor.toUpperCase()}`}
@@ -544,11 +547,15 @@ export function ColorWheelTool() {
 
       {showCustomPicker && (
         <CustomColorPicker
-          value={baseColor}
-          onChange={setTempColor}
+          value={tempColor}
+          onChange={(c) => {
+            setTempColor(c)
+            setBaseColor(c)
+          }}
           onClose={() => setShowCustomPicker(false)}
           onApply={(color) => {
-            setBaseColor(color)
+            const finalColor = color || tempColor
+            setBaseColor(finalColor)
             setShowCustomPicker(false)
           }}
         />

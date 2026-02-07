@@ -934,10 +934,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 style={{ scrollMarginTop: "96px" }}
               >
                 <div
-                  className="flex items-center bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight"
+                  className="bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight"
                   style={{ borderLeftColor: effectiveHex }}
                 >
-                  Technical Information
+                  <span className="capitalize">{colorName}</span> ({effectiveHex}) Codes, Values, Palettes and Tools
                 </div>
                 <div className="px-4 sm:px-6 py-2">
                   <ColorPageContent

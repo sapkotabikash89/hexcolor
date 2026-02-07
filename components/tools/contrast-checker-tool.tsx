@@ -173,7 +173,10 @@ export function ContrastCheckerTool() {
       {showForegroundPicker && (
         <CustomColorPicker
           value={tempForeground}
-          onChange={setTempForeground}
+          onChange={(c) => {
+            setTempForeground(c)
+            setForeground(c)
+          }}
           onApply={handleApplyForeground}
           disableGlobalUpdate={true}
           onClose={() => {
@@ -185,7 +188,10 @@ export function ContrastCheckerTool() {
       {showBackgroundPicker && (
         <CustomColorPicker
           value={tempBackground}
-          onChange={setTempBackground}
+          onChange={(c) => {
+            setTempBackground(c)
+            setBackground(c)
+          }}
           onApply={handleApplyBackground}
           disableGlobalUpdate={true}
           onClose={() => {

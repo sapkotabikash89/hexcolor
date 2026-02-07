@@ -42,7 +42,10 @@ export function ColorBlindnessSimulatorTool() {
           <div className="flex items-center gap-3 flex-wrap">
             <label className="font-medium">Select Color:</label>
             <button
-              onClick={() => setShowCustomPicker(true)}
+              onClick={() => {
+                setTempColor(color)
+                setShowCustomPicker(true)
+              }}
               className="w-20 h-12 rounded-md border-2 border-border cursor-pointer relative transition-transform hover:scale-105"
               style={{ backgroundColor: color }}
               aria-label="Pick a color to simulate"
@@ -113,7 +116,10 @@ export function ColorBlindnessSimulatorTool() {
       {showCustomPicker && (
         <CustomColorPicker
           value={tempColor}
-          onChange={setTempColor}
+          onChange={(c) => {
+            setTempColor(c)
+            setColor(c)
+          }}
           onApply={handleApplyColor}
           onClose={() => setShowCustomPicker(false)}
         />

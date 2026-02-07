@@ -44,6 +44,12 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
         return () => sections.forEach((section) => observer.unobserve(section))
     }, [])
 
+    useEffect(() => {
+        if (showCustomPicker) {
+            setTempColor(currentHex)
+        }
+    }, [showCustomPicker, currentHex])
+
     const handleScroll = (id: string) => {
         const el = document.getElementById(id)
         if (el) {
