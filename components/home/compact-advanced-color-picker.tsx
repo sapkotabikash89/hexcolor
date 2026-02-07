@@ -6,19 +6,68 @@ import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CopyButton } from "@/components/copy-button"
-import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
+import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex, isValidHex } from "@/lib/color-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import Link from "next/link"
 
-export function CompactAdvancedColorPicker() {
+interface CompactAdvancedColorPickerProps {
+    color?: string
+    onChange?: (color: string) => void
+    hideLink?: boolean
+    footer?: React.ReactNode
+    hideExploreButton?: boolean
+    narrowPicker?: boolean
+}
+
+export function CompactAdvancedColorPicker({ 
+    color, 
+    onChange, 
+    hideLink = false, 
+    footer,
+    hideExploreButton = false,
+    narrowPicker = false
+}: CompactAdvancedColorPickerProps = {}) {
     const router = useRouter()
-    const [selectedColor, setSelectedColor] = useState("#E0115F")
+    const [selectedColor, setSelectedColor] = useState(color || "#E0115F")
     const [hue, setHue] = useState(337)
     const [saturation, setSaturation] = useState(86)
     const [lightness, setLightness] = useState(47)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const rectRef = useRef<DOMRect | null>(null)
     const [isDragging, setIsDragging] = useState(false)
+    const isInternalChange = useRef(false)
+
+    // Sync with external color prop
+    useEffect(() => {
+        if (color && isValidHex(color) && color.toLowerCase() !== selectedColor.toLowerCase()) {
+            const rgb = hexToRgb(color)
+            if (rgb) {
+                const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
+                // Set flag to false so we don't trigger onChange/dispatch back
+                isInternalChange.current = false
+                setHue(hsl.h)
+                setSaturation(hsl.s)
+                setLightness(hsl.l)
+                setSelectedColor(color)
+            }
+        }
+    }, [color])
+
+    // Initial setup if color prop is provided but HSL defaults were used
+    useEffect(() => {
+        if (color && isValidHex(color)) {
+            const rgb = hexToRgb(color)
+            if (rgb) {
+                const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
+                // Only update if significantly different to avoid loops
+                if (Math.abs(hsl.h - hue) > 1 || Math.abs(hsl.s - saturation) > 1 || Math.abs(hsl.l - lightness) > 1) {
+                    setHue(hsl.h)
+                    setSaturation(hsl.s)
+                    setLightness(hsl.l)
+                }
+            }
+        }
+    }, [])
 
     useEffect(() => {
         const updateRect = () => {
@@ -46,9 +95,18 @@ export function CompactAdvancedColorPicker() {
     }, [])
 
     useEffect(() => {
-        const event = new CustomEvent("colorUpdate", { detail: { color: selectedColor } })
-        window.dispatchEvent(event)
-    }, [selectedColor])
+        if (isInternalChange.current) {
+            const event = new CustomEvent("colorUpdate", { detail: { color: selectedColor } })
+            window.dispatchEvent(event)
+            if (onChange) {
+                onChange(selectedColor)
+            }
+        }
+        // Reset flag after processing
+        // We don't reset to false here because we might have multiple updates in a row from interaction
+        // But actually, we only want to block the INITIAL sync or PROP sync.
+        // If the user interacts, we set true. If props update, we set false.
+    }, [selectedColor, onChange])
 
     useEffect(() => {
         drawColorSpace()
@@ -111,6 +169,7 @@ export function CompactAdvancedColorPicker() {
         setLightness(Math.max(0, Math.min(100, Math.round(newLightness))))
 
         const rgb = hslToRgb(hue, newSaturation, newLightness)
+        isInternalChange.current = true
         setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
     }
 
@@ -118,6 +177,7 @@ export function CompactAdvancedColorPicker() {
         const newHue = Number.parseInt(e.target.value)
         setHue(newHue)
         const rgb = hslToRgb(newHue, saturation, lightness)
+        isInternalChange.current = true
         setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
     }
 
@@ -125,6 +185,7 @@ export function CompactAdvancedColorPicker() {
         const newSaturation = Number.parseInt(e.target.value)
         setSaturation(newSaturation)
         const rgb = hslToRgb(hue, newSaturation, lightness)
+        isInternalChange.current = true
         setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
     }
 
@@ -132,6 +193,7 @@ export function CompactAdvancedColorPicker() {
         const newLightness = Number.parseInt(e.target.value)
         setLightness(newLightness)
         const rgb = hslToRgb(hue, saturation, newLightness)
+        isInternalChange.current = true
         setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
     }
 
@@ -145,12 +207,16 @@ export function CompactAdvancedColorPicker() {
     const pickerX = `${Math.max(0, Math.min(100, saturation))}%`
     const pickerY = `${Math.max(0, Math.min(100, 100 - lightness))}%`
 
+    const pickerWidthClass = narrowPicker 
+        ? "max-w-[280px] sm:max-w-[320px]" 
+        : "max-w-[320px] sm:max-w-[400px]"
+
     return (
         <Card className="p-4 sm:p-6 space-y-4">
             <div className="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-8 md:items-start lg:items-center xl:items-start">
                 {/* Color Space Canvas and Hue Slider */}
                 <div className="flex flex-col items-center space-y-3 sm:space-y-4 md:w-auto lg:w-full xl:w-auto flex-shrink-0">
-                    <div className="relative w-full max-w-[320px] sm:max-w-[400px]">
+                    <div className={`relative w-full ${pickerWidthClass}`}>
                         <canvas
                             ref={canvasRef}
                             width={400}
@@ -186,7 +252,7 @@ export function CompactAdvancedColorPicker() {
                     </div>
 
                     {/* Sliders */}
-                    <div className="space-y-4 w-full max-w-[320px] sm:max-w-[400px]">
+                    <div className={`space-y-4 w-full ${pickerWidthClass}`}>
                         {/* Hue Slider */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Hue: {hue}°</label>
@@ -256,9 +322,11 @@ export function CompactAdvancedColorPicker() {
                             {selectedColor.toUpperCase()}
                         </div>
 
-                        <Button onClick={handleExplore} className="w-full" size="lg">
-                            Explore This Color
-                        </Button>
+                        {!hideExploreButton && (
+                            <Button onClick={handleExplore} className="w-full" size="lg">
+                                Explore This Color
+                            </Button>
+                        )}
                     </div>
 
                     {/* Right Column: Color Values */}
@@ -266,7 +334,7 @@ export function CompactAdvancedColorPicker() {
                         <div className="flex items-center justify-between p-3 bg-muted rounded-md">
                             <div className="min-w-0 flex-1">
                                 <span className="text-xs sm:text-sm text-muted-foreground">HEX</span>
-                                <p className="font-mono font-semibold text-sm sm:text-base truncate">{selectedColor}</p>
+                                <p className="font-mono font-semibold text-sm truncate">{selectedColor}</p>
                             </div>
                             <CopyButton value={selectedColor} />
                         </div>
@@ -275,7 +343,7 @@ export function CompactAdvancedColorPicker() {
                                 <div className="flex items-center justify-between p-3 bg-muted rounded-md">
                                     <div className="min-w-0 flex-1">
                                         <span className="text-xs sm:text-sm text-muted-foreground">RGB</span>
-                                        <p className="font-mono text-sm sm:text-base truncate">
+                                        <p className="font-mono text-sm truncate">
                                             ({rgb.r}, {rgb.g}, {rgb.b})
                                         </p>
                                     </div>
@@ -285,7 +353,7 @@ export function CompactAdvancedColorPicker() {
                                     <div className="flex items-center justify-between p-3 bg-muted rounded-md">
                                         <div className="min-w-0 flex-1">
                                             <span className="text-xs sm:text-sm text-muted-foreground">HSL</span>
-                                            <p className="font-mono text-sm sm:text-base truncate">
+                                            <p className="font-mono text-sm truncate">
                                                 ({hsl.h}°, {hsl.s}%, {hsl.l}%)
                                             </p>
                                         </div>
@@ -300,15 +368,19 @@ export function CompactAdvancedColorPicker() {
             </div>
 
             {/* Link to Full Tool */}
-            <div className="pt-4 flex justify-center border-t mt-6">
-                <Link
-                    href="/color-picker"
-                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md mt-4 text-sm"
-                >
-                    Open Color Picker
-                    <span className="text-lg">→</span>
-                </Link>
-            </div>
+            {footer ? (
+                footer
+            ) : !hideLink && (
+                <div className="pt-4 flex justify-center border-t mt-6">
+                    <Link
+                        href="/color-picker"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md mt-4 text-sm"
+                    >
+                        Open Color Picker
+                        <span className="text-lg">→</span>
+                    </Link>
+                </div>
+            )}
         </Card>
     )
 }

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 
 const ColorSidebar = dynamic(() => import("@/components/sidebar").then((mod) => mod.ColorSidebar), {
@@ -14,7 +15,7 @@ const ColorPageContent = dynamic(() => import("@/components/color-page-content")
   loading: () => <div className="h-96 w-full animate-pulse bg-muted rounded-lg" />
 });
 
-const InteractiveColorPicker = dynamic(() => import("@/components/tools/interactive-color-picker").then(mod => mod.InteractiveColorPicker), {
+const CompactAdvancedColorPicker = dynamic(() => import("@/components/home/compact-advanced-color-picker").then(mod => mod.CompactAdvancedColorPicker), {
   loading: () => <div className="h-96 w-full animate-pulse bg-muted rounded-lg" />
 });
 // import { AnchorHashNav } from "@/components/anchor-hash-nav";
@@ -35,6 +36,7 @@ import {
 } from "@/lib/color-utils";
 import { BreadcrumbSchema, FAQSchema, WebPageSchema } from "@/components/structured-data";
 import { ShareButtons } from "@/components/share-buttons";
+import { RefreshCw, Image as ImageIcon } from "lucide-react";
 
 const DEFAULT_HEX = "#E0115F";
 
@@ -168,6 +170,11 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
     }
   };
 
+  const handleRandomColor = () => {
+    const randomColor = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`.toUpperCase();
+    updateCurrentHex(randomColor);
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
@@ -252,10 +259,35 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
           <article className="flex-1 min-w-0 w-full">
             <div className="space-y-8">
               {/* Advanced Color Picker Tool */}
-              <InteractiveColorPicker
-                selectedColor={currentHex}
-                onColorChange={updateCurrentHex}
-              />
+              <CompactAdvancedColorPicker
+                  color={currentHex}
+                  onChange={updateCurrentHex}
+                  hideExploreButton={true}
+                  narrowPicker={true}
+                  footer={
+                    <div className="pt-4 flex flex-col sm:flex-row justify-center items-center gap-4 border-t mt-6">
+                        <Link
+                            href="/color-picker"
+                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md text-sm"
+                        >
+                            Advanced Color Picker
+                            <span className="text-lg">→</span>
+                        </Link>
+                        
+                        <Button onClick={handleRandomColor} className="w-full sm:w-auto" variant="outline">
+                            <RefreshCw className="w-4 h-4 mr-2" />
+                            Random Color
+                        </Button>
+                        
+                        <Link href="/image-color-picker" className="w-full sm:w-auto">
+                            <Button className="w-full" variant="outline">
+                                <ImageIcon className="w-4 h-4 mr-2" />
+                                Image Color Picker
+                            </Button>
+                        </Link>
+                    </div>
+                  }
+                />
 
               {/* Social Share Section */}
               <div className="flex justify-center py-4">
