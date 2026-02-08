@@ -63,7 +63,9 @@ export function ScreenColorPickerTool() {
                     hex={selectedColor}
                     className="w-32 h-32 rounded-lg border-2 border-border block"
                     style={{ backgroundColor: selectedColor }}
-                  />
+                  >
+                    <span className="sr-only">{selectedColor}</span>
+                  </ColorSwatchLink>
                   <div className="flex-1 space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
