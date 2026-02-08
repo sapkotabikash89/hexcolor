@@ -76,8 +76,8 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
     // Use cached rect if available (during drag), otherwise get fresh rect
     let rect = rectRef.current
     if (!rect) {
-         rect = canvas.getBoundingClientRect()
-         rectRef.current = rect
+      rect = canvas.getBoundingClientRect()
+      rectRef.current = rect
     }
 
     let clientX: number
@@ -111,7 +111,7 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
     setHexInput(hex)
     setTempColor(hex)
     onChange(hex)
-    
+
     // Dispatch color update event for sidebar - only when dragging
     if (!disableGlobalUpdate) {
       const event = new CustomEvent("colorUpdate", { detail: { color: hex } })
@@ -127,7 +127,7 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
     setHexInput(hex)
     setTempColor(hex)
     onChange(hex)
-    
+
     // Dispatch color update event for sidebar
     if (!disableGlobalUpdate) {
       const event = new CustomEvent("colorUpdate", { detail: { color: hex } })
@@ -282,7 +282,9 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
                 hex={tempColor}
                 className="w-full h-10 rounded-md border border-border block"
                 aria-label={`Current color: ${tempColor}`}
-              />
+              >
+                <span className="sr-only">{tempColor}</span>
+              </ColorSwatchLink>
             </div>
           </div>
 
