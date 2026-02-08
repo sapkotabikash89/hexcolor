@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { RefreshCw, Pipette } from "lucide-react"
 import { hexToRgb, getContrastColor } from "@/lib/color-utils"
 import { CustomColorPicker } from "@/components/custom-color-picker"
+import { ShareButtons } from "@/components/share-buttons"
 import ColorSwatchLink from "@/components/color-swatch-link"
 
 export function ContrastCheckerTool() {
@@ -68,8 +69,8 @@ export function ContrastCheckerTool() {
                       setShowForegroundPicker(true)
                     }}
                   >
-                    <Pipette 
-                      className="absolute inset-0 m-auto w-4 h-4" 
+                    <Pipette
+                      className="absolute inset-0 m-auto w-4 h-4"
                       style={{ color: getContrastColor(foreground) }}
                     />
                     <span className="sr-only">Select foreground color {foreground}</span>
@@ -109,8 +110,8 @@ export function ContrastCheckerTool() {
                       setShowBackgroundPicker(true)
                     }}
                   >
-                    <Pipette 
-                      className="absolute inset-0 m-auto w-4 h-4" 
+                    <Pipette
+                      className="absolute inset-0 m-auto w-4 h-4"
                       style={{ color: getContrastColor(background) }}
                     />
                     <span className="sr-only">Select background color {background}</span>
