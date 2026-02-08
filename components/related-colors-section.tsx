@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card"
 import { getRelatedColors, getContrastColor } from "@/lib/color-utils"
 import { cn } from "@/lib/utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
+import { ColorSwatch } from "@/components/color-swatch"
 
 interface RelatedColorsSectionProps {
   hex: string
@@ -16,7 +17,7 @@ export function RelatedColorsSection({ hex, title = "Related Colors" }: RelatedC
 
   return (
     <Card id="related-colors" className="p-0 overflow-hidden space-y-0 scroll-mt-24 my-8">
-      <div 
+      <div
         className="bg-muted/30 border-l-[10px] py-2 px-3"
         style={{ borderLeftColor: hex }}
       >
@@ -25,28 +26,19 @@ export function RelatedColorsSection({ hex, title = "Related Colors" }: RelatedC
       <div className="p-4 sm:p-6">
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
           {relatedColors.map((color) => (
-            <Link
-              key={color.hex}
-              href={getColorPageLink(color.hex)}
-              className="group flex flex-col gap-2"
-            >
-              <div
-                className="w-full aspect-square rounded-lg border border-border shadow-sm transition-transform group-hover:scale-105 flex items-center justify-center"
-                style={{ backgroundColor: color.hex }}
-              >
-                <span 
-                  className="font-mono text-xs font-bold"
-                  style={{ color: getContrastColor(color.hex) }}
-                >
-                  {color.hex.toUpperCase()}
-                </span>
-              </div>
-              <div className="text-center">
+            <div key={color.hex} className="group flex flex-col gap-2">
+              <ColorSwatch
+                color={color.hex}
+                showHex
+                swatchClassName="group-hover:scale-105 border border-border shadow-sm"
+                className="w-full aspect-square"
+              />
+              <Link href={getColorPageLink(color.hex)} className="text-center block">
                 <span className="font-medium text-xs sm:text-sm block leading-tight truncate px-1" title={color.name}>
                   {color.name}
                 </span>
-              </div>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
       </div>

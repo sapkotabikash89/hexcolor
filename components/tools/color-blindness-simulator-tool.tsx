@@ -7,6 +7,7 @@ import { simulateColorBlindness, getContrastColor } from "@/lib/color-utils"
 import { Pipette } from "lucide-react"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ShareButtons } from "@/components/share-buttons"
+import ColorSwatchLink from "@/components/color-swatch-link"
 
 export function ColorBlindnessSimulatorTool() {
   const [color, setColor] = useState("#E0115F")
@@ -77,19 +78,21 @@ export function ColorBlindnessSimulatorTool() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="space-y-3">
               <h3 className="font-bold text-center text-lg">Normal Vision</h3>
-              <div
-                className="w-full h-56 rounded-2xl border-2 border-border flex flex-col items-center justify-center gap-2 shadow-inner"
+              <ColorSwatchLink
+                hex={color}
+                className="w-full h-56 rounded-2xl border-2 border-border flex flex-col items-center justify-center gap-2 shadow-inner block"
                 style={{ backgroundColor: color, color: getContrastColor(color) }}
               >
                 <div className="text-6xl font-bold drop-shadow-sm">Aa</div>
                 <div className="font-mono text-xl font-bold">{color.toUpperCase()}</div>
-              </div>
+              </ColorSwatchLink>
             </div>
 
             <div className="space-y-3">
               <h3 className="font-bold text-center text-lg">{visionTypes.find((t) => t.value === selectedType)?.label}</h3>
-              <div
-                className="w-full h-56 rounded-2xl border-2 border-border flex flex-col items-center justify-center gap-2 shadow-inner"
+              <ColorSwatchLink
+                hex={simulateColorBlindness(color, selectedType)}
+                className="w-full h-56 rounded-2xl border-2 border-border flex flex-col items-center justify-center gap-2 shadow-inner block"
                 style={{
                   backgroundColor: simulateColorBlindness(color, selectedType),
                   color: getContrastColor(simulateColorBlindness(color, selectedType)),
@@ -97,7 +100,7 @@ export function ColorBlindnessSimulatorTool() {
               >
                 <div className="text-6xl font-bold drop-shadow-sm">Aa</div>
                 <div className="font-mono text-xl font-bold">{simulateColorBlindness(color, selectedType).toUpperCase()}</div>
-              </div>
+              </ColorSwatchLink>
             </div>
           </div>
 

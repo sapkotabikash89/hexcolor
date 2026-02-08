@@ -4,7 +4,6 @@ import type React from "react"
 import { useEffect } from "react"
 import Link from "next/link"
 import NextImage from "next/image"
-import { useRouter } from "next/navigation"
 import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,7 +16,6 @@ import { performStaticSearch, performSimpleSearch } from "@/lib/static-search-ut
 import blogPostsData from "@/lib/blog-posts-data.json"
 
 export function Header() {
-  const router = useRouter()
   const [searchValue, setSearchValue] = useState("")
   const [pickerColor, setPickerColor] = useState("#E0115F")
   const [showCustomPicker, setShowCustomPicker] = useState(false)
@@ -52,8 +50,8 @@ export function Header() {
       : performSimpleSearch(searchValue)
 
     if (searchResult) {
-      // Use Next.js router for navigation to avoid Cloudflare redirects
-      router.push(searchResult.replace('https://hexcolormeans.com', ''))
+      // Use window.location for navigation to ensure consistent behavior
+      window.location.href = searchResult.replace('https://hexcolormeans.com', '')
     } else {
       // Fallback for empty/invalid input - do nothing
       return
@@ -73,12 +71,6 @@ export function Header() {
 
     // Dispatch color update event for sidebar
     window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: selectedColor } }))
-
-    // Navigate to the appropriate color page using centralized linking logic
-    // Use Next.js router to avoid Cloudflare redirects
-    const link = getColorPageLink(selectedColor)
-    const relativeLink = link.replace('https://hexcolormeans.com', '')
-    router.push(relativeLink)
   }
 
   return (
@@ -360,6 +352,7 @@ export function Header() {
           value={tempColor}
           onChange={handleColorChange}
           onApply={handleColorApply}
+          getApplyLink={getColorPageLink}
           onClose={() => setShowCustomPicker(false)}
         />
       )}

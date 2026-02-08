@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -13,11 +12,12 @@ import { CopyButton } from "@/components/copy-button"
 import { ColorExportDialog } from "@/components/color-export-dialog"
 import { ShareButtons } from "@/components/share-buttons"
 import { ColorPageContent } from "@/components/color-page-content"
+import { ColorSwatch } from "@/components/color-swatch"
 import { getColorPageLink } from "@/lib/color-linking-utils"
+import Link from "next/link"
 import data from "@/lib/color-meaning.json"
 
 export function ImageColorPickerTool() {
-  const router = useRouter()
   const [image, setImage] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState("#E0115F")
   const [pickedColors, setPickedColors] = useState<string[]>([])
@@ -33,37 +33,37 @@ export function ImageColorPickerTool() {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [palette, setPalette] = useState<string[]>([])
   const [exportTitle, setExportTitle] = useState("")
-    const [exportLabel, setExportLabel] = useState("")
-    const [exportColors, setExportColors] = useState<string[]>([])
-    const rectRef = useRef<DOMRect | null>(null)
+  const [exportLabel, setExportLabel] = useState("")
+  const [exportColors, setExportColors] = useState<string[]>([])
+  const rectRef = useRef<DOMRect | null>(null)
 
-    // Update rect on scroll/resize
-    useEffect(() => {
-        const updateRect = () => {
-            if (canvasRef.current) {
-                rectRef.current = canvasRef.current.getBoundingClientRect()
-            }
-        }
-        
-        // Initial update
-        updateRect()
-        
-        // Update on resize and scroll
-        const resizeObserver = new ResizeObserver(updateRect)
-        if (canvasRef.current) {
-            resizeObserver.observe(canvasRef.current)
-        }
-        window.addEventListener('scroll', updateRect, { passive: true })
-        window.addEventListener('resize', updateRect, { passive: true })
-        
-        return () => {
-            resizeObserver.disconnect()
-            window.removeEventListener('scroll', updateRect)
-            window.removeEventListener('resize', updateRect)
-        }
-    }, [imageLoaded])
+  // Update rect on scroll/resize
+  useEffect(() => {
+    const updateRect = () => {
+      if (canvasRef.current) {
+        rectRef.current = canvasRef.current.getBoundingClientRect()
+      }
+    }
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Initial update
+    updateRect()
+
+    // Update on resize and scroll
+    const resizeObserver = new ResizeObserver(updateRect)
+    if (canvasRef.current) {
+      resizeObserver.observe(canvasRef.current)
+    }
+    window.addEventListener('scroll', updateRect, { passive: true })
+    window.addEventListener('resize', updateRect, { passive: true })
+
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener('scroll', updateRect)
+      window.removeEventListener('resize', updateRect)
+    }
+  }, [imageLoaded])
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
@@ -177,21 +177,21 @@ export function ImageColorPickerTool() {
   }
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        const canvas = canvasRef.current
-        if (!canvas) return
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-        let rect = rectRef.current
-        if (!rect) {
-            rect = canvas.getBoundingClientRect()
-            rectRef.current = rect
-        }
-        
-        const scaleX = canvas.width / rect.width
-        const scaleY = canvas.height / rect.height
-        const x = (e.clientX - rect.left) * scaleX
-        const y = (e.clientY - rect.top) * scaleY
+    let rect = rectRef.current
+    if (!rect) {
+      rect = canvas.getBoundingClientRect()
+      rectRef.current = rect
+    }
 
-        const ctx = canvas.getContext("2d")
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
+    const x = (e.clientX - rect.left) * scaleX
+    const y = (e.clientY - rect.top) * scaleY
+
+    const ctx = canvas.getContext("2d")
     if (!ctx) return
 
     const imageData = ctx.getImageData(x, y, 1, 1)
@@ -379,28 +379,28 @@ export function ImageColorPickerTool() {
   }
 
   const handleCanvasTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
-        // Pick color on touch end if we want, or just hide magnifier
-        setShowMagnifier(false)
-        // If we want to support "tap to pick", we should handle it here because preventDefault on start/move might kill onClick
-        // Let's rely on onClick for now? No, preventDefault kills onClick.
-        // So we must pick color here.
-        if (e.changedTouches.length > 0) {
-            const touch = e.changedTouches[0]
-            // Re-use logic from handleCanvasClick but with touch coords
-            const canvas = canvasRef.current
-            if (!canvas) return
-            
-            let rect = rectRef.current
-            if (!rect) {
-                rect = canvas.getBoundingClientRect()
-                rectRef.current = rect
-            }
-            
-            const scaleX = canvas.width / rect.width
-            const scaleY = canvas.height / rect.height
-            const x = (touch.clientX - rect.left) * scaleX
-            const y = (touch.clientY - rect.top) * scaleY
-            const ctx = canvas.getContext("2d")
+    // Pick color on touch end if we want, or just hide magnifier
+    setShowMagnifier(false)
+    // If we want to support "tap to pick", we should handle it here because preventDefault on start/move might kill onClick
+    // Let's rely on onClick for now? No, preventDefault kills onClick.
+    // So we must pick color here.
+    if (e.changedTouches.length > 0) {
+      const touch = e.changedTouches[0]
+      // Re-use logic from handleCanvasClick but with touch coords
+      const canvas = canvasRef.current
+      if (!canvas) return
+
+      let rect = rectRef.current
+      if (!rect) {
+        rect = canvas.getBoundingClientRect()
+        rectRef.current = rect
+      }
+
+      const scaleX = canvas.width / rect.width
+      const scaleY = canvas.height / rect.height
+      const x = (touch.clientX - rect.left) * scaleX
+      const y = (touch.clientY - rect.top) * scaleY
+      const ctx = canvas.getContext("2d")
       if (!ctx) return
       const imageData = ctx.getImageData(x, y, 1, 1)
       const [r, g, b] = imageData.data
@@ -417,11 +417,6 @@ export function ImageColorPickerTool() {
 
   const handleCanvasMouseLeave = () => {
     setShowMagnifier(false)
-  }
-
-  const handleExplore = (color: string) => {
-    // Use centralized linking logic for safe color navigation
-    router.push(getColorPageLink(color))
   }
 
   const rgb = hexToRgb(selectedColor)
@@ -489,12 +484,12 @@ export function ImageColorPickerTool() {
                     </div>
                     <div className="flex rounded-lg overflow-hidden border-2 border-border h-10">
                       {palette.map((color, index) => (
-                        <div
+                        <ColorSwatch
                           key={index}
-                          className="flex-1 cursor-pointer hover:opacity-80 transition-opacity"
-                          style={{ backgroundColor: color }}
-                          onClick={() => handleExplore(color)}
-                          title={color}
+                          color={color}
+                          showHex
+                          swatchClassName="hover:opacity-80 transition-opacity"
+                          className="flex-1" // Use className for flex-1 wrapper behavior
                         />
                       ))}
                     </div>
@@ -503,9 +498,10 @@ export function ImageColorPickerTool() {
 
                 <div className="p-6 bg-muted rounded-lg space-y-3">
                   <div className="flex items-center gap-4">
-                    <div
-                      className="w-24 h-24 rounded-lg border-2 border-border"
-                      style={{ backgroundColor: selectedColor }}
+                    <ColorSwatch
+                      color={selectedColor}
+                      swatchClassName="rounded-lg border-2 border-border"
+                      className="w-24 h-24"
                     />
                     <div className="flex-1 space-y-2">
                       <div className="flex items-center justify-between">
@@ -539,8 +535,8 @@ export function ImageColorPickerTool() {
                           )}
                         </>
                       )}
-                      <Button onClick={() => handleExplore(selectedColor)} variant="outline" className="w-full mt-2">
-                        Explore This Color
+                      <Button asChild variant="outline" className="w-full mt-2">
+                        <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
                       </Button>
                     </div>
                   </div>
@@ -551,16 +547,13 @@ export function ImageColorPickerTool() {
                     <h3 className="font-semibold">Picked Colors</h3>
                     <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
                       {pickedColors.map((color, index) => (
-                        <div key={index} className="group cursor-pointer" onClick={() => handleExplore(color)}>
-                          <div
-                            className="aspect-square rounded-md hover:scale-110 transition-transform"
-                            style={{ backgroundColor: color }}
-                            title={color}
-                          />
-                          <p className="text-xs font-mono text-center mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {color}
-                          </p>
-                        </div>
+                        <ColorSwatch
+                          key={index}
+                          color={color}
+                          showHex
+                          swatchClassName="rounded-md hover:scale-110"
+                          className="group"
+                        />
                       ))}
                     </div>
                     <div className="flex gap-2">

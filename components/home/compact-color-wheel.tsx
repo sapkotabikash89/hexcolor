@@ -2,7 +2,6 @@
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -11,11 +10,11 @@ import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ColorCombination } from "@/components/color-combination"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { ColorExportDialog } from "@/components/color-export-dialog"
+import ColorSwatchLink from "@/components/color-swatch-link"
 import Link from "next/link"
 import { Share, Shuffle, Pipette } from "lucide-react"
 
 export function CompactColorWheel() {
-    const router = useRouter()
     const [baseColor, setBaseColor] = useState("#E0115F")
     const [harmonyType, setHarmonyType] = useState("complementary")
     const [colorValueType, setColorValueType] = useState("hex") // State for dropdown - default to hex
@@ -414,19 +413,23 @@ export function CompactColorWheel() {
                     <div className="w-full space-y-2" style={{ maxWidth: `${canvasSize}px` }}>
                         <label className="font-medium text-sm sm:text-base">Base Color:</label>
                         <div className="flex items-center gap-3 px-3 py-2 border border-input rounded-md shadow-xs">
-                            <button
-                                onClick={() => {
+                        <ColorSwatchLink
+                                hex={baseColor}
+                                className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative block"
+                                style={{ backgroundColor: baseColor }}
+                                onClick={(e) => {
+                                    e.preventDefault()
                                     setTempColor(baseColor);
                                     setShowCustomPicker(true);
                                 }}
-                                className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative"
-                                style={{ backgroundColor: baseColor }}
-                                aria-label={`Open color picker for base color ${baseColor.toUpperCase()}`}>
+                                title={`Open color picker for base color ${baseColor.toUpperCase()}`}
+                            >
                                 <Pipette 
                                     className="absolute inset-0 m-auto w-4 h-4" 
                                     style={{ color: getContrastColor(baseColor) }}
                                 />
-                            </button>
+                                <span className="sr-only">Open color picker for base color {baseColor}</span>
+                            </ColorSwatchLink>
                             <div className="flex-1 flex items-center gap-2">
                                 <Select value={colorValueType} onValueChange={setColorValueType}>
                                     <SelectTrigger className="w-24 h-8">

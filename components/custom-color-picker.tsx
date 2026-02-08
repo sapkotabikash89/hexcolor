@@ -5,6 +5,8 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import ReactDOM from "react-dom"
 import { Button } from "@/components/ui/button"
+import ColorSwatchLink from "@/components/color-swatch-link"
+import Link from "next/link"
 import { X } from "lucide-react"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
 
@@ -12,11 +14,12 @@ interface CustomColorPickerProps {
   value: string
   onChange: (color: string) => void
   onApply?: (color: string) => void
+  getApplyLink?: (color: string) => string
   onClose: () => void
   disableGlobalUpdate?: boolean
 }
 
-export function CustomColorPicker({ value, onChange, onApply, onClose, disableGlobalUpdate = false }: CustomColorPickerProps) {
+export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onClose, disableGlobalUpdate = false }: CustomColorPickerProps) {
   const [hue, setHue] = useState(0)
   const [saturation, setSaturation] = useState(100)
   const [lightness, setLightness] = useState(50)
@@ -275,9 +278,10 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
               />
             </div>
             <div className="w-12 flex flex-col justify-end">
-              <div
-                className="w-full h-10 rounded-md border border-border"
-                style={{ backgroundColor: tempColor }}
+              <ColorSwatchLink
+                hex={tempColor}
+                className="w-full h-10 rounded-md border border-border block"
+                aria-label={`Current color: ${tempColor}`}
               />
             </div>
           </div>
@@ -286,9 +290,17 @@ export function CustomColorPicker({ value, onChange, onApply, onClose, disableGl
             <Button variant="outline" className="flex-1" onClick={onClose}>
               Cancel
             </Button>
-            <Button className="flex-1" onClick={handleDone}>
-              Apply
-            </Button>
+            {getApplyLink ? (
+              <Link href={getApplyLink(tempColor)} className="flex-1">
+                <Button className="w-full" onClick={handleDone}>
+                  Apply
+                </Button>
+              </Link>
+            ) : (
+              <Button className="flex-1" onClick={handleDone}>
+                Apply
+              </Button>
+            )}
           </div>
         </div>
       </div>

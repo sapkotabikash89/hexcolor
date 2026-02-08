@@ -2,10 +2,11 @@
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CopyButton } from "@/components/copy-button"
+import { ColorSwatch as Swatch } from "@/components/color-swatch"
+import ColorSwatchLink from "@/components/color-swatch-link"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex, isValidHex } from "@/lib/color-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import Link from "next/link"
@@ -27,7 +28,6 @@ export function CompactAdvancedColorPicker({
     hideExploreButton = false,
     narrowPicker = false
 }: CompactAdvancedColorPickerProps = {}) {
-    const router = useRouter()
     const [selectedColor, setSelectedColor] = useState(color || "#E0115F")
     const [hue, setHue] = useState(337)
     const [saturation, setSaturation] = useState(86)
@@ -197,10 +197,6 @@ export function CompactAdvancedColorPicker({
         setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
     }
 
-    const handleExplore = () => {
-        router.push(getColorPageLink(selectedColor))
-    }
-
     const rgb = hexToRgb(selectedColor)
     const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null
 
@@ -315,16 +311,17 @@ export function CompactAdvancedColorPicker({
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-4 sm:gap-6 w-full">
                     {/* Left Column: Color Preview */}
                     <div className="space-y-3">
-                        <div
-                            className="w-full h-24 sm:h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg"
+                        <ColorSwatchLink
+                            hex={selectedColor}
+                            className="w-full h-24 sm:h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg block"
                             style={{ backgroundColor: selectedColor, color: getContrastColor(selectedColor) }}
                         >
                             {selectedColor.toUpperCase()}
-                        </div>
+                        </ColorSwatchLink>
 
                         {!hideExploreButton && (
-                            <Button onClick={handleExplore} className="w-full" size="lg">
-                                Explore This Color
+                            <Button asChild className="w-full" size="lg">
+                                <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
                             </Button>
                         )}
                     </div>

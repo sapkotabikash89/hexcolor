@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { ColorSwatch } from "@/components/color-swatch"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -74,20 +75,21 @@ export function ColorLibraryPreview() {
                     <TabsContent key={group} value={group} className="mt-0 focus-visible:outline-none">
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                             {colors.map((color) => (
-                                <Link
+                                <div
                                     key={color.hex}
-                                    href={`/colors/${color.hex.replace("#", "")}`}
                                     className="group block space-y-2 transition-transform hover:-translate-y-1"
                                 >
-                                    <div
-                                        className="w-full aspect-square rounded-xl shadow-sm border border-black/5"
-                                        style={{ backgroundColor: color.hex }}
+                                    <ColorSwatch
+                                        color={color.hex}
+                                        showHex
+                                        swatchClassName="rounded-xl hover:scale-100 shadow-sm border border-black/5"
+                                        className="w-full aspect-square"
                                     />
-                                    <div className="text-center">
+                                    <Link href={`/colors/${color.hex.replace("#", "")}`} className="block text-center">
                                         <p className="text-sm font-semibold truncate">{color.name}</p>
                                         <p className="text-xs text-muted-foreground uppercase">{color.hex}</p>
-                                    </div>
-                                </Link>
+                                    </Link>
+                                </div>
                             ))}
                         </div>
                     </TabsContent>

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
-import { CopyButton } from "@/components/copy-button"
+import ColorSwatchLink from "@/components/color-swatch-link"
 
 export function CompactColorPicker() {
     const [selectedColor, setSelectedColor] = useState("#E0115F")
@@ -126,15 +126,16 @@ export function CompactColorPicker() {
                 </div>
 
                 <div className="space-y-4">
-                    <div
-                        className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono font-bold text-lg"
+                    <ColorSwatchLink
+                        hex={selectedColor}
+                        className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono font-bold text-lg block"
                         style={{
                             backgroundColor: selectedColor,
                             color: rgb && (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255 > 0.5 ? "#000" : "#fff",
                         }}
                     >
                         {selectedColor.toUpperCase()}
-                    </div>
+                    </ColorSwatchLink>
 
                     <div className="space-y-2">
                         <div className="flex items-center justify-between p-3 bg-muted rounded-md">

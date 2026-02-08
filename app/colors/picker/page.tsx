@@ -1,13 +1,16 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ColorSidebar } from "@/components/sidebar";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { BreadcrumbSchema, FAQSchema, WebPageSchema } from "@/components/structured-data";
 import { hexToRgb, rgbToHsl, getContrastColor, normalizeHex, isValidHex } from "@/lib/color-utils";
+import { getColorPageLink } from "@/lib/color-linking-utils";
+import { ColorSwatch } from "@/components/color-swatch";
 import { CopyButton } from "@/components/copy-button";
 import { ColorPageContent } from "@/components/color-page-content";
 import { TableOfContents } from "@/components/table-of-contents";
@@ -18,7 +21,6 @@ import { Palette } from "lucide-react";
 const DEFAULT_HEX = "#E0115F";
 
 function PickerContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const hexParam = searchParams ? searchParams.get('hex') : null;
 
@@ -218,13 +220,13 @@ function PickerContent() {
                   <h3 className="text-lg font-semibold mb-3">Quick Colors (click to update in-place):</h3>
                   <div className="flex flex-wrap gap-2">
                     {['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'].map(color => (
-                      <button
+                      <ColorSwatch
                         key={color}
+                        color={color}
                         onClick={() => handleSwatchClick(color)}
-                        className="w-10 h-10 rounded-md border-2 border-border cursor-pointer hover:scale-110 transition-transform"
-                        style={{ backgroundColor: color }}
-                        title={color}
-                        aria-label={`Select color ${color}`}
+                        swatchClassName="rounded-md hover:scale-110 border-2 border-border"
+                        className="w-10 h-10"
+                        showHex
                       />
                     ))}
                   </div>
@@ -299,15 +301,15 @@ function PickerContent() {
                     <div>
                       <h4 className="font-semibold mb-2">Complementary</h4>
                       <div className="flex gap-2">
-                        <div className="w-12 h-12 rounded" style={{ backgroundColor: currentHex }}></div>
-                        <div className="w-12 h-12 rounded" style={{ backgroundColor: getComplementaryColor(currentHex) }}></div>
+                        <ColorSwatch color={currentHex} className="w-12 h-12" swatchClassName="rounded" />
+                        <ColorSwatch color={getComplementaryColor(currentHex)} className="w-12 h-12" swatchClassName="rounded" showHex />
                       </div>
                     </div>
                     <div>
                       <h4 className="font-semibold mb-2">Analogous</h4>
                       <div className="flex gap-2">
                         {getAnalogousColors(currentHex).map((color, index) => (
-                          <div key={index} className="w-12 h-12 rounded" style={{ backgroundColor: color }}></div>
+                          <ColorSwatch key={index} color={color} className="w-12 h-12" swatchClassName="rounded" showHex />
                         ))}
                       </div>
                     </div>

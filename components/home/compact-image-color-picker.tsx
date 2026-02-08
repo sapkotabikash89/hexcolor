@@ -2,17 +2,16 @@
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Upload } from "lucide-react"
 import { hexToRgb, rgbToHsl } from "@/lib/color-utils"
 import { CopyButton } from "@/components/copy-button"
 import { getColorPageLink } from "@/lib/color-linking-utils"
+import { ColorSwatch } from "@/components/color-swatch"
 import Link from "next/link"
 
 export function CompactImageColorPicker() {
-    const router = useRouter()
     const [image, setImage] = useState<string | null>(null)
     const [selectedColor, setSelectedColor] = useState("#E0115F")
     const [isCustomImage, setIsCustomImage] = useState(false)
@@ -32,10 +31,10 @@ export function CompactImageColorPicker() {
                 rectRef.current = canvasRef.current.getBoundingClientRect()
             }
         }
-        
+
         // Initial update
         updateRect()
-        
+
         // Update on resize and scroll
         const resizeObserver = new ResizeObserver(updateRect)
         if (canvasRef.current) {
@@ -43,7 +42,7 @@ export function CompactImageColorPicker() {
         }
         window.addEventListener('scroll', updateRect, { passive: true })
         window.addEventListener('resize', updateRect, { passive: true })
-        
+
         return () => {
             resizeObserver.disconnect()
             window.removeEventListener('scroll', updateRect)
@@ -97,7 +96,7 @@ export function CompactImageColorPicker() {
             rect = canvas.getBoundingClientRect()
             rectRef.current = rect
         }
-        
+
         const scaleX = canvas.width / rect.width
         const scaleY = canvas.height / rect.height
         const x = (e.clientX - rect.left) * scaleX
@@ -126,7 +125,7 @@ export function CompactImageColorPicker() {
             rect = canvas.getBoundingClientRect()
             rectRef.current = rect
         }
-        
+
         const scaleX = canvas.width / rect.width
         const scaleY = canvas.height / rect.height
         const x = (clientX - rect.left) * scaleX
@@ -298,10 +297,6 @@ export function CompactImageColorPicker() {
         setShowMagnifier(false)
     }
 
-    const handleExplore = (color: string) => {
-        router.push(getColorPageLink(color))
-    }
-
     const rgb = hexToRgb(selectedColor)
     const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null
 
@@ -340,9 +335,10 @@ export function CompactImageColorPicker() {
 
                         <div className="p-6 bg-muted rounded-lg space-y-3">
                             <div className="flex items-center gap-4">
-                                <div
-                                    className="w-24 h-24 rounded-lg border-2 border-border"
-                                    style={{ backgroundColor: selectedColor }}
+                                <ColorSwatch
+                                    color={selectedColor}
+                                    swatchClassName="rounded-lg border-2 border-border hover:scale-105"
+                                    className="w-24 h-24"
                                 />
                                 <div className="flex-1 space-y-2">
                                     <div className="flex items-center justify-between">
@@ -376,8 +372,8 @@ export function CompactImageColorPicker() {
                                             )}
                                         </>
                                     )}
-                                    <Button onClick={() => handleExplore(selectedColor)} variant="outline" className="w-full mt-2">
-                                        Explore This Color
+                                    <Button asChild variant="outline" className="w-full mt-2">
+                                        <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
                                     </Button>
                                 </div>
                             </div>

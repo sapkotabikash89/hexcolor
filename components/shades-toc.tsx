@@ -5,6 +5,7 @@ import { ArrowUp, Check, Copy, ChevronDown, ChevronUp } from "lucide-react"
 import { hexToRgb } from "@/lib/color-utils"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
+import ColorSwatchLink from "@/components/color-swatch-link"
 
 interface Shade {
     name: string
@@ -121,11 +122,14 @@ export function ShadesTOC({ shades, baseColorName }: ShadesTOCProps) {
                                 return (
                                     <div key={`${shade.hex}-${idx}`} className="min-w-[400px] grid grid-cols-[40px_1fr_80px_130px] md:grid-cols-[60px_1fr_1fr_1fr] gap-2 md:gap-4 items-center text-sm py-3 hover:bg-muted/30 px-2 transition-colors">
                                         <div className="flex justify-center">
-                                            <div
-                                                className="w-8 h-8 rounded-full border-2 border-border shadow-sm"
+                                            <ColorSwatchLink
+                                                hex={shade.hex}
+                                                className="w-8 h-8 rounded-full border-2 border-border shadow-sm block"
                                                 style={{ backgroundColor: shade.hex }}
                                                 title={shade.hex}
-                                            />
+                                            >
+                                                <span className="sr-only">Color {shade.hex}</span>
+                                            </ColorSwatchLink>
                                         </div>
 
                                         <button

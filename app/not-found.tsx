@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -21,7 +21,6 @@ import {
 import { generateFAQs } from "@/lib/category-utils"
 
 export default function NotFound() {
-  const router = useRouter()
   const pathname = usePathname()
   const [colorHex, setColorHex] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)

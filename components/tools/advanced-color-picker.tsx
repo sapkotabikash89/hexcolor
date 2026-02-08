@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ShareButtons } from "@/components/share-buttons"
 import { getColorPageLink } from "@/lib/color-linking-utils"
@@ -18,7 +17,6 @@ const ColorPageContent = dynamic(() => import("@/components/color-page-content")
 })
 
 export function AdvancedColorPicker() {
-  const router = useRouter()
   const [selectedColor, setSelectedColor] = useState("#16b63c")
 
   const handleRandomColor = () => {

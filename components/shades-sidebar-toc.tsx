@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Pipette } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { CustomColorPicker } from "@/components/custom-color-picker"
+import ColorSwatchLink from "@/components/color-swatch-link"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 
 interface Shade {
@@ -21,7 +21,6 @@ interface ShadesSidebarTOCProps {
 }
 
 export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSidebarTOCProps) {
-    const router = useRouter()
     const [activeSection, setActiveSection] = useState("")
     const [showCustomPicker, setShowCustomPicker] = useState(false)
     const [tempColor, setTempColor] = useState(currentHex)
@@ -71,13 +70,7 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
     }
 
     const handleColorApply = (color?: string) => {
-        const selectedColor = typeof color === "string" ? color : tempColor
         setShowCustomPicker(false)
-
-        // Navigate to the appropriate color page
-        const link = getColorPageLink(selectedColor)
-        const relativeLink = link.replace('https://hexcolormeans.com', '')
-        router.push(relativeLink)
     }
 
     const scrollToSection = (id: string, name: string) => {
@@ -114,15 +107,19 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
             <div className="space-y-1">
                 {/* Current Color Header */}
                 <div className="mb-6 p-4 rounded-lg bg-card border shadow-sm flex items-center gap-3">
-                    <button
-                        onClick={() => setShowCustomPicker(true)}
-                        className="w-8 h-8 rounded-md shadow-sm border border-border flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all"
+                    <ColorSwatchLink
+                        hex={currentHex}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            setShowCustomPicker(true)
+                        }}
+                        className="w-8 h-8 rounded-md shadow-sm border border-border flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all block relative"
                         style={{ backgroundColor: currentHex }}
                         title="Pick a color"
-                        aria-label="Pick a color"
                     >
-                        <Pipette className="w-4 h-4 text-white mix-blend-difference" />
-                    </button>
+                        <Pipette className="w-4 h-4 text-white mix-blend-difference absolute inset-0 m-auto" />
+                        <span className="sr-only">Pick a color</span>
+                    </ColorSwatchLink>
                     <span className="font-mono font-bold text-sm">{currentHex.replace('#', '').toUpperCase()}</span>
                 </div>
 
@@ -138,9 +135,8 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                             const isActive = activeSection === shade.id
                             
                             return (
-                                <button
+                                <div
                                     key={`${shade.hex}-${idx}`}
-                                    onClick={() => scrollToSection(shade.id, shade.name)}
                                     className={cn(
                                         "w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 group text-left",
                                         isActive
@@ -148,13 +144,21 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                                             : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                     )}
                                 >
-                                    <div
-                                        className="w-4 h-4 rounded-full border border-border shadow-sm flex-shrink-0"
+                                    <ColorSwatchLink
+                                        hex={shade.hex}
+                                        className="w-4 h-4 rounded-full border border-border shadow-sm flex-shrink-0 block"
                                         style={{ backgroundColor: shade.hex }}
                                         title={shade.hex}
-                                    />
-                                    <span className="truncate">{shade.name}</span>
-                                </button>
+                                    >
+                                        <span className="sr-only">Color {shade.hex}</span>
+                                    </ColorSwatchLink>
+                                    <button 
+                                        onClick={() => scrollToSection(shade.id, shade.name)}
+                                        className="truncate hover:underline text-left flex-1"
+                                    >
+                                        {shade.name}
+                                    </button>
+                                </div>
                             )
                         })}
                     </div>
@@ -167,6 +171,7 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                     value={currentHex}
                     onChange={handleColorChange}
                     onApply={handleColorApply}
+                    getApplyLink={getColorPageLink}
                     onClose={() => setShowCustomPicker(false)}
                 />
             )}

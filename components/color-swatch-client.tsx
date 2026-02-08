@@ -9,6 +9,8 @@ interface ColorSwatchClientProps {
   showText?: boolean;
 }
 
+import ColorSwatchLink from "@/components/color-swatch-link";
+
 export default function ColorSwatchClient({ hex, width = 1200, height = 630, showText = true }: ColorSwatchClientProps) {
   const [rgb, setRgb] = useState<{ r: number; g: number; b: number } | null>(null);
   const [textColor, setTextColor] = useState<string>('#000000');
@@ -63,7 +65,8 @@ export default function ColorSwatchClient({ hex, width = 1200, height = 630, sho
   const rgbText = `RGB(${rgb.r},${rgb.g},${rgb.b})`;
 
   return (
-    <div 
+    <ColorSwatchLink 
+      hex={hex}
       style={{
         width: `${width}px`,
         height: `${height}px`,
@@ -75,6 +78,7 @@ export default function ColorSwatchClient({ hex, width = 1200, height = 630, sho
         position: 'relative',
         fontFamily: 'Arial, sans-serif',
       }}
+      className="no-underline"
     >
       {showText && (
         <>
@@ -122,6 +126,7 @@ export default function ColorSwatchClient({ hex, width = 1200, height = 630, sho
           </div>
         </>
       )}
-    </div>
+      <span className="sr-only">Color swatch for {hex}</span>
+    </ColorSwatchLink>
   );
 }

@@ -39,8 +39,8 @@ export function getColorPageLink(hex: string): string {
     // Link to static color page - normalize to lowercase for URL consistency
     return `/colors/${cleanHex.toLowerCase()}`;
   } else {
-    // Link to universal color picker with query parameter
-    return `/html-color-picker?hex=${cleanHex.toLowerCase()}`;
+    // Also link to individual color pages for consistency, assuming dynamic handling or future static generation
+    return `/colors/${cleanHex.toLowerCase()}`;
   }
 }
 

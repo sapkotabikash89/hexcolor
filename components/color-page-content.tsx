@@ -5,9 +5,7 @@ import Link from "next/link"
 import { Select } from "@/components/ui/select"
 
 import { SelectItem, SelectContent, SelectValue, SelectTrigger } from "@/components/ui/select"
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import React, { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -41,12 +39,14 @@ import { getGumletColorImage } from "@/lib/image-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { ColorCombination } from "@/components/color-combination"
 import { ColorSwatch as Swatch } from "@/components/color-swatch"
+import ColorSwatchLink from "@/components/color-swatch-link"
 import { Share, Heart, Check, Copy, Download, Pipette, Image as ImageIcon, Palette, Monitor, ChevronDown } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import nextDynamic from "next/dynamic"
 
 const CustomColorPicker = nextDynamic(() => import("@/components/custom-color-picker").then(mod => mod.CustomColorPicker))
 const ColorExportDialog = nextDynamic(() => import("@/components/color-export-dialog").then(mod => mod.ColorExportDialog))
+import { RelatedColorSwatch } from "@/components/related-color-swatch"
 const ColorIcons = nextDynamic(() => import("@/components/color-icons").then(mod => mod.ColorIcons), {
   loading: () => <div className="h-[200px] w-full bg-muted/20 animate-pulse rounded-lg" />
 })
@@ -62,7 +62,7 @@ const MarkdownText = ({ content }: { content: string }) => {
   if (!content) return null;
   // Split by link pattern [text](url)
   const parts = content.split(/(\[[^\]]+\]\([^)]+\))/g);
-  
+
   return (
     <>
       {parts.map((part, i) => {
@@ -88,9 +88,8 @@ interface ColorPageContentProps {
 }
 
 export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, name, colorExistsInDb, onColorChange, pageUrl }: ColorPageContentProps) {
-  const router = useRouter()
-  const label = name 
-    ? `${name.charAt(0).toUpperCase() + name.slice(1)} (${hex})` 
+  const label = name
+    ? `${name.charAt(0).toUpperCase() + name.slice(1)} (${hex})`
     : hex
   const [selectedHarmony, setSelectedHarmony] = useState("analogous")
   const [colorBlindnessType, setColorBlindnessType] = useState("protanopia")
@@ -241,11 +240,6 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
 
   const contrastRatio = getContrastRatio(foreground, background)
 
-  const navigateToColor = (color: string) => {
-    // Use centralized linking logic for safe color navigation
-    router.push(getColorPageLink(color))
-  }
-
   const defaultOpen = mode !== "sectionsOnly"
   const [openConversion, setOpenConversion] = useState(defaultOpen)
   const [openBars, setOpenBars] = useState(defaultOpen)
@@ -275,49 +269,49 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
                 </div>
               ) : (
                 (() => {
-                const getUniqueKnownColors = (colors: string[]) => {
-                  const known = colors.map(c => getClosestKnownColor(c))
-                  const unique = new Map<string, { name: string; hex: string }>()
-                  for (const c of known) {
-                    if (c.hex.toUpperCase() !== hex.toUpperCase() && !unique.has(c.hex.toUpperCase())) {
-                      unique.set(c.hex.toUpperCase(), c)
+                  const getUniqueKnownColors = (colors: string[]) => {
+                    const known = colors.map(c => getClosestKnownColor(c))
+                    const unique = new Map<string, { name: string; hex: string }>()
+                    for (const c of known) {
+                      if (c.hex.toUpperCase() !== hex.toUpperCase() && !unique.has(c.hex.toUpperCase())) {
+                        unique.set(c.hex.toUpperCase(), c)
+                      }
                     }
+                    return Array.from(unique.values()).slice(0, 3)
                   }
-                  return Array.from(unique.values()).slice(0, 3)
-                }
 
-                const analogous = getColorHarmony(hex, "analogous")
-                const splitComp = getColorHarmony(hex, "split-complementary")
-                const pairingColors = getUniqueKnownColors([...analogous, ...splitComp])
+                  const analogous = getColorHarmony(hex, "analogous")
+                  const splitComp = getColorHarmony(hex, "split-complementary")
+                  const pairingColors = getUniqueKnownColors([...analogous, ...splitComp])
 
-                const triadic = getColorHarmony(hex, "triadic")
-                const complementaryColor = getColorHarmony(hex, "complementary")[1]
-                const conflictingColors = getUniqueKnownColors([...triadic, complementaryColor])
+                  const triadic = getColorHarmony(hex, "triadic")
+                  const complementaryColor = getColorHarmony(hex, "complementary")[1]
+                  const conflictingColors = getUniqueKnownColors([...triadic, complementaryColor])
 
-                const renderColorLink = (c: { name: string; hex: string }, i: number, arr: any[]) => (
-                  <span key={c.hex}>
-                    <Link href={getColorPageLink(c.hex)} className="text-primary hover:underline">
-                      {c.name} ({c.hex})
-                    </Link>
-                    {i < arr.length - 1 ? (i === arr.length - 2 ? ", and " : ", ") : ""}
-                  </span>
-                )
+                  const renderColorLink = (c: { name: string; hex: string }, i: number, arr: any[]) => (
+                    <span key={c.hex}>
+                      <Link href={getColorPageLink(c.hex)} className="text-primary hover:underline">
+                        {c.name} ({c.hex})
+                      </Link>
+                      {i < arr.length - 1 ? (i === arr.length - 2 ? ", and " : ", ") : ""}
+                    </span>
+                  )
 
-                return (
-                  <div className="space-y-4">
-                    <p>
-                      <span className="font-semibold">{label}</span> RGB value is ({rgb.r}, {rgb.g}, {rgb.b}). The hex color red value is {rgb.r}, green is {rgb.g}, and blue is {rgb.b}. Its HSL format shows a hue of {hsl.h}°, saturation of {hsl.s}%, and lightness of {hsl.l}%, while the CMYK process values are {cmyk.c}%, {cmyk.m}%, {cmyk.y}%, and {cmyk.k}%.
-                    </p>
-                    <p>
-                      Colors that pair well with <span className="font-semibold">{label}</span> include{" "}
-                      {pairingColors.map((c, i) => renderColorLink(c, i, pairingColors))}
-                      , as they maintain visual balance and harmony, whereas{" "}
-                      {conflictingColors.map((c, i) => renderColorLink(c, i, conflictingColors))}
-                      {" "}tend to conflict with this color due to strong contrast or opposing tonal characteristics.
-                    </p>
-                  </div>
-                )
-              })()
+                  return (
+                    <div className="space-y-4">
+                      <p>
+                        <span className="font-semibold">{label}</span> RGB value is ({rgb.r}, {rgb.g}, {rgb.b}). The hex color red value is {rgb.r}, green is {rgb.g}, and blue is {rgb.b}. Its HSL format shows a hue of {hsl.h}°, saturation of {hsl.s}%, and lightness of {hsl.l}%, while the CMYK process values are {cmyk.c}%, {cmyk.m}%, {cmyk.y}%, and {cmyk.k}%.
+                      </p>
+                      <p>
+                        Colors that pair well with <span className="font-semibold">{label}</span> include{" "}
+                        {pairingColors.map((c, i) => renderColorLink(c, i, pairingColors))}
+                        , as they maintain visual balance and harmony, whereas{" "}
+                        {conflictingColors.map((c, i) => renderColorLink(c, i, conflictingColors))}
+                        {" "}tend to conflict with this color due to strong contrast or opposing tonal characteristics.
+                      </p>
+                    </div>
+                  )
+                })()
               )}
             </div>
           </div>
@@ -526,27 +520,27 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
               </TabsList>
               <TabsContent value="tints" className="mt-4">
                 <div className="flex justify-center">
-                  <div className="grid w-fit grid-cols-5 xl:grid-cols-10 gap-1">
+                  <div className="grid w-full grid-cols-5 xl:grid-cols-10 gap-1">
                     {tints.slice(0, 10).map((c, idx) => (
-                      <Swatch key={`${c}-${idx}`} color={c} showHex onClick={onColorChange ? () => onColorChange(c) : undefined} />
+                      <Swatch key={`${c}-${idx}`} color={c} showHex onClick={onColorChange ? () => onColorChange(c) : undefined} className="w-full aspect-square" />
                     ))}
                   </div>
                 </div>
               </TabsContent>
               <TabsContent value="shades" className="mt-4">
                 <div className="flex justify-center">
-                  <div className="grid w-fit grid-cols-5 xl:grid-cols-10 gap-1">
+                  <div className="grid w-full grid-cols-5 xl:grid-cols-10 gap-1">
                     {shades.slice(0, 10).map((c, idx) => (
-                      <Swatch key={`${c}-${idx}`} color={c} showHex onClick={onColorChange ? () => onColorChange(c) : undefined} />
+                      <Swatch key={`${c}-${idx}`} color={c} showHex onClick={onColorChange ? () => onColorChange(c) : undefined} className="w-full aspect-square" />
                     ))}
                   </div>
                 </div>
               </TabsContent>
               <TabsContent value="tones" className="mt-4">
                 <div className="flex justify-center">
-                  <div className="grid w-fit grid-cols-5 xl:grid-cols-10 gap-1">
+                  <div className="grid w-full grid-cols-5 xl:grid-cols-10 gap-1">
                     {tones.slice(0, 10).map((c, idx) => (
-                      <Swatch key={`${c}-${idx}`} color={c} showHex onClick={onColorChange ? () => onColorChange(c) : undefined} />
+                      <Swatch key={`${c}-${idx}`} color={c} showHex onClick={onColorChange ? () => onColorChange(c) : undefined} className="w-full aspect-square" />
                     ))}
                   </div>
                 </div>
@@ -636,8 +630,8 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
                   className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
                   style={{ backgroundColor: foreground }}
                 >
-                  <Pipette 
-                    className="absolute inset-0 m-auto w-4 h-4" 
+                  <Pipette
+                    className="absolute inset-0 m-auto w-4 h-4"
                     style={{ color: getContrastColor(foreground) }}
                   />
                 </button>
@@ -656,8 +650,8 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
                   className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
                   style={{ backgroundColor: background }}
                 >
-                  <Pipette 
-                    className="absolute inset-0 m-auto w-4 h-4" 
+                  <Pipette
+                    className="absolute inset-0 m-auto w-4 h-4"
                     style={{ color: getContrastColor(background) }}
                   />
                 </button>
@@ -710,26 +704,53 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <h4 className="font-medium text-center">Normal Vision</h4>
-                <div
-                  className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
-                  style={{ backgroundColor: hex, color: getContrastColor(hex) }}
-                >
-                  {label}
-                </div>
+                <ColorSwatchLink hex={hex} className="block w-full">
+                  <div
+                    className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono relative group"
+                    style={{ backgroundColor: hex, color: getContrastColor(hex) }}
+                  >
+                    <button
+                      type="button"
+                      className="px-2 py-1 rounded hover:bg-black/10 transition-colors z-10"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        navigator.clipboard.writeText(hex)
+                      }}
+                    >
+                      {label}
+                    </button>
+                  </div>
+                </ColorSwatchLink>
               </div>
               <div className="space-y-2">
                 <h4 className="font-medium text-center capitalize">
                   {colorBlindnessType.replace(/([A-Z])/g, " $1").trim()}
                 </h4>
-                <div
-                  className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
-                  style={{
-                    backgroundColor: simulateColorBlindness(hex, colorBlindnessType),
-                    color: getContrastColor(simulateColorBlindness(hex, colorBlindnessType)),
-                  }}
+                <ColorSwatchLink
+                  hex={simulateColorBlindness(hex, colorBlindnessType)}
+                  className="block w-full"
                 >
-                  {simulateColorBlindness(hex, colorBlindnessType)}
-                </div>
+                  <div
+                    className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono relative group"
+                    style={{
+                      backgroundColor: simulateColorBlindness(hex, colorBlindnessType),
+                      color: getContrastColor(simulateColorBlindness(hex, colorBlindnessType)),
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="px-2 py-1 rounded hover:bg-black/10 transition-colors z-10"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        navigator.clipboard.writeText(simulateColorBlindness(hex, colorBlindnessType))
+                      }}
+                    >
+                      {simulateColorBlindness(hex, colorBlindnessType)}
+                    </button>
+                  </div>
+                </ColorSwatchLink>
               </div>
             </div>
             <p className="text-xs text-muted-foreground">
@@ -877,28 +898,11 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
               <div className="flex justify-center">
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 w-full">
                   {relatedColors.slice(0, 10).map((color, idx) => (
-                    <a
+                    <RelatedColorSwatch
                       key={`${color.hex}-${idx}`}
-                      href={getColorPageLink(color.hex)}
+                      color={color}
                       className="group flex flex-col gap-2"
-                    >
-                      <div
-                        className="w-full aspect-square rounded-lg border border-border shadow-sm transition-transform group-hover:scale-105 flex items-center justify-center"
-                        style={{ backgroundColor: color.hex }}
-                      >
-                        <span
-                          className="font-mono text-xs font-bold"
-                          style={{ color: getContrastColor(color.hex) }}
-                        >
-                          {color.hex.toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="text-center">
-                        <span className="font-medium text-xs sm:text-sm block leading-tight truncate px-1" title={color.name}>
-                          {color.name}
-                        </span>
-                      </div>
-                    </a>
+                    />
                   ))}
                 </div>
               </div>
@@ -1126,13 +1130,19 @@ function ColorPalette({
       <h3 className="font-semibold">{name}</h3>
       <div className="flex flex-wrap gap-2">
         {colors.map((color, idx) => (
-          <div
+          <ColorSwatchLink
             key={idx}
-            className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 border-dashed border-border cursor-pointer hover:scale-105 transition-transform"
+            hex={color}
+            className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 border-dashed border-border cursor-pointer hover:scale-105 transition-transform block"
             style={{ backgroundColor: color }}
-            onClick={() => onColorClick(color)}
+            onClick={(e) => {
+              e.preventDefault();
+              onColorClick(color);
+            }}
             title={color}
-          />
+          >
+            <span className="sr-only">Select color {color}</span>
+          </ColorSwatchLink>
         ))}
       </div>
     </div>

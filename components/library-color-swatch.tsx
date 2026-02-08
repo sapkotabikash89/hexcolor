@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Heart, Copy } from "lucide-react"
 import { hexToRgb, rgbToCmyk, getContrastColor } from "@/lib/color-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
+import ColorSwatchLink from "@/components/color-swatch-link"
 import { cn } from "@/lib/utils"
 
 interface LibraryColorSwatchProps {
@@ -14,7 +15,6 @@ interface LibraryColorSwatchProps {
 }
 
 export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
-    const router = useRouter()
     const [loveCount, setLoveCount] = useState(0)
     const [isLiked, setIsLiked] = useState(false)
     const [copiedKey, setCopiedKey] = useState<string | null>(null)
@@ -56,11 +56,11 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
     const cmykString = `${cmyk.c}, ${cmyk.m}, ${cmyk.y}, ${cmyk.k}`
 
     return (
-        <Card
-            className="group relative flex flex-col overflow-hidden border-2 border-border shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer aspect-square bg-white"
-            onClick={() => router.push(getColorPageLink(hex))}
-        >
-            {/* Background Color Area - Square Shape */}
+        <ColorSwatchLink hex={hex} className="block">
+            <Card
+                className="group relative flex flex-col overflow-hidden border-2 border-border shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer aspect-square bg-white"
+            >
+                {/* Background Color Area - Square Shape */}
             <div
                 className="flex-1 p-4 flex flex-col justify-end"
                 style={{ backgroundColor: hex, color: contrastColor }}
@@ -129,6 +129,7 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
                     <span className="text-xs font-bold">{loveCount}</span>
                 </button>
             </div>
-        </Card>
+            </Card>
+        </ColorSwatchLink>
     )
 }

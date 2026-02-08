@@ -29,7 +29,6 @@ import {
     Hammer,
     Info
 } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 
@@ -54,7 +53,6 @@ const BLOG_ICONS: Record<string, any> = {
 }
 
 export function TableOfContents({ currentHex, mobileOnly = false, hideFaqs = false, items }: TableOfContentsProps) {
-    const router = useRouter()
     const [activeSection, setActiveSection] = useState("")
     const [showCustomPicker, setShowCustomPicker] = useState(false)
     const [tempColor, setTempColor] = useState(currentHex)
@@ -128,13 +126,7 @@ export function TableOfContents({ currentHex, mobileOnly = false, hideFaqs = fal
     }
 
     const handleColorApply = (color?: string) => {
-        const selectedColor = typeof color === "string" ? color : tempColor
         setShowCustomPicker(false)
-
-        // Navigate to the appropriate color page
-        const link = getColorPageLink(selectedColor)
-        const relativeLink = link.replace('https://hexcolormeans.com', '')
-        router.push(relativeLink)
     }
 
     if (mobileOnly) {
@@ -215,6 +207,7 @@ export function TableOfContents({ currentHex, mobileOnly = false, hideFaqs = fal
                     value={currentHex}
                     onChange={handleColorChange}
                     onApply={handleColorApply}
+                    getApplyLink={getColorPageLink}
                     onClose={() => setShowCustomPicker(false)}
                 />
             )}

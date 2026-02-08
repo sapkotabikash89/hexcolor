@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -11,6 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { getColorHarmony, hslToRgb, rgbToHex, hexToRgb, rgbToHsl, rgbToCmyk } from "@/lib/color-utils"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ShareButtons } from "@/components/share-buttons"
+import ColorSwatchLink from "@/components/color-swatch-link"
 import { Share, Shuffle, Pipette } from "lucide-react"
 import { ColorExportDialog } from "@/components/color-export-dialog"
 import { ColorCombination } from "@/components/color-combination"
@@ -20,7 +20,6 @@ import { getColorPageLink } from "@/lib/color-linking-utils"
 // Data is fetched via API when needed to avoid loading 1.5MB JSON in client bundle
 
 export function ColorWheelTool() {
-  const router = useRouter()
   const [baseColor, setBaseColor] = useState("#E0115F")
   const [tempColor, setTempColor] = useState("#E0115F")
   const [harmonyType, setHarmonyType] = useState("complementary")
@@ -362,13 +361,6 @@ export function ColorWheelTool() {
 
   const harmonies = getColorHarmony(baseColor, harmonyType)
 
-
-  const navigateToColor = (hex: string) => {
-    // Use centralized linking logic for safe color navigation
-    router.push(getColorPageLink(hex))
-  }
-
-
   return (
     <div className="space-y-4 sm:space-y-8">
       <Card className="p-1 sm:p-6 space-y-4 sm:space-y-6">
@@ -417,20 +409,23 @@ export function ColorWheelTool() {
           <div className="w-full space-y-2" style={{ maxWidth: `${canvasSize}px` }}>
               <label className="font-medium text-sm sm:text-base">Base Color:</label>
               <div className="flex items-center gap-3 px-3 py-2 border border-input rounded-md shadow-xs">
-                <button
-                  onClick={() => {
+                <ColorSwatchLink
+                  hex={baseColor}
+                  className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative block"
+                  style={{ backgroundColor: baseColor }}
+                  onClick={(e) => {
+                    e.preventDefault()
                     setTempColor(baseColor)
                     setShowCustomPicker(true)
                   }}
-                  className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative"
-                  style={{ backgroundColor: baseColor }}
-                  aria-label={`Open color picker for base color ${baseColor.toUpperCase()}`}
+                  title={`Open color picker for base color ${baseColor.toUpperCase()}`}
                 >
                   <Pipette 
                     className="absolute inset-0 m-auto w-4 h-4" 
                     style={{ color: getContrastColor(baseColor) }}
                   />
-                </button>
+                  <span className="sr-only">Open color picker for base color {baseColor}</span>
+                </ColorSwatchLink>
                 <div className="flex-1 flex items-center gap-2">
                   <Select value={colorValueType} onValueChange={setColorValueType}>
                     <SelectTrigger className="w-24 h-8">

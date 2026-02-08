@@ -11,6 +11,8 @@ import {
   rgbToHex
 } from "@/lib/color-utils";
 
+import ColorSwatchLink from "@/components/color-swatch-link";
+
 interface InteractiveColorPickerProps {
   selectedColor: string;
   onColorChange: (color: string) => void;
@@ -256,12 +258,13 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <div className="space-y-3">
-            <div
-              className="w-full h-32 sm:h-40 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg"
+            <ColorSwatchLink
+              hex={selectedColor}
+              className="w-full h-32 sm:h-40 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg block"
               style={{ backgroundColor: selectedColor, color: getContrastColor(selectedColor) }}
             >
               {selectedColor.toUpperCase()}
-            </div>
+            </ColorSwatchLink>
           </div>
 
           <div className="space-y-3">
