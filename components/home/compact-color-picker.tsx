@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
 import ColorSwatchLink from "@/components/color-swatch-link"
+import { CopyButton } from "@/components/copy-button"
 
 export function CompactColorPicker() {
     const [selectedColor, setSelectedColor] = useState("#E0115F")
@@ -58,7 +59,7 @@ export function CompactColorPicker() {
     const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current
         if (!canvas) return
-        
+
         let rect = rectRef.current
         if (!rect) {
             rect = canvas.getBoundingClientRect()
