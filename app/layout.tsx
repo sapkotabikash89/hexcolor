@@ -18,11 +18,8 @@ export const metadata: Metadata = {
   authors: [{ name: "HexColorMeans Team" }],
   creator: "HexColorMeans",
   publisher: "HexColorMeans",
-  manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/favicon.webp",
   },
   verification: {
     google: "6aCCEUx0SvVPIKAgXUdb96PSZ48p0WJNzj0074iCNnY",
