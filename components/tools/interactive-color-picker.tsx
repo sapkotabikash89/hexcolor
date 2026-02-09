@@ -4,11 +4,12 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { CopyButton } from "@/components/copy-button";
 import {
-  getContrastColor,
   hexToRgb,
+  rgbToHsv,
+  hsvToRgb,
+  rgbToHex,
   rgbToHsl,
-  hslToRgb,
-  rgbToHex
+  getContrastColor
 } from "@/lib/color-utils";
 
 import ColorSwatchLink from "@/components/color-swatch-link";
@@ -21,7 +22,7 @@ interface InteractiveColorPickerProps {
 export function InteractiveColorPicker({ selectedColor, onColorChange }: InteractiveColorPickerProps) {
   const [hue, setHue] = useState(312);
   const [saturation, setSaturation] = useState(49);
-  const [lightness, setLightness] = useState(44);
+  const [valueV, setValueV] = useState(44);
 
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,7 +32,7 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
 
   const hueRef = useRef(hue);
   const saturationRef = useRef(saturation);
-  const lightnessRef = useRef(lightness);
+  const valueVRef = useRef(valueV);
 
   useEffect(() => {
     const updateRect = () => {
@@ -54,16 +55,16 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
   useEffect(() => {
     hueRef.current = hue;
     saturationRef.current = saturation;
-    lightnessRef.current = lightness;
-  }, [hue, saturation, lightness]);
+    valueVRef.current = valueV;
+  }, [hue, saturation, valueV]);
 
   useEffect(() => {
     const rgb = hexToRgb(selectedColor);
     if (rgb) {
-      const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-      setHue(hsl.h);
-      setSaturation(hsl.s);
-      setLightness(hsl.l);
+      const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+      setHue(hsv.h);
+      setSaturation(hsv.s);
+      setValueV(hsv.v);
     }
   }, [selectedColor]);
 
@@ -72,49 +73,23 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
   }, [hue]);
 
   const drawColorSpace = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const width = canvas.width;
-    const height = canvas.height;
-
-    const imageData = ctx.createImageData(width, height);
-    const data = imageData.data;
-
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = (y * width + x) * 4;
-        const s = (x / width) * 100;
-        const l = 100 - (y / height) * 100;
-        const rgb = hslToRgb(hueRef.current, s, l);
-
-        data[idx] = rgb.r;     // R
-        data[idx + 1] = rgb.g;   // G
-        data[idx + 2] = rgb.b;   // B
-        data[idx + 3] = 255;     // A
-      }
-    }
-
-    ctx.putImageData(imageData, 0, 0);
+    // Canvas rendering removed as we use CSS gradients
   }, []);
 
   const throttledColorUpdate = useCallback(
-    (newSaturation: number, newLightness: number) => {
+    (newSaturation: number, newValueV: number) => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
 
       animationFrameRef.current = requestAnimationFrame(() => {
         const clampedSaturation = Math.max(0, Math.min(100, Math.round(newSaturation)));
-        const clampedLightness = Math.max(0, Math.min(100, Math.round(newLightness)));
+        const clampedValueV = Math.max(0, Math.min(100, Math.round(newValueV)));
 
         setSaturation(clampedSaturation);
-        setLightness(clampedLightness);
+        setValueV(clampedValueV);
 
-        const rgb = hslToRgb(hueRef.current, clampedSaturation, clampedLightness);
+        const rgb = hsvToRgb(hueRef.current, clampedSaturation, clampedValueV);
         const newColor = rgbToHex(rgb.r, rgb.g, rgb.b);
         onColorChange(newColor);
       });
@@ -122,15 +97,15 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
     [onColorChange]
   );
 
-  const handleCanvasInteraction = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const handleCanvasInteraction = useCallback((e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = canvasRef.current;
+    if (!container) return;
 
     let rect = rectRef.current;
     if (!rect) {
-      rect = canvas.getBoundingClientRect();
+      rect = container.getBoundingClientRect();
       rectRef.current = rect;
     }
 
@@ -141,30 +116,42 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
+      clientX = (e as any).clientX;
+      clientY = (e as any).clientY;
     }
 
     const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
     const y = Math.max(0, Math.min(clientY - rect.top, rect.height));
 
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
+    const newSaturation = (x / rect.width) * 100;
+    const newValueV = 100 - (y / rect.height) * 100;
 
-    const canvasX = x * scaleX;
-    const canvasY = y * scaleY;
-
-    const newSaturation = (canvasX / canvas.width) * 100;
-    const newLightness = 100 - (canvasY / canvas.height) * 100;
-
-    throttledColorUpdate(newSaturation, newLightness);
+    throttledColorUpdate(newSaturation, newValueV);
   }, [throttledColorUpdate]);
 
   const handleHueChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newHue = Number.parseInt(e.target.value);
     setHue(newHue);
 
-    const rgb = hslToRgb(newHue, saturationRef.current, lightnessRef.current);
+    const rgb = hsvToRgb(newHue, saturationRef.current, valueVRef.current);
+    const newColor = rgbToHex(rgb.r, rgb.g, rgb.b);
+    onColorChange(newColor);
+  }, [onColorChange]);
+
+  const handleSaturationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSaturation = Number.parseInt(e.target.value);
+    setSaturation(newSaturation);
+
+    const rgb = hsvToRgb(hueRef.current, newSaturation, valueVRef.current);
+    const newColor = rgbToHex(rgb.r, rgb.g, rgb.b);
+    onColorChange(newColor);
+  }, [onColorChange]);
+
+  const handleBrightnessChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValueV = Number.parseInt(e.target.value);
+    setValueV(newValueV);
+
+    const rgb = hsvToRgb(hueRef.current, saturationRef.current, newValueV);
     const newColor = rgbToHex(rgb.r, rgb.g, rgb.b);
     onColorChange(newColor);
   }, [onColorChange]);
@@ -176,7 +163,7 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
   }, [selectedColor]);
 
   const pickerX = `${Math.max(0, Math.min(100, saturation))}%`;
-  const pickerY = `${Math.max(0, Math.min(100, 100 - lightness))}%`;
+  const pickerY = `${Math.max(0, Math.min(100, 100 - valueV))}%`;
 
   return (
     <Card className="p-3 sm:p-6 space-y-6">
@@ -184,14 +171,20 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
         <h2 className="text-xl sm:text-2xl font-bold">Interactive Color Picker</h2>
       </div>
 
-      <div className="space-y-6">
-        <div className="flex flex-col items-center space-y-3 sm:space-y-4">
-          <div className="relative w-full max-w-[320px] sm:max-w-[400px]">
-            <canvas
-              ref={canvasRef}
-              width={400}
-              height={280}
-              className="w-full h-auto aspect-[10/7] rounded-lg border-2 border-border cursor-crosshair touch-none"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 px-1 sm:px-0 w-full">
+        {/* Left Column: Color picker area (Picker Square + Sliders) */}
+        <div className="space-y-6 w-full">
+          <div className="relative w-full">
+            <div
+              ref={canvasRef as any}
+              className="w-full h-[240px] sm:h-[300px] rounded-xl border-2 border-border cursor-crosshair touch-none overflow-hidden relative shadow-inner"
+              style={{
+                backgroundColor: `hsl(${hue}, 100%, 50%)`,
+                backgroundImage: `
+                  linear-gradient(to right, #fff, transparent),
+                  linear-gradient(to top, #000, transparent)
+                `
+              }}
               onClick={handleCanvasInteraction}
               onMouseMove={(e) => {
                 if (isDraggingRef.current) {
@@ -224,7 +217,7 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
               }}
             />
             <div
-              className="absolute w-4 h-4 sm:w-5 sm:h-5 border-2 border-white rounded-full pointer-events-none"
+              className="absolute w-5 h-5 border-2 border-white rounded-full pointer-events-none"
               style={{
                 left: pickerX,
                 top: pickerY,
@@ -234,71 +227,113 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
             />
           </div>
 
-          <div className="space-y-2 w-full max-w-[320px] sm:max-w-[400px]">
-            <label className="text-sm font-medium">Hue: {hue}°</label>
-            <input
-              type="range"
-              min="0"
-              max="360"
-              value={hue}
-              onChange={handleHueChange}
-              className="w-full h-3 sm:h-4 rounded-lg appearance-none cursor-pointer"
-              style={{
-                background: `linear-gradient(to right, 
-                  hsl(0, 100%, 50%), 
-                  hsl(60, 100%, 50%), 
-                  hsl(120, 100%, 50%), 
-                  hsl(180, 100%, 50%), 
-                  hsl(240, 100%, 50%), 
-                  hsl(300, 100%, 50%), 
-                  hsl(360, 100%, 50%))`,
-              }}
-            />
+          <div className="space-y-5">
+            {/* Hue Slider */}
+            <div className="space-y-2 w-full">
+              <label className="text-sm font-semibold flex justify-between">
+                <span>Hue</span>
+                <span>{hue}°</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                value={hue}
+                onChange={handleHueChange}
+                className="w-full h-4 rounded-full appearance-none cursor-pointer border border-border shadow-sm"
+                style={{
+                  background: `linear-gradient(to right, 
+                    hsl(0, 100%, 50%), 
+                    hsl(60, 100%, 50%), 
+                    hsl(120, 100%, 50%), 
+                    hsl(180, 100%, 50%), 
+                    hsl(240, 100%, 50%), 
+                    hsl(300, 100%, 50%), 
+                    hsl(360, 100%, 50%))`,
+                }}
+              />
+            </div>
+
+            {/* Saturation Slider */}
+            <div className="space-y-2 w-full">
+              <label className="text-sm font-semibold flex justify-between">
+                <span>Saturation</span>
+                <span>{saturation}%</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={saturation}
+                onChange={handleSaturationChange}
+                className="w-full h-4 rounded-full appearance-none cursor-pointer border border-border shadow-sm"
+                style={{
+                  background: `linear-gradient(to right, #808080, hsl(${hue}, 100%, 50%))`
+                }}
+              />
+            </div>
+
+            {/* Brightness/Value Slider */}
+            <div className="space-y-2 w-full">
+              <label className="text-sm font-semibold flex justify-between">
+                <span>Brightness</span>
+                <span>{valueV}%</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={valueV}
+                onChange={handleBrightnessChange}
+                className="w-full h-4 rounded-full appearance-none cursor-pointer border border-border shadow-sm"
+                style={{
+                  background: `linear-gradient(to right, #000, hsl(${hue}, ${saturation}%, 50%))`
+                }}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-          <div className="space-y-3">
-            <ColorSwatchLink
-              hex={selectedColor}
-              className="w-full h-32 sm:h-40 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg block"
-              style={{ backgroundColor: selectedColor, color: getContrastColor(selectedColor) }}
-            >
-              {selectedColor.toUpperCase()}
-            </ColorSwatchLink>
-          </div>
+        {/* Right Column: Color Display and Action Area */}
+        <div className="flex flex-col gap-4 w-full">
+          {/* Main Color Swatch */}
+          <ColorSwatchLink
+            hex={selectedColor}
+            className="w-full aspect-[2/1] sm:aspect-auto sm:h-36 rounded-xl border-2 border-border flex items-center justify-center font-mono text-xl sm:text-2xl font-bold shadow-md"
+            style={{
+              backgroundColor: selectedColor,
+              color: getContrastColor(selectedColor),
+            }}
+          >
+            {selectedColor.toUpperCase()}
+          </ColorSwatchLink>
 
+          {/* Color Values Boxes */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-muted rounded-md">
-              <div className="min-w-0 flex-1">
-                <span className="text-xs sm:text-sm text-muted-foreground">HEX</span>
-                <p className="font-mono font-semibold text-sm sm:text-base truncate">{selectedColor}</p>
+            <div className="p-3 bg-muted/40 border border-border/50 rounded-xl relative group font-mono">
+              <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-0.5">HEX</span>
+              <div className="flex items-center justify-between">
+                <span className="text-sm sm:text-base font-bold">{selectedColor.toUpperCase()}</span>
+                <CopyButton value={selectedColor.toUpperCase()} />
               </div>
-              <CopyButton value={selectedColor} />
             </div>
             {memoizedValues.rgb && (
-              <>
-                <div className="flex items-center justify-between p-3 bg-muted rounded-md">
-                  <div className="min-w-0 flex-1">
-                    <span className="text-xs sm:text-sm text-muted-foreground">RGB</span>
-                    <p className="font-mono text-sm sm:text-base truncate">
-                      ({memoizedValues.rgb.r}, {memoizedValues.rgb.g}, {memoizedValues.rgb.b})
-                    </p>
-                  </div>
+              <div className="p-3 bg-muted/40 border border-border/50 rounded-xl relative group font-mono">
+                <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-0.5">RGB</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm sm:text-base font-bold">({memoizedValues.rgb.r}, {memoizedValues.rgb.g}, {memoizedValues.rgb.b})</span>
                   <CopyButton value={`rgb(${memoizedValues.rgb.r}, ${memoizedValues.rgb.g}, ${memoizedValues.rgb.b})`} />
                 </div>
-                {memoizedValues.hsl && (
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-md">
-                    <div className="min-w-0 flex-1">
-                      <span className="text-xs sm:text-sm text-muted-foreground">HSL</span>
-                      <p className="font-mono text-sm sm:text-base truncate">
-                        ({memoizedValues.hsl.h}°, {memoizedValues.hsl.s}%, {memoizedValues.hsl.l}%)
-                      </p>
-                    </div>
-                    <CopyButton value={`hsl(${memoizedValues.hsl.h}, ${memoizedValues.hsl.s}%, ${memoizedValues.hsl.l}%)`} />
-                  </div>
-                )}
-              </>
+              </div>
+            )}
+            {memoizedValues.hsl && (
+              <div className="p-3 bg-muted/40 border border-border/50 rounded-xl relative group font-mono">
+                <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-0.5">HSL</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm sm:text-base font-bold">({memoizedValues.hsl.h}°, {memoizedValues.hsl.s}%, {memoizedValues.hsl.l}%)</span>
+                  <CopyButton value={`hsl(${memoizedValues.hsl.h}, ${memoizedValues.hsl.s}%, ${memoizedValues.hsl.l}%)`} />
+                </div>
+              </div>
             )}
           </div>
         </div>

@@ -130,15 +130,6 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
     }
   }, [hex])
 
-  // Sync background color with current hex when it changes
-  useEffect(() => {
-    if (onColorChange) {
-      // When onColorChange is provided, this is the HTML Color Picker page
-      // Update background to match current hex
-      setBackground(hex)
-      setContrastBackground(hex)
-    }
-  }, [hex, onColorChange])
 
   const rgb = hexToRgb(hex)
   const { prev, next } = getAdjacentColors(hex)
@@ -921,7 +912,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             <p className="text-muted-foreground mb-6">A curated set of tools to help apply, analyze, and manage colors effectively in your projects</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { name: "Color Picker", href: "/html-color-picker", icon: Pipette },
+                { name: "Color Picker", href: "/color-picker", icon: Pipette },
                 { name: "Image Color Picker", href: "/image-color-picker", icon: ImageIcon },
                 { name: "Palette from Image", href: "/palette-from-image", icon: Palette },
                 { name: "Screen Color Picker", href: "/screen-color-picker", icon: Monitor },

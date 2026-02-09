@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import ColorSwatchLink from "@/components/color-swatch-link"
 import Link from "next/link"
 import { X } from "lucide-react"
-import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
+import { hexToRgb, rgbToHsv, hsvToRgb, rgbToHex } from "@/lib/color-utils"
 
 interface CustomColorPickerProps {
   value: string
@@ -22,15 +22,15 @@ interface CustomColorPickerProps {
 export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApplyLink, onClose, disableGlobalUpdate = false }: CustomColorPickerProps) {
   const [hue, setHue] = useState(() => {
     const rgb = hexToRgb(value)
-    return rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b).h : 0
+    return rgb ? rgbToHsv(rgb.r, rgb.g, rgb.b).h : 0
   })
   const [saturation, setSaturation] = useState(() => {
     const rgb = hexToRgb(value)
-    return rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b).s : 0
+    return rgb ? rgbToHsv(rgb.r, rgb.g, rgb.b).s : 0
   })
-  const [lightness, setLightness] = useState(() => {
+  const [value_v, setValueV] = useState(() => {
     const rgb = hexToRgb(value)
-    return rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b).l : 0
+    return rgb ? rgbToHsv(rgb.r, rgb.g, rgb.b).v : 0
   })
   const [hexInput, setHexInput] = useState(value)
   const [tempColor, setTempColor] = useState(value)
@@ -44,52 +44,26 @@ export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApp
 
     const rgb = hexToRgb(value)
     if (rgb) {
-      const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
-      setHue(hsl.h)
-      setSaturation(hsl.s)
-      setLightness(hsl.l)
+      const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b)
+      setHue(hsv.h)
+      setSaturation(hsv.s)
+      setValueV(hsv.v)
       setHexInput(value)
       setTempColor(value)
     }
   }, [value, isDragging])
 
-  useEffect(() => {
-    drawColorSpace()
-  }, [hue])
-
-  const drawColorSpace = () => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    const width = canvas.width
-    const height = canvas.height
-
-    for (let x = 0; x < width; x++) {
-      for (let y = 0; y < height; y++) {
-        const s = (x / width) * 100
-        const l = 100 - (y / height) * 100
-        const rgb = hslToRgb(hue, s, l)
-        const hex = rgbToHex(rgb.r, rgb.g, rgb.b)
-        ctx.fillStyle = hex
-        ctx.fillRect(x, y, 1, 1)
-      }
-    }
-  }
+  // Removed canvas rendering as we now use CSS gradients
 
   const handleCanvasInteraction = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
-    // Prevent default to avoid scrolling or text selection
     if (e.cancelable) e.preventDefault()
 
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const container = canvasRef.current
+    if (!container) return
 
-    // Use cached rect if available (during drag), otherwise get fresh rect
     let rect = rectRef.current
     if (!rect) {
-      rect = canvas.getBoundingClientRect()
+      rect = container.getBoundingClientRect()
       rectRef.current = rect
     }
 
@@ -100,32 +74,25 @@ export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApp
       clientX = e.touches[0].clientX
       clientY = e.touches[0].clientY
     } else {
-      clientX = e.clientX
-      clientY = e.clientY
+      clientX = (e as any).clientX
+      clientY = (e as any).clientY
     }
 
-    const x = clientX - rect.left
-    const y = clientY - rect.top
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width))
+    const y = Math.max(0, Math.min(clientY - rect.top, rect.height))
 
-    const scaleX = canvas.width / rect.width
-    const scaleY = canvas.height / rect.height
-
-    const canvasX = Math.max(0, Math.min(x * scaleX, canvas.width))
-    const canvasY = Math.max(0, Math.min(y * scaleY, canvas.height))
-
-    const newSaturation = (canvasX / canvas.width) * 100
-    const newLightness = 100 - (canvasY / canvas.height) * 100
+    const newSaturation = (x / rect.width) * 100
+    const newValueV = 100 - (y / rect.height) * 100
 
     setSaturation(Math.max(0, Math.min(100, Math.round(newSaturation))))
-    setLightness(Math.max(0, Math.min(100, Math.round(newLightness))))
+    setValueV(Math.max(0, Math.min(100, Math.round(newValueV))))
 
-    const rgb = hslToRgb(hue, newSaturation, newLightness)
+    const rgb = hsvToRgb(hue, newSaturation, newValueV)
     const hex = rgbToHex(rgb.r, rgb.g, rgb.b)
     setHexInput(hex)
     setTempColor(hex)
     onChange(hex)
 
-    // Dispatch color update event for sidebar - only when dragging
     if (!disableGlobalUpdate) {
       const event = new CustomEvent("colorUpdate", { detail: { color: hex } })
       window.dispatchEvent(event)
@@ -141,7 +108,7 @@ export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApp
 
     const handleEnd = () => {
       setIsDragging(false)
-      rectRef.current = null // Clear rect cache on end
+      rectRef.current = null
     }
 
     window.addEventListener("mousemove", handleMove, { passive: false })
@@ -155,12 +122,12 @@ export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApp
       window.removeEventListener("touchmove", handleMove)
       window.removeEventListener("touchend", handleEnd)
     }
-  }, [isDragging, hue, onChange, disableGlobalUpdate])
+  }, [isDragging, hue, saturation, value_v, onChange, disableGlobalUpdate])
 
   const handleHueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newHue = Number.parseInt(e.target.value)
     setHue(newHue)
-    const rgb = hslToRgb(newHue, saturation, lightness)
+    const rgb = hsvToRgb(newHue, saturation, value_v)
     const hex = rgbToHex(rgb.r, rgb.g, rgb.b)
     setHexInput(hex)
     setTempColor(hex)
@@ -181,16 +148,16 @@ export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApp
       onChange(input)
       const rgb = hexToRgb(input)
       if (rgb) {
-        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
-        setHue(hsl.h)
-        setSaturation(hsl.s)
-        setLightness(hsl.l)
+        const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b)
+        setHue(hsv.h)
+        setSaturation(hsv.s)
+        setValueV(hsv.v)
       }
     }
   }
 
   const pickerX = `${Math.max(0, Math.min(100, saturation))}%`
-  const pickerY = `${Math.max(0, Math.min(100, 100 - lightness))}%`
+  const pickerY = `${Math.max(0, Math.min(100, 100 - value_v))}%`
 
   const handleDone = () => {
     onChange(tempColor)
@@ -227,25 +194,29 @@ export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApp
         </div>
 
         <div className="space-y-4">
-          <div className="relative">
-            <canvas
-              ref={canvasRef}
-              width={300}
-              height={200}
-              className={`w-full rounded-lg border-2 border-border cursor-crosshair touch-none ${isDragging ? "pointer-events-none" : ""}`}
-              onMouseDown={(e) => {
-                e.preventDefault()
-                if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
-                setIsDragging(true)
-                handleCanvasInteraction(e)
-              }}
-              onTouchStart={(e) => {
-                if (e.cancelable) e.preventDefault()
-                if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
-                setIsDragging(true)
-                handleCanvasInteraction(e)
-              }}
-            />
+          <div
+            className="relative w-full h-[200px] rounded-lg border-2 border-border cursor-crosshair touch-none overflow-hidden"
+            ref={canvasRef as any}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
+              setIsDragging(true)
+              handleCanvasInteraction(e)
+            }}
+            onTouchStart={(e) => {
+              if (e.cancelable) e.preventDefault()
+              if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
+              setIsDragging(true)
+              handleCanvasInteraction(e)
+            }}
+            style={{
+              backgroundColor: `hsl(${hue}, 100%, 50%)`,
+              backgroundImage: `
+                linear-gradient(to right, #fff, transparent),
+                linear-gradient(to top, #000, transparent)
+              `
+            }}
+          >
 
             <div
               className="absolute w-4 h-4 border-2 border-white rounded-full pointer-events-none"

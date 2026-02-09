@@ -6,7 +6,7 @@ This document describes the implementation of `noindex, follow` meta tags for th
 ## Implementation Details
 
 ### File Modified
-- `/app/html-color-picker/page.tsx`
+- `/app/color-picker/page.tsx`
 
 ### Changes Made
 
@@ -25,19 +25,19 @@ This document describes the implementation of `noindex, follow` meta tags for th
    - `follow: true` - Allows search engines to follow links on the page (passes link equity)
 
 3. **Dynamic Canonical URL**
-   - When no hex parameter: `https://hexcolormeans.com/html-color-picker`
+   - When no hex parameter: `https://hexcolormeans.com/color-picker`
    - When hex parameter exists (e.g., `?hex=ff0000`): `https://hexcolormeans.com/colors/ff0000`
    - This redirects SEO value to the static color pages
 
 ### How It Works
 
-#### For `/html-color-picker`
+#### For `/color-picker`
 ```html
 <meta name="robots" content="noindex, follow">
-<link rel="canonical" href="https://hexcolormeans.com/html-color-picker">
+<link rel="canonical" href="https://hexcolormeans.com/color-picker">
 ```
 
-#### For `/html-color-picker?hex=ff0000`
+#### For `/color-picker?hex=ff0000`
 ```html
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://hexcolormeans.com/colors/ff0000">
@@ -72,12 +72,12 @@ The `/colors/{hex}` routes are NOT affected by this change. They remain fully in
 
 To verify the implementation:
 
-1. **Direct page load**: Visit `http://localhost:3000/html-color-picker`
+1. **Direct page load**: Visit `http://localhost:3000/color-picker`
    - View page source (Cmd+Option+U on Mac, Ctrl+U on Windows)
    - Search for `<meta name="robots"`
    - Should see: `content="noindex, follow"`
 
-2. **With hex parameter**: Visit `http://localhost:3000/html-color-picker?hex=ff0000`
+2. **With hex parameter**: Visit `http://localhost:3000/color-picker?hex=ff0000`
    - View page source
    - Search for `<meta name="robots"`
    - Should see: `content="noindex, follow"`

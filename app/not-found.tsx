@@ -1,4 +1,5 @@
 "use client"
+import Head from "next/head"
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -11,12 +12,12 @@ import { ColorSidebar } from "@/components/sidebar"
 import { TableOfContents } from "@/components/table-of-contents"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { CopyButton } from "@/components/copy-button"
-import { 
-  normalizeHex, 
-  isValidHex, 
-  getContrastColor, 
-  hexToRgb, 
-  rgbToHsl 
+import {
+  normalizeHex,
+  isValidHex,
+  getContrastColor,
+  hexToRgb,
+  rgbToHsl
 } from "@/lib/color-utils"
 import { generateFAQs } from "@/lib/category-utils"
 
@@ -33,7 +34,7 @@ export default function NotFound() {
 
     // Check if we're on a /colors/ path
     const hexMatch = pathname.match(/^\/colors\/([0-9a-fA-F]{3,6})\/?$/i)
-    
+
     if (hexMatch) {
       const hex = hexMatch[1]
       // Validate hex
@@ -58,16 +59,21 @@ export default function NotFound() {
     const contrastColor = getContrastColor(colorHex)
     const rgb = hexToRgb(colorHex)
     const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null
-    
+
     // Generate FAQs dynamically
     const faqs = rgb && hsl ? generateFAQs(colorHex, rgb, hsl) : []
-    
+
     const displayLabel = colorHex
 
     return (
       <div className="flex flex-col min-h-screen bg-white">
         <Header />
-        
+
+        {/* Inject SEO metadata for unknown color pages */}
+        <title>{`${colorHex} Color Information & Tools | HexColorMeans`}</title>
+        <meta name="robots" content="noindex, follow" />
+        <meta name="description" content={`Technical specifications for ${colorHex}. Access calibrated color conversions (RGB, HSL, CMYK), harmony maps, and accessibility validation metrics.`} />
+        <link rel="canonical" href={`https://hexcolormeans.com/colors/${colorHex.replace("#", "").toLowerCase()}`} />
         {/* Dynamic Color Hero */}
         <section
           className="py-12 px-4 transition-colors"
@@ -145,7 +151,7 @@ export default function NotFound() {
             </aside>
           </div>
         </main>
-        
+
         <Footer />
       </div>
     )

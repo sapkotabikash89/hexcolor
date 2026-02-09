@@ -45,7 +45,7 @@ Documentation of the HTML color picker noindex implementation.
 /
 ├── app/                    # Next.js App Router pages
 │   ├── colors/[hex]/      # Dynamic color pages (1000+)
-│   ├── html-color-picker/ # Color picker tool
+│   ├── color-picker/ # Color picker tool
 │   ├── blog/              # Blog index
 │   └── ...                # Other pages
 ├── components/            # React components
@@ -111,7 +111,7 @@ npm run build
 
 - **Homepage:** `/`
 - **Color Pages:** `/colors/{hex}/` (1000+)
-- **Tool Pages:** `/html-color-picker/`, `/color-wheel/`, etc.
+- **Tool Pages:** `/color-picker/`, `/color-wheel/`, etc.
 - **Blog Posts:** `/color-meanings/{slug}/`
 - **Legal Pages:** `/privacy-policy/`, `/terms-and-conditions/`, etc.
 - **Category Pages:** `/categories/{category}/`

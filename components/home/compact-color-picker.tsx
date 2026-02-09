@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
-import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
+import { hexToRgb, rgbToHsv, hsvToRgb, rgbToHex, rgbToHsl } from "@/lib/color-utils"
 import ColorSwatchLink from "@/components/color-swatch-link"
 import { CopyButton } from "@/components/copy-button"
 
@@ -11,7 +11,7 @@ export function CompactColorPicker() {
     const [selectedColor, setSelectedColor] = useState("#a73991")
     const [hue, setHue] = useState(312)
     const [saturation, setSaturation] = useState(49)
-    const [lightness, setLightness] = useState(44)
+    const [valueV, setValueV] = useState(44)
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const rectRef = useRef<DOMRect | null>(null)
@@ -36,44 +36,29 @@ export function CompactColorPicker() {
         }
     }, [])
 
-    useEffect(() => {
-        drawColorSpace()
-    }, [hue])
+    // Removed canvas rendering as we now use CSS gradients
 
     const drawColorSpace = () => {
-        const canvas = canvasRef.current
-        if (!canvas) return
-        const ctx = canvas.getContext("2d")
-        if (!ctx) return
-
-        for (let x = 0; x < canvas.width; x++) {
-            for (let y = 0; y < canvas.height; y++) {
-                const s = (x / canvas.width) * 100
-                const l = 100 - (y / canvas.height) * 100
-                const rgb = hslToRgb(hue, s, l)
-                ctx.fillStyle = rgbToHex(rgb.r, rgb.g, rgb.b)
-                ctx.fillRect(x, y, 1, 1)
-            }
-        }
+        // Canvas rendering removed
     }
 
-    const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        const canvas = canvasRef.current
-        if (!canvas) return
+    const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        const container = canvasRef.current
+        if (!container) return
 
         let rect = rectRef.current
         if (!rect) {
-            rect = canvas.getBoundingClientRect()
+            rect = container.getBoundingClientRect()
             rectRef.current = rect
         }
 
         const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width))
         const y = Math.max(0, Math.min(e.clientY - rect.top, rect.height))
         const newSaturation = (x / rect.width) * 100
-        const newLightness = 100 - (y / rect.height) * 100
+        const newValueV = 100 - (y / rect.height) * 100
         setSaturation(Math.round(newSaturation))
-        setLightness(Math.round(newLightness))
-        const rgb = hslToRgb(hue, newSaturation, newLightness)
+        setValueV(Math.round(newValueV))
+        const rgb = hsvToRgb(hue, newSaturation, newValueV)
         setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
     }
 
@@ -90,18 +75,23 @@ export function CompactColorPicker() {
             <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                     <div className="relative">
-                        <canvas
-                            ref={canvasRef}
-                            width={280}
-                            height={200}
-                            className="w-full rounded-lg border-2 border-border cursor-crosshair"
+                        <div
+                            ref={canvasRef as any}
+                            className="w-full h-[200px] rounded-lg border-2 border-border cursor-crosshair overflow-hidden relative"
+                            style={{
+                                backgroundColor: `hsl(${hue}, 100%, 50%)`,
+                                backgroundImage: `
+                                    linear-gradient(to right, #fff, transparent),
+                                    linear-gradient(to top, #000, transparent)
+                                `
+                            }}
                             onClick={handleCanvasClick}
                         />
                         <div
                             className="absolute w-4 h-4 border-2 border-white rounded-full pointer-events-none shadow-lg"
                             style={{
                                 left: `${saturation}%`,
-                                top: `${100 - lightness}%`,
+                                top: `${100 - valueV}%`,
                                 transform: "translate(-50%, -50%)",
                             }}
                         />
@@ -116,7 +106,7 @@ export function CompactColorPicker() {
                             onChange={(e) => {
                                 const newHue = parseInt(e.target.value)
                                 setHue(newHue)
-                                const rgb = hslToRgb(newHue, saturation, lightness)
+                                const rgb = hsvToRgb(newHue, saturation, valueV)
                                 setSelectedColor(rgbToHex(rgb.r, rgb.g, rgb.b))
                             }}
                             className="w-full h-3 rounded-lg appearance-none cursor-pointer"

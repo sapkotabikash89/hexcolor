@@ -60,5 +60,5 @@ Since this is a static site, it **does not** fetch WordPress data at runtime.
 After deployment, check:
 *   **Homepage**: `https://hexcolor.pages.dev` (or your custom domain).
 *   **Color Pages**: `https://hexcolor.pages.dev/colors/000000`.
-*   **Tools**: Check `/html-color-picker`, `/contrast-checker`, etc.
+*   **Tools**: Check `/color-picker`, `/contrast-checker`, etc.
 *   **Redirects**: Try accessing an old URL like `/color/ff0000` and ensure it redirects to `/colors/ff0000`.

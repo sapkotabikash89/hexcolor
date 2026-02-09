@@ -84,7 +84,6 @@ sampleColors.forEach(hex => {
 // Check tool pages
 console.log('\n🛠️  Checking tool pages...');
 const toolPages = [
-    'html-color-picker',
     'color-picker',
     'color-wheel',
     'contrast-checker',

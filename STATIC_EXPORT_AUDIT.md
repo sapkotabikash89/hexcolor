@@ -82,7 +82,7 @@
 ---
 
 ### 4. **Client-Side URL Parameter Handling**
-**Location:** `/app/html-color-picker/color-picker-client.tsx`
+**Location:** `/app/color-picker/color-picker-client.tsx`
 
 **Problem:**
 - Uses `window.location.search` to read URL parameters

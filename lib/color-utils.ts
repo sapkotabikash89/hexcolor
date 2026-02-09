@@ -10,7 +10,7 @@ let sortedKnownColors: Array<{ hex: string; name: string }> | null = null
 
 export function getSortedKnownColors(): Array<{ hex: string; name: string }> {
   if (sortedKnownColors) return sortedKnownColors
-  
+
   sortedKnownColors = Object.entries(colorData)
     .map(([hex, data]: [string, any]) => ({
       hex: `#${hex.toUpperCase()}`,
@@ -21,7 +21,7 @@ export function getSortedKnownColors(): Array<{ hex: string; name: string }> {
       const bVal = parseInt(b.hex.replace("#", ""), 16)
       return aVal - bVal
     })
-  
+
   return sortedKnownColors
 }
 
@@ -321,6 +321,32 @@ export function rgbToHsv(r: number, g: number, b: number): HSV {
     h: Math.round(h * 360),
     s: Math.round(s * 100),
     v: Math.round(v * 100),
+  }
+}
+
+// Convert HSV to RGB
+export function hsvToRgb(h: number, s: number, v: number): RGB {
+  h /= 360
+  s /= 100
+  v /= 100
+  let r = 0, g = 0, b = 0
+  const i = Math.floor(h * 6)
+  const f = h * 6 - i
+  const p = v * (1 - s)
+  const q = v * (1 - f * s)
+  const t = v * (1 - (1 - f) * s)
+  switch (i % 6) {
+    case 0: r = v; g = t; b = p; break
+    case 1: r = q; g = v; b = p; break
+    case 2: r = p; g = v; b = t; break
+    case 3: r = p; g = q; b = v; break
+    case 4: r = t; g = p; b = v; break
+    case 5: r = v; g = p; b = q; break
+  }
+  return {
+    r: Math.round(r * 255),
+    g: Math.round(g * 255),
+    b: Math.round(b * 255),
   }
 }
 
@@ -832,10 +858,10 @@ export function getAdjacentColors(hex: string): { prev: string; next: string } {
   // Find where our target fits in this sorted spectrum
   const targetHexFull = `#${cleanHex}`
   const exactMatchIndex = pool.findIndex(c => c.hex.toUpperCase() === targetHexFull)
-  
+
   let prevIndex: number
   let nextIndex: number
-  
+
   if (exactMatchIndex !== -1) {
     // Target is a known color: get immediate neighbors
     prevIndex = exactMatchIndex === 0 ? pool.length - 1 : exactMatchIndex - 1

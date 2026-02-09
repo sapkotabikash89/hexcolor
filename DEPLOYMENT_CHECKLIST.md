@@ -112,7 +112,7 @@ Use this checklist before deploying to Cloudflare Pages.
 
 - [ ] **Verify Tool Pages**
   ```bash
-  ls -la out/html-color-picker/index.html
+  ls -la out/color-picker/index.html
   ls -la out/color-wheel/index.html
   ls -la out/contrast-checker/index.html
   ```
@@ -147,7 +147,7 @@ Use this checklist before deploying to Cloudflare Pages.
   - [ ] Related colors show
 
 - [ ] **Test Tools**
-  - [ ] HTML Color Picker works
+  - [ ] Color Picker works
   - [ ] Can select colors
   - [ ] URL updates with hex parameter
   - [ ] Color codes display correctly
