@@ -15,10 +15,10 @@ import Link from "next/link"
 import { Share, Shuffle, Pipette } from "lucide-react"
 
 export function CompactColorWheel() {
-    const [baseColor, setBaseColor] = useState("#E0115F")
+    const [baseColor, setBaseColor] = useState("#a73991")
     const [harmonyType, setHarmonyType] = useState("complementary")
     const [colorValueType, setColorValueType] = useState("hex") // State for dropdown - default to hex
-    
+
     // Update harmony type setter to clear random palette when harmony type changes
     const setHarmonyTypeAndClearRandom = (newHarmonyType: string) => {
         setHarmonyType(newHarmonyType);
@@ -240,8 +240,8 @@ export function CompactColorWheel() {
         // Use cached rect if available (during drag), otherwise get fresh rect (click)
         let rect = rectRef.current
         if (!rect || (!isDragging && e.type !== 'mousemove' && e.type !== 'touchmove')) {
-             rect = canvas.getBoundingClientRect()
-             rectRef.current = rect
+            rect = canvas.getBoundingClientRect()
+            rectRef.current = rect
         }
 
         let clientX: number
@@ -290,17 +290,17 @@ export function CompactColorWheel() {
         const rPercent = r / 255
         const gPercent = g / 255
         const bPercent = b / 255
-        
+
         const k = 1 - Math.max(rPercent, gPercent, bPercent)
-        
+
         if (k === 1) {
             return { c: 0, m: 0, y: 0, k: 1 }
         }
-        
+
         const c = (1 - rPercent - k) / (1 - k)
         const m = (1 - gPercent - k) / (1 - k)
         const y = (1 - bPercent - k) / (1 - k)
-        
+
         return { c: Math.round(c * 100), m: Math.round(m * 100), y: Math.round(y * 100), k: Math.round(k * 100) }
     }
 
@@ -308,7 +308,7 @@ export function CompactColorWheel() {
     const getColorValue = (hex: string) => {
         const rgb = hexToRgb(hex)
         if (!rgb) return hex
-        
+
         switch (colorValueType) {
             case "hex":
                 return hex.toUpperCase()
@@ -350,22 +350,22 @@ export function CompactColorWheel() {
         // Randomly select a harmony type
         const harmonyTypes = ['complementary', 'analogous', 'triadic', 'tetradic', 'split-complementary', 'square', 'monochromatic'];
         const randomHarmonyType = harmonyTypes[Math.floor(Math.random() * harmonyTypes.length)];
-        
+
         // Generate a random base color
         const randomHue = Math.floor(Math.random() * 360);
         const randomSaturation = 50 + Math.floor(Math.random() * 50); // 50-100 for vibrant colors
         const randomLightness = 30 + Math.floor(Math.random() * 50); // 30-80 for good visibility
-        
+
         const rgb = hslToRgb(randomHue, randomSaturation, randomLightness);
         const randomBaseColor = rgbToHex(rgb.r, rgb.g, rgb.b);
-        
+
         // Generate the harmony based on the random color and random harmony type
         const palette = getColorHarmony(randomBaseColor, randomHarmonyType);
-        
+
         // Set the base color and harmony type to match the random palette
         setBaseColor(randomBaseColor);
         setHarmonyType(randomHarmonyType);
-        
+
         setRandomPalette(palette);
         setShowRandomPalette(true);
     };
@@ -413,7 +413,7 @@ export function CompactColorWheel() {
                     <div className="w-full space-y-2" style={{ maxWidth: `${canvasSize}px` }}>
                         <label className="font-medium text-sm sm:text-base">Base Color:</label>
                         <div className="flex items-center gap-3 px-3 py-2 border border-input rounded-md shadow-xs">
-                        <ColorSwatchLink
+                            <ColorSwatchLink
                                 hex={baseColor}
                                 className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative block"
                                 style={{ backgroundColor: baseColor }}
@@ -424,8 +424,8 @@ export function CompactColorWheel() {
                                 }}
                                 title={`Open color picker for base color ${baseColor.toUpperCase()}`}
                             >
-                                <Pipette 
-                                    className="absolute inset-0 m-auto w-4 h-4" 
+                                <Pipette
+                                    className="absolute inset-0 m-auto w-4 h-4"
                                     style={{ color: getContrastColor(baseColor) }}
                                 />
                                 <span className="sr-only">Open color picker for base color {baseColor}</span>
@@ -442,21 +442,21 @@ export function CompactColorWheel() {
                                         <SelectItem value="cmyk">CMYK</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <span 
+                                <span
                                     className="font-mono font-semibold text-sm sm:text-base truncate hidden md:block"
                                     style={{ color: getContrastColor(baseColor) }}
                                 >
                                     {getColorValue(baseColor)}
                                 </span>
                             </div>
-                            <button 
+                            <button
                                 onClick={(e) => copyToClipboard(getColorValue(baseColor), e)}
                                 className="p-1.5 rounded-md hover:bg-accent transition-colors relative"
                                 aria-label="Copy color value"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                                 </svg>
                                 {copiedValue === getColorValue(baseColor) && (
                                     <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-xs rounded font-sans whitespace-nowrap">
@@ -465,16 +465,16 @@ export function CompactColorWheel() {
                                 )}
                             </button>
                         </div>
-                        
+
                         {/* Mobile view: Show selected color value below base color box */}
                         <div className="md:hidden mt-2 text-center">
-                          <span className="text-xs text-muted-foreground block mb-1">Selected Value</span>
-                          <span 
-                            className="font-mono font-semibold text-sm"
-                            style={{ color: getContrastColor(baseColor) }}
-                          >
-                            {getColorValue(baseColor)}
-                          </span>
+                            <span className="text-xs text-muted-foreground block mb-1">Selected Value</span>
+                            <span
+                                className="font-mono font-semibold text-sm"
+                                style={{ color: getContrastColor(baseColor) }}
+                            >
+                                {getColorValue(baseColor)}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -482,56 +482,56 @@ export function CompactColorWheel() {
                 {/* Controls */}
                 <div className="flex-1 min-w-0 h-full flex flex-col w-full lg:w-full xl:flex-1 xl:min-w-0">
                     <div className="flex flex-col gap-4 flex-1 min-h-0">
-                    {/* Harmony Type */}
-                    <div className="space-y-2 flex-shrink-0">
-                        <label className="font-medium text-sm sm:text-base">Harmony Type:</label>
-                        <Select value={harmonyType} onValueChange={setHarmonyTypeAndClearRandom}>
-                            <SelectTrigger className="w-full">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="complementary">Complementary</SelectItem>
-                                <SelectItem value="analogous">Analogous</SelectItem>
-                                <SelectItem value="triadic">Triadic</SelectItem>
-                                <SelectItem value="tetradic">Tetradic</SelectItem>
-                                <SelectItem value="split-complementary">Split Complementary</SelectItem>
-                                <SelectItem value="square">Square</SelectItem>
-                                <SelectItem value="double-split-complementary">Double Split Complementary</SelectItem>
-                                <SelectItem value="monochromatic">Monochromatic</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                        {/* Harmony Type */}
+                        <div className="space-y-2 flex-shrink-0">
+                            <label className="font-medium text-sm sm:text-base">Harmony Type:</label>
+                            <Select value={harmonyType} onValueChange={setHarmonyTypeAndClearRandom}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="complementary">Complementary</SelectItem>
+                                    <SelectItem value="analogous">Analogous</SelectItem>
+                                    <SelectItem value="triadic">Triadic</SelectItem>
+                                    <SelectItem value="tetradic">Tetradic</SelectItem>
+                                    <SelectItem value="split-complementary">Split Complementary</SelectItem>
+                                    <SelectItem value="square">Square</SelectItem>
+                                    <SelectItem value="double-split-complementary">Double Split Complementary</SelectItem>
+                                    <SelectItem value="monochromatic">Monochromatic</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                    {/* Color Harmony */}
-                    <div className="flex flex-col gap-3 flex-1 min-h-0 w-full">
-                        <div className="flex items-center justify-between flex-shrink-0">
-                            <h3 className="font-semibold text-sm sm:text-base">Color Harmony</h3>
-                            <Button size="sm" variant="ghost" className="gap-2" onClick={() => setExportOpen(true)}>
-                                <Share className="w-4 h-4" />
-                                Export
-                            </Button>
-                        </div>
-                        <ColorCombination 
-                            colors={showRandomPalette ? randomPalette : harmonies} 
-                            baseHex={baseColor} 
-                            height="100%"
-                            vertical={true}
-                            className="flex-1 w-full"
-                        />
-                        
-                        {/* Random Palette Box - Equal height to base color box */}
-                        <div className="mt-4">
-                            <Button 
-                                onClick={generateRandomPalette}
-                                className="w-full h-12 flex items-center gap-2"
-                                variant="outline"
-                            >
-                                <Shuffle className="w-4 h-4" />
-                                Random Palette
-                            </Button>
+                        {/* Color Harmony */}
+                        <div className="flex flex-col gap-3 flex-1 min-h-0 w-full">
+                            <div className="flex items-center justify-between flex-shrink-0">
+                                <h3 className="font-semibold text-sm sm:text-base">Color Harmony</h3>
+                                <Button size="sm" variant="ghost" className="gap-2" onClick={() => setExportOpen(true)}>
+                                    <Share className="w-4 h-4" />
+                                    Export
+                                </Button>
+                            </div>
+                            <ColorCombination
+                                colors={showRandomPalette ? randomPalette : harmonies}
+                                baseHex={baseColor}
+                                height="100%"
+                                vertical={true}
+                                className="flex-1 w-full"
+                            />
+
+                            {/* Random Palette Box - Equal height to base color box */}
+                            <div className="mt-4">
+                                <Button
+                                    onClick={generateRandomPalette}
+                                    className="w-full h-12 flex items-center gap-2"
+                                    variant="outline"
+                                >
+                                    <Shuffle className="w-4 h-4" />
+                                    Random Palette
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
 
@@ -559,7 +559,7 @@ export function CompactColorWheel() {
                     }}
                 />
             )}
-            
+
             <ColorExportDialog
                 open={exportOpen}
                 onOpenChange={setExportOpen}

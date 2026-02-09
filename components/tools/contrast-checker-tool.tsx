@@ -60,21 +60,22 @@ export function ContrastCheckerTool() {
               <label className="text-sm font-medium">Foreground (Text)</label>
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="w-12 h-10 sm:w-14 sm:h-12 flex-shrink-0 relative">
-                  <ColorSwatchLink
-                    hex={foreground}
-                    className="w-full h-full rounded-md border-2 border-border block overflow-hidden"
+                  <div
+                    className="w-full h-full rounded-md border-2 border-border block overflow-hidden cursor-pointer"
                     style={{ backgroundColor: foreground }}
                     onClick={(e) => {
                       e.preventDefault()
                       setShowForegroundPicker(true)
                     }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Select foreground color ${foreground}`}
                   >
                     <Pipette
                       className="absolute inset-0 m-auto w-4 h-4"
                       style={{ color: getContrastColor(foreground) }}
                     />
-                    <span className="sr-only">Select foreground color {foreground}</span>
-                  </ColorSwatchLink>
+                  </div>
                 </div>
                 <input
                   type="text"
@@ -101,21 +102,22 @@ export function ContrastCheckerTool() {
               <label className="text-sm font-medium">Background</label>
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="w-12 h-10 sm:w-14 sm:h-12 flex-shrink-0 relative">
-                  <ColorSwatchLink
-                    hex={background}
-                    className="w-full h-full rounded-md border-2 border-border block overflow-hidden"
+                  <div
+                    className="w-full h-full rounded-md border-2 border-border block overflow-hidden cursor-pointer"
                     style={{ backgroundColor: background }}
                     onClick={(e) => {
                       e.preventDefault()
                       setShowBackgroundPicker(true)
                     }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Select background color ${background}`}
                   >
                     <Pipette
                       className="absolute inset-0 m-auto w-4 h-4"
                       style={{ color: getContrastColor(background) }}
                     />
-                    <span className="sr-only">Select background color {background}</span>
-                  </ColorSwatchLink>
+                  </div>
                 </div>
                 <input
                   type="text"

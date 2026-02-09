@@ -13,7 +13,7 @@ import { ShareButtons } from "@/components/share-buttons"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 
 export function ScreenColorPickerTool() {
-  const [selectedColor, setSelectedColor] = useState("#E0115F")
+  const [selectedColor, setSelectedColor] = useState("#a73991")
   const [pickedColors, setPickedColors] = useState<string[]>([])
   const [isSupported, setIsSupported] = useState(true)
 

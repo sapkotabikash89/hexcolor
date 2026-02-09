@@ -20,14 +20,14 @@ import { getColorPageLink } from "@/lib/color-linking-utils"
 // Data is fetched via API when needed to avoid loading 1.5MB JSON in client bundle
 
 export function ColorWheelTool() {
-  const [baseColor, setBaseColor] = useState("#E0115F")
-  const [tempColor, setTempColor] = useState("#E0115F")
+  const [baseColor, setBaseColor] = useState("#a73991")
+  const [tempColor, setTempColor] = useState("#a73991")
   const [harmonyType, setHarmonyType] = useState("complementary")
-      
+
   // Update harmony type setter to clear random palette when harmony type changes
   const setHarmonyTypeAndClearRandom = (newHarmonyType: string) => {
-      setHarmonyType(newHarmonyType);
-      setShowRandomPalette(false); // Clear random palette when changing harmony type
+    setHarmonyType(newHarmonyType);
+    setShowRandomPalette(false); // Clear random palette when changing harmony type
   }
   const [colorValueType, setColorValueType] = useState("hex") // State for dropdown - default to hex
   const [randomPalette, setRandomPalette] = useState<string[]>([]) // State for random palette
@@ -68,26 +68,26 @@ export function ColorWheelTool() {
 
   useEffect(() => {
     const updateRect = () => {
-        if (canvasRef.current) {
-            rectRef.current = canvasRef.current.getBoundingClientRect()
-        }
+      if (canvasRef.current) {
+        rectRef.current = canvasRef.current.getBoundingClientRect()
+      }
     }
-    
+
     // Initial update
     updateRect()
-    
+
     // Update on resize and scroll
     const resizeObserver = new ResizeObserver(updateRect)
     if (canvasRef.current) {
-        resizeObserver.observe(canvasRef.current)
+      resizeObserver.observe(canvasRef.current)
     }
     window.addEventListener('scroll', updateRect, { passive: true })
     window.addEventListener('resize', updateRect, { passive: true })
-    
+
     return () => {
-        resizeObserver.disconnect()
-        window.removeEventListener('scroll', updateRect)
-        window.removeEventListener('resize', updateRect)
+      resizeObserver.disconnect()
+      window.removeEventListener('scroll', updateRect)
+      window.removeEventListener('resize', updateRect)
     }
   }, [canvasSize])
 
@@ -250,8 +250,8 @@ export function ColorWheelTool() {
 
     let rect = rectRef.current
     if (!rect) {
-        rect = canvas.getBoundingClientRect()
-        rectRef.current = rect
+      rect = canvas.getBoundingClientRect()
+      rectRef.current = rect
     }
 
     let clientX: number
@@ -300,10 +300,10 @@ export function ColorWheelTool() {
   const getColorValue = (color: string) => {
     const rgb = hexToRgb(color);
     if (!rgb) return color;
-    
+
     const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
     const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
-    
+
     switch (colorValueType) {
       case 'hex':
         return color.toUpperCase();
@@ -331,22 +331,22 @@ export function ColorWheelTool() {
     // Randomly select a harmony type
     const harmonyTypes = ['complementary', 'analogous', 'triadic', 'tetradic', 'split-complementary', 'square', 'monochromatic'];
     const randomHarmonyType = harmonyTypes[Math.floor(Math.random() * harmonyTypes.length)];
-    
+
     // Generate a random base color
     const randomHue = Math.floor(Math.random() * 360);
     const randomSaturation = 50 + Math.floor(Math.random() * 50); // 50-100 for vibrant colors
     const randomLightness = 30 + Math.floor(Math.random() * 50); // 30-80 for good visibility
-    
+
     const rgb = hslToRgb(randomHue, randomSaturation, randomLightness);
     const randomBaseColor = rgbToHex(rgb.r, rgb.g, rgb.b);
-    
+
     // Generate the harmony based on the random color and random harmony type
     const palette = getColorHarmony(randomBaseColor, randomHarmonyType);
-    
+
     // Set the base color and harmony type to match the random palette
     setBaseColor(randomBaseColor);
     setHarmonyType(randomHarmonyType);
-    
+
     setRandomPalette(palette);
     setShowRandomPalette(true);
   };
@@ -406,11 +406,10 @@ export function ColorWheelTool() {
               onTouchEnd={() => setIsDragging(false)}
             />
             {/* Base Color Info - Moved below wheel */}
-          <div className="w-full space-y-2" style={{ maxWidth: `${canvasSize}px` }}>
+            <div className="w-full space-y-2" style={{ maxWidth: `${canvasSize}px` }}>
               <label className="font-medium text-sm sm:text-base">Base Color:</label>
               <div className="flex items-center gap-3 px-3 py-2 border border-input rounded-md shadow-xs">
-                <ColorSwatchLink
-                  hex={baseColor}
+                <div
                   className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative block"
                   style={{ backgroundColor: baseColor }}
                   onClick={(e) => {
@@ -419,13 +418,15 @@ export function ColorWheelTool() {
                     setShowCustomPicker(true)
                   }}
                   title={`Open color picker for base color ${baseColor.toUpperCase()}`}
+                  role="button"
+                  tabIndex={0}
                 >
-                  <Pipette 
-                    className="absolute inset-0 m-auto w-4 h-4" 
+                  <Pipette
+                    className="absolute inset-0 m-auto w-4 h-4"
                     style={{ color: getContrastColor(baseColor) }}
                   />
                   <span className="sr-only">Open color picker for base color {baseColor}</span>
-                </ColorSwatchLink>
+                </div>
                 <div className="flex-1 flex items-center gap-2">
                   <Select value={colorValueType} onValueChange={setColorValueType}>
                     <SelectTrigger className="w-24 h-8">
@@ -438,21 +439,21 @@ export function ColorWheelTool() {
                       <SelectItem value="cmyk">CMYK</SelectItem>
                     </SelectContent>
                   </Select>
-                  <span 
+                  <span
                     className="font-mono font-semibold text-sm sm:text-base truncate hidden md:block"
                     style={{ color: getContrastColor(baseColor) }}
                   >
                     {getColorValue(baseColor)}
                   </span>
                 </div>
-                <button 
+                <button
                   onClick={(e) => copyToClipboard(getColorValue(baseColor), e)}
                   className="p-1.5 rounded-md hover:bg-accent transition-colors relative"
                   aria-label="Copy color value"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                   </svg>
                   {copiedValue === getColorValue(baseColor) && (
                     <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-xs rounded font-sans whitespace-nowrap">
@@ -461,25 +462,25 @@ export function ColorWheelTool() {
                   )}
                 </button>
               </div>
-              
+
               {/* Mobile view: Show selected color value below base color box */}
               <div className="md:hidden mt-2 text-center">
                 <span className="text-xs text-muted-foreground block mb-1">Selected Value</span>
-                <span 
+                <span
                   className="font-mono font-semibold text-sm"
                   style={{ color: getContrastColor(baseColor) }}
                 >
                   {getColorValue(baseColor)}
                 </span>
               </div>
-          </div>
+            </div>
           </div>
 
           {/* Controls - Below Wheel on Mobile, Side by Side on Desktop */}
           <div className="flex-1 min-w-0 h-full flex flex-col w-full lg:w-full xl:flex-1 xl:min-w-0">
             <div className="flex flex-col gap-4 flex-1 min-h-0">
-            {/* Harmony Type */}
-            <div className="space-y-2 flex-shrink-0">
+              {/* Harmony Type */}
+              <div className="space-y-2 flex-shrink-0">
                 <label className="font-medium text-sm sm:text-base">Harmony Type:</label>
                 <Select value={harmonyType} onValueChange={setHarmonyTypeAndClearRandom}>
                   <SelectTrigger className="w-full" aria-label="Select harmony type">
@@ -496,38 +497,38 @@ export function ColorWheelTool() {
                     <SelectItem value="monochromatic">Monochromatic</SelectItem>
                   </SelectContent>
                 </Select>
-            </div>
+              </div>
 
-            {/* Color Harmony */}
-            <div className="flex flex-col gap-3 flex-1 min-h-0 w-full">
-              <div className="flex items-center justify-between flex-shrink-0">
-                <h3 className="font-semibold text-sm sm:text-base">Color Harmony</h3>
-                <Button size="sm" variant="ghost" className="gap-2" onClick={() => setExportOpen(true)}>
-                  <Share className="w-4 h-4" />
-                  Export
-                </Button>
-              </div>
-              <ColorCombination 
-                colors={showRandomPalette ? randomPalette : harmonies} 
-                baseHex={baseColor} 
-                height="100%"
-                vertical={true}
-                className="flex-1 w-full"
-              />
-              
-              {/* Random Palette Box - Equal height to base color box */}
-              <div className="mt-4">
-                <Button 
-                  onClick={generateRandomPalette}
-                  className="w-full h-12 flex items-center gap-2"
-                  variant="outline"
-                >
-                  <Shuffle className="w-4 h-4" />
-                  Random Palette
-                </Button>
+              {/* Color Harmony */}
+              <div className="flex flex-col gap-3 flex-1 min-h-0 w-full">
+                <div className="flex items-center justify-between flex-shrink-0">
+                  <h3 className="font-semibold text-sm sm:text-base">Color Harmony</h3>
+                  <Button size="sm" variant="ghost" className="gap-2" onClick={() => setExportOpen(true)}>
+                    <Share className="w-4 h-4" />
+                    Export
+                  </Button>
+                </div>
+                <ColorCombination
+                  colors={showRandomPalette ? randomPalette : harmonies}
+                  baseHex={baseColor}
+                  height="100%"
+                  vertical={true}
+                  className="flex-1 w-full"
+                />
+
+                {/* Random Palette Box - Equal height to base color box */}
+                <div className="mt-4">
+                  <Button
+                    onClick={generateRandomPalette}
+                    className="w-full h-12 flex items-center gap-2"
+                    variant="outline"
+                  >
+                    <Shuffle className="w-4 h-4" />
+                    Random Palette
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
       </Card>

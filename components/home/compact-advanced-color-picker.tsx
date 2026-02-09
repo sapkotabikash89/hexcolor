@@ -20,18 +20,18 @@ interface CompactAdvancedColorPickerProps {
     narrowPicker?: boolean
 }
 
-export function CompactAdvancedColorPicker({ 
-    color, 
-    onChange, 
-    hideLink = false, 
+export function CompactAdvancedColorPicker({
+    color,
+    onChange,
+    hideLink = false,
     footer,
     hideExploreButton = false,
     narrowPicker = false
 }: CompactAdvancedColorPickerProps = {}) {
-    const [selectedColor, setSelectedColor] = useState(color || "#E0115F")
-    const [hue, setHue] = useState(337)
-    const [saturation, setSaturation] = useState(86)
-    const [lightness, setLightness] = useState(47)
+    const [selectedColor, setSelectedColor] = useState(color || "#a73991")
+    const [hue, setHue] = useState(312)
+    const [saturation, setSaturation] = useState(49)
+    const [lightness, setLightness] = useState(44)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const rectRef = useRef<DOMRect | null>(null)
     const [isDragging, setIsDragging] = useState(false)
@@ -75,10 +75,10 @@ export function CompactAdvancedColorPicker({
                 rectRef.current = canvasRef.current.getBoundingClientRect()
             }
         }
-        
+
         // Initial update
         updateRect()
-        
+
         // Update on resize and scroll
         const resizeObserver = new ResizeObserver(updateRect)
         if (canvasRef.current) {
@@ -86,7 +86,7 @@ export function CompactAdvancedColorPicker({
         }
         window.addEventListener('scroll', updateRect, { passive: true })
         window.addEventListener('resize', updateRect, { passive: true })
-        
+
         return () => {
             resizeObserver.disconnect()
             window.removeEventListener('scroll', updateRect)
@@ -142,7 +142,7 @@ export function CompactAdvancedColorPicker({
             rect = canvas.getBoundingClientRect()
             rectRef.current = rect
         }
-        
+
         let clientX: number, clientY: number
 
         if ("touches" in e) {
@@ -203,8 +203,8 @@ export function CompactAdvancedColorPicker({
     const pickerX = `${Math.max(0, Math.min(100, saturation))}%`
     const pickerY = `${Math.max(0, Math.min(100, 100 - lightness))}%`
 
-    const pickerWidthClass = narrowPicker 
-        ? "max-w-[280px] sm:max-w-[320px]" 
+    const pickerWidthClass = narrowPicker
+        ? "max-w-[280px] sm:max-w-[320px]"
         : "max-w-[320px] sm:max-w-[400px]"
 
     return (
@@ -308,59 +308,59 @@ export function CompactAdvancedColorPicker({
 
                 {/* Color Display and Values */}
                 <div className="flex-1 min-w-0 w-full lg:w-full xl:flex-1 xl:min-w-0">
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-4 sm:gap-6 w-full">
-                    {/* Left Column: Color Preview */}
-                    <div className="space-y-3">
-                        <ColorSwatchLink
-                            hex={selectedColor}
-                            className="w-full h-24 sm:h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg block"
-                            style={{ backgroundColor: selectedColor, color: getContrastColor(selectedColor) }}
-                        >
-                            {selectedColor.toUpperCase()}
-                        </ColorSwatchLink>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-4 sm:gap-6 w-full">
+                        {/* Left Column: Color Preview */}
+                        <div className="space-y-3">
+                            <ColorSwatchLink
+                                hex={selectedColor}
+                                className="w-full h-24 sm:h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono font-semibold text-base sm:text-lg block"
+                                style={{ backgroundColor: selectedColor, color: getContrastColor(selectedColor) }}
+                            >
+                                {selectedColor.toUpperCase()}
+                            </ColorSwatchLink>
 
-                        {!hideExploreButton && (
-                            <Button asChild className="w-full" size="lg">
-                                <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
-                            </Button>
-                        )}
-                    </div>
-
-                    {/* Right Column: Color Values */}
-                    <div className="space-y-3 w-full">
-                        <div className="flex items-center justify-between p-3 bg-muted rounded-md">
-                            <div className="min-w-0 flex-1">
-                                <span className="text-xs sm:text-sm text-muted-foreground">HEX</span>
-                                <p className="font-mono font-semibold text-sm truncate">{selectedColor}</p>
-                            </div>
-                            <CopyButton value={selectedColor} />
+                            {!hideExploreButton && (
+                                <Button asChild className="w-full" size="lg">
+                                    <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
+                                </Button>
+                            )}
                         </div>
-                        {rgb && (
-                            <>
-                                <div className="flex items-center justify-between p-3 bg-muted rounded-md">
-                                    <div className="min-w-0 flex-1">
-                                        <span className="text-xs sm:text-sm text-muted-foreground">RGB</span>
-                                        <p className="font-mono text-sm truncate">
-                                            ({rgb.r}, {rgb.g}, {rgb.b})
-                                        </p>
-                                    </div>
-                                    <CopyButton value={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`} />
+
+                        {/* Right Column: Color Values */}
+                        <div className="space-y-3 w-full">
+                            <div className="flex items-center justify-between p-3 bg-muted rounded-md">
+                                <div className="min-w-0 flex-1">
+                                    <span className="text-xs sm:text-sm text-muted-foreground">HEX</span>
+                                    <p className="font-mono font-semibold text-sm truncate">{selectedColor}</p>
                                 </div>
-                                {hsl && (
+                                <CopyButton value={selectedColor} />
+                            </div>
+                            {rgb && (
+                                <>
                                     <div className="flex items-center justify-between p-3 bg-muted rounded-md">
                                         <div className="min-w-0 flex-1">
-                                            <span className="text-xs sm:text-sm text-muted-foreground">HSL</span>
+                                            <span className="text-xs sm:text-sm text-muted-foreground">RGB</span>
                                             <p className="font-mono text-sm truncate">
-                                                ({hsl.h}°, {hsl.s}%, {hsl.l}%)
+                                                ({rgb.r}, {rgb.g}, {rgb.b})
                                             </p>
                                         </div>
-                                        <CopyButton value={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`} />
+                                        <CopyButton value={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`} />
                                     </div>
-                                )}
-                            </>
-                        )}
+                                    {hsl && (
+                                        <div className="flex items-center justify-between p-3 bg-muted rounded-md">
+                                            <div className="min-w-0 flex-1">
+                                                <span className="text-xs sm:text-sm text-muted-foreground">HSL</span>
+                                                <p className="font-mono text-sm truncate">
+                                                    ({hsl.h}°, {hsl.s}%, {hsl.l}%)
+                                                </p>
+                                            </div>
+                                            <CopyButton value={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`} />
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
 

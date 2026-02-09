@@ -8,10 +8,10 @@ import ColorSwatchLink from "@/components/color-swatch-link"
 import { CopyButton } from "@/components/copy-button"
 
 export function CompactColorPicker() {
-    const [selectedColor, setSelectedColor] = useState("#E0115F")
-    const [hue, setHue] = useState(230)
-    const [saturation, setSaturation] = useState(70)
-    const [lightness, setLightness] = useState(60)
+    const [selectedColor, setSelectedColor] = useState("#a73991")
+    const [hue, setHue] = useState(312)
+    const [saturation, setSaturation] = useState(49)
+    const [lightness, setLightness] = useState(44)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const rectRef = useRef<DOMRect | null>(null)
 
@@ -23,6 +23,8 @@ export function CompactColorPicker() {
         }
 
         updateRect()
+        drawColorSpace()
+
         const resizeObserver = new ResizeObserver(updateRect)
         if (canvasRef.current) resizeObserver.observe(canvasRef.current)
         window.addEventListener("scroll", updateRect, { passive: true })

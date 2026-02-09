@@ -17,33 +17,33 @@ const ColorPageContent = dynamic(() => import("@/components/color-page-content")
 })
 
 export function AdvancedColorPicker() {
-  const [selectedColor, setSelectedColor] = useState("#16b63c")
+  const [selectedColor, setSelectedColor] = useState("#a73991")
 
   const handleRandomColor = () => {
-    const randomColor = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`.toUpperCase();
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`.toUpperCase();
     setSelectedColor(randomColor);
   }
 
   return (
     <div className="space-y-6">
       <div className="space-y-6">
-        <CompactAdvancedColorPicker 
-          color={selectedColor} 
+        <CompactAdvancedColorPicker
+          color={selectedColor}
           onChange={setSelectedColor}
           hideLink={true}
         />
 
         <div className="flex flex-col sm:flex-row justify-center gap-4 px-4">
-            <Button onClick={handleRandomColor} className="w-full sm:w-auto" variant="outline">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Random Color
+          <Button onClick={handleRandomColor} className="w-full sm:w-auto" variant="outline">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Random Color
+          </Button>
+          <Link href="/image-color-picker" className="w-full sm:w-auto">
+            <Button className="w-full" variant="outline">
+              <ImageIcon className="w-4 h-4 mr-2" />
+              Image Color Picker
             </Button>
-            <Link href="/image-color-picker" className="w-full sm:w-auto">
-                <Button className="w-full" variant="outline">
-                    <ImageIcon className="w-4 h-4 mr-2" />
-                    Image Color Picker
-                </Button>
-            </Link>
+          </Link>
         </div>
       </div>
 
@@ -51,10 +51,10 @@ export function AdvancedColorPicker() {
         <ShareButtons title="Advanced Color Picker Tool - HexColorMeans" />
       </div>
 
-      <ColorPageContent 
-        hex={selectedColor} 
-        name={undefined} 
-        mode="sectionsOnly" 
+      <ColorPageContent
+        hex={selectedColor}
+        name={undefined}
+        mode="sectionsOnly"
       />
     </div>
   )

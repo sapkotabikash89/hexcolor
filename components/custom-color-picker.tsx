@@ -20,11 +20,14 @@ interface CustomColorPickerProps {
 }
 
 export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onClose, disableGlobalUpdate = false }: CustomColorPickerProps) {
+  // Use default color if value is empty
+  const initialColor = value || "#a73991"
+
   const [hue, setHue] = useState(0)
   const [saturation, setSaturation] = useState(100)
   const [lightness, setLightness] = useState(50)
-  const [hexInput, setHexInput] = useState(value)
-  const [tempColor, setTempColor] = useState(value)
+  const [hexInput, setHexInput] = useState(initialColor)
+  const [tempColor, setTempColor] = useState(initialColor)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rectRef = useRef<DOMRect | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -32,16 +35,22 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
   useEffect(() => {
     if (isDragging) return
 
-    const rgb = hexToRgb(value)
+    const colorToUse = value || "#a73991"
+    const rgb = hexToRgb(colorToUse)
     if (rgb) {
       const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
       setHue(hsl.h)
       setSaturation(hsl.s)
       setLightness(hsl.l)
-      setHexInput(value)
-      setTempColor(value)
+      setHexInput(colorToUse)
+      setTempColor(colorToUse)
     }
   }, [value, isDragging])
+
+  useEffect(() => {
+    // Initial draw
+    drawColorSpace()
+  }, []) // Draw once on mount
 
   useEffect(() => {
     drawColorSpace()
@@ -278,13 +287,12 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
               />
             </div>
             <div className="w-12 flex flex-col justify-end">
-              <ColorSwatchLink
-                hex={tempColor}
+              {/* Internal swatch should not link out */}
+              <div
                 className="w-full h-10 rounded-md border border-border block"
+                style={{ backgroundColor: tempColor }}
                 aria-label={`Current color: ${tempColor}`}
-              >
-                <span className="sr-only">{tempColor}</span>
-              </ColorSwatchLink>
+              />
             </div>
           </div>
 

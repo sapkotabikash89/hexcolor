@@ -107,8 +107,7 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
             <div className="space-y-1">
                 {/* Current Color Header */}
                 <div className="mb-6 p-4 rounded-lg bg-card border shadow-sm flex items-center gap-3">
-                    <ColorSwatchLink
-                        hex={currentHex}
+                    <div
                         onClick={(e) => {
                             e.preventDefault()
                             setShowCustomPicker(true)
@@ -116,10 +115,12 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                         className="w-8 h-8 rounded-md shadow-sm border border-border flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all block relative"
                         style={{ backgroundColor: currentHex }}
                         title="Pick a color"
+                        role="button"
+                        tabIndex={0}
                     >
                         <Pipette className="w-4 h-4 text-white mix-blend-difference absolute inset-0 m-auto" />
                         <span className="sr-only">Pick a color</span>
-                    </ColorSwatchLink>
+                    </div>
                     <span className="font-mono font-bold text-sm">{currentHex.replace('#', '').toUpperCase()}</span>
                 </div>
 
@@ -133,7 +134,7 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                     <div className="space-y-1 pb-2">
                         {shades.map((shade, idx) => {
                             const isActive = activeSection === shade.id
-                            
+
                             return (
                                 <div
                                     key={`${shade.hex}-${idx}`}
@@ -152,7 +153,7 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                                     >
                                         <span className="sr-only">Color {shade.hex}</span>
                                     </ColorSwatchLink>
-                                    <button 
+                                    <button
                                         onClick={() => scrollToSection(shade.id, shade.name)}
                                         className="truncate hover:underline text-left flex-1"
                                     >
@@ -168,7 +169,7 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
             {/* Custom Color Picker Dialog */}
             {showCustomPicker && (
                 <CustomColorPicker
-                    value={currentHex}
+                    value={tempColor}
                     onChange={handleColorChange}
                     onApply={handleColorApply}
                     getApplyLink={getColorPageLink}
