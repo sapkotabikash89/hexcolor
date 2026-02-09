@@ -58,7 +58,7 @@ export function getInPlaceColorLink(hex: string): string {
     newUrl.searchParams.set('hex', cleanHex);
     return newUrl.toString();
   }
-  return `/html-color-picker?hex=${cleanHex}`;
+  return `/colors/${cleanHex}`;
 }
 
 /**

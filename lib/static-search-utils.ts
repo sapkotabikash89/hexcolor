@@ -193,8 +193,8 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
       // Return static color page URL
       return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
     } else {
-      // For colors not in static pages, return HTML color picker
-      return `https://hexcolormeans.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
+      // For colors not in static pages, return canonical color page
+      return `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`;
     }
   }
 
@@ -208,8 +208,8 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
         // Return static color page URL
         return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
       } else {
-        // For unknown hex, return HTML color picker
-        return `https://hexcolormeans.com/html-color-picker/?hex=${normalizedInput}`;
+        // For unknown hex, return canonical color page
+        return `https://hexcolormeans.com/colors/${normalizedInput.toLowerCase()}`;
       }
     }
   }
@@ -252,8 +252,8 @@ export function performSimpleSearch(input: string): string | null {
       // Return static color page URL
       return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
     } else {
-      // For colors not in static pages, return HTML color picker
-      return `https://hexcolormeans.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
+      // For colors not in static pages, return canonical color page
+      return `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`;
     }
   }
 
@@ -267,8 +267,8 @@ export function performSimpleSearch(input: string): string | null {
         // Return static color page URL
         return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
       } else {
-        // For unknown hex, return HTML color picker
-        return `https://hexcolormeans.com/html-color-picker/?hex=${normalizedInput}`;
+        // For unknown hex, return canonical color page
+        return `https://hexcolormeans.com/colors/${normalizedInput.toLowerCase()}`;
       }
     }
   }
