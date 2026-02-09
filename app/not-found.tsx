@@ -69,11 +69,10 @@ export default function NotFound() {
       <div className="flex flex-col min-h-screen bg-white">
         <Header />
 
-        {/* Inject SEO metadata for unknown color pages */}
-        <title>{`${colorHex} Color Information & Tools | HexColorMeans`}</title>
+        {/* Inject strict SEO metadata for unknown color pages - NOINDEX, NO CANONICAL */}
+        <title>{`${colorHex} Color Info`}</title>
         <meta name="robots" content="noindex, follow" />
-        <meta name="description" content={`Technical specifications for ${colorHex}. Access calibrated color conversions (RGB, HSL, CMYK), harmony maps, and accessibility validation metrics.`} />
-        <link rel="canonical" href={`https://hexcolormeans.com/colors/${colorHex.replace("#", "").toLowerCase()}`} />
+
         {/* Dynamic Color Hero */}
         <section
           className="py-12 px-4 transition-colors"

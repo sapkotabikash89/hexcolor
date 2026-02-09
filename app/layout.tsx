@@ -13,65 +13,16 @@ const SITE_URL = "https://hexcolormeans.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "HexColorMeans - Where Every Color Has Meaning | Color Information, Meanings & Tools",
-  description:
-    "Explore colors with HexColorMeans. Get detailed color information, meanings, conversions, harmonies, and use professional color tools including color picker, contrast checker, and more.",
-  keywords: [
-    "color picker",
-    "color codes",
-    "hex colors",
-    "rgb colors",
-    "color converter",
-    "color meanings",
-    "color harmonies",
-    "color palette",
-    "contrast checker",
-  ],
-  authors: [{ name: "HexColorMeans" }],
-  alternates: {
-    canonical: SITE_URL,
-  },
-  openGraph: {
-    title: "HexColorMeans - Where Every Color Has Meaning",
-    description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
-    type: "website",
-    url: SITE_URL,
-    siteName: "HexColorMeans",
-    images: [
-      {
-        url: `${SITE_URL}/advanced-color-picker-tool-online-free.webp`,
-        width: 1200,
-        height: 630,
-        alt: "HexColorMeans - Professional Color Tools and Information",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "HexColorMeans - Where Every Color Has Meaning",
-    description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
-    images: [`${SITE_URL}/advanced-color-picker-tool-online-free.webp`],
-  },
+  applicationName: "HexColorMeans",
+  keywords: ["color meanings", "hex codes", "color symbolism", "color combinations", "color theory", "web colors", "design resources"],
+  authors: [{ name: "HexColorMeans Team" }],
+  creator: "HexColorMeans",
+  publisher: "HexColorMeans",
+  manifest: "/manifest.json",
   icons: {
-    icon: [
-      { url: "/favicon.webp" },
-      { url: "/favicon.webp", type: "image/webp" },
-    ],
-    shortcut: ["/favicon.webp"],
-    apple: [
-      { url: "/favicon.webp" },
-    ],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
   verification: {
     google: "6aCCEUx0SvVPIKAgXUdb96PSZ48p0WJNzj0074iCNnY",

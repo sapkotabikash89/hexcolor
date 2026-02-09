@@ -112,18 +112,42 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
 
   if (!isValidHex(normalizedHex)) {
     return {
-      title: "Invalid Color - HexColorMeans",
+      title: "Invalid Color",
+      robots: { index: false, follow: true },
     }
   }
 
-  // Load data to check if color exists in our database
+  // Strict check for known colors
+  const isKnownColor = KNOWN_COLOR_HEXES.has(cleanHex);
+
+  // UNKNOWN COLORS: Strict NOINDEX, NO SEO METADATA
+  if (!isKnownColor) {
+    return {
+      // Minimal title for browser tab, but no SEO value
+      title: `${normalizedHex} Color Info`,
+      // Explicitly disable indexing
+      robots: {
+        index: false,
+        follow: true,
+        googleBot: {
+          index: false,
+          follow: true,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
+      // Explicitly OMIT other SEO tags by not including them
+    }
+  }
+
+  // KNOWN COLORS: Full SEO Metadata
   const data = (await import('@/lib/color-meaning.json')).default
   const meta: any = (data as any)[cleanHex]
   const colorName: string | undefined = meta?.name || undefined
   const displayLabel = colorName ? `${colorName} (${normalizedHex})` : normalizedHex
   const rgb = hexToRgb(normalizedHex)
 
-  // Use Gumlet CDN image
   const gumlet = getGumletColorImage({
     colorName: colorName || (normalizedHex),
     hex: normalizedHex,
@@ -132,16 +156,8 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
   const imageUrl = gumlet.url;
   const imageAlt = gumlet.alt;
 
-  // Enhanced SEO metadata specifically for known colors
-  const isKnownColor = KNOWN_COLOR_HEXES.has(cleanHex);
-
-  const baseTitle = isKnownColor
-    ? `${displayLabel} Color Meaning, Values and Psychology | HexColorMeans`
-    : `${displayLabel} Color Information & Tools | HexColorMeans`;
-
-  const baseDescription = isKnownColor
-    ? `Master the psychology and technical profile of ${displayLabel}. Comprehensive analysis of color meaning, symbolism, and exact RGB/HSL/CMYK specifications for professional design.`
-    : `Technical specifications for ${normalizedHex}. Access calibrated color conversions (RGB, HSL, CMYK), harmony maps, and accessibility validation metrics.`;
+  const baseTitle = `${displayLabel} Color Meaning, Values and Psychology | HexColorMeans`;
+  const baseDescription = `Master the psychology and technical profile of ${displayLabel}. Comprehensive analysis of color meaning, symbolism, and exact RGB/HSL/CMYK specifications for professional design.`;
 
   return {
     title: baseTitle,
@@ -159,6 +175,7 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       "design colors",
       "brand colors",
     ],
+    // Explicit Canonical for Known Colors
     alternates: {
       canonical: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`,
     },
@@ -182,12 +199,12 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       description: baseDescription,
       images: [imageUrl],
     },
-    // Additional SEO enhancements
+    // Explicit Indexing for Known Colors
     robots: {
-      index: isKnownColor,
+      index: true,
       follow: true,
       googleBot: {
-        index: isKnownColor,
+        index: true,
         follow: true,
         "max-video-preview": -1,
         "max-image-preview": "large",
