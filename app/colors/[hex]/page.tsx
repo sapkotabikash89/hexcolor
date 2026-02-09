@@ -184,8 +184,15 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
     },
     // Additional SEO enhancements
     robots: {
-      index: isKnownColor, // Only index known colors
+      index: isKnownColor,
       follow: true,
+      googleBot: {
+        index: isKnownColor,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   }
 }
