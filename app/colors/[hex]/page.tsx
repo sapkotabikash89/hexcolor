@@ -44,10 +44,10 @@ export async function generateStaticParams() {
       const fs = await import('fs')
       const path = await import('path')
       const postsPath = path.join(process.cwd(), 'lib/blog-posts-data.json')
-      
+
       if (fs.existsSync(postsPath)) {
         const postsData = JSON.parse(fs.readFileSync(postsPath, 'utf8'))
-        
+
         postsData.forEach((post: any) => {
           // Extract hex from title: "0000FF Color Blue Meaning..." -> "0000FF"
           // Look for 6-digit hex at start of title
@@ -55,7 +55,7 @@ export async function generateStaticParams() {
           if (match) {
             excludedHexes.add(match[1].toUpperCase())
           }
-          
+
           // Also check for #HEX format just in case
           const matchHash = post.title.trim().match(/^#([0-9A-Fa-f]{6})\b/);
           if (matchHash) {
@@ -91,7 +91,7 @@ export async function generateStaticParams() {
     const params = filteredHexes.map((hex) => ({
       hex: hex,
     }));
-    
+
     // Verify param structure
     if (params.length > 0 && !params[0].hex) {
       console.error('Invalid param structure:', params[0]);
@@ -216,8 +216,8 @@ export default async function ColorPage({ params }: ColorPageProps) {
   const neighbors = getAdjacentColors(normalizedHex)
   // Ensure we have name for neighbor display if possible
   const neighborsWithNames = {
-      prev: neighbors.prev ? { hex: neighbors.prev, name: getClosestKnownColor(neighbors.prev).name } : undefined,
-      next: neighbors.next ? { hex: neighbors.next, name: getClosestKnownColor(neighbors.next).name } : undefined
+    prev: neighbors.prev ? { hex: neighbors.prev, name: getClosestKnownColor(neighbors.prev).name } : undefined,
+    next: neighbors.next ? { hex: neighbors.next, name: getClosestKnownColor(neighbors.next).name } : undefined
   }
 
   const breadcrumbItems = [
@@ -230,49 +230,49 @@ export default async function ColorPage({ params }: ColorPageProps) {
   let colorInformation = null
 
   if (rgb && hsl && cmyk) {
-      // Fetch pairings (Analogous + Split Complementary)
-      const analogous = getColorHarmony(normalizedHex, "analogous");
-      const splitComp = getColorHarmony(normalizedHex, "split-complementary");
-      
-      // Filter out self and duplicates, and ensure we only use KNOWN colors
-      const pairingCandidates = Array.from(new Set([...analogous, ...splitComp]))
-          .map(h => getClosestKnownColor(h))
-          .filter((c, index, self) => 
-              c.hex.toUpperCase() !== normalizedHex.toUpperCase() && 
-              self.findIndex(t => t.hex === c.hex) === index
-          );
-      
-      const uniquePairings = pairingCandidates.slice(0, 5);
+    // Fetch pairings (Analogous + Split Complementary)
+    const analogous = getColorHarmony(normalizedHex, "analogous");
+    const splitComp = getColorHarmony(normalizedHex, "split-complementary");
 
-      // Fetch conflicts (Triadic + Complementary)
-      const triadic = getColorHarmony(normalizedHex, "triadic");
-      const complementary = getColorHarmony(normalizedHex, "complementary");
-      
-      const conflictCandidates = Array.from(new Set([...triadic, ...complementary]))
-          .map(h => getClosestKnownColor(h))
-          .filter((c, index, self) => 
-              c.hex.toUpperCase() !== normalizedHex.toUpperCase() && 
-              self.findIndex(t => t.hex === c.hex) === index &&
-              // Ensure no overlap with pairings
-              !pairingCandidates.some(p => p.hex === c.hex)
-          );
+    // Filter out self and duplicates, and ensure we only use KNOWN colors
+    const pairingCandidates = Array.from(new Set([...analogous, ...splitComp]))
+      .map(h => getClosestKnownColor(h))
+      .filter((c, index, self) =>
+        c.hex.toUpperCase() !== normalizedHex.toUpperCase() &&
+        self.findIndex(t => t.hex === c.hex) === index
+      );
 
-      const uniqueConflicts = conflictCandidates.slice(0, 5);
+    const uniquePairings = pairingCandidates.slice(0, 5);
 
-      const contentData = {
-          hex: normalizedHex,
-          name: colorName || "Color",
-          rgb,
-          hsl,
-          cmyk,
-          neighbors: neighborsWithNames,
-          pairings: uniquePairings,
-          conflicts: uniqueConflicts
-      }
-      faqItems = generateColorFAQs(contentData)
-      colorInformation = generateColorInformation(contentData)
+    // Fetch conflicts (Triadic + Complementary)
+    const triadic = getColorHarmony(normalizedHex, "triadic");
+    const complementary = getColorHarmony(normalizedHex, "complementary");
+
+    const conflictCandidates = Array.from(new Set([...triadic, ...complementary]))
+      .map(h => getClosestKnownColor(h))
+      .filter((c, index, self) =>
+        c.hex.toUpperCase() !== normalizedHex.toUpperCase() &&
+        self.findIndex(t => t.hex === c.hex) === index &&
+        // Ensure no overlap with pairings
+        !pairingCandidates.some(p => p.hex === c.hex)
+      );
+
+    const uniqueConflicts = conflictCandidates.slice(0, 5);
+
+    const contentData = {
+      hex: normalizedHex,
+      name: colorName || "Color",
+      rgb,
+      hsl,
+      cmyk,
+      neighbors: neighborsWithNames,
+      pairings: uniquePairings,
+      conflicts: uniqueConflicts
+    }
+    faqItems = generateColorFAQs(contentData)
+    colorInformation = generateColorInformation(contentData)
   }
-  
+
   const pageUrl = `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}`
   const pageDescription = `Explore ${normalizedHex} color information, conversions, harmonies, variations, and accessibility.`
 
@@ -396,9 +396,9 @@ export default async function ColorPage({ params }: ColorPageProps) {
           </article>
 
           {/* Right Sidebar - Hidden below lg to prioritize content width */}
-      <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-        <ColorSidebar color={normalizedHex} />
-      </aside>
+          <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
+            <ColorSidebar color={normalizedHex} />
+          </aside>
         </div>
       </main>
 

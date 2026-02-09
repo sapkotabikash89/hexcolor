@@ -9,11 +9,11 @@ import Link from "next/link"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 
 export function HomeColorPicker() {
-  // Default color handling
   const [selectedColor, setSelectedColor] = useState("#a73991")
-  const [hue, setHue] = useState(312) // Hue for #a73991
-  const [saturation, setSaturation] = useState(49) // Saturation for #a73991
-  const [lightness, setLightness] = useState(44) // Lightness for #a73991
+  const [hue, setHue] = useState(312)
+  const [saturation, setSaturation] = useState(49)
+  const [lightness, setLightness] = useState(44)
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rectRef = useRef<DOMRect | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -26,9 +26,6 @@ export function HomeColorPicker() {
     }
 
     updateRect()
-    // Initial draw
-    drawColorSpace()
-
     const resizeObserver = new ResizeObserver(updateRect)
     if (canvasRef.current) resizeObserver.observe(canvasRef.current)
     window.addEventListener("scroll", updateRect, { passive: true })

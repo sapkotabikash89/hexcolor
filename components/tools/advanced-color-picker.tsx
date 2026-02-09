@@ -19,6 +19,7 @@ const ColorPageContent = dynamic(() => import("@/components/color-page-content")
 export function AdvancedColorPicker() {
   const [selectedColor, setSelectedColor] = useState("#a73991")
 
+
   const handleRandomColor = () => {
     const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`.toUpperCase();
     setSelectedColor(randomColor);

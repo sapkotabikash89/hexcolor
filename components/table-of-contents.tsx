@@ -204,8 +204,9 @@ export function TableOfContents({ currentHex, mobileOnly = false, hideFaqs = fal
             {/* Custom Color Picker Dialog */}
             {showCustomPicker && (
                 <CustomColorPicker
-                    value={currentHex}
+                    value={tempColor}
                     onChange={handleColorChange}
+
                     onApply={handleColorApply}
                     getApplyLink={getColorPageLink}
                     onClose={() => setShowCustomPicker(false)}

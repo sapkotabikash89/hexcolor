@@ -107,7 +107,8 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
             <div className="space-y-1">
                 {/* Current Color Header */}
                 <div className="mb-6 p-4 rounded-lg bg-card border shadow-sm flex items-center gap-3">
-                    <div
+                    <ColorSwatchLink
+                        hex={currentHex}
                         onClick={(e) => {
                             e.preventDefault()
                             setShowCustomPicker(true)
@@ -115,12 +116,10 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                         className="w-8 h-8 rounded-md shadow-sm border border-border flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all block relative"
                         style={{ backgroundColor: currentHex }}
                         title="Pick a color"
-                        role="button"
-                        tabIndex={0}
                     >
                         <Pipette className="w-4 h-4 text-white mix-blend-difference absolute inset-0 m-auto" />
                         <span className="sr-only">Pick a color</span>
-                    </div>
+                    </ColorSwatchLink>
                     <span className="font-mono font-bold text-sm">{currentHex.replace('#', '').toUpperCase()}</span>
                 </div>
 
@@ -171,6 +170,7 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                 <CustomColorPicker
                     value={tempColor}
                     onChange={handleColorChange}
+
                     onApply={handleColorApply}
                     getApplyLink={getColorPageLink}
                     onClose={() => setShowCustomPicker(false)}

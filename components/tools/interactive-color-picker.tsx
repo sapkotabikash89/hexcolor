@@ -19,9 +19,10 @@ interface InteractiveColorPickerProps {
 }
 
 export function InteractiveColorPicker({ selectedColor, onColorChange }: InteractiveColorPickerProps) {
-  const [hue, setHue] = useState(230);
-  const [saturation, setSaturation] = useState(70);
-  const [lightness, setLightness] = useState(60);
+  const [hue, setHue] = useState(312);
+  const [saturation, setSaturation] = useState(49);
+  const [lightness, setLightness] = useState(44);
+
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rectRef = useRef<DOMRect | null>(null);
@@ -34,9 +35,9 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
 
   useEffect(() => {
     const updateRect = () => {
-        if (canvasRef.current) {
-            rectRef.current = canvasRef.current.getBoundingClientRect();
-        }
+      if (canvasRef.current) {
+        rectRef.current = canvasRef.current.getBoundingClientRect();
+      }
     };
     updateRect();
     const resizeObserver = new ResizeObserver(updateRect);
@@ -44,9 +45,9 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
     window.addEventListener('scroll', updateRect, { passive: true });
     window.addEventListener('resize', updateRect, { passive: true });
     return () => {
-        resizeObserver.disconnect();
-        window.removeEventListener('scroll', updateRect);
-        window.removeEventListener('resize', updateRect);
+      resizeObserver.disconnect();
+      window.removeEventListener('scroll', updateRect);
+      window.removeEventListener('resize', updateRect);
     };
   }, []);
 
@@ -129,8 +130,8 @@ export function InteractiveColorPicker({ selectedColor, onColorChange }: Interac
 
     let rect = rectRef.current;
     if (!rect) {
-        rect = canvas.getBoundingClientRect();
-        rectRef.current = rect;
+      rect = canvas.getBoundingClientRect();
+      rectRef.current = rect;
     }
 
     let clientX: number;

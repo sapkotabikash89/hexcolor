@@ -32,6 +32,7 @@ export function CompactAdvancedColorPicker({
     const [hue, setHue] = useState(312)
     const [saturation, setSaturation] = useState(49)
     const [lightness, setLightness] = useState(44)
+
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const rectRef = useRef<DOMRect | null>(null)
     const [isDragging, setIsDragging] = useState(false)

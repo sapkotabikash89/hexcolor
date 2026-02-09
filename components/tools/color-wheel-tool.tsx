@@ -20,8 +20,8 @@ import { getColorPageLink } from "@/lib/color-linking-utils"
 // Data is fetched via API when needed to avoid loading 1.5MB JSON in client bundle
 
 export function ColorWheelTool() {
-  const [baseColor, setBaseColor] = useState("#a73991")
-  const [tempColor, setTempColor] = useState("#a73991")
+  const [baseColor, setBaseColor] = useState("#E0115F")
+  const [tempColor, setTempColor] = useState("#E0115F")
   const [harmonyType, setHarmonyType] = useState("complementary")
 
   // Update harmony type setter to clear random palette when harmony type changes
@@ -409,7 +409,8 @@ export function ColorWheelTool() {
             <div className="w-full space-y-2" style={{ maxWidth: `${canvasSize}px` }}>
               <label className="font-medium text-sm sm:text-base">Base Color:</label>
               <div className="flex items-center gap-3 px-3 py-2 border border-input rounded-md shadow-xs">
-                <div
+                <ColorSwatchLink
+                  hex={baseColor}
                   className="w-12 h-8 sm:w-16 sm:h-10 rounded-md border-2 border-border cursor-pointer relative block"
                   style={{ backgroundColor: baseColor }}
                   onClick={(e) => {
@@ -418,15 +419,13 @@ export function ColorWheelTool() {
                     setShowCustomPicker(true)
                   }}
                   title={`Open color picker for base color ${baseColor.toUpperCase()}`}
-                  role="button"
-                  tabIndex={0}
                 >
                   <Pipette
                     className="absolute inset-0 m-auto w-4 h-4"
                     style={{ color: getContrastColor(baseColor) }}
                   />
                   <span className="sr-only">Open color picker for base color {baseColor}</span>
-                </div>
+                </ColorSwatchLink>
                 <div className="flex-1 flex items-center gap-2">
                   <Select value={colorValueType} onValueChange={setColorValueType}>
                     <SelectTrigger className="w-24 h-8">

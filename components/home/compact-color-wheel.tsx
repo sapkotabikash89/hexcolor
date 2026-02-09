@@ -15,7 +15,7 @@ import Link from "next/link"
 import { Share, Shuffle, Pipette } from "lucide-react"
 
 export function CompactColorWheel() {
-    const [baseColor, setBaseColor] = useState("#a73991")
+    const [baseColor, setBaseColor] = useState("#E0115F")
     const [harmonyType, setHarmonyType] = useState("complementary")
     const [colorValueType, setColorValueType] = useState("hex") // State for dropdown - default to hex
 

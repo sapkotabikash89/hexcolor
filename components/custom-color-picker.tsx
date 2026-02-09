@@ -19,15 +19,22 @@ interface CustomColorPickerProps {
   disableGlobalUpdate?: boolean
 }
 
-export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onClose, disableGlobalUpdate = false }: CustomColorPickerProps) {
-  // Use default color if value is empty
-  const initialColor = value || "#a73991"
+export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApplyLink, onClose, disableGlobalUpdate = false }: CustomColorPickerProps) {
+  const [hue, setHue] = useState(() => {
+    const rgb = hexToRgb(value)
+    return rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b).h : 0
+  })
+  const [saturation, setSaturation] = useState(() => {
+    const rgb = hexToRgb(value)
+    return rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b).s : 0
+  })
+  const [lightness, setLightness] = useState(() => {
+    const rgb = hexToRgb(value)
+    return rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b).l : 0
+  })
+  const [hexInput, setHexInput] = useState(value)
+  const [tempColor, setTempColor] = useState(value)
 
-  const [hue, setHue] = useState(0)
-  const [saturation, setSaturation] = useState(100)
-  const [lightness, setLightness] = useState(50)
-  const [hexInput, setHexInput] = useState(initialColor)
-  const [tempColor, setTempColor] = useState(initialColor)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rectRef = useRef<DOMRect | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -35,22 +42,16 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
   useEffect(() => {
     if (isDragging) return
 
-    const colorToUse = value || "#a73991"
-    const rgb = hexToRgb(colorToUse)
+    const rgb = hexToRgb(value)
     if (rgb) {
       const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
       setHue(hsl.h)
       setSaturation(hsl.s)
       setLightness(hsl.l)
-      setHexInput(colorToUse)
-      setTempColor(colorToUse)
+      setHexInput(value)
+      setTempColor(value)
     }
   }, [value, isDragging])
-
-  useEffect(() => {
-    // Initial draw
-    drawColorSpace()
-  }, []) // Draw once on mount
 
   useEffect(() => {
     drawColorSpace()
@@ -78,7 +79,10 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
     }
   }
 
-  const handleCanvasInteraction = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const handleCanvasInteraction = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
+    // Prevent default to avoid scrolling or text selection
+    if (e.cancelable) e.preventDefault()
+
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -128,6 +132,31 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
     }
   }
 
+  useEffect(() => {
+    if (!isDragging) return
+
+    const handleMove = (e: MouseEvent | TouchEvent) => {
+      handleCanvasInteraction(e)
+    }
+
+    const handleEnd = () => {
+      setIsDragging(false)
+      rectRef.current = null // Clear rect cache on end
+    }
+
+    window.addEventListener("mousemove", handleMove, { passive: false })
+    window.addEventListener("mouseup", handleEnd)
+    window.addEventListener("touchmove", handleMove, { passive: false })
+    window.addEventListener("touchend", handleEnd)
+
+    return () => {
+      window.removeEventListener("mousemove", handleMove)
+      window.removeEventListener("mouseup", handleEnd)
+      window.removeEventListener("touchmove", handleMove)
+      window.removeEventListener("touchend", handleEnd)
+    }
+  }, [isDragging, hue, onChange, disableGlobalUpdate])
+
   const handleHueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newHue = Number.parseInt(e.target.value)
     setHue(newHue)
@@ -175,7 +204,14 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
     setMounted(true)
-    return () => setMounted(false)
+    // Lock body scroll when picker is open
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    return () => {
+      setMounted(false)
+      document.body.style.overflow = originalOverflow
+    }
   }, [])
 
   if (!mounted) return null
@@ -196,41 +232,21 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
               ref={canvasRef}
               width={300}
               height={200}
-              className="w-full rounded-lg border-2 border-border cursor-crosshair touch-none"
-              onMouseMove={(e) => {
-                if (isDragging) {
-                  handleCanvasInteraction(e)
-                  // Prevent default to avoid text selection during drag
-                  e.preventDefault();
-                }
-              }}
+              className={`w-full rounded-lg border-2 border-border cursor-crosshair touch-none ${isDragging ? "pointer-events-none" : ""}`}
               onMouseDown={(e) => {
-                // Always update rect on interaction start to handle layout shifts/scrolls
+                e.preventDefault()
                 if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
                 setIsDragging(true)
                 handleCanvasInteraction(e)
-                // Prevent default to avoid text selection and focus jumps
-                e.preventDefault();
               }}
-              onMouseUp={() => setIsDragging(false)}
-              onMouseLeave={() => setIsDragging(false)}
               onTouchStart={(e) => {
-                // Always update rect on interaction start
+                if (e.cancelable) e.preventDefault()
                 if (canvasRef.current) rectRef.current = canvasRef.current.getBoundingClientRect()
                 setIsDragging(true)
                 handleCanvasInteraction(e)
-                // Prevent default to avoid scrolling while picking
-                e.preventDefault();
               }}
-              onTouchMove={(e) => {
-                if (isDragging) {
-                  handleCanvasInteraction(e)
-                  // Prevent default to avoid text selection during drag
-                  e.preventDefault();
-                }
-              }}
-              onTouchEnd={() => setIsDragging(false)}
             />
+
             <div
               className="absolute w-4 h-4 border-2 border-white rounded-full pointer-events-none"
               style={{
@@ -287,12 +303,14 @@ export function CustomColorPicker({ value, onChange, onApply, getApplyLink, onCl
               />
             </div>
             <div className="w-12 flex flex-col justify-end">
-              {/* Internal swatch should not link out */}
-              <div
+              <ColorSwatchLink
+                hex={tempColor}
                 className="w-full h-10 rounded-md border border-border block"
                 style={{ backgroundColor: tempColor }}
                 aria-label={`Current color: ${tempColor}`}
-              />
+              >
+                <span className="sr-only">{tempColor}</span>
+              </ColorSwatchLink>
             </div>
           </div>
 

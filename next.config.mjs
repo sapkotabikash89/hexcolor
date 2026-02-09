@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
-  trailingSlash: false, // Disabled to fix 404s on Cloudflare Pages
+  output: process.env.NODE_ENV === "production" ? "export" : undefined,
+  trailingSlash: false,
+
 
   // Image configuration
   images: {

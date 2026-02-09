@@ -12,6 +12,7 @@ export function CompactColorPicker() {
     const [hue, setHue] = useState(312)
     const [saturation, setSaturation] = useState(49)
     const [lightness, setLightness] = useState(44)
+
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const rectRef = useRef<DOMRect | null>(null)
 
@@ -23,8 +24,6 @@ export function CompactColorPicker() {
         }
 
         updateRect()
-        drawColorSpace()
-
         const resizeObserver = new ResizeObserver(updateRect)
         if (canvasRef.current) resizeObserver.observe(canvasRef.current)
         window.addEventListener("scroll", updateRect, { passive: true })

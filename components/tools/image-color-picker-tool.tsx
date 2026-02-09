@@ -19,7 +19,7 @@ import data from "@/lib/color-meaning.json"
 
 export function ImageColorPickerTool() {
   const [image, setImage] = useState<string | null>(null)
-  const [selectedColor, setSelectedColor] = useState("#a73991")
+  const [selectedColor, setSelectedColor] = useState("#E0115F")
   const [pickedColors, setPickedColors] = useState<string[]>([])
   const [isCustomImage, setIsCustomImage] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
