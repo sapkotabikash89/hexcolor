@@ -4,6 +4,7 @@
  */
 export const HEX_REDIRECTS: Record<string, string> = {
   "800080": "/color-purple-meaning/",
+  "FFFFFF": "/color-white-meaning/",
   "000000": "/color-black-meaning/",
   "FFA500": "/color-orange-meaning/",
   "FFFF00": "/color-yellow-meaning/",
