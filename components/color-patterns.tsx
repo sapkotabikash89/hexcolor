@@ -4,6 +4,7 @@ import React, { useRef } from 'react'
 import { Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getContrastColor } from '@/lib/color-utils'
+import { stripHtmlComments } from '@/lib/color-linking-utils'
 
 interface ColorPatternsProps {
     color: string
@@ -211,7 +212,7 @@ export function ColorPatterns({ color }: ColorPatternsProps) {
                     <div
                         className="w-full h-full"
                         dangerouslySetInnerHTML={{
-                            __html: `<svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs>${pattern.defs}</defs>${pattern.rects}</svg>`
+                            __html: stripHtmlComments(`<svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs>${pattern.defs}</defs>${pattern.rects}</svg>`)
                         }}
                     />
 

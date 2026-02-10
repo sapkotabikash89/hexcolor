@@ -102,16 +102,32 @@ export function getColorLinkRel(targetHex: string): string | undefined {
 }
 
 /**
+ * Remove empty HTML comments from a string
+ * @param html - The HTML content to clean
+ * @returns HTML without empty comment nodes
+ */
+export function stripHtmlComments(html: string): string {
+  if (!html) return html;
+  // This regex matches empty comments like <!-- --> or comments with only whitespace
+  // It also matches ones without spaces like <!---->
+  return html.replace(/<!--\s*-->/g, '');
+}
+
+/**
  * Process an HTML string to add rel="nofollow" to any links pointing to unknown color pages
+ * and strip empty HTML comments.
  * @param html - The HTML content to process
- * @returns Processed HTML with correct rel attributes on color links
+ * @returns Processed HTML with correct rel attributes on color links and no empty comments
  */
 export function processHtmlColorLinks(html: string): string {
   if (!html) return html;
 
+  // First strip empty comments as requested
+  let processedHtml = stripHtmlComments(html);
+
   // Regex to find anchor tags that link to /colors/HEX
   // Matches both relative and absolute links to hexcolormeans.com
-  return html.replace(/<a\s+([^>]*?)href=["']((?:https?:\/\/(?:www\.)?hexcolormeans\.com)?\/colors\/([0-9a-fA-F]{3,6}))(?:\/|["']|[\?#])([^>]*?)>/gi, (match, before, fullHref, hex, after) => {
+  return processedHtml.replace(/<a\s+([^>]*?)href=["']((?:https?:\/\/(?:www\.)?hexcolormeans\.com)?\/colors\/([0-9a-fA-F]{3,6}))(?:\/|["']|[\?#])([^>]*?)>/gi, (match, before, fullHref, hex, after) => {
     const rel = getColorLinkRel(hex);
 
     if (rel === "nofollow") {

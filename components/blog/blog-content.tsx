@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import { stripHtmlComments } from "@/lib/color-linking-utils"
 
 interface BlogContentProps {
   html: string
@@ -39,7 +40,7 @@ export function BlogContent({ html, className = '', style }: BlogContentProps) {
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, '')
         }
-        
+
         if (id) {
           heading.id = id
         }
@@ -52,7 +53,7 @@ export function BlogContent({ html, className = '', style }: BlogContentProps) {
       ref={contentRef}
       className={`wp-content not-prose ${className}`}
       style={style}
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: stripHtmlComments(html) }}
     />
   )
 }
