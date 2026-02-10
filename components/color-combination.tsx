@@ -23,8 +23,8 @@ export function ColorCombination({
 }) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   return (
-    <div 
-      className={`w-full rounded-2xl overflow-hidden flex ${vertical ? "flex-col" : "flex-row"} ${className}`} 
+    <div
+      className={`w-full rounded-2xl overflow-hidden flex ${vertical ? "flex-col" : "flex-row"} ${className}`}
       style={{ height: vertical ? (typeof height === 'number' ? `${height}px` : height) : height, minHeight: vertical ? (typeof height === 'number' ? `${height}px` : "300px") : undefined }}
     >
       {colors.map((hex, i) => {
@@ -71,8 +71,8 @@ export function ColorCombination({
 
         return (
           <div key={`${hex}-${i}`} className={commonClassName} style={commonStyle}>
-            <ColorSwatchLink 
-              hex={hex} 
+            <ColorSwatchLink
+              hex={hex}
               className="block w-full h-full relative"
               onClick={onColorChange ? (e) => { e.preventDefault(); onColorChange(hex); } : undefined}
             >

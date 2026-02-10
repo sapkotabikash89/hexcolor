@@ -36,7 +36,7 @@ import {
 import { ShareButtons } from "@/components/share-buttons"
 import { ColorImage } from "@/components/color-image"
 import { getGumletColorImage } from "@/lib/image-utils"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 import { ColorCombination } from "@/components/color-combination"
 import { ColorSwatch as Swatch } from "@/components/color-swatch"
 import ColorSwatchLink from "@/components/color-swatch-link"
@@ -68,7 +68,21 @@ const MarkdownText = ({ content }: { content: string }) => {
       {parts.map((part, i) => {
         const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
         if (match) {
-          return <Link key={i} href={match[2]} className="text-primary hover:underline font-medium">{match[1]}</Link>;
+          const href = match[2];
+          // Try to extract color hex if it's a color page link
+          const colorMatch = href.match(/\/colors\/([0-9a-fA-F]{3,6})/);
+          const rel = colorMatch ? getColorLinkRel(colorMatch[1]) : undefined;
+
+          return (
+            <Link
+              key={i}
+              href={href}
+              className="text-primary hover:underline font-medium"
+              rel={rel}
+            >
+              {match[1]}
+            </Link>
+          );
         }
         return part;
       })}
@@ -281,7 +295,11 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
 
                   const renderColorLink = (c: { name: string; hex: string }, i: number, arr: any[]) => (
                     <span key={c.hex}>
-                      <Link href={getColorPageLink(c.hex)} className="text-primary hover:underline">
+                      <Link
+                        href={getColorPageLink(c.hex)}
+                        className="text-primary hover:underline"
+                        rel={getColorLinkRel(c.hex)}
+                      >
                         {c.name} ({c.hex})
                       </Link>
                       {i < arr.length - 1 ? (i === arr.length - 2 ? ", and " : ", ") : ""}
@@ -953,11 +971,11 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       {mode !== "sectionsOnly" ? (
         <div className="flex flex-col gap-4 mt-6">
           <div className="flex justify-between items-center py-6 border-t border-b border-border">
-            <a href={getColorPageLink(prev)} className="flex flex-col items-start max-w-[45%] group">
+            <a href={getColorPageLink(prev)} rel={getColorLinkRel(prev)} className="flex flex-col items-start max-w-[45%] group">
               <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">← Previous Color</span>
               <span className="font-medium group-hover:underline">{getClosestKnownColor(prev).name} ({prev}) Color Meaning</span>
             </a>
-            <a href={getColorPageLink(next)} className="flex flex-col items-end max-w-[45%] text-right group">
+            <a href={getColorPageLink(next)} rel={getColorLinkRel(next)} className="flex flex-col items-end max-w-[45%] text-right group">
               <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">Next Color →</span>
               <span className="font-medium group-hover:underline">{getClosestKnownColor(next).name} ({next}) Color Meaning</span>
             </a>

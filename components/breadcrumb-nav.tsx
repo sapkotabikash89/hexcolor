@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react"
 interface BreadcrumbItem {
   label: string
   href: string
+  rel?: string
 }
 
 interface BreadcrumbNavProps {
@@ -35,7 +36,7 @@ export function BreadcrumbNav({ items }: BreadcrumbNavProps) {
                     {item.label}
                   </span>
                 ) : (
-                  <Link href={item.href} className="hover:text-foreground transition-colors" itemProp="item">
+                  <Link href={item.href} rel={item.rel} className="hover:text-foreground transition-colors" itemProp="item">
                     <span itemProp="name">{item.label}</span>
                   </Link>
                 )}

@@ -10,7 +10,7 @@ import { Search } from "lucide-react"
 import { getContrastColor } from "@/lib/color-utils"
 import { hexToRgb, rgbToHsl } from "@/lib/color-utils"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 import { LibraryColorSwatch } from "@/components/library-color-swatch"
 
 // Import the optimized color library data
@@ -174,7 +174,12 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                 ) : (
                   <div className="divide-y">
                     {previewResults.map((c, i) => (
-                      <Link key={`${c.hex}-${i}`} href={getColorPageLink(c.hex)} className="flex items-center gap-3 p-3 hover:bg-muted">
+                      <Link
+                        key={`${c.hex}-${i}`}
+                        href={getColorPageLink(c.hex)}
+                        className="flex items-center gap-3 p-3 hover:bg-muted"
+                        rel={getColorLinkRel(c.hex)}
+                      >
                         <div className="w-6 h-6 rounded border" style={{ backgroundColor: c.hex }} />
                         <div className="flex-1 text-sm">
                           {highlight(c.name, searchQuery.trim())}

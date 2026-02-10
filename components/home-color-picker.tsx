@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Palette, Shuffle, Pipette } from "lucide-react"
 import { hexToRgb, rgbToHsv, hsvToRgb, rgbToHex, rgbToHsl } from "@/lib/color-utils"
 import Link from "next/link"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 import { CopyButton } from "@/components/copy-button"
 
 export function HomeColorPicker() {
@@ -281,7 +281,7 @@ export function HomeColorPicker() {
           </div>
 
           <Button asChild size="lg" className="w-full gap-2 text-sm sm:text-base font-bold h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-sm transition-all active:scale-[0.98]">
-            <Link href={getColorPageLink(selectedColor)}>
+            <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>
               Explore This Color
             </Link>
           </Button>

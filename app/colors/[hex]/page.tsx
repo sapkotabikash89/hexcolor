@@ -13,6 +13,7 @@ const ColorPageContent = dynamic(() => import("@/components/color-page-content")
 })
 import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk, getAdjacentColors, getClosestKnownColor, getColorHarmony } from "@/lib/color-utils"
 import { getGumletColorImage } from "@/lib/image-utils"
+import { getColorLinkRel } from "@/lib/color-linking-utils"
 import { KNOWN_COLOR_HEXES } from "@/lib/known-colors-complete"
 import { notFound } from "next/navigation"
 import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
@@ -360,7 +361,11 @@ export default async function ColorPage({ params }: ColorPageProps) {
           <BreadcrumbNav
             items={[
               { label: "Color Names", href: "/colors" },
-              { label: normalizedHex, href: `/colors/${normalizedHex.replace("#", "").toLowerCase()}` },
+              {
+                label: normalizedHex,
+                href: `/colors/${normalizedHex.replace("#", "").toLowerCase()}`,
+                rel: getColorLinkRel(normalizedHex)
+              },
             ]}
           />
           <div className="text-center space-y-6">

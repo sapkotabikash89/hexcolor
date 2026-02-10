@@ -8,7 +8,7 @@ import { CopyButton } from "@/components/copy-button"
 import { ColorSwatch as Swatch } from "@/components/color-swatch"
 import ColorSwatchLink from "@/components/color-swatch-link"
 import { hexToRgb, rgbToHsv, hsvToRgb, rgbToHex, isValidHex, rgbToHsl } from "@/lib/color-utils"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 import Link from "next/link"
 
 interface CompactAdvancedColorPickerProps {
@@ -306,7 +306,7 @@ export function CompactAdvancedColorPicker({
 
                     {!hideExploreButton && (
                         <Button asChild className="w-full gap-2 text-sm md:text-base font-bold h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-sm transition-all active:scale-[0.98]" size="lg">
-                            <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
+                            <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>Explore This Color</Link>
                         </Button>
                     )}
 

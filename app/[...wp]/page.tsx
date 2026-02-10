@@ -23,6 +23,7 @@ import { BlogContent } from "@/components/blog/blog-content"
 import { ShadeSwatch } from "@/components/blog/shade-swatch"
 import { convertToArticleImageUrl, convertHtmlImagesToBase, getLocalImageAbsoluteUrl } from "@/lib/image-utils"
 import { hasColorInTitle, hasExplicitHexInTitle } from "@/lib/color-title-utils"
+import { getColorPageLink, processHtmlColorLinks } from "@/lib/color-linking-utils"
 import { cn, autoLinkShadeNames } from "@/lib/utils"
 
 const ShareButtons = dynamic(() => import("@/components/share-buttons").then((mod) => mod.ShareButtons))
@@ -112,8 +113,8 @@ async function fetchContentByUri(uri: string) {
 async function fetchAnyBySearch(term: string) {
   try {
     const posts = await getAllPosts();
-    const found = posts.find((p: any) => 
-      p.title?.toLowerCase().includes(term.toLowerCase()) || 
+    const found = posts.find((p: any) =>
+      p.title?.toLowerCase().includes(term.toLowerCase()) ||
       p.content?.toLowerCase().includes(term.toLowerCase())
     );
     return found || null;
@@ -204,15 +205,15 @@ async function resolvePrevNext(node: any): Promise<{ previous: { title: string; 
       if (previous || next) return { previous, next }
     }
     const currentUri: string | undefined = node?.uri
-    
+
     // Use slugs instead of IDs for local data matching
     const catSlugs: string[] = Array.from(new Set(((node?.categories?.nodes as any[]) || []).map((c) => c?.slug).filter(Boolean)))
     const tagSlugs: string[] = Array.from(new Set(((node?.tags?.nodes as any[]) || []).map((t) => t?.slug).filter(Boolean)))
-    
+
     let list: Array<{ title: string; uri: string; date?: string }> = []
     if (catSlugs.length) list = await fetchPostsByCategorySlugs(catSlugs, 100)
     if ((!list || list.length === 0) && tagSlugs.length) list = await fetchPostsByTagSlugs(tagSlugs, 100)
-    
+
     if (!list || list.length === 0 || !currentUri) return { previous: null, next: null }
     list = list.slice().sort((a, b) => {
       const da = a.date ? Date.parse(a.date) : 0
@@ -331,7 +332,7 @@ export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
   try {
     const fs = await import("fs")
     const path = await import("path")
-    
+
     const postsDir = path.join(process.cwd(), 'lib/posts')
     if (!fs.existsSync(postsDir)) {
       console.warn('Posts directory not found, skipping static param generation')
@@ -355,7 +356,7 @@ export async function generateStaticParams(): Promise<{ wp: string[] }[]> {
 
     console.log(`Generated ${allParams.length} static paths from local files.`)
     if (allParams.length === 0) {
-        return [{ wp: ["welcome"] }] // Fallback
+      return [{ wp: ["welcome"] }] // Fallback
     }
     return allParams
 
@@ -404,7 +405,7 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
       u.protocol = "https:"
       u.port = ""
       canonical = u.toString()
-    } catch {}
+    } catch { }
   }
   const robotsIndex = node.seo?.metaRobotsNoindex === "noindex" ? false : true
   const robotsFollow = node.seo?.metaRobotsNofollow === "nofollow" ? false : true
@@ -648,26 +649,26 @@ export default async function WPPostPage({ params }: WPPageProps) {
   // Convert WordPress image URLs to configured Article Image Base
   const articleImageUrl = img ? convertToArticleImageUrl(img) : undefined
 
-  const isColorMeaningCategory = node?.categories?.nodes?.some((c: any) => 
-    c.slug === "color-meaning" || 
-    c.slug === "color-meanings" || 
-    c.name === "Color Meaning" || 
+  const isColorMeaningCategory = node?.categories?.nodes?.some((c: any) =>
+    c.slug === "color-meaning" ||
+    c.slug === "color-meanings" ||
+    c.name === "Color Meaning" ||
     c.name === "Color Meanings"
   );
 
-  const isShadesMeaningCategory = node?.categories?.nodes?.some((c: any) => 
-    c.name === "Shades Meaning" || 
+  const isShadesMeaningCategory = node?.categories?.nodes?.some((c: any) =>
+    c.name === "Shades Meaning" ||
     c.slug === "shades-meaning"
   );
 
   // Extract shades list for Shades Meaning category posts
   let shadesList: Array<{ name: string, hex: string, id: string }> = [];
   let baseColorName = "";
-  
+
   if (isShadesMeaningCategory) {
     const contentHtml = node.content || "";
     const secs = splitSectionsByH2(contentHtml);
-    
+
     shadesList = secs.map(sec => {
       const match = sec.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i)
       if (!match) return null
@@ -705,7 +706,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
         id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
       }
     }).filter((s): s is { name: string, hex: string, id: string } => !!s)
-    
+
     baseColorName = colorName || node.title.replace(/Shades/i, "").trim()
   }
 
@@ -808,7 +809,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                       <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden">
                         {parts[0] && (
                           <BlogContent
-                            html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[0]), accentColor), isShadesMeaning)}
+                            html={processHtmlColorLinks(autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[0]), accentColor), isShadesMeaning))}
                             className="cm-wrap"
                             style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
                           />
@@ -818,7 +819,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                         </div>
                         {parts[1] && (
                           <BlogContent
-                            html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[1]), accentColor), isShadesMeaning)}
+                            html={processHtmlColorLinks(autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[1]), accentColor), isShadesMeaning))}
                             className="cm-wrap"
                             style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
                           />
@@ -890,7 +891,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                       </div>
                       {/* Render the rest of the technical content */}
                       <BlogContent
-                        html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaning)}
+                        html={processHtmlColorLinks(autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaning))}
                         className="cm-wrap"
                         style={{
                           "--page-accent-color": accentColor,
@@ -907,7 +908,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               return (
                 <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden min-w-0">
                   <BlogContent
-                    html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaning)}
+                    html={processHtmlColorLinks(autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaning))}
                     className="cm-wrap"
                     style={{
                       "--page-accent-color": accentColor,
@@ -1044,20 +1045,20 @@ export default async function WPPostPage({ params }: WPPageProps) {
         const dateModified = node?.seo?.opengraphModifiedTime || node?.date
         return (
           <ArticleSchema
-              title={node.title}
-              description={description}
-              authorName={author || undefined}
-              authorType="Person"
-              publisherName="HexColorMeans"
-              publisherLogo={`${site}/logo.webp`}
-              image={articleImageUrl}
-              datePublished={datePublished || undefined}
-              dateModified={dateModified || undefined}
-              url={canonical || `${site}${node.uri}`}
-              articleSection={node?.categories?.nodes?.[0]?.name || "Blog"}
-              colorName={colorName || undefined}
-              colorHex={effectiveHex || undefined}
-            />
+            title={node.title}
+            description={description}
+            authorName={author || undefined}
+            authorType="Person"
+            publisherName="HexColorMeans"
+            publisherLogo={`${site}/logo.webp`}
+            image={articleImageUrl}
+            datePublished={datePublished || undefined}
+            dateModified={dateModified || undefined}
+            url={canonical || `${site}${node.uri}`}
+            articleSection={node?.categories?.nodes?.[0]?.name || "Blog"}
+            colorName={colorName || undefined}
+            colorHex={effectiveHex || undefined}
+          />
         )
       })()}
       {hasColorUI && <WPColorContext color={accentColor || '#000000'} />}
@@ -1134,10 +1135,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 {mainContent}
               </div>
               <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-                <ColorSidebar 
-                  color={accentColor} 
-                  showColorSchemes={hasColorUI} 
-                  className="w-full space-y-6" 
+                <ColorSidebar
+                  color={accentColor}
+                  showColorSchemes={hasColorUI}
+                  className="w-full space-y-6"
                 />
               </aside>
             </div>
@@ -1152,26 +1153,26 @@ export default async function WPPostPage({ params }: WPPageProps) {
               <div className="flex flex-col lg:flex-row gap-8 items-start">
                 {/* Left Sidebar for Shades Meaning */}
                 <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
-                  <ShadesSidebarTOC 
-                    currentHex={effectiveHex || postColor} 
-                    shades={shadesList} 
-                    baseColorName={baseColorName || "Color"} 
+                  <ShadesSidebarTOC
+                    currentHex={effectiveHex || postColor}
+                    shades={shadesList}
+                    baseColorName={baseColorName || "Color"}
                   />
                 </aside>
-                
+
                 {/* Main Content Area */}
                 <div className="flex-1 min-w-0 w-full space-y-6">
                   {mainContent}
                 </div>
-                
+
                 {/* Right Sidebar */}
-      <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-        <ColorSidebar 
-          color={accentColor} 
-          showColorSchemes={hasColorUI} 
-          className="w-full space-y-6" 
-        />
-      </aside>
+                <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
+                  <ColorSidebar
+                    color={accentColor}
+                    showColorSchemes={hasColorUI}
+                    className="w-full space-y-6"
+                  />
+                </aside>
               </div>
             </main>
           ) : (

@@ -88,3 +88,50 @@ export { KNOWN_COLOR_HEXES as KNOWN_HEX_SET };
 
 // Export count of known static colors
 export const STATIC_COLOR_COUNT = KNOWN_COLOR_HEXES.size;
+
+/**
+ * Get the appropriate rel attribute for a color link based on SEO rules
+ * @param targetHex - The hex of the color being linked to
+ * @returns "nofollow" if the target is an unknown color, undefined otherwise
+ */
+export function getColorLinkRel(targetHex: string): string | undefined {
+  if (!isStaticColor(targetHex)) {
+    return "nofollow";
+  }
+  return undefined;
+}
+
+/**
+ * Process an HTML string to add rel="nofollow" to any links pointing to unknown color pages
+ * @param html - The HTML content to process
+ * @returns Processed HTML with correct rel attributes on color links
+ */
+export function processHtmlColorLinks(html: string): string {
+  if (!html) return html;
+
+  // Regex to find anchor tags that link to /colors/HEX
+  // Matches both relative and absolute links to hexcolormeans.com
+  return html.replace(/<a\s+([^>]*?)href=["']((?:https?:\/\/(?:www\.)?hexcolormeans\.com)?\/colors\/([0-9a-fA-F]{3,6}))(?:\/|["']|[\?#])([^>]*?)>/gi, (match, before, fullHref, hex, after) => {
+    const rel = getColorLinkRel(hex);
+
+    if (rel === "nofollow") {
+      // If nofollow is needed, check if rel attribute already exists
+      const relMatch = match.match(/rel=["']([^"']*?)["']/i);
+
+      if (relMatch) {
+        const existingRel = relMatch[1];
+        // If nofollow isn't already there, add it
+        if (!existingRel.toLowerCase().includes("nofollow")) {
+          const newRel = `${existingRel} nofollow`.trim();
+          return match.replace(/rel=["']([^"']*?)["']/i, `rel="${newRel}"`);
+        }
+        return match; // Already has nofollow
+      } else {
+        // No rel attribute, add it after href or at the end of the opening tag
+        return match.replace(/href=["']([^"']*?)["']/i, `href="$1" rel="nofollow"`);
+      }
+    }
+
+    return match;
+  });
+}

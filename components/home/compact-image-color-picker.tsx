@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Upload } from "lucide-react"
 import { hexToRgb, rgbToHsl } from "@/lib/color-utils"
 import { CopyButton } from "@/components/copy-button"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 import { ColorSwatch } from "@/components/color-swatch"
 import Link from "next/link"
 
@@ -373,7 +373,7 @@ export function CompactImageColorPicker() {
                                         </>
                                     )}
                                     <Button asChild variant="outline" className="w-full mt-2">
-                                        <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
+                                        <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>Explore This Color</Link>
                                     </Button>
                                 </div>
                             </div>

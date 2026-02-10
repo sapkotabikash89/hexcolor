@@ -20,6 +20,7 @@ import {
   rgbToHsl
 } from "@/lib/color-utils"
 import { generateFAQs } from "@/lib/category-utils"
+import { getColorLinkRel } from "@/lib/color-linking-utils"
 
 export default function NotFound() {
   const pathname = usePathname()
@@ -85,7 +86,11 @@ export default function NotFound() {
             <BreadcrumbNav
               items={[
                 { label: "Color Names", href: "/colors" },
-                { label: colorHex, href: `/colors/${colorHex.replace("#", "").toLowerCase()}` },
+                {
+                  label: colorHex,
+                  href: `/colors/${colorHex.replace("#", "").toLowerCase()}`,
+                  rel: getColorLinkRel(colorHex)
+                },
               ]}
             />
             <div className="text-center space-y-6">

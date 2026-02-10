@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { getRelatedColors, getContrastColor } from "@/lib/color-utils"
 import { cn } from "@/lib/utils"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 import { ColorSwatch } from "@/components/color-swatch"
 
 interface RelatedColorsSectionProps {
@@ -33,7 +33,11 @@ export function RelatedColorsSection({ hex, title = "Related Colors" }: RelatedC
                 swatchClassName="group-hover:scale-105 border border-border shadow-sm"
                 className="w-full aspect-square"
               />
-              <Link href={getColorPageLink(color.hex)} className="text-center block">
+              <Link
+                href={getColorPageLink(color.hex)}
+                className="text-center block"
+                rel={getColorLinkRel(color.hex)}
+              >
                 <span className="font-medium text-xs sm:text-sm block leading-tight truncate px-1" title={color.name}>
                   {color.name}
                 </span>

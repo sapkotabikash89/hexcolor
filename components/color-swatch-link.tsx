@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { getColorPageLink } from "@/lib/color-linking-utils";
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils";
 
 interface ColorSwatchLinkProps {
   hex: string;
@@ -11,9 +11,9 @@ interface ColorSwatchLinkProps {
   onClick?: (e: React.MouseEvent) => void;
 }
 
-export default function ColorSwatchLink({ 
-  hex, 
-  children, 
+export default function ColorSwatchLink({
+  hex,
+  children,
   className = "relative flex-1 block h-full",
   style,
   title,
@@ -24,7 +24,7 @@ export default function ColorSwatchLink({
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: hex } }));
     }
-    
+
     if (onClick) {
       onClick(e);
     }
@@ -37,6 +37,7 @@ export default function ColorSwatchLink({
       style={style}
       title={title || hex}
       onClick={handleClick}
+      rel={getColorLinkRel(hex)}
     >
       {children}
     </Link>

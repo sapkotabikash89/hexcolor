@@ -9,6 +9,7 @@ import ColorSwatchLink from "@/components/color-swatch-link"
 import Link from "next/link"
 import { X } from "lucide-react"
 import { hexToRgb, rgbToHsv, hsvToRgb, rgbToHex } from "@/lib/color-utils"
+import { getColorLinkRel } from "@/lib/color-linking-utils"
 
 interface CustomColorPickerProps {
   value: string
@@ -290,7 +291,11 @@ export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApp
               Cancel
             </Button>
             {getApplyLink ? (
-              <Link href={getApplyLink(tempColor)} className="flex-1">
+              <Link
+                href={getApplyLink(tempColor)}
+                className="flex-1"
+                rel={getColorLinkRel(tempColor)}
+              >
                 <Button className="w-full" onClick={handleDone}>
                   Apply
                 </Button>

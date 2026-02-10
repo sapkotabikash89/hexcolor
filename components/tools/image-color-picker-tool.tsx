@@ -13,7 +13,7 @@ import { ColorExportDialog } from "@/components/color-export-dialog"
 import { ShareButtons } from "@/components/share-buttons"
 import { ColorPageContent } from "@/components/color-page-content"
 import { ColorSwatch } from "@/components/color-swatch"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 import Link from "next/link"
 import data from "@/lib/color-meaning.json"
 
@@ -536,7 +536,7 @@ export function ImageColorPickerTool() {
                         </>
                       )}
                       <Button asChild variant="outline" className="w-full mt-2">
-                        <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
+                        <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>Explore This Color</Link>
                       </Button>
                     </div>
                   </div>

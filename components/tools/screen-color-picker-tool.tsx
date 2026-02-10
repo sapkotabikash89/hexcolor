@@ -10,7 +10,7 @@ import { Pipette } from "lucide-react"
 import { hexToRgb, rgbToHsl, rgbToCmyk } from "@/lib/color-utils"
 import { CopyButton } from "@/components/copy-button"
 import { ShareButtons } from "@/components/share-buttons"
-import { getColorPageLink } from "@/lib/color-linking-utils"
+import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 
 export function ScreenColorPickerTool() {
   const [selectedColor, setSelectedColor] = useState("#E0115F")
@@ -112,7 +112,7 @@ export function ScreenColorPickerTool() {
                   </div>
                 </div>
                 <Button asChild variant="outline" className="w-full">
-                  <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
+                  <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>Explore This Color</Link>
                 </Button>
               </div>
 
