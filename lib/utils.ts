@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { getSortedKnownColors } from './color-utils'
+import { getColorLinkRel } from './color-linking-utils'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -51,6 +52,13 @@ export function autoLinkShadeNames(html: string, isShadesMeaning: boolean = fals
     console.log("Found match:", { match, colorName, hex });
 
     const cleanHex = hex.toUpperCase()
+    
+    // Check if this hex should be nofollow (not a static page)
+    if (getColorLinkRel(cleanHex) === "nofollow") {
+      console.log("Nofollow link detected, returning plain text");
+      return `${colorName} (#${cleanHex})`;
+    }
+
     const linkColor = '#E0115F' // Default link color
 
     // Determine link destination

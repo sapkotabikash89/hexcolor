@@ -280,11 +280,17 @@ export function HomeColorPicker() {
             {selectedColor.toUpperCase()}
           </div>
 
-          <Button asChild size="lg" className="w-full gap-2 text-sm sm:text-base font-bold h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-sm transition-all active:scale-[0.98]">
-            <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>
+          {getColorLinkRel(selectedColor) !== "nofollow" ? (
+            <Button asChild size="lg" className="w-full gap-2 text-sm sm:text-base font-bold h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-sm transition-all active:scale-[0.98]">
+              <Link href={getColorPageLink(selectedColor)}>
+                Explore This Color
+              </Link>
+            </Button>
+          ) : (
+            <Button size="lg" className="w-full gap-2 text-sm sm:text-base font-bold h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-sm transition-all active:scale-[0.98]" disabled>
               Explore This Color
-            </Link>
-          </Button>
+            </Button>
+          )}
 
           {/* Color Values Boxes */}
           <div className="space-y-3">

@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { ColorSwatch } from "@/components/color-swatch"
+import ColorSwatchLink from "@/components/color-swatch-link"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -85,10 +86,10 @@ export function ColorLibraryPreview() {
                                         swatchClassName="rounded-xl hover:scale-100 shadow-sm border border-black/5"
                                         className="w-full aspect-square"
                                     />
-                                    <Link href={`/colors/${color.hex.replace("#", "")}`} className="block text-center">
+                                    <ColorSwatchLink hex={color.hex} className="block text-center">
                                         <p className="text-sm font-semibold truncate">{color.name}</p>
                                         <p className="text-xs text-muted-foreground uppercase">{color.hex}</p>
-                                    </Link>
+                                    </ColorSwatchLink>
                                 </div>
                             ))}
                         </div>

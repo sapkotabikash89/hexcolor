@@ -114,10 +114,11 @@ export function stripHtmlComments(html: string): string {
 }
 
 /**
- * Process an HTML string to add rel="nofollow" to any links pointing to unknown color pages
+ * Process an HTML string to remove any links pointing to unknown color pages
+ * (which would previously have been marked as rel="nofollow")
  * and strip empty HTML comments.
  * @param html - The HTML content to process
- * @returns Processed HTML with correct rel attributes on color links and no empty comments
+ * @returns Processed HTML with unknown color links removed (leaving content) and no empty comments
  */
 export function processHtmlColorLinks(html: string): string {
   if (!html) return html;
@@ -126,26 +127,14 @@ export function processHtmlColorLinks(html: string): string {
   let processedHtml = stripHtmlComments(html);
 
   // Regex to find anchor tags that link to /colors/HEX
-  // Matches both relative and absolute links to hexcolormeans.com
-  return processedHtml.replace(/<a\s+([^>]*?)href=["']((?:https?:\/\/(?:www\.)?hexcolormeans\.com)?\/colors\/([0-9a-fA-F]{3,6}))(?:\/|["']|[\?#])([^>]*?)>/gi, (match, before, fullHref, hex, after) => {
+  // Matches the entire anchor tag block <a ...>...</a>
+  // We use a non-greedy match for the content to handle multiple links correctly
+  return processedHtml.replace(/<a\s+[^>]*?href=["']((?:https?:\/\/(?:www\.)?hexcolormeans\.com)?\/colors\/([0-9a-fA-F]{3,6}))(?:\/|["']|[\?#])[^>]*?>([\s\S]*?)<\/a>/gi, (match, fullHref, hex, content) => {
     const rel = getColorLinkRel(hex);
 
     if (rel === "nofollow") {
-      // If nofollow is needed, check if rel attribute already exists
-      const relMatch = match.match(/rel=["']([^"']*?)["']/i);
-
-      if (relMatch) {
-        const existingRel = relMatch[1];
-        // If nofollow isn't already there, add it
-        if (!existingRel.toLowerCase().includes("nofollow")) {
-          const newRel = `${existingRel} nofollow`.trim();
-          return match.replace(/rel=["']([^"']*?)["']/i, `rel="${newRel}"`);
-        }
-        return match; // Already has nofollow
-      } else {
-        // No rel attribute, add it after href or at the end of the opening tag
-        return match.replace(/href=["']([^"']*?)["']/i, `href="$1" rel="nofollow"`);
-      }
+      // If nofollow is needed, remove the anchor tag entirely and just return the content
+      return content;
     }
 
     return match;

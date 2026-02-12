@@ -290,11 +290,10 @@ export function CustomColorPicker({ value = "#a73991", onChange, onApply, getApp
             <Button variant="outline" className="flex-1" onClick={onClose}>
               Cancel
             </Button>
-            {getApplyLink ? (
+            {getApplyLink && getColorLinkRel(tempColor) !== "nofollow" ? (
               <Link
                 href={getApplyLink(tempColor)}
                 className="flex-1"
-                rel={getColorLinkRel(tempColor)}
               >
                 <Button className="w-full" onClick={handleDone}>
                   Apply

@@ -535,9 +535,15 @@ export function ImageColorPickerTool() {
                           )}
                         </>
                       )}
-                      <Button asChild variant="outline" className="w-full mt-2">
-                        <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>Explore This Color</Link>
-                      </Button>
+                      {getColorLinkRel(selectedColor) !== "nofollow" ? (
+                        <Button asChild variant="outline" className="w-full mt-2">
+                          <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
+                        </Button>
+                      ) : (
+                        <Button variant="outline" className="w-full mt-2" disabled>
+                          Explore This Color
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>

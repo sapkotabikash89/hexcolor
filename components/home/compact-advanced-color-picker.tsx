@@ -305,9 +305,15 @@ export function CompactAdvancedColorPicker({
                     </ColorSwatchLink>
 
                     {!hideExploreButton && (
-                        <Button asChild className="w-full gap-2 text-sm md:text-base font-bold h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-sm transition-all active:scale-[0.98]" size="lg">
-                            <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>Explore This Color</Link>
-                        </Button>
+                        getColorLinkRel(selectedColor) !== "nofollow" ? (
+                            <Button asChild className="w-full gap-2 text-sm md:text-base font-bold h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-sm transition-all active:scale-[0.98]" size="lg">
+                                <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
+                            </Button>
+                        ) : (
+                            <Button className="w-full gap-2 text-sm md:text-base font-bold h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-sm transition-all active:scale-[0.98]" size="lg" disabled>
+                                Explore This Color
+                            </Button>
+                        )
                     )}
 
                     {/* Color Values Boxes */}

@@ -35,6 +35,10 @@ export function BreadcrumbNav({ items }: BreadcrumbNavProps) {
                   <span className="font-medium" itemProp="name">
                     {item.label}
                   </span>
+                ) : item.rel === "nofollow" ? (
+                  <span className="opacity-70" itemProp="name">
+                    {item.label}
+                  </span>
                 ) : (
                   <Link href={item.href} rel={item.rel} className="hover:text-foreground transition-colors" itemProp="item">
                     <span itemProp="name">{item.label}</span>

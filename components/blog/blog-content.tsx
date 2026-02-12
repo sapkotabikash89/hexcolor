@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { stripHtmlComments } from "@/lib/color-linking-utils"
+import { processHtmlColorLinks } from "@/lib/color-linking-utils"
 
 interface BlogContentProps {
   html: string
@@ -53,7 +53,7 @@ export function BlogContent({ html, className = '', style }: BlogContentProps) {
       ref={contentRef}
       className={`wp-content not-prose ${className}`}
       style={style}
-      dangerouslySetInnerHTML={{ __html: stripHtmlComments(html) }}
+      dangerouslySetInnerHTML={{ __html: processHtmlColorLinks(html) }}
     />
   )
 }

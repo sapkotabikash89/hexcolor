@@ -30,6 +30,21 @@ export default function ColorSwatchLink({
     }
   };
 
+  const isNofollow = getColorLinkRel(hex) === "nofollow";
+
+  if (isNofollow) {
+    return (
+      <div
+        className={className}
+        style={style}
+        title={title || hex}
+        onClick={handleClick}
+      >
+        {children}
+      </div>
+    );
+  }
+
   return (
     <Link
       href={getColorPageLink(hex)}
@@ -37,7 +52,6 @@ export default function ColorSwatchLink({
       style={style}
       title={title || hex}
       onClick={handleClick}
-      rel={getColorLinkRel(hex)}
     >
       {children}
     </Link>

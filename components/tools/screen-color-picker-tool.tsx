@@ -111,9 +111,15 @@ export function ScreenColorPickerTool() {
                     )}
                   </div>
                 </div>
-                <Button asChild variant="outline" className="w-full">
-                  <Link href={getColorPageLink(selectedColor)} rel={getColorLinkRel(selectedColor)}>Explore This Color</Link>
-                </Button>
+                {getColorLinkRel(selectedColor) !== "nofollow" ? (
+                  <Button asChild variant="outline" className="w-full">
+                    <Link href={getColorPageLink(selectedColor)}>Explore This Color</Link>
+                  </Button>
+                ) : (
+                  <Button variant="outline" className="w-full" disabled>
+                    Explore This Color
+                  </Button>
+                )}
               </div>
 
               {pickedColors.length > 0 && (

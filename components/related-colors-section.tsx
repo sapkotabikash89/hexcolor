@@ -6,6 +6,7 @@ import { getRelatedColors, getContrastColor } from "@/lib/color-utils"
 import { cn } from "@/lib/utils"
 import { getColorPageLink, getColorLinkRel } from "@/lib/color-linking-utils"
 import { ColorSwatch } from "@/components/color-swatch"
+import ColorSwatchLink from "@/components/color-swatch-link"
 
 interface RelatedColorsSectionProps {
   hex: string
@@ -33,15 +34,14 @@ export function RelatedColorsSection({ hex, title = "Related Colors" }: RelatedC
                 swatchClassName="group-hover:scale-105 border border-border shadow-sm"
                 className="w-full aspect-square"
               />
-              <Link
-                href={getColorPageLink(color.hex)}
+              <ColorSwatchLink
+                hex={color.hex}
                 className="text-center block"
-                rel={getColorLinkRel(color.hex)}
               >
                 <span className="font-medium text-xs sm:text-sm block leading-tight truncate px-1" title={color.name}>
                   {color.name}
                 </span>
-              </Link>
+              </ColorSwatchLink>
             </div>
           ))}
         </div>

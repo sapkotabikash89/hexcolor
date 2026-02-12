@@ -1,4 +1,5 @@
 import { RGB, HSL, CMYK, getSortedKnownColors, hexToRgb, rgbToHsl } from "./color-utils";
+import { getColorLinkRel } from "./color-linking-utils";
 
 interface LinkedColor {
   hex: string;
@@ -138,6 +139,17 @@ function getDeterministicItem<T>(items: T[], seed: string): T {
 const fmt = (n: number) => Math.round(n);
 
 /**
+ * Formats a color as a link if it's a static page, otherwise returns plain text.
+ */
+function formatColorLink(name: string, hex: string): string {
+  const rel = getColorLinkRel(hex);
+  if (rel === "nofollow") {
+    return `${name} (${hex})`;
+  }
+  return `[${name} (${hex})](/colors/${hex.replace('#', '').toLowerCase()})`;
+}
+
+/**
  * Generates unique, SEO-friendly color information paragraphs.
  */
 export function generateColorInformation(data: ColorContentData): {
@@ -165,8 +177,8 @@ export function generateColorInformation(data: ColorContentData): {
   // 3. Neighbor Sentence
   let neighborText = "";
   if (neighbors?.prev && neighbors?.next) {
-    const prevLink = `[${neighbors.prev.name} (${neighbors.prev.hex})](/colors/${neighbors.prev.hex.replace('#','').toLowerCase()})`;
-    const nextLink = `[${neighbors.next.name} (${neighbors.next.hex})](/colors/${neighbors.next.hex.replace('#','').toLowerCase()})`;
+    const prevLink = formatColorLink(neighbors.prev.name, neighbors.prev.hex);
+    const nextLink = formatColorLink(neighbors.next.name, neighbors.next.hex);
     const diff = getComparisonAdjective(hsl, neighbors.prev.hex);
     
     const neighborTemplate = getDeterministicItem(NEIGHBOR_TEMPLATES, cleanHex + "N");
@@ -179,15 +191,15 @@ export function generateColorInformation(data: ColorContentData): {
     if (comparisonColorInfo) {
         const comparisonTemplate = getDeterministicItem(COMPARISON_TEMPLATES, cleanHex + "C");
         const diffDescription = getComparisonDescription(hsl, comparisonColorInfo.hex);
-        const comparisonLink = `[${comparisonColorInfo.name} (${comparisonColorInfo.hex})](/colors/${comparisonColorInfo.hex.replace('#','').toLowerCase()})`;
+        const comparisonLink = formatColorLink(comparisonColorInfo.name, comparisonColorInfo.hex);
         neighborText += " " + comparisonTemplate(comparisonLink, cleanHex, diffDescription);
     }
 
   } else if (neighbors?.prev) {
-    const prevLink = `[${neighbors.prev.name} (${neighbors.prev.hex})](/colors/${neighbors.prev.hex.replace('#','').toLowerCase()})`;
+    const prevLink = formatColorLink(neighbors.prev.name, neighbors.prev.hex);
     neighborText = `It follows closely after ${prevLink} in the chromatic sequence.`;
   } else if (neighbors?.next) {
-    const nextLink = `[${neighbors.next.name} (${neighbors.next.hex})](/colors/${neighbors.next.hex.replace('#','').toLowerCase()})`;
+    const nextLink = formatColorLink(neighbors.next.name, neighbors.next.hex);
     neighborText = `It precedes ${nextLink} in the color spectrum.`;
   }
 
@@ -200,8 +212,8 @@ export function generateColorInformation(data: ColorContentData): {
   const selectedConflicts = conflicts.slice(0, 3);
 
   // Format links
-  const pairLinks = selectedPairings.map(c => `[${c.name} (${c.hex})](/colors/${c.hex.replace('#','').toLowerCase()})`).join(", ");
-  const conflictLinks = selectedConflicts.map(c => `[${c.name} (${c.hex})](/colors/${c.hex.replace('#','').toLowerCase()})`).join(", ");
+  const pairLinks = selectedPairings.map(c => formatColorLink(c.name, c.hex)).join(", ");
+  const conflictLinks = selectedConflicts.map(c => formatColorLink(c.name, c.hex)).join(", ");
   
   // Pairings
   let pairText = "";

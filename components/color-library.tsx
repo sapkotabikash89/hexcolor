@@ -173,20 +173,39 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                   <div className="p-4 text-sm text-muted-foreground">No matches</div>
                 ) : (
                   <div className="divide-y">
-                    {previewResults.map((c, i) => (
-                      <Link
-                        key={`${c.hex}-${i}`}
-                        href={getColorPageLink(c.hex)}
-                        className="flex items-center gap-3 p-3 hover:bg-muted"
-                        rel={getColorLinkRel(c.hex)}
-                      >
-                        <div className="w-6 h-6 rounded border" style={{ backgroundColor: c.hex }} />
-                        <div className="flex-1 text-sm">
-                          {highlight(c.name, searchQuery.trim())}
-                        </div>
-                        <div className="font-mono text-xs">{c.hex}</div>
-                      </Link>
-                    ))}
+                    {previewResults.map((c, i) => {
+                      const isNofollow = getColorLinkRel(c.hex) === "nofollow";
+                      const content = (
+                        <>
+                          <div className="w-6 h-6 rounded border" style={{ backgroundColor: c.hex }} />
+                          <div className="flex-1 text-sm">
+                            {highlight(c.name, searchQuery.trim())}
+                          </div>
+                          <div className="font-mono text-xs">{c.hex}</div>
+                        </>
+                      );
+
+                      if (isNofollow) {
+                        return (
+                          <div
+                            key={`${c.hex}-${i}`}
+                            className="flex items-center gap-3 p-3 text-muted-foreground opacity-70"
+                          >
+                            {content}
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <Link
+                          key={`${c.hex}-${i}`}
+                          href={getColorPageLink(c.hex)}
+                          className="flex items-center gap-3 p-3 hover:bg-muted"
+                        >
+                          {content}
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
