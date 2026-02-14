@@ -126,6 +126,42 @@ export function processHtmlColorLinks(html: string): string {
   // First strip empty comments as requested
   let processedHtml = stripHtmlComments(html);
 
+  // Helper: add trailing slash to internal hrefs (relative or same-domain absolute)
+  const addTrailingSlashIfNeeded = (url: string): string => {
+    if (!url) return url;
+    // Ignore anchors, queries, files, and API routes
+    if (url === "/") return url;
+    if (url.includes("#") || url.includes("?")) return url;
+    if (/\/api\/?/i.test(url)) return url;
+    if (/\.[a-z0-9]+$/i.test(url)) return url;
+
+    // Relative internal
+    if (url.startsWith("/")) {
+      return url.endsWith("/") ? url : `${url}/`;
+    }
+
+    // Absolute internal
+    if (/^https?:\/\//i.test(url)) {
+      try {
+        const u = new URL(url);
+        if (!/^(?:www\.)?hexcolormeans\.com$/i.test(u.hostname)) return url;
+        if (u.pathname && u.pathname !== "/" && !u.pathname.endsWith("/")) {
+          u.pathname = `${u.pathname}/`;
+        }
+        return u.toString();
+      } catch {
+        return url;
+      }
+    }
+    return url;
+  };
+
+  // Normalize all href attributes inside content to include trailing slash where applicable
+  processedHtml = processedHtml.replace(/href=(["'])([^"']+)\1/gi, (_m, q, href) => {
+    const normalized = addTrailingSlashIfNeeded(href);
+    return `href=${q}${normalized}${q}`;
+  });
+
   // Regex to find anchor tags that link to /colors/HEX
   // Matches the entire anchor tag block <a ...>...</a>
   // We use a non-greedy match for the content to handle multiple links correctly
