@@ -34,7 +34,7 @@ export default async function BlogPage() {
   }));
 
   const crumbs = [
-    { label: "Blog", href: "/blog" },
+    { label: "Blog", href: "/blog/" },
   ];
 
   return (

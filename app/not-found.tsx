@@ -177,7 +177,7 @@ export default function NotFound() {
             <Link href="/">
               <Button size="lg">Go Home</Button>
             </Link>
-            <Link href="/colors">
+            <Link href="/colors/">
               <Button size="lg" variant="outline" className="bg-transparent">
                 Browse Colors
               </Button>

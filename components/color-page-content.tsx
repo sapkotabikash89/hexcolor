@@ -580,7 +580,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
         {openHarmonies ? (
           <div className="px-2 sm:px-6 py-2 space-y-6">
             <p className="text-muted-foreground">
-              Harmonious color schemes for {label} created using the <Link href="/color-wheel" className="text-primary hover:underline">color wheel</Link> ensure visually balanced palettes.
+              Harmonious color schemes for {label} created using the <Link href="/color-wheel/" className="text-primary hover:underline">color wheel</Link> ensure visually balanced palettes.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {Object.entries(harmonies).map(([type, harmony]) => (
@@ -634,7 +634,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
         {openContrast ? (
           <div className="px-2 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
-              Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
+              Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker/" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
             </p>
             <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-2">
@@ -701,7 +701,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
         {openBlindness ? (
           <div className="px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
-              Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator" className="text-primary hover:underline">Color Blindness Simulator</Link>.
+              Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator/" className="text-primary hover:underline">Color Blindness Simulator</Link>.
             </p>
             <Select value={colorBlindnessType} onValueChange={setColorBlindnessType}>
               <SelectTrigger className="w-full md:w-64" aria-label="Select color blindness type">

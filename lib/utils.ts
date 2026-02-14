@@ -8,6 +8,33 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Ensure a trailing slash for internal URLs, respecting exceptions.
+ */
+export function ensureTrailingSlash(url: string): string {
+  if (!url) return url
+  if (url === "/") return url
+  if (url.startsWith("http")) {
+    try {
+      const u = new URL(url)
+      if (u.host && !/^(?:www\.)?hexcolormeans\.com$/i.test(u.host)) return url
+      if (u.hash || u.search) return url
+      if (/\.[a-z0-9]+$/i.test(u.pathname)) return url
+      if (u.pathname.startsWith("/api/")) return url
+      if (!u.pathname.endsWith("/")) {
+        u.pathname = `${u.pathname}/`
+      }
+      return u.toString()
+    } catch {
+      return url
+    }
+  }
+  if (url.startsWith("#") || url.includes("?") || url.includes("#")) return url
+  if (/\.[a-z0-9]+$/i.test(url)) return url
+  if (url.startsWith("/api/")) return url
+  return url.endsWith("/") ? url : `${url}/`
+}
+
+/**
  * Automatically link shade names in blog content for Shades Meaning category
  * Links Color Name (#HEX) patterns to appropriate destinations based on HEX value
  */
@@ -65,10 +92,10 @@ export function autoLinkShadeNames(html: string, isShadesMeaning: boolean = fals
     let href: string
     if (knownColors.has(cleanHex)) {
       // Link to color page if HEX exists in known colors
-      href = `/colors/${cleanHex.toLowerCase()}`
+      href = `/colors/${cleanHex.toLowerCase()}/`
     } else {
       // Link to individual color page if HEX is not in known colors
-      href = `/colors/${cleanHex.toLowerCase()}`
+      href = `/colors/${cleanHex.toLowerCase()}/`
     }
 
     // Create the linked HTML with proper styling

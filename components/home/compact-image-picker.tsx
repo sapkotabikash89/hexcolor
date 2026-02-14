@@ -174,7 +174,7 @@ export function CompactImagePicker() {
             </div>
 
             <div className="text-center pt-2">
-                <Link href="/image-color-picker" className="text-primary font-semibold hover:underline inline-flex items-center gap-2">
+                <Link href="/image-color-picker/" className="text-primary font-semibold hover:underline inline-flex items-center gap-2">
                     Open full Image Color Picker tool
                     <span className="text-xl">→</span>
                 </Link>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { ensureTrailingSlash } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getColorHarmony } from "@/lib/color-utils"
@@ -140,7 +141,7 @@ export function ColorSidebar({
                   >
                     {idx + 1}
                   </span>
-                  <Link href={p.uri} className="hover:underline whitespace-normal break-words">
+                  <Link href={ensureTrailingSlash(p.uri)} className="hover:underline whitespace-normal break-words">
                     {p.title}
                   </Link>
                 </li>

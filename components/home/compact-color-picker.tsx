@@ -160,7 +160,7 @@ export function CompactColorPicker() {
             </div>
 
             <div className="text-center pt-2">
-                <Link href="/color-picker" className="text-primary font-semibold hover:underline inline-flex items-center gap-2">
+                <Link href="/color-picker/" className="text-primary font-semibold hover:underline inline-flex items-center gap-2">
                     Open full Color Picker tool
                     <span className="text-xl">→</span>
                 </Link>

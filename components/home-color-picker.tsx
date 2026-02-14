@@ -335,7 +335,7 @@ export function HomeColorPicker() {
             <Shuffle className="w-4 h-4" />
             Random Color
           </Button>
-          <Link href="/image-color-picker">
+          <Link href="/image-color-picker/">
             <Button
               variant="outline"
               size="lg"

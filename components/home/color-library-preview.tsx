@@ -100,7 +100,7 @@ export function ColorLibraryPreview() {
             {/* Link to Full Library */}
             <div className="pt-4 flex justify-center border-t">
                 <Link
-                    href="/colors"
+                    href="/colors/"
                     className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md mt-4 text-sm"
                 >
                     Browse Color Library

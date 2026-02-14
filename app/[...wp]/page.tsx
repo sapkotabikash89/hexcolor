@@ -24,7 +24,7 @@ import { ShadeSwatch } from "@/components/blog/shade-swatch"
 import { convertToArticleImageUrl, convertHtmlImagesToBase, getLocalImageAbsoluteUrl } from "@/lib/image-utils"
 import { hasColorInTitle, hasExplicitHexInTitle } from "@/lib/color-title-utils"
 import { getColorPageLink, processHtmlColorLinks } from "@/lib/color-linking-utils"
-import { cn, autoLinkShadeNames } from "@/lib/utils"
+import { cn, autoLinkShadeNames, ensureTrailingSlash } from "@/lib/utils"
 
 const ShareButtons = dynamic(() => import("@/components/share-buttons").then((mod) => mod.ShareButtons))
 const HelpfulVote = dynamic(() => import("@/components/helpful-vote").then((mod) => mod.HelpfulVote))
@@ -513,7 +513,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               const src = p?.featuredImage?.node?.sourceUrl
               return (
                 <div key={i} className="rounded-lg overflow-hidden border-2 border-border hover:shadow-lg transition-shadow">
-                  <Link href={p.uri} className="block">
+                  <Link href={ensureTrailingSlash(p.uri)} className="block">
                     {src && (
                       <FeaturedImage
                         src={src}
@@ -958,13 +958,13 @@ export default async function WPPostPage({ params }: WPPageProps) {
       {titleHex && <RelatedColorsSection hex={effectiveHex} />}
       <div className="flex justify-between items-center py-6 border-t border-b border-border my-6">
         {prevNext.previous ? (
-          <Link href={prevNext.previous.uri} className="flex flex-col items-start max-w-[45%] group">
+          <Link href={ensureTrailingSlash(prevNext.previous.uri)} className="flex flex-col items-start max-w-[45%] group">
             <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">← Previous Post</span>
             <span className="font-medium text-purple-600 group-hover:underline line-clamp-2">{prevNext.previous.title}</span>
           </Link>
         ) : <div></div>}
         {prevNext.next ? (
-          <Link href={prevNext.next.uri} className="flex flex-col items-end max-w-[45%] text-right group">
+          <Link href={ensureTrailingSlash(prevNext.next.uri)} className="flex flex-col items-end max-w-[45%] text-right group">
             <span className="text-sm text-muted-foreground group-hover:text-foreground mb-1">Next Post →</span>
             <span className="font-medium text-purple-600 group-hover:underline line-clamp-2">{prevNext.next.title}</span>
           </Link>
@@ -1001,7 +1001,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 const src = p?.featuredImage?.node?.sourceUrl || undefined
                 return (
                   <div key={i} className="rounded-lg overflow-hidden border-2 border-border hover:shadow-lg transition-shadow">
-                    <Link href={p.uri} className="block">
+                    <Link href={ensureTrailingSlash(p.uri)} className="block">
                       {src && (
                         <FeaturedImage
                           src={src}
@@ -1087,9 +1087,9 @@ export default async function WPPostPage({ params }: WPPageProps) {
             {/* Category and Tags */}
             <div className="flex flex-wrap justify-center gap-3 text-sm font-medium">
               {node.categories?.nodes?.map((cat: any) => (
-                 <Link 
-                   key={cat.slug} 
-                   href={`/category/${cat.slug}`}
+                  <Link 
+                    key={cat.slug} 
+                    href={`/category/${cat.slug}/`}
                    className={cn(
                      "px-3 py-1 rounded-full transition-colors",
                      hasColorUI 
@@ -1101,9 +1101,9 @@ export default async function WPPostPage({ params }: WPPageProps) {
                  </Link>
                ))}
                {node.tags?.nodes?.map((tag: any) => (
-                 <Link 
-                   key={tag.slug} 
-                   href={`/tag/${tag.slug}`}
+                  <Link 
+                    key={tag.slug} 
+                    href={`/tag/${tag.slug}/`}
                    className={cn(
                      "px-3 py-1 rounded-full transition-colors",
                      hasColorUI 

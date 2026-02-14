@@ -39,7 +39,7 @@ export function AdvancedColorPicker() {
             <RefreshCw className="w-4 h-4 mr-2" />
             Random Color
           </Button>
-          <Link href="/image-color-picker" className="w-full sm:w-auto">
+          <Link href="/image-color-picker/" className="w-full sm:w-auto">
             <Button className="w-full" variant="outline">
               <ImageIcon className="w-4 h-4 mr-2" />
               Image Color Picker

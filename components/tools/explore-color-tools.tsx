@@ -28,7 +28,7 @@ export function ExploreColorTools({ current }: { current: string }) {
           {items.map(item => (
             <Link
               key={item.slug}
-              href={`/${item.slug}`}
+              href={`/${item.slug}/`}
               className="group block rounded-xl border-2 border-border bg-background p-6 transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
             >
               <div className="flex items-start justify-between">

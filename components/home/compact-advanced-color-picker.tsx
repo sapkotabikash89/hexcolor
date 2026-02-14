@@ -355,7 +355,7 @@ export function CompactAdvancedColorPicker({
             ) : !hideLink && (
                 <div className="pt-4 flex justify-center border-t mt-6">
                     <Link
-                        href="/color-picker"
+                        href="/color-picker/"
                         className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md mt-4 text-sm"
                     >
                         Open Color Picker

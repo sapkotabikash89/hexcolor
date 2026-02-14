@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { ensureTrailingSlash } from "@/lib/utils"
 import Image from "next/image"
 import { Card } from "@/components/ui/card"
 
@@ -28,7 +29,7 @@ export function LatestPosts({ posts }: { posts: any[] }) {
                             .substring(0, 120) + "...";
 
                         return (
-                            <Link key={post.id} href={post.uri} className="group flex flex-col h-full bg-background rounded-xl overflow-hidden border hover:shadow-lg transition-all hover:border-primary/50">
+                    <Link key={post.id} href={ensureTrailingSlash(post.uri)} className="group flex flex-col h-full bg-background rounded-xl overflow-hidden border hover:shadow-lg transition-all hover:border-primary/50">
                                 <div className="aspect-[4/3] overflow-hidden relative">
                                     {img ? (
                                         <Image
@@ -65,7 +66,7 @@ export function LatestPosts({ posts }: { posts: any[] }) {
                 </div>
 
                 <div className="text-center pt-4">
-                    <Link href="/blog">
+                    <Link href="/blog/">
                         <Button variant="outline" size="lg" className="h-12 px-8 rounded-full font-semibold">
                             Explore All Articles
                         </Button>

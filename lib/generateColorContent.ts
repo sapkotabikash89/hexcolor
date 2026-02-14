@@ -146,7 +146,7 @@ function formatColorLink(name: string, hex: string): string {
   if (rel === "nofollow") {
     return `${name} (${hex})`;
   }
-  return `[${name} (${hex})](/colors/${hex.replace('#', '').toLowerCase()})`;
+  return `[${name} (${hex})](/colors/${hex.replace('#', '').toLowerCase()}/)`;
 }
 
 /**

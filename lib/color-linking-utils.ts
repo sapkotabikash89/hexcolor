@@ -37,10 +37,10 @@ export function getColorPageLink(hex: string): string {
 
   if (isStaticColor(hex)) {
     // Link to static color page - normalize to lowercase for URL consistency
-    return `/colors/${cleanHex.toLowerCase()}`;
+    return `/colors/${cleanHex.toLowerCase()}/`;
   } else {
     // Also link to individual color pages for consistency, assuming dynamic handling or future static generation
-    return `/colors/${cleanHex.toLowerCase()}`;
+    return `/colors/${cleanHex.toLowerCase()}/`;
   }
 }
 

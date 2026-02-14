@@ -58,16 +58,16 @@ export default async function TagPage({ params }: TagPageProps) {
 
   // Define breadcrumbs
   const crumbs = [
-    { label: `Tag: ${tagName}`, href: `/tag/${slug}` },
+    { label: `Tag: ${tagName}`, href: `/tag/${slug}/` },
   ];
 
   return (
     <div className="flex flex-col min-h-screen">
-      <CollectionPageSchema name={`Tag: ${tagName}`} url={`https://hexcolormeans.com/tag/${slug}`} />
+      <CollectionPageSchema name={`Tag: ${tagName}`} url={`https://hexcolormeans.com/tag/${slug}/`} />
       <BreadcrumbSchema items={[
         { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Tags", item: "https://hexcolormeans.com/tag" },
-        { name: tagName, item: `https://hexcolormeans.com/tag/${slug}` }
+        { name: "Tags", item: "https://hexcolormeans.com/tag/" },
+        { name: tagName, item: `https://hexcolormeans.com/tag/${slug}/` }
       ]} />
       <Header />
       <section className="bg-muted/30 py-12 px-4">

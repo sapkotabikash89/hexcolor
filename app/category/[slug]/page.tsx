@@ -58,16 +58,16 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   // Define breadcrumbs
   const crumbs = [
-    { label: categoryName, href: `/category/${slug}` },
+    { label: categoryName, href: `/category/${slug}/` },
   ];
 
   return (
     <div className="flex flex-col min-h-screen">
-      <CollectionPageSchema name={categoryName} url={`https://hexcolormeans.com/category/${slug}`} />
+      <CollectionPageSchema name={categoryName} url={`https://hexcolormeans.com/category/${slug}/`} />
       <BreadcrumbSchema items={[
         { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Categories", item: "https://hexcolormeans.com/category" },
-        { name: categoryName, item: `https://hexcolormeans.com/category/${slug}` }
+        { name: "Categories", item: "https://hexcolormeans.com/category/" },
+        { name: categoryName, item: `https://hexcolormeans.com/category/${slug}/` }
       ]} />
       <Header />
       <section className="bg-muted/30 py-12 px-4">
