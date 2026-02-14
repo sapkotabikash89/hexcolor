@@ -115,6 +115,11 @@ async function savePosts() {
     return;
   }
 
+  const allTaxonomies = {
+    categories: new Set(),
+    tags: new Set()
+  };
+
   // Ensure directories exist
   const postsDir = path.join(process.cwd(), 'lib/posts');
   if (!fs.existsSync(postsDir)) {
@@ -172,6 +177,14 @@ export const HEX_REDIRECTS: Record<string, string> = ${JSON.stringify(hexToPostM
       post.content = rewriteInlineImages(post.content);
     }
 
+    // Process categories and tags for indexing
+    post.categories?.nodes?.forEach(cat => {
+      if (cat.slug) allTaxonomies.categories.add(cat.slug);
+    });
+    post.tags?.nodes?.forEach(tag => {
+      if (tag.slug) allTaxonomies.tags.add(tag.slug);
+    });
+
     const filePath = path.join(postsDir, `${slug}.json`);
     fs.writeFileSync(filePath, JSON.stringify(post, null, 2));
   }
@@ -192,6 +205,14 @@ export const HEX_REDIRECTS: Record<string, string> = ${JSON.stringify(hexToPostM
   const latestPostsPath = path.join(publicDir, 'latest-posts.json');
   fs.writeFileSync(latestPostsPath, JSON.stringify(latestPosts, null, 2));
   console.log(`Saved latest posts to ${latestPostsPath}`);
+
+  // 4. Save taxonomy indices
+  const taxonomyPath = path.join(process.cwd(), 'lib/taxonomies.json');
+  fs.writeFileSync(taxonomyPath, JSON.stringify({
+    categories: Array.from(allTaxonomies.categories),
+    tags: Array.from(allTaxonomies.tags)
+  }, null, 2));
+  console.log(`Saved taxonomy index to ${taxonomyPath}`);
 }
 
 // Helper function to rewrite inline image URLs to Gumlet CDN

@@ -7,7 +7,7 @@ import NextImage from "next/image"
 import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Palette, Droplet, Contrast, Eye, ImageIcon, CircleDot, Search, Menu, Pipette, Grid, Disc, LayoutGrid, Library, Layers, BookOpen, Mail, ShieldCheck } from "lucide-react"
+import { Palette, Droplet, Contrast, Eye, ImageIcon, CircleDot, Search, Menu, Pipette, Grid, Disc, LayoutGrid, Library, Layers, BookOpen, Mail, ShieldCheck, ChevronDown, Sparkles } from "lucide-react"
 import { CustomColorPicker } from "@/components/custom-color-picker"
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -157,32 +157,45 @@ export function Header() {
               <p>Color Library</p>
             </TooltipContent>
           </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link href="/category/shades-meaning">
-                <Button variant="ghost" size="sm" className="gap-2" aria-label="Shades">
-                  <Layers className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden xl:inline">Shades</span>
+
+          {/* Blog submenu */}
+          <div className="relative group">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href="/blog">
+                  <Button variant="ghost" size="sm" className="gap-2" aria-label="Blog">
+                    <BookOpen className="w-4 h-4" aria-hidden="true" />
+                    <span className="hidden xl:inline">Blog</span>
+                    <ChevronDown className="w-3 h-3 opacity-50" />
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="xl:hidden">
+                <p>Blog</p>
+              </TooltipContent>
+            </Tooltip>
+            <div className="absolute left-0 mt-2 w-[240px] bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-200">
+              <Link href="/categories/color-meaning">
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Meanings">
+                  <BookOpen className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  Color Meanings
                 </Button>
               </Link>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="xl:hidden">
-              <p>Shades</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link href="/category/color-meaning">
-                <Button variant="ghost" size="sm" className="gap-2" aria-label="Color Meaning">
-                  <BookOpen className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden xl:inline">Color Meaning</span>
+              <Link href="/categories/shades-meaning">
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Shades Meaning">
+                  <Layers className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  Shades Meaning
                 </Button>
               </Link>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="xl:hidden">
-              <p>Color Meaning</p>
-            </TooltipContent>
-          </Tooltip>
+              <Link href="/categories/spiritual-colors">
+                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Spiritual Colors">
+                  <Sparkles className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  Spiritual Colors
+                </Button>
+              </Link>
+            </div>
+          </div>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Link href="/contact">

@@ -94,6 +94,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/categories/spiritual-colors" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Spiritual Colors
+                </Link>
+              </li>
+              <li>
                 <Link href="/blog/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Blog
                 </Link>
