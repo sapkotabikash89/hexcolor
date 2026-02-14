@@ -5,34 +5,34 @@ import { ColorSidebar } from "@/components/sidebar";
 import { CategoryPosts } from "@/components/category-posts";
 import { CollectionPageSchema, BreadcrumbSchema } from "@/components/structured-data";
 
-import { getPostsByTag, getAllTags } from "@/lib/wordpress";
+import { getPostsByCategory, getAllCategories } from "@/lib/wordpress";
 
 export async function generateStaticParams() {
-  console.log("Generating static params for tags...");
-  const tags = await getAllTags();
-  if (!tags || tags.length === 0) {
-    console.log("No tags found. Returning fallback to prevent build error.");
-    return [{ tag: "color" }];
+  console.log("Generating static params for categories...");
+  const categories = await getAllCategories();
+  if (!categories || categories.length === 0) {
+    console.log("No categories found. Returning fallback to prevent build error.");
+    return [{ slug: "uncategorized" }];
   }
-  return tags.map((tag: any) => ({
-    tag: tag.slug,
+  return categories.map((category: any) => ({
+    slug: category.slug,
   }));
 }
 
-type TagPageProps = {
-  params: Promise<{ tag: string }>;
+type CategoryPageProps = {
+  params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: TagPageProps) {
-  const { tag: tagSlug } = await params;
-  const capitalizedTag = tagSlug
+export async function generateMetadata({ params }: CategoryPageProps) {
+  const { slug } = await params;
+  const capitalizedCategory = slug
     .split("-")
     .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
   return {
-    title: `Posts tagged with ${capitalizedTag} - HexColorMeans`,
-    description: `Browse all articles tagged with ${capitalizedTag.toLowerCase()} on HexColorMeans.`,
+    title: `${capitalizedCategory} - HexColorMeans`,
+    description: `Explore ${capitalizedCategory.toLowerCase()} articles and guides on HexColorMeans. Latest posts about ${capitalizedCategory.toLowerCase()} meanings, psychology, and symbolism.`,
     robots: {
       index: false,
       follow: true,
@@ -40,11 +40,11 @@ export async function generateMetadata({ params }: TagPageProps) {
   };
 }
 
-export default async function TagPage({ params }: TagPageProps) {
-  const { tag: tagSlug } = await params;
-  const { posts: rawPosts, tagName } = await getPostsByTag(tagSlug);
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const { slug } = await params;
+  const { posts: rawPosts, categoryName } = await getPostsByCategory(slug);
   
-  // Transform posts
+  // Ensure strict type compatibility with CategoryPosts component
   const posts = rawPosts.map(post => ({
     ...post,
     excerpt: post.excerpt || "",
@@ -58,25 +58,25 @@ export default async function TagPage({ params }: TagPageProps) {
 
   // Define breadcrumbs
   const crumbs = [
-    { label: `Tag: ${tagName}`, href: `/tags/${tagSlug}` },
+    { label: categoryName, href: `/category/${slug}` },
   ];
 
   return (
     <div className="flex flex-col min-h-screen">
-      <CollectionPageSchema name={`Tag: ${tagName}`} url={`https://hexcolormeans.com/tags/${tagSlug}`} />
+      <CollectionPageSchema name={categoryName} url={`https://hexcolormeans.com/category/${slug}`} />
       <BreadcrumbSchema items={[
         { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Tags", item: "https://hexcolormeans.com/tags" },
-        { name: tagName, item: `https://hexcolormeans.com/tags/${tagSlug}` }
+        { name: "Categories", item: "https://hexcolormeans.com/category" },
+        { name: categoryName, item: `https://hexcolormeans.com/category/${slug}` }
       ]} />
       <Header />
       <section className="bg-muted/30 py-12 px-4">
         <div className="w-full max-w-[1300px] mx-auto">
           <BreadcrumbNav items={crumbs} />
           <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold">Tag: {tagName}</h1>
+            <h1 className="text-4xl md:text-5xl font-bold">{categoryName}</h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Browse all articles tagged with {tagName.toLowerCase()}
+              Read expert guides about {categoryName.toLowerCase()}, their psychology, symbolism, and cultural significance
             </p>
           </div>
         </div>
@@ -86,8 +86,8 @@ export default async function TagPage({ params }: TagPageProps) {
           <article id="content" className="main-content grow-content flex-1">
             <CategoryPosts
               initialPosts={posts}
-              categoryName={`Tag: ${tagName}`}
-              categorySlug={tagSlug}
+              categoryName={categoryName}
+              categorySlug={slug}
             />
           </article>
           <ColorSidebar color="#E0115F" />

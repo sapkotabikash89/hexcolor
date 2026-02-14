@@ -1083,6 +1083,39 @@ export default async function WPPostPage({ params }: WPPageProps) {
           />
           <div className="text-center space-y-4">
             <h1 className="text-3xl md:text-4xl font-bold">{node.title}</h1>
+            
+            {/* Category and Tags */}
+            <div className="flex flex-wrap justify-center gap-3 text-sm font-medium">
+              {node.categories?.nodes?.map((cat: any) => (
+                 <Link 
+                   key={cat.slug} 
+                   href={`/category/${cat.slug}`}
+                   className={cn(
+                     "px-3 py-1 rounded-full transition-colors",
+                     hasColorUI 
+                       ? "bg-white/20 hover:bg-white/30 text-inherit border border-current" 
+                       : "bg-primary/10 hover:bg-primary/20 text-primary"
+                   )}
+                 >
+                   {cat.name}
+                 </Link>
+               ))}
+               {node.tags?.nodes?.map((tag: any) => (
+                 <Link 
+                   key={tag.slug} 
+                   href={`/tag/${tag.slug}`}
+                   className={cn(
+                     "px-3 py-1 rounded-full transition-colors",
+                     hasColorUI 
+                       ? "bg-white/10 hover:bg-white/20 text-inherit border border-current opacity-80" 
+                       : "bg-muted hover:bg-muted/80 text-muted-foreground"
+                   )}
+                 >
+                   #{tag.name}
+                 </Link>
+               ))}
+            </div>
+
             {hasColorUI && (
               <div className="max-w-4xl mx-auto">
                 <div className="font-mono text-xs md:text-sm flex flex-wrap justify-center gap-4">

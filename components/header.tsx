@@ -175,19 +175,19 @@ export function Header() {
               </TooltipContent>
             </Tooltip>
             <div className="absolute left-0 mt-2 w-[240px] bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-200">
-              <Link href="/categories/color-meaning">
+              <Link href="/category/color-meaning">
                 <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Meanings">
                   <BookOpen className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Meanings
                 </Button>
               </Link>
-              <Link href="/categories/shades-meaning">
+              <Link href="/category/shades-meaning">
                 <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Shades Meaning">
                   <Layers className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Shades Meaning
                 </Button>
               </Link>
-              <Link href="/categories/spiritual-colors">
+              <Link href="/category/spiritual-colors">
                 <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Spiritual Colors">
                   <Sparkles className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Spiritual Colors
