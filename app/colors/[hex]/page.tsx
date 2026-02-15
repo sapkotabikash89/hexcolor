@@ -68,13 +68,10 @@ export async function generateStaticParams() {
       console.error('Error reading blog posts for hex exclusion:', e)
     }
 
-    // Combine all sources
+    // Combine all sources - Lowercase only for clean SEO and single canonical route
     const allHexes = new Set([
       ...meaningHexes.map(h => h.toLowerCase()),
-      ...knownHexes.map(h => h.toLowerCase()),
-      // Add uppercase versions to prevent 404s and allow client-side normalization
-      ...meaningHexes.map(h => h.replace('#', '').toUpperCase()),
-      ...knownHexes.map(h => h.replace('#', '').toUpperCase())
+      ...knownHexes.map(h => h.toLowerCase())
     ])
 
     // Filter out hexes that have blog posts

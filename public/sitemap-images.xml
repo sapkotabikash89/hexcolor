@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
+    <loc>https://hexcolormeans.com/7-chakra-colors-and-their-meanings/</loc>
+    <image:image>
+      <image:loc>https://blog.hexcolormeans.com/wp-content/uploads/2026/02/infographic-showing-the-seven-chakra-colors-meanings-functions-and-locations.webp</image:loc>
+      <image:title>infographic showing the seven chakra colors, meanings, functions, and locations</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://hexcolormeans.com/shades-of-white-color/</loc>
+    <image:image>
+      <image:loc>https://blog.hexcolormeans.com/wp-content/uploads/2026/02/more-than-100-popular-shades-of-white-color.webp</image:loc>
+      <image:title>more than 100 popular shades of white color</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://hexcolormeans.com/color-white-meaning/</loc>
+    <image:image>
+      <image:loc>https://blog.hexcolormeans.com/wp-content/uploads/2026/02/infographic-showing-meaning-of-color-white-in-psychology-spirituality-and-color-codes.webp</image:loc>
+      <image:title>infographic showing meaning of color white in psychology, spirituality, and color codes</image:title>
+    </image:image>
+  </url>
+  <url>
     <loc>https://hexcolormeans.com/shades-of-black-color/</loc>
     <image:image>
       <image:loc>https://blog.hexcolormeans.com/wp-content/uploads/2026/02/more-than-100-popular-shades-of-black-color.webp</image:loc>
