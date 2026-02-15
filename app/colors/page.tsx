@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
   keywords: ["color library", "color names", "hex colors", "color palette", "color collection"],
   alternates: {
-    canonical: "https://hexcolormeans.com/colors",
+    canonical: "https://hexcolormeans.com/colors/",
   },
   openGraph: {
     title: "Color Library - Browse Thousands of Colors | HexColorMeans",
     description:
       "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
-    url: "https://hexcolormeans.com/colors",
+    url: "https://hexcolormeans.com/colors/",
     siteName: "HexColorMeans",
     type: "website",
     images: [

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Verify your design's legibility with our professional contrast checker. Ensure your color combinations meet WCAG AA and AAA accessibility standards instantly for a truly inclusive web experience.",
   keywords: ["contrast checker", "color contrast checker", "contrast checker accessibility", "contrast checker WCAG", "accessibility compliance", "color contrast tool", "WCAG AA checker", "WCAG AAA checker"],
   alternates: {
-    canonical: "https://hexcolormeans.com/contrast-checker",
+    canonical: "https://hexcolormeans.com/contrast-checker/",
   },
   openGraph: {
     title: "Color Contrast Checker - Free Online WCAG Color Contrast Accessibility Tool | HexColorMeans",

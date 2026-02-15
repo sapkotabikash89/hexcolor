@@ -176,14 +176,13 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       "design colors",
       "brand colors",
     ],
-    // Explicit Canonical for Known Colors
     alternates: {
-      canonical: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`,
+      canonical: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}/`,
     },
     openGraph: {
       title: baseTitle,
       description: baseDescription,
-      url: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`,
+      url: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}/`,
       type: "website",
       images: [
         {

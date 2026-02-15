@@ -18,13 +18,13 @@ export const metadata: Metadata = {
         "Master color theory with our interactive color wheel. Generate professional harmonies like complementary, analogous, and triadic schemes using the chromatic wheel for artistic and design excellence.",
     keywords: ["color wheel", "chromatic wheel", "color harmony", "color theory", "hue tool", "color palette generator", "harmony selector"],
     alternates: {
-        canonical: "https://hexcolormeans.com/color-wheel",
+        canonical: "https://hexcolormeans.com/color-wheel/",
     },
     openGraph: {
         title: "Color Wheel - Free Online Chromatic Wheel & Harmony Tool | HexColorMeans",
         description:
             "Professional color wheel tool to explore chromatic relationships and generate perfect color schemes instantly. Explore color theory in real-time.",
-        url: "https://hexcolormeans.com/color-wheel",
+        url: "https://hexcolormeans.com/color-wheel/",
         siteName: "HexColorMeans",
         type: "website",
         images: [

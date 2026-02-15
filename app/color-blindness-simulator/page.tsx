@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description: "Test your designs for accessibility with our professional color blindness simulator. Model various vision deficiencies like Protanopia, Deuteranopia, and Tritanopia instantly to ensure WCAG compliance.",
   keywords: ["color blindness simulator", "color blindness checker", "color vision deficiency checker", "color vision deficiency simulator", "accessibility testing", "protanopia simulator", "deuteranopia tool", "WCAG accessibility tool"],
   alternates: {
-    canonical: "https://hexcolormeans.com/color-blindness-simulator",
+    canonical: "https://hexcolormeans.com/color-blindness-simulator/",
   },
   openGraph: {
     title: "Color Blindness Simulator - Free Online Color Vision Deficiency Simulator | HexColorMeans",
     description: "Simulate how colors appear to people with different types of color vision deficiency. Ensure your designs are accessible to all users with our professional-grade simulator.",
-    url: "https://hexcolormeans.com/color-blindness-simulator",
+    url: "https://hexcolormeans.com/color-blindness-simulator/",
     siteName: "HexColorMeans",
     type: "website",
     images: [

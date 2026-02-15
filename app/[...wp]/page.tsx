@@ -404,6 +404,9 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
       u.hostname = "hexcolormeans.com"
       u.protocol = "https:"
       u.port = ""
+      if (u.pathname && u.pathname !== "/" && !u.pathname.endsWith("/")) {
+        u.pathname = `${u.pathname}/`
+      }
       canonical = u.toString()
     } catch { }
   }

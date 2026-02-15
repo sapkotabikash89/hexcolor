@@ -27,9 +27,6 @@ export const metadata: Metadata = {
     "contrast checker",
   ],
   authors: [{ name: "HexColorMeans" }],
-  alternates: {
-    canonical: "https://hexcolormeans.com",
-  },
   openGraph: {
     title: "HexColorMeans - Where Every Color Has Meaning",
     description: "Explore colors with detailed information, meanings, conversions, and professional tools.",

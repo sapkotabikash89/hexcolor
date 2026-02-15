@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description: "Pick any color directly from your screen with our professional EyeDropper tool. Extract exact hex codes from other applications, websites, or images instantly with 1:1 pixel precision.",
   keywords: ["screen color picker", "online screen color picker", "eyedropper tool browser", "color picker from desktop", "pixel color picker", "os-native color sampler", "extract color from application"],
   alternates: {
-    canonical: "https://hexcolormeans.com/screen-color-picker",
+    canonical: "https://hexcolormeans.com/screen-color-picker/",
   },
   openGraph: {
     title: "Screen Color Picker - Free Online Tool to Pick Colors from Anything | HexColorMeans",
     description: "Sample pixels beyond the browser. Our professional screen picker utilizes OS-native precision to capture hex codes from any window on your entire display.",
-    url: "https://hexcolormeans.com/screen-color-picker",
+    url: "https://hexcolormeans.com/screen-color-picker/",
     siteName: "HexColorMeans",
     type: "website",
     images: [

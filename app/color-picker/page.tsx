@@ -17,13 +17,13 @@ export const metadata: Metadata = {
   description: "Select and explore colors with our professional-grade hex color picker. Get instant HEX, RGB, and HSL codes for HTML, CSS, and UI design projects with precise control.",
   keywords: ["color picker", "hex color picker", "html color picker", "color selector", "rgb color picker", "css color picker", "online color tool"],
   alternates: {
-    canonical: "https://hexcolormeans.com/color-picker",
+    canonical: "https://hexcolormeans.com/color-picker/",
   },
   openGraph: {
     title: "Color Picker - Free Online Hex, HTML & CSS Color Selector Tool | HexColorMeans",
     description:
       "Professional online color picker for web designers. Extract HEX, RGB, and HSL codes instantly with our high-fidelity color selection tool. Fast and easy to use.",
-    url: "https://hexcolormeans.com/color-picker",
+    url: "https://hexcolormeans.com/color-picker/",
     siteName: "HexColorMeans",
     type: "website",
     images: [

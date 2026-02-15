@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description: "Upload any image and extract exact hex, RGB, and HSL codes with our professional image color picker. Fast, accurate, and privacy-focused pixel extraction for professional design workflow.",
   keywords: ["image color picker", "extract color from image", "color picker from image", "get color from image", "online eyedropper tool", "pixel color extractor", "image palette generator", "photo color extractor"],
   alternates: {
-    canonical: "https://hexcolormeans.com/image-color-picker",
+    canonical: "https://hexcolormeans.com/image-color-picker/",
   },
   openGraph: {
     title: "Image Color Picker - Free Online Tool to Extract Colors from Images | HexColorMeans",
     description: "Analyze and extract exact pixel values from any digital asset with our professional online eyedropper tool. Local processing for maximum privacy and accuracy.",
-    url: "https://hexcolormeans.com/image-color-picker",
+    url: "https://hexcolormeans.com/image-color-picker/",
     siteName: "HexColorMeans",
     type: "website",
     images: [
