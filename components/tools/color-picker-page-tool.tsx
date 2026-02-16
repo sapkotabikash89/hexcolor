@@ -16,10 +16,10 @@ interface ColorPickerPageToolProps {
     onColorChange?: (color: string) => void
 }
 
-export function ColorPickerPageTool({ selectedColor: initialColor = "#E0115F", onColorChange }: ColorPickerPageToolProps) {
+export function ColorPickerPageTool({ selectedColor: initialColor = "#11DF1B", onColorChange }: ColorPickerPageToolProps) {
     const router = useRouter()
     const [selectedColor, setSelectedColor] = useState(initialColor)
-    const [hue, setHue] = useState(337)
+    const [hue, setHue] = useState(123)
     const [saturation, setSaturation] = useState(86)
     const [lightness, setLightness] = useState(47)
     const canvasRef = useRef<HTMLCanvasElement>(null)

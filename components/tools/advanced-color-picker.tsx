@@ -17,7 +17,7 @@ const ColorPageContent = dynamic(() => import("@/components/color-page-content")
 
 export function AdvancedColorPicker() {
   const router = useRouter()
-  const [selectedColor, setSelectedColor] = useState("#E0115F")
+  const [selectedColor, setSelectedColor] = useState("#11DF1B")
 
   return (
     <div className="space-y-6">
