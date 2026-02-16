@@ -65,8 +65,6 @@ function generateToolsSitemap() {
         { url: `${BASE_URL}/palette-from-image/`, priority: 0.8 },
         { url: `${BASE_URL}/screen-color-picker/`, priority: 0.7 },
         { url: `${BASE_URL}/colors/`, priority: 0.9 },
-        { url: `${BASE_URL}/color-meanings/`, priority: 0.8 },
-        { url: `${BASE_URL}/blog/`, priority: 0.7 },
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>

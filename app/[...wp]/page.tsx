@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import Image from "next/image"
 import { Suspense } from "react"
 import Script from "next/script"
@@ -64,10 +65,6 @@ async function fetchPostByUri(uri: string) {
       uri.endsWith("/") ? uri.slice(0, -1) : `${uri}/`,
       decodeURI(uri),
       encodeURI(uri),
-      (() => {
-        const s = lastSegment(uri)
-        return s ? `/color-meanings/${s}/` : uri
-      })(),
     ])
   )
   for (const u of variants) {
@@ -476,16 +473,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
     if (!node && slug) node = await fetchRestPageBySlug(slug)
   }
   if (!node) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="w-full max-w-[1300px] mx-auto px-2 sm:px-4 py-12">
-          <h1 className="text-3xl font-bold">Content not available</h1>
-          <p className="mt-4">The requested post could not be loaded.</p>
-        </main>
-        <Footer />
-      </div>
-    )
+    notFound()
   }
   async function getBlurDataURL(src: string | undefined): Promise<string | undefined> {
     // Article and color images are optimized for fast delivery - skip LQIP generation
@@ -493,7 +481,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
   }
   if (node.__typename === "Category") {
     const crumbs = [
-      { label: "Color Meanings", href: "/color-meanings" },
+      { label: "Blog", href: "/blog" },
       { label: node.name, href: node.uri },
     ]
     const related = await fetchRandomPosts(12)

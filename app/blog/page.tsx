@@ -9,6 +9,10 @@ import { getAllPosts } from "@/lib/wordpress";
 export const metadata = {
   title: "Blog - Latest Articles on Color Meanings, Psychology & Design",
   description: "Read all articles about colors, their meanings, psychology, spirituality, and cultural symbolism. Latest posts from HexColorMeans.",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default async function BlogPage() {
