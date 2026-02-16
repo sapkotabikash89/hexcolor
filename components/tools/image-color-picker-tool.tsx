@@ -19,7 +19,7 @@ import data from "@/lib/color-meaning.json"
 export function ImageColorPickerTool() {
   const router = useRouter()
   const [image, setImage] = useState<string | null>(null)
-  const [selectedColor, setSelectedColor] = useState("#E0115F")
+  const [selectedColor, setSelectedColor] = useState("#0856B6")
   const [pickedColors, setPickedColors] = useState<string[]>([])
   const [isCustomImage, setIsCustomImage] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -33,37 +33,37 @@ export function ImageColorPickerTool() {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [palette, setPalette] = useState<string[]>([])
   const [exportTitle, setExportTitle] = useState("")
-    const [exportLabel, setExportLabel] = useState("")
-    const [exportColors, setExportColors] = useState<string[]>([])
-    const rectRef = useRef<DOMRect | null>(null)
+  const [exportLabel, setExportLabel] = useState("")
+  const [exportColors, setExportColors] = useState<string[]>([])
+  const rectRef = useRef<DOMRect | null>(null)
 
-    // Update rect on scroll/resize
-    useEffect(() => {
-        const updateRect = () => {
-            if (canvasRef.current) {
-                rectRef.current = canvasRef.current.getBoundingClientRect()
-            }
-        }
-        
-        // Initial update
-        updateRect()
-        
-        // Update on resize and scroll
-        const resizeObserver = new ResizeObserver(updateRect)
-        if (canvasRef.current) {
-            resizeObserver.observe(canvasRef.current)
-        }
-        window.addEventListener('scroll', updateRect, { passive: true })
-        window.addEventListener('resize', updateRect, { passive: true })
-        
-        return () => {
-            resizeObserver.disconnect()
-            window.removeEventListener('scroll', updateRect)
-            window.removeEventListener('resize', updateRect)
-        }
-    }, [imageLoaded])
+  // Update rect on scroll/resize
+  useEffect(() => {
+    const updateRect = () => {
+      if (canvasRef.current) {
+        rectRef.current = canvasRef.current.getBoundingClientRect()
+      }
+    }
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Initial update
+    updateRect()
+
+    // Update on resize and scroll
+    const resizeObserver = new ResizeObserver(updateRect)
+    if (canvasRef.current) {
+      resizeObserver.observe(canvasRef.current)
+    }
+    window.addEventListener('scroll', updateRect, { passive: true })
+    window.addEventListener('resize', updateRect, { passive: true })
+
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener('scroll', updateRect)
+      window.removeEventListener('resize', updateRect)
+    }
+  }, [imageLoaded])
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
@@ -177,21 +177,21 @@ export function ImageColorPickerTool() {
   }
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        const canvas = canvasRef.current
-        if (!canvas) return
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-        let rect = rectRef.current
-        if (!rect) {
-            rect = canvas.getBoundingClientRect()
-            rectRef.current = rect
-        }
-        
-        const scaleX = canvas.width / rect.width
-        const scaleY = canvas.height / rect.height
-        const x = (e.clientX - rect.left) * scaleX
-        const y = (e.clientY - rect.top) * scaleY
+    let rect = rectRef.current
+    if (!rect) {
+      rect = canvas.getBoundingClientRect()
+      rectRef.current = rect
+    }
 
-        const ctx = canvas.getContext("2d")
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
+    const x = (e.clientX - rect.left) * scaleX
+    const y = (e.clientY - rect.top) * scaleY
+
+    const ctx = canvas.getContext("2d")
     if (!ctx) return
 
     const imageData = ctx.getImageData(x, y, 1, 1)
@@ -379,28 +379,28 @@ export function ImageColorPickerTool() {
   }
 
   const handleCanvasTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
-        // Pick color on touch end if we want, or just hide magnifier
-        setShowMagnifier(false)
-        // If we want to support "tap to pick", we should handle it here because preventDefault on start/move might kill onClick
-        // Let's rely on onClick for now? No, preventDefault kills onClick.
-        // So we must pick color here.
-        if (e.changedTouches.length > 0) {
-            const touch = e.changedTouches[0]
-            // Re-use logic from handleCanvasClick but with touch coords
-            const canvas = canvasRef.current
-            if (!canvas) return
-            
-            let rect = rectRef.current
-            if (!rect) {
-                rect = canvas.getBoundingClientRect()
-                rectRef.current = rect
-            }
-            
-            const scaleX = canvas.width / rect.width
-            const scaleY = canvas.height / rect.height
-            const x = (touch.clientX - rect.left) * scaleX
-            const y = (touch.clientY - rect.top) * scaleY
-            const ctx = canvas.getContext("2d")
+    // Pick color on touch end if we want, or just hide magnifier
+    setShowMagnifier(false)
+    // If we want to support "tap to pick", we should handle it here because preventDefault on start/move might kill onClick
+    // Let's rely on onClick for now? No, preventDefault kills onClick.
+    // So we must pick color here.
+    if (e.changedTouches.length > 0) {
+      const touch = e.changedTouches[0]
+      // Re-use logic from handleCanvasClick but with touch coords
+      const canvas = canvasRef.current
+      if (!canvas) return
+
+      let rect = rectRef.current
+      if (!rect) {
+        rect = canvas.getBoundingClientRect()
+        rectRef.current = rect
+      }
+
+      const scaleX = canvas.width / rect.width
+      const scaleY = canvas.height / rect.height
+      const x = (touch.clientX - rect.left) * scaleX
+      const y = (touch.clientY - rect.top) * scaleY
+      const ctx = canvas.getContext("2d")
       if (!ctx) return
       const imageData = ctx.getImageData(x, y, 1, 1)
       const [r, g, b] = imageData.data

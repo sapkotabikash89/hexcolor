@@ -225,7 +225,7 @@ export default function ImageColorPickerPage() {
           </article>
           <div className="hidden lg:block w-[340px]">
             <div className="sticky top-24">
-              <ColorSidebar color="#E0115F" />
+              <ColorSidebar color="#0856B6" />
             </div>
           </div>
         </div>
