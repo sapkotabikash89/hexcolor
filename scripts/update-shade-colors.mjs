@@ -170,20 +170,24 @@ async function processFile(filePath) {
         }
     }
 
-    let changed = false;
+    // 1. Clean up ALL existing links to fix corruption and ensure a clean slate.
+    // Since these posts are predominantly color lists, we can safely strip and re-link.
+    html = html.replace(/<a\b[^>]*>|<\/a>/gi, "");
+
+    let changed = true;
+
     colorsToUpdate.forEach(color => {
-        // 1. Update description paragraph: Name (#OLDHEX) -> <a href="/colors/NEWHEX">Name (#NEWHEX)</a>
+        // 2. Update description paragraph: Name (#OLDHEX) -> <a href="/colors/NEWHEX">Name (#NEWHEX)</a>
         // Escape special characters in name for regex
         const escapedName = color.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const descRegex = new RegExp(`(${escapedName})\\s*\\(#([0-9A-Fa-f]{6})\\)`, 'gi');
+        // Use word boundary \b to prevent matching "coal" inside "Charcoal"
+        // Also ensure it's not already inside a tag (though we cleaned up, it's good practice)
+        const descRegex = new RegExp(`\\b(${escapedName})\\s*\\(#([0-9A-Fa-f]{6})\\)`, 'gi');
 
-        if (descRegex.test(html)) {
-            html = html.replace(descRegex, (m, p1, p2) => {
-                const newHex = color.hex.toUpperCase();
-                return `<a href="/colors/${color.hex}">${p1} (#${newHex})</a>`;
-            });
-            changed = true;
-        }
+        html = html.replace(descRegex, (m, p1, p2) => {
+            const newHex = color.hex.toUpperCase();
+            return `<a href="/colors/${color.hex}">${p1} (#${newHex})</a>`;
+        });
 
         // 2. Update metadata list
         const escapedSectionName = color.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
