@@ -27,6 +27,8 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
     const rgb = hexToRgb(hex)
     const cmyk = rgb ? rgbToCmyk(rgb.r, rgb.g, rgb.b) : { c: 0, m: 0, y: 0, k: 0 }
     const contrastColor = getContrastColor(hex)
+    const href = getColorPageLink(hex)
+    const hasStaticPage = !href.startsWith("/html-color-picker/")
 
     const handleCopy = async (e: React.MouseEvent, text: string, key: string) => {
         e.preventDefault()
@@ -54,13 +56,13 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
 
     const rgbString = rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : ""
     const cmykString = `${cmyk.c}, ${cmyk.m}, ${cmyk.y}, ${cmyk.k}`
+    const linkTitle = `View ${name} color page`
 
-    return (
+    const cardContent = (
         <Card
             className="group relative flex flex-col overflow-hidden border-2 border-border shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer aspect-square bg-white"
-            onClick={() => router.push(getColorPageLink(hex))}
+            onClick={hasStaticPage ? undefined : () => router.push(href)}
         >
-            {/* Background Color Area - Square Shape */}
             <div
                 className="flex-1 p-4 flex flex-col justify-end"
                 style={{ backgroundColor: hex, color: contrastColor }}
@@ -115,7 +117,6 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
                 </div>
             </div>
 
-            {/* Information Area - Love icon on the right of the name */}
             <div className="p-3 bg-white border-t flex items-center justify-between">
                 <p className="text-sm font-bold truncate pr-4">{name}</p>
                 <button
@@ -131,4 +132,14 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
             </div>
         </Card>
     )
+
+    if (hasStaticPage) {
+        return (
+            <a href={href} title={linkTitle} aria-label={linkTitle}>
+                {cardContent}
+            </a>
+        )
+    }
+
+    return cardContent
 }

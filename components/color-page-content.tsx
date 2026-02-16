@@ -41,7 +41,7 @@ import { getGumletColorImage } from "@/lib/image-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { ColorCombination } from "@/components/color-combination"
 import { ColorSwatch as Swatch } from "@/components/color-swatch"
-import { Share, Heart, Check, Copy, Download, Pipette, Image as ImageIcon, Palette, Monitor } from "lucide-react"
+import { Share, Heart, Check, Copy, Download, Pipette, Image as ImageIcon, Palette, Monitor, ChevronDown, ChevronUp } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import nextDynamic from "next/dynamic"
 
@@ -425,13 +425,18 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       <Card id="conversion" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
         <div
           onClick={() => setOpenConversion((v) => !v)}
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
         >
-          <h2 className={`text-3xl font-bold m-0 leading-tight ${openConversion ? "" : "underline"}`}>Color Conversion</h2>
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">Color Conversion</h2>
+          {openConversion ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
         </div>
         {openConversion ? (
-          <div className="px-4 sm:px-6 py-2 space-y-4">
+          <div className="px-3 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
               Accurate conversions of {label} across RGB, Hex, CMYK, HSL, and Lab ensure consistent color fidelity across digital, print, and design applications.
             </p>
@@ -454,13 +459,18 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       <Card className="p-0 overflow-hidden space-y-0">
         <div
           onClick={() => setOpenBars((v) => !v)}
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
         >
-          <h2 className={`text-3xl font-bold m-0 leading-tight ${openBars ? "" : "underline"}`}>RGB Values & CMYK Values</h2>
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">RGB Values & CMYK Values</h2>
+          {openBars ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
         </div>
         {openBars ? (
-          <div className="px-4 sm:px-6 py-2 space-y-6">
+          <div className="px-3 sm:px-6 py-2 space-y-6">
             <p className="text-muted-foreground">
               Detailed RGB and CMYK values of {label} displayed in a horizontal bar provide clear reference for digital and print color accuracy.
             </p>
@@ -484,13 +494,18 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       <Card id="variations" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
         <div
           onClick={() => setOpenVariations((v) => !v)}
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
         >
-          <h2 className={`text-3xl font-bold m-0 leading-tight ${openVariations ? "" : "underline"}`}>Color Variations</h2>
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">Color Variations</h2>
+          {openVariations ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
         </div>
         {openVariations ? (
-          <div className="px-4 sm:px-6 py-2 space-y-4">
+          <div className="px-3 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
               A full range of {label} variations, including tints, shades, and tones, provides highlights, depth, and subtle desaturated options for UI design.
             </p>
@@ -555,15 +570,20 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       <Card id="harmonies" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
         <div
           onClick={() => setOpenHarmonies((v) => !v)}
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
         >
-          <h2 className={`text-3xl font-bold m-0 leading-tight ${openHarmonies ? "" : "underline"}`}>Color Harmonies</h2>
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">Color Harmonies</h2>
+          {openHarmonies ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
         </div>
         {openHarmonies ? (
-          <div className="px-4 sm:px-6 py-2 space-y-6">
+          <div className="px-3 sm:px-6 py-2 space-y-6">
             <p className="text-muted-foreground">
-              Harmonious color schemes for {label} created using the <Link href="/color-wheel" className="text-primary hover:underline">color wheel</Link> ensure visually balanced palettes.
+              Harmonious color schemes for {label} created using the <Link href="/color-wheel/" className="text-primary hover:underline">color wheel</Link> ensure visually balanced palettes.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {Object.entries(harmonies).map(([type, harmony]) => (
@@ -605,19 +625,23 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
 
 
       {/* Contrast Checker */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="contrast-checker" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenContrast((v) => !v)}
-          >
-            <h2 className="text-3xl font-bold m-0 leading-tight">Contrast Checker (WCAG)</h2>
-          </div>
+      <Card id="contrast-checker" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenContrast((v) => !v)}
+        >
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">Contrast Checker (WCAG)</h2>
+          {openContrast ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
+        </div>
           {openContrast ? (
             <div className="px-6 py-2 space-y-4">
               <p className="text-muted-foreground">
-                Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
+                Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker/" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
               </p>
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2">
@@ -670,22 +694,25 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             </div>
           ) : null}
         </Card>
-      ) : null}
 
       {/* Color Blindness Simulator */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="blindness-simulator" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenBlindness((v) => !v)}
-          >
-            <h2 className="text-3xl font-bold m-0 leading-tight">Color Blindness Simulator</h2>
-          </div>
+      <Card id="blindness-simulator" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenBlindness((v) => !v)}
+        >
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">Color Blindness Simulator</h2>
+          {openBlindness ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
+        </div>
           {openBlindness ? (
             <div className="px-6 py-2 space-y-4">
               <p className="text-muted-foreground">
-                Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator" className="text-primary hover:underline">Color Blindness Simulator</Link>.
+                Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator/" className="text-primary hover:underline">Color Blindness Simulator</Link>.
               </p>
               <Select value={colorBlindnessType} onValueChange={setColorBlindnessType}>
                 <SelectTrigger className="w-full md:w-64" aria-label="Select color blindness type">
@@ -733,16 +760,20 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             </div>
           ) : null}
         </Card>
-      ) : null}
 
       {/* CSS Examples */}
       <Card id="css-examples" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
         <div
-          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer flex items-center justify-between gap-4"
           style={{ borderLeftColor: hex }}
           onClick={() => setOpenCss((v) => !v)}
         >
-          <h2 className="text-3xl font-bold m-0 leading-tight">CSS Examples</h2>
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">CSS Examples</h2>
+          {openCss ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
         </div>
         {openCss ? (
           <div className="px-6 py-2 space-y-4">
@@ -794,15 +825,19 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
       </Card>
 
       {/* Patterns */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="patterns" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenPatterns((v) => !v)}
-          >
-            <h2 className={`text-3xl font-bold m-0 leading-tight ${openPatterns ? "" : "underline"}`}>Seamless Patterns</h2>
-          </div>
+      <Card id="patterns" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenPatterns((v) => !v)}
+        >
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">Seamless Patterns</h2>
+          {openPatterns ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
+        </div>
           {openPatterns ? (
             <div className="px-6 py-2 space-y-4">
               <p className="text-muted-foreground">
@@ -812,18 +847,21 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             </div>
           ) : null}
         </Card>
-      ) : null}
 
       {/* Icons */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="icons" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenIcons((v) => !v)}
-          >
-            <h2 className={`text-3xl font-bold m-0 leading-tight ${openIcons ? "" : "underline"}`}>Icons</h2>
-          </div>
+      <Card id="icons" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenIcons((v) => !v)}
+        >
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">Icons</h2>
+          {openIcons ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
+        </div>
           {openIcons ? (
             <div className="px-6 py-2 space-y-4">
               <p className="text-muted-foreground">
@@ -833,18 +871,21 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             </div>
           ) : null}
         </Card>
-      ) : null}
 
       {/* Mockups */}
-      {mode !== "sectionsOnly" ? (
-        <Card id="mockups" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
-          <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors"
-            style={{ borderLeftColor: hex }}
-            onClick={() => setOpenMockups((v) => !v)}
-          >
-            <h2 className={`text-3xl font-bold m-0 leading-tight ${openMockups ? "" : "underline"}`}>Real-World Applications</h2>
-          </div>
+      <Card id="mockups" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
+        <div
+          className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between gap-4"
+          style={{ borderLeftColor: hex }}
+          onClick={() => setOpenMockups((v) => !v)}
+        >
+          <h2 className="text-3xl font-bold m-0 leading-tight underline">Real-World Applications</h2>
+          {openMockups ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
+        </div>
           {openMockups ? (
             <div className="px-6 py-2 space-y-4">
               <p className="text-muted-foreground">
@@ -854,17 +895,21 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             </div>
           ) : null}
         </Card>
-      ) : null}
 
       {/* Related Colors */}
       {mode !== "sectionsOnly" ? (
         <Card id="related-colors" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
           <div
-            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer"
+            className="bg-muted-foreground/10 border-l-[10px] py-5 px-4 cursor-pointer flex items-center justify-between gap-4"
             style={{ borderLeftColor: hex }}
             onClick={() => setOpenRelated((v) => !v)}
           >
-            <h2 className="text-3xl font-bold m-0 leading-tight">Related Colors</h2>
+            <h2 className="text-3xl font-bold m-0 leading-tight underline">Related Colors</h2>
+            {openRelated ? (
+              <ChevronUp className="w-5 h-5" />
+            ) : (
+              <ChevronDown className="w-5 h-5" />
+            )}
           </div>
           {openRelated ? (
             <div className="px-6 py-2 space-y-4">
@@ -914,10 +959,10 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             <p className="text-muted-foreground mb-6">A curated set of tools to help apply, analyze, and manage colors effectively in your projects</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { name: "Color Picker", href: "/html-color-picker", icon: Pipette },
-                { name: "Image Color Picker", href: "/image-color-picker", icon: ImageIcon },
+                { name: "Color Picker", href: "/html-color-picker/", icon: Pipette },
+                { name: "Image Color Picker", href: "/image-color-picker/", icon: ImageIcon },
                 { name: "Palette from Image", href: "/palette-from-image", icon: Palette },
-                { name: "Screen Color Picker", href: "/screen-color-picker", icon: Monitor },
+                { name: "Screen Color Picker", href: "/screen-color-picker/", icon: Monitor },
               ].map((tool) => (
                 <Link
                   key={tool.href}

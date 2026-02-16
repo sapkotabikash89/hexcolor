@@ -20,6 +20,12 @@ interface BlogPost {
       slug: string;
     }>
   };
+  tags?: {
+    nodes: Array<{
+      name: string;
+      slug: string;
+    }>
+  };
 }
 
 // Path to the main data file
@@ -95,6 +101,28 @@ export async function getAllPosts(limit = 10) {
   // Sort by date desc if needed, assuming they might not be sorted
   // posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   return posts.slice(0, limit);
+}
+
+export async function getPostsByTag(tagSlug: string) {
+  const allPosts = getLocalBlogData();
+  const posts = allPosts.filter((post: any) =>
+    post.tags?.nodes?.some((t: any) => t.slug === tagSlug)
+  );
+
+  if (posts.length > 0) {
+    const tag = posts[0].tags?.nodes?.find((t: any) => t.slug === tagSlug);
+    return {
+      posts,
+      tagName: tag ? tag.name : tagSlug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+      tagSlug,
+    };
+  }
+
+  return {
+    posts: [],
+    tagName: tagSlug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+    tagSlug,
+  };
 }
 
 /**

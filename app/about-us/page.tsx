@@ -17,12 +17,12 @@ export default function AboutUsPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <BreadcrumbSchema items={[
-        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "About Us", item: "https://hexcolormeans.com/about-us" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+        { name: "About Us", item: "https://hexcolormeans.com/about-us/" }
       ]} />
       <Header />
       <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
-        <BreadcrumbNav items={[{ label: "About Us", href: "/about-us" }]} />
+        <BreadcrumbNav items={[{ label: "About Us", href: "/about-us/" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">About Us</h1>

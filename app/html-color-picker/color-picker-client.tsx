@@ -172,13 +172,13 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name={`${displayLabel} Color Information`}
-        url={`https://hexcolormeans.com/html-color-picker?hex=${currentHex.replace("#", "").toLowerCase()}`}
+        url={`https://hexcolormeans.com/html-color-picker/?hex=${currentHex.replace("#", "").toLowerCase()}`}
         description={`Explore ${currentHex} color information, conversions, harmonies, variations, and accessibility.`}
       />
       <BreadcrumbSchema items={[
-        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Color Names", item: "https://hexcolormeans.com/colors" },
-        { name: currentHex.toUpperCase(), item: `https://hexcolormeans.com/html-color-picker?hex=${currentHex.replace("#", "").toLowerCase()}` }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+        { name: "Color Names", item: "https://hexcolormeans.com/colors/" },
+        { name: currentHex.toUpperCase(), item: `https://hexcolormeans.com/html-color-picker/?hex=${currentHex.replace("#", "").toLowerCase()}` }
       ]} />
       <FAQSchema faqs={faqItems} />
 
@@ -197,7 +197,7 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
         <div className="w-full max-w-[1300px] mx-auto overflow-hidden">
           <BreadcrumbNav
             items={[
-              { label: "Color Names", href: "/colors" },
+              { label: "Color Names", href: "/colors/" },
               { label: currentHex.toUpperCase(), href: `/html-color-picker?hex=${currentHex.replace("#", "").toLowerCase()}` },
             ]}
           />
@@ -309,4 +309,3 @@ function getAnalogousColors(hex: string): string[] {
 
   return colors;
 }
-

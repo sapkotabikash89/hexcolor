@@ -55,6 +55,20 @@ function ensureAbsolute(url?: string, base?: string) {
   }
 }
 
+function ensureTrailingSlashForInternal(url: string | undefined, siteBase: string) {
+  if (!url) return undefined
+  try {
+    const base = new URL(siteBase)
+    const target = new URL(url, siteBase)
+    if (target.hostname !== base.hostname) return target.toString()
+    const path = target.pathname.endsWith("/") ? target.pathname : `${target.pathname}/`
+    target.pathname = path
+    return target.toString()
+  } catch {
+    return url
+  }
+}
+
 function parseRobots(robots?: YoastRobots) {
   const index = robots?.index !== "noindex"
   const follow = robots?.follow !== "nofollow"
@@ -91,7 +105,8 @@ export function mapYoastToMetadata(opts: {
 }): Metadata {
   const { yoast, siteBase, postUrl, siteName } = opts
   const metadataBase = new URL(siteBase)
-  const canonical = ensureAbsolute(yoast.canonical || postUrl, siteBase)
+  const canonicalAbsolute = ensureAbsolute(yoast.canonical || postUrl, siteBase)
+  const canonical = ensureTrailingSlashForInternal(canonicalAbsolute, siteBase)
   const images =
     yoast.og_image?.map((img) => ({
       url: ensureAbsolute(img.url, siteBase)!,
@@ -130,7 +145,7 @@ export function mapYoastToMetadata(opts: {
       type: (yoast.og_type as any) || "article",
       title: yoast.og_title || yoast.title,
       description: yoast.og_description || yoast.description,
-      url: ensureAbsolute(yoast.og_url || canonical, siteBase),
+      url: ensureAbsolute(yoast.og_url || canonical || postUrl, siteBase),
       siteName: yoast.og_site_name || siteName,
       locale: yoast.og_locale,
       images,

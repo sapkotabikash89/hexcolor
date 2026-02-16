@@ -13,6 +13,10 @@ export const metadata = {
   title: "Color Meaning - Explore Psychology, Spirituality and Culture",
   description:
     "Explore color meanings, psychology, spirituality, and cultural symbolism. Curated articles from our headless WordPress CMS.",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default async function HexColorMeansingCategoryPage() {

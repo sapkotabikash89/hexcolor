@@ -17,13 +17,13 @@ export const metadata: Metadata = {
   description: "Verify your design's legibility with our professional contrast checker. Ensure your color combinations meet WCAG AA and AAA accessibility standards instantly for a truly inclusive web experience.",
   keywords: ["contrast checker", "color contrast checker", "contrast checker accessibility", "contrast checker WCAG", "accessibility compliance", "color contrast tool", "WCAG AA checker", "WCAG AAA checker"],
   alternates: {
-    canonical: "https://hexcolormeans.com/contrast-checker",
+    canonical: "https://hexcolormeans.com/contrast-checker/",
   },
   openGraph: {
     title: "Color Contrast Checker - Free Online WCAG Color Contrast Accessibility Tool | HexColorMeans",
     description:
       "Verify your design's legibility with our professional contrast checker. Ensure your color combinations meet WCAG AA and AAA accessibility standards with our real-time audit tool.",
-    url: "https://hexcolormeans.com/contrast-checker",
+    url: "https://hexcolormeans.com/contrast-checker/",
     siteName: "HexColorMeans",
     type: "website",
     images: [
@@ -90,19 +90,19 @@ export default function ContrastCheckerPage() {
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
       <WebPageSchema
         name="Contrast Checker"
-        url="https://hexcolormeans.com/contrast-checker"
+        url="https://hexcolormeans.com/contrast-checker/"
         description="Professional online contrast checker for WCAG accessibility compliance. Ensure your designs are readable and inclusive for all users."
       />
       <BreadcrumbSchema items={[
-        { name: "Home", item: "https://hexcolormeans.com" },
-        { name: "Contrast Checker", item: "https://hexcolormeans.com/contrast-checker" }
+        { name: "Home", item: "https://hexcolormeans.com/" },
+        { name: "Contrast Checker", item: "https://hexcolormeans.com/contrast-checker/" }
       ]} />
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
         <div className="w-full max-w-[1300px] mx-auto">
           <div className="mb-6">
-            <BreadcrumbNav items={[{ label: "Color Contrast Checker", href: "/contrast-checker" }]} />
+            <BreadcrumbNav items={[{ label: "Color Contrast Checker", href: "/contrast-checker/" }]} />
           </div>
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight">

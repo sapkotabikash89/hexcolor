@@ -28,20 +28,17 @@ export function isStaticColor(hex: string): boolean {
  * @returns URL for the color page
  */
 export function getColorPageLink(hex: string): string {
-  const cleanHex = hex.replace('#', '').toUpperCase();
+  const cleanHex = hex.replace('#', '').toUpperCase()
 
-  // Check if we have a blog post for this hex
   if (HEX_REDIRECTS[cleanHex]) {
-    return HEX_REDIRECTS[cleanHex];
+    return HEX_REDIRECTS[cleanHex]
   }
 
   if (isStaticColor(hex)) {
-    // Link to static color page - normalize to lowercase for URL consistency
-    return `/colors/${cleanHex.toLowerCase()}`;
-  } else {
-    // Link to universal color picker with query parameter
-    return `/html-color-picker?hex=${cleanHex.toLowerCase()}`;
+    return `/colors/${cleanHex.toLowerCase()}/`
   }
+
+  return `/html-color-picker/?hex=${cleanHex.toLowerCase()}`
 }
 
 /**
@@ -50,15 +47,18 @@ export function getColorPageLink(hex: string): string {
  * @returns URL for in-place updates (always points to current page with query param)
  */
 export function getInPlaceColorLink(hex: string): string {
-  const cleanHex = hex.replace('#', '').toLowerCase();
-  // For in-place updates, always use the current page with query parameter
+  const cleanHex = hex.replace('#', '').toLowerCase()
+
   if (typeof window !== 'undefined') {
-    const currentPath = window.location.pathname;
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('hex', cleanHex);
-    return newUrl.toString();
+    const currentUrl = new URL(window.location.href)
+    if (currentUrl.pathname && currentUrl.pathname !== '/' && !currentUrl.pathname.endsWith('/')) {
+      currentUrl.pathname = `${currentUrl.pathname}/`
+    }
+    currentUrl.searchParams.set('hex', cleanHex)
+    return currentUrl.toString()
   }
-  return `/html-color-picker?hex=${cleanHex}`;
+
+  return `/html-color-picker/?hex=${cleanHex}`
 }
 
 /**

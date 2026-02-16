@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
   keywords: ["color library", "color names", "hex colors", "color palette", "color collection"],
   alternates: {
-    canonical: "https://hexcolormeans.com/colors",
+    canonical: "https://hexcolormeans.com/colors/",
   },
   openGraph: {
     title: "Color Library - Browse Thousands of Colors | HexColorMeans",
     description:
       "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
-    url: "https://hexcolormeans.com/colors",
+    url: "https://hexcolormeans.com/colors/",
     siteName: "HexColorMeans",
     type: "website",
     images: [
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Color Library - Browse Thousands of Colors | HexColorMeans",
     description:
-      "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
+        "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
     images: ["https://hexcolormeans.com/color%20library-list%20of%20all%20colors.webp"],
   },
 }
@@ -47,16 +47,16 @@ export default function ColorsPage() {
   const baseUrl = "https://hexcolormeans.com"
   return (
     <div className="flex flex-col min-h-screen">
-      <CollectionPageSchema name="Color Library" url={`${baseUrl}/colors`} />
+      <CollectionPageSchema name="Color Library" url={`${baseUrl}/colors/`} />
       <BreadcrumbSchema items={[
-        { name: "Home", item: "https://hexcolormeans.com" },
-        { name: "Color Library", item: "https://hexcolormeans.com/colors" }
+        { name: "Home", item: "https://hexcolormeans.com/" },
+        { name: "Color Library", item: "https://hexcolormeans.com/colors/" }
       ]} />
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
         <div className="w-full max-w-[1300px] mx-auto">
-          <BreadcrumbNav items={[{ label: "Color Library", href: "/colors" }]} />
+          <BreadcrumbNav items={[{ label: "Color Library", href: "/colors/" }]} />
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">Color Library</h1>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">

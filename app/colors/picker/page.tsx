@@ -79,13 +79,13 @@ function PickerContent() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name={`${displayLabel} Color Information`}
-        url={`https://hexcolormeans.com/colors/picker?hex=${currentHex.replace("#", "")}`}
+        url={`https://hexcolormeans.com/colors/picker/?hex=${currentHex.replace("#", "")}`}
         description={`Explore ${currentHex} color information, conversions, harmonies, variations, and accessibility.`}
       />
       <BreadcrumbSchema items={[
-        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Color Names", item: "https://hexcolormeans.com/colors" },
-        { name: currentHex, item: `https://hexcolormeans.com/colors/picker?hex=${currentHex.replace("#", "")}` }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+        { name: "Color Names", item: "https://hexcolormeans.com/colors/" },
+        { name: currentHex, item: `https://hexcolormeans.com/colors/picker/?hex=${currentHex.replace("#", "")}` }
       ]} />
       <FAQSchema faqs={faqItems} />
 
@@ -102,8 +102,8 @@ function PickerContent() {
         <div className="w-full max-w-[1300px] mx-auto">
           <BreadcrumbNav
             items={[
-              { label: "Color Names", href: "/colors" },
-              { label: currentHex, href: `/colors/picker?hex=${currentHex.replace("#", "")}` },
+              { label: "Color Names", href: "/colors/" },
+              { label: currentHex, href: `/colors/picker/?hex=${currentHex.replace("#", "")}` },
             ]}
           />
           <div className="text-center space-y-6">

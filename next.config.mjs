@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
-  trailingSlash: false, // Disabled to fix 404s on Cloudflare Pages
+  trailingSlash: true,
 
   // Image configuration
   images: {

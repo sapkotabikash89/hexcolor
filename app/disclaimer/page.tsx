@@ -18,16 +18,16 @@ export default function DisclaimerPage() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name="Disclaimer"
-        url="https://hexcolormeans.com/disclaimer"
+        url="https://hexcolormeans.com/disclaimer/"
         description="Disclaimer for HexColorMeans. Information provided is for general educational purposes only."
       />
       <BreadcrumbSchema items={[
-        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Disclaimer", item: "https://hexcolormeans.com/disclaimer" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+        { name: "Disclaimer", item: "https://hexcolormeans.com/disclaimer/" }
       ]} />
       <Header />
       <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
-        <BreadcrumbNav items={[{ label: "Disclaimer", href: "/disclaimer" }]} />
+        <BreadcrumbNav items={[{ label: "Disclaimer", href: "/disclaimer/" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Disclaimer</h1>

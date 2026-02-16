@@ -152,7 +152,7 @@ export function searchColorJson(input: string, inputType: 'hex' | 'color-name'):
 
 // Generate color page slug from hex (Rule #4)
 export function generateColorSlug(hex: string): string {
-  return `/colors/${hex.toLowerCase()}`;
+  return `/colors/${hex.toLowerCase()}/`
 }
 
 // Check if a color is known (exists in static color pages)
@@ -191,10 +191,10 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
     const cleanHex = jsonMatch.hex.replace('#', '').toUpperCase();
     if (isKnownColor(cleanHex)) {
       // Return static color page URL
-      return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
+      return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`
     } else {
       // For colors not in static pages, return HTML color picker
-      return `https://hexcolormeans.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
+      return `https://hexcolormeans.com/html-color-picker/?hex=${cleanHex.toLowerCase()}`
     }
   }
 
@@ -206,10 +206,10 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
       const cleanHex = normalizedInput.toUpperCase();
       if (isKnownColor(cleanHex)) {
         // Return static color page URL
-        return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
+        return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`
       } else {
         // For unknown hex, return HTML color picker
-        return `https://hexcolormeans.com/html-color-picker/?hex=${normalizedInput}`;
+        return `https://hexcolormeans.com/html-color-picker/?hex=${normalizedInput}`
       }
     }
   }
@@ -250,10 +250,10 @@ export function performSimpleSearch(input: string): string | null {
     const cleanHex = jsonMatch.hex.replace('#', '').toUpperCase();
     if (isKnownColor(cleanHex)) {
       // Return static color page URL
-      return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`;
+      return `https://hexcolormeans.com${generateColorSlug(cleanHex)}`
     } else {
       // For colors not in static pages, return HTML color picker
-      return `https://hexcolormeans.com/html-color-picker?hex=${cleanHex.toLowerCase()}`;
+      return `https://hexcolormeans.com/html-color-picker/?hex=${cleanHex.toLowerCase()}`
     }
   }
 

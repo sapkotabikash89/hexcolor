@@ -290,7 +290,7 @@ export function HomeColorPicker() {
                 <Shuffle className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="truncate">Random</span>
               </Button>
-              <Link href="/image-color-picker">
+              <Link href="/image-color-picker/">
                 <Button
                   variant="outline"
                   size="lg"

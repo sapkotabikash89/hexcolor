@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description: "Generate stunning color palettes from any photograph or design asset. Our advanced image palette generator extracts dominant hues to create professional color combinations instantly.",
   keywords: ["palette from image", "image palette generator", "color combination from image", "color palette from image", "extract palette from photo", "photo color palette"],
   alternates: {
-    canonical: "https://hexcolormeans.com/palette-from-image",
+    canonical: "https://hexcolormeans.com/palette-from-image/",
   },
   openGraph: {
     title: "Image Palette Generator - Create Beautiful Color Palettes from Images | HexColorMeans",
     description: "Deconstruct your favorite visuals into professional color scales with algorithmic precision. Extract dominant hues instantly with our image palette generator.",
-    url: "https://hexcolormeans.com/palette-from-image",
+    url: "https://hexcolormeans.com/palette-from-image/",
     siteName: "HexColorMeans",
     type: "website",
     images: [
@@ -88,19 +88,19 @@ export default function PaletteFromImagePage() {
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
       <WebPageSchema
         name="Palette from Image"
-        url="https://hexcolormeans.com/palette-from-image"
+        url="https://hexcolormeans.com/palette-from-image/"
         description="Professional online image palette generator to extract balanced color schemes and dominant hex codes from digital assets."
       />
       <BreadcrumbSchema items={[
-        { name: "Home", item: "https://hexcolormeans.com" },
-        { name: "Palette from Image", item: "https://hexcolormeans.com/palette-from-image" }
+        { name: "Home", item: "https://hexcolormeans.com/" },
+        { name: "Palette from Image", item: "https://hexcolormeans.com/palette-from-image/" }
       ]} />
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
         <div className="w-full max-w-[1300px] mx-auto">
           <div className="mb-6">
-            <BreadcrumbNav items={[{ label: "Palette from Image", href: "/palette-from-image" }]} />
+            <BreadcrumbNav items={[{ label: "Palette from Image", href: "/palette-from-image/" }]} />
           </div>
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight">

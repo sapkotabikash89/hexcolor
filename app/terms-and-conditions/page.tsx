@@ -18,16 +18,16 @@ export default function TermsAndConditionsPage() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name="Terms and Conditions"
-        url="https://hexcolormeans.com/terms-and-conditions"
+        url="https://hexcolormeans.com/terms-and-conditions/"
         description="Terms and conditions for using HexColorMeans. Outlines the rules and responsibilities for using our website."
       />
       <BreadcrumbSchema items={[
-        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Terms and Conditions", item: "https://hexcolormeans.com/terms-and-conditions" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+        { name: "Terms and Conditions", item: "https://hexcolormeans.com/terms-and-conditions/" }
       ]} />
       <Header />
       <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
-        <BreadcrumbNav items={[{ label: "Terms and Conditions", href: "/terms-and-conditions" }]} />
+        <BreadcrumbNav items={[{ label: "Terms and Conditions", href: "/terms-and-conditions/" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Terms and Conditions</h1>

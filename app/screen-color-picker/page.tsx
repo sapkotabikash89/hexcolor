@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description: "Pick any color directly from your screen with our professional EyeDropper tool. Extract exact hex codes from other applications, websites, or images instantly with 1:1 pixel precision.",
   keywords: ["screen color picker", "online screen color picker", "eyedropper tool browser", "color picker from desktop", "pixel color picker", "os-native color sampler", "extract color from application"],
   alternates: {
-    canonical: "https://hexcolormeans.com/screen-color-picker",
+    canonical: "https://hexcolormeans.com/screen-color-picker/",
   },
   openGraph: {
     title: "Screen Color Picker - Free Online Tool to Pick Colors from Anything | HexColorMeans",
     description: "Sample pixels beyond the browser. Our professional screen picker utilizes OS-native precision to capture hex codes from any window on your entire display.",
-    url: "https://hexcolormeans.com/screen-color-picker",
+    url: "https://hexcolormeans.com/screen-color-picker/",
     siteName: "HexColorMeans",
     type: "website",
     images: [
@@ -88,19 +88,19 @@ export default function ScreenColorPickerPage() {
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
       <WebPageSchema
         name="Screen Color Picker"
-        url="https://hexcolormeans.com/screen-color-picker"
+        url="https://hexcolormeans.com/screen-color-picker/"
         description="Professional OS-native screen color picker to extract exact HEX, RGB, and HSL codes from any desktop pixel."
       />
       <BreadcrumbSchema items={[
-        { name: "Home", item: "https://hexcolormeans.com" },
-        { name: "Screen Color Picker", item: "https://hexcolormeans.com/screen-color-picker" }
+        { name: "Home", item: "https://hexcolormeans.com/" },
+        { name: "Screen Color Picker", item: "https://hexcolormeans.com/screen-color-picker/" }
       ]} />
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
         <div className="w-full max-w-[1300px] mx-auto">
           <div className="mb-6">
-            <BreadcrumbNav items={[{ label: "Screen Color Picker", href: "/screen-color-picker" }]} />
+            <BreadcrumbNav items={[{ label: "Screen Color Picker", href: "/screen-color-picker/" }]} />
           </div>
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight">

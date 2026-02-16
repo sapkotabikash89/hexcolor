@@ -18,16 +18,16 @@ export default function PrivacyPolicyPage() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name="Privacy Policy"
-        url="https://hexcolormeans.com/privacy-policy"
+        url="https://hexcolormeans.com/privacy-policy/"
         description="Privacy practices of HexColorMeans. Learn how we collect, use, and protect your information."
       />
       <BreadcrumbSchema items={[
-        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Privacy Policy", item: "https://hexcolormeans.com/privacy-policy" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+        { name: "Privacy Policy", item: "https://hexcolormeans.com/privacy-policy/" }
       ]} />
       <Header />
       <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
-        <BreadcrumbNav items={[{ label: "Privacy Policy", href: "/privacy-policy" }]} />
+        <BreadcrumbNav items={[{ label: "Privacy Policy", href: "/privacy-policy/" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Privacy Policy</h1>

@@ -6,20 +6,20 @@ import { CategoryPosts } from "@/components/category-posts";
 import { getPostsByCategory } from "@/lib/wordpress";
 
 async function fetchPostsByCategory() {
-  return await getPostsByCategory("shades-meaning");
+  return await getPostsByCategory("spiritual-colors");
 }
 
 export const metadata = {
-  title: "Shades Meaning - Explore Color Variations and Interpretations",
+  title: "Spiritual Colors - Explore Symbolism, Energy and Meaning",
   description:
-    "Explore shades meanings, variations, and interpretations. Curated articles from our headless WordPress CMS.",
+    "Discover spiritual colors, their symbolism, energetic qualities, chakra connections, and practical uses. Curated articles from our headless WordPress CMS.",
   robots: {
     index: false,
     follow: true,
   },
 };
 
-export default async function ShadesMeaningCategoryPage() {
+export default async function SpiritualColorsCategoryPage() {
   const { posts: rawPosts, categoryName } = await fetchPostsByCategory();
 
   const posts = rawPosts.map(post => ({
@@ -33,9 +33,8 @@ export default async function ShadesMeaningCategoryPage() {
     } : undefined
   }));
 
-  // Define breadcrumbs
   const crumbs = [
-    { label: categoryName, href: "/categories/shades-meaning" },
+    { label: categoryName, href: "/categories/spiritual-colors" },
   ];
 
   return (
@@ -47,7 +46,7 @@ export default async function ShadesMeaningCategoryPage() {
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold">{categoryName}</h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Read expert guides about shades, their variations, interpretations, and cultural significance
+              Read expert guides about spiritual colors, their symbolism, energy, and practical applications in life and design.
             </p>
           </div>
         </div>
@@ -58,7 +57,7 @@ export default async function ShadesMeaningCategoryPage() {
             <CategoryPosts
               initialPosts={posts}
               categoryName={categoryName}
-              categorySlug="shades-meaning"
+              categorySlug="spiritual-colors"
             />
           </article>
           <ColorSidebar color="#E0115F" />

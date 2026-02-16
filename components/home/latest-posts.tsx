@@ -65,7 +65,7 @@ export function LatestPosts({ posts }: { posts: any[] }) {
                 </div>
 
                 <div className="text-center pt-4">
-                    <Link href="/blog">
+                    <Link href="/blog/">
                         <Button variant="outline" size="lg" className="h-12 px-8 rounded-full font-semibold">
                             Explore All Articles
                         </Button>

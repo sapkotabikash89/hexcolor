@@ -27,22 +27,25 @@ import { getAllPosts } from "@/lib/wordpress"
 export const dynamic = "force-static";
 
 // Static metadata for SEO
+const siteBase = process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com"
+const canonicalUrl = siteBase.endsWith("/") ? siteBase : `${siteBase}/`
+
 export const metadata: Metadata = {
   title: "HexColorMeans: Where Every Color Has Meaning - Professional Color Tools & Information",
   description: "Turn ideas into visuals with confidence. Access rich color details, meanings, psychology, symbolism, uses, precise conversions, and powerful tools made for creative minds.",
   keywords: ["color picker", "color converter", "color meanings", "color harmonies", "design tools", "color psychology"],
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com",
+    canonical: canonicalUrl,
   },
   openGraph: {
     title: "HexColorMeans: Where Every Color Has Meaning",
     description: "Professional color tools and information for designers and developers",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com",
+    url: canonicalUrl,
     siteName: "HexColorMeans",
     type: "website",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com"}/opengraph-image.webp`,
+        url: `${canonicalUrl}opengraph-image.webp`,
         width: 1200,
         height: 630,
         alt: "HexColorMeans - Professional Color Tools",
@@ -53,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HexColorMeans: Where Every Color Has Meaning",
     description: "Professional color tools and information for designers and developers",
-    images: [`${process.env.NEXT_PUBLIC_SITE_URL || "https://hexcolormeans.com"}/opengraph-image.webp`],
+    images: [`${canonicalUrl}opengraph-image.webp`],
   },
 }
 

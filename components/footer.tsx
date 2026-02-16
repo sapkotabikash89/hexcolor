@@ -1,7 +1,32 @@
 import Link from "next/link"
 import NextImage from "next/image"
+import blogPostsData from "@/lib/blog-posts-data.json"
 
 export function Footer() {
+  const blogPosts = Array.isArray(blogPostsData) ? blogPostsData : []
+  const categoryMap = new Map<string, { name: string; slug: string }>()
+  blogPosts.forEach((post: any) => {
+    ;(post.categories?.nodes || []).forEach((c: any) => {
+      if (c?.slug && c?.name && !categoryMap.has(c.slug)) {
+        categoryMap.set(c.slug, { name: c.name, slug: c.slug })
+      }
+    })
+  })
+  const categories = Array.from(categoryMap.values()).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  )
+
+  const getCategoryHref = (slug: string) => {
+    if (
+      slug === "color-meaning" ||
+      slug === "shades-meaning" ||
+      slug === "spiritual-colors"
+    ) {
+      return `/category/${slug}/`
+    }
+    return `/categories/${slug}`
+  }
+
   return (
     <footer className="w-full border-t border-border bg-card mt-auto">
       <div className="w-full max-w-[1300px] mx-auto px-4 py-12 overflow-hidden">
@@ -22,18 +47,18 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Color Tools</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/color-wheel" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/color-wheel/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Color Wheel
                 </Link>
               </li>
               <li>
-                <Link href="/color-picker" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/color-picker/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Color Picker
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/contrast-checker"
+                  href="/contrast-checker/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Contrast Checker
@@ -41,7 +66,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/color-blindness-simulator"
+                  href="/color-blindness-simulator/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Color Blindness Simulator
@@ -49,7 +74,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/image-color-picker"
+                  href="/image-color-picker/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Image Color Picker
@@ -57,7 +82,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/palette-from-image"
+                  href="/palette-from-image/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Palette from Image
@@ -65,7 +90,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/screen-color-picker"
+                  href="/screen-color-picker/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Screen Color Picker
@@ -79,18 +104,8 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/colors" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/colors/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Color Library
-                </Link>
-              </li>
-              <li>
-                <Link href="/category/color-meaning" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Color Meaning
-                </Link>
-              </li>
-              <li>
-                <Link href="/category/shades-meaning" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Shades Meaning
                 </Link>
               </li>
               <li>
@@ -98,6 +113,16 @@ export function Footer() {
                   Blog
                 </Link>
               </li>
+              {categories.map((cat) => (
+                <li key={cat.slug}>
+                  <Link
+                    href={getCategoryHref(cat.slug)}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -106,41 +131,41 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="grid grid-cols-2 gap-y-2 gap-x-6 text-sm">
               <li>
-                <Link href="/about-us" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/about-us/" className="text-muted-foreground hover:text-foreground transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/contact/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/privacy-policy/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/terms-and-conditions"
+                  href="/terms-and-conditions/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Terms and Conditions
                 </Link>
               </li>
               <li>
-                <Link href="/disclaimer" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/disclaimer/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Disclaimer
                 </Link>
               </li>
               <li>
-                <Link href="/cookie-policy" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/cookie-policy/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Cookie Policy
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/editorial-policy"
+                  href="/editorial-policy/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Editorial Policy

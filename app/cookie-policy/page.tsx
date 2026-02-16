@@ -18,16 +18,16 @@ export default function CookiePolicyPage() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name="Cookie Policy"
-        url="https://hexcolormeans.com/cookie-policy"
+        url="https://hexcolormeans.com/cookie-policy/"
         description="Learn how HexColorMeans uses cookies to improve your browsing experience and understand website usage."
       />
       <BreadcrumbSchema items={[
-        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Cookie Policy", item: "https://hexcolormeans.com/cookie-policy" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+        { name: "Cookie Policy", item: "https://hexcolormeans.com/cookie-policy/" }
       ]} />
       <Header />
       <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
-        <BreadcrumbNav items={[{ label: "Cookie Policy", href: "/cookie-policy" }]} />
+        <BreadcrumbNav items={[{ label: "Cookie Policy", href: "/cookie-policy/" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Cookie Policy</h1>

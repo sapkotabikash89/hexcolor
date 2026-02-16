@@ -160,12 +160,12 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       "brand colors",
     ],
     alternates: {
-      canonical: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`,
+      canonical: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}/`,
     },
     openGraph: {
       title: baseTitle,
       description: baseDescription,
-      url: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}`,
+      url: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}/`,
       type: "website",
       images: [
         {
@@ -221,9 +221,9 @@ export default async function ColorPage({ params }: ColorPageProps) {
   }
 
   const breadcrumbItems = [
-    { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-    { name: "Color Names", item: "https://hexcolormeans.com/colors" },
-    { name: normalizedHex, item: `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}` },
+    { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+    { name: "Color Names", item: "https://hexcolormeans.com/colors/" },
+    { name: normalizedHex, item: `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}/` },
   ]
 
   let faqItems: { question: string; answer: string }[] = []
@@ -273,7 +273,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
       colorInformation = generateColorInformation(contentData)
   }
   
-  const pageUrl = `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}`
+  const pageUrl = `https://hexcolormeans.com/colors/${normalizedHex.replace("#", "").toLowerCase()}/`
   const pageDescription = `Explore ${normalizedHex} color information, conversions, harmonies, variations, and accessibility.`
 
   // Use Gumlet CDN image for schema and display
@@ -335,8 +335,8 @@ export default async function ColorPage({ params }: ColorPageProps) {
         <div className="w-full max-w-[1300px] mx-auto overflow-hidden">
           <BreadcrumbNav
             items={[
-              { label: "Color Names", href: "/colors" },
-              { label: normalizedHex, href: `/colors/${normalizedHex.replace("#", "").toLowerCase()}` },
+              { label: "Color Names", href: "/colors/" },
+              { label: normalizedHex, href: `/colors/${normalizedHex.replace("#", "").toLowerCase()}/` },
             ]}
           />
           <div className="text-center space-y-6">

@@ -18,13 +18,13 @@ export const metadata: Metadata = {
         "Master color theory with our interactive color wheel. Generate professional harmonies like complementary, analogous, and triadic schemes using the chromatic wheel for artistic and design excellence.",
     keywords: ["color wheel", "chromatic wheel", "color harmony", "color theory", "hue tool", "color palette generator", "harmony selector"],
     alternates: {
-        canonical: "https://hexcolormeans.com/color-wheel",
+        canonical: "https://hexcolormeans.com/color-wheel/",
     },
     openGraph: {
         title: "Color Wheel - Free Online Chromatic Wheel & Harmony Tool | HexColorMeans",
         description:
             "Professional color wheel tool to explore chromatic relationships and generate perfect color schemes instantly. Explore color theory in real-time.",
-        url: "https://hexcolormeans.com/color-wheel",
+        url: "https://hexcolormeans.com/color-wheel/",
         siteName: "HexColorMeans",
         type: "website",
         images: [
@@ -121,19 +121,19 @@ export default function ColorWheelPage() {
         <div className="flex flex-col min-h-screen bg-background text-left font-sans">
             <WebPageSchema
                 name="Color Wheel"
-                url="https://hexcolormeans.com/color-wheel"
+                url="https://hexcolormeans.com/color-wheel/"
                 description="Interactive chromatic wheel to explore 8 types of color harmonies for professional design. Learn Complementary, Analogous, and Triadic schemes."
             />
             <BreadcrumbSchema items={[
-                { name: "Home", item: "https://hexcolormeans.com" },
-                { name: "Color Wheel", item: "https://hexcolormeans.com/color-wheel" }
+                { name: "Home", item: "https://hexcolormeans.com/" },
+                { name: "Color Wheel", item: "https://hexcolormeans.com/color-wheel/" }
             ]} />
             <Header />
 
             <section className="bg-muted/30 py-12 px-4 border-b">
                 <div className="w-full max-w-[1300px] mx-auto">
                     <div className="mb-6">
-                        <BreadcrumbNav items={[{ label: "Color Wheel", href: "/color-wheel" }]} />
+                        <BreadcrumbNav items={[{ label: "Color Wheel", href: "/color-wheel/" }]} />
                     </div>
                     <div className="text-center space-y-4 max-w-4xl mx-auto">
                         <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight">

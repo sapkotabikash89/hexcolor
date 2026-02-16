@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description: "Test your designs for accessibility with our professional color blindness simulator. Model various vision deficiencies like Protanopia, Deuteranopia, and Tritanopia instantly to ensure WCAG compliance.",
   keywords: ["color blindness simulator", "color blindness checker", "color vision deficiency checker", "color vision deficiency simulator", "accessibility testing", "protanopia simulator", "deuteranopia tool", "WCAG accessibility tool"],
   alternates: {
-    canonical: "https://hexcolormeans.com/color-blindness-simulator",
+    canonical: "https://hexcolormeans.com/color-blindness-simulator/",
   },
   openGraph: {
     title: "Color Blindness Simulator - Free Online Color Vision Deficiency Simulator | HexColorMeans",
     description: "Simulate how colors appear to people with different types of color vision deficiency. Ensure your designs are accessible to all users with our professional-grade simulator.",
-    url: "https://hexcolormeans.com/color-blindness-simulator",
+    url: "https://hexcolormeans.com/color-blindness-simulator/",
     siteName: "HexColorMeans",
     type: "website",
     images: [
@@ -95,19 +95,19 @@ export default function ColorBlindnessSimulatorPage() {
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
       <WebPageSchema
         name="Color Blindness Simulator"
-        url="https://hexcolormeans.com/color-blindness-simulator"
+        url="https://hexcolormeans.com/color-blindness-simulator/"
         description="Professional online color blindness simulator to test design accessibility. Model Protanopia, Deuteranopia, Tritanopia, and more."
       />
       <BreadcrumbSchema items={[
-        { name: "Home", item: "https://hexcolormeans.com" },
-        { name: "Color Blindness Simulator", item: "https://hexcolormeans.com/color-blindness-simulator" }
+        { name: "Home", item: "https://hexcolormeans.com/" },
+        { name: "Color Blindness Simulator", item: "https://hexcolormeans.com/color-blindness-simulator/" }
       ]} />
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
         <div className="w-full max-w-[1300px] mx-auto">
           <div className="mb-6">
-            <BreadcrumbNav items={[{ label: "Color Blindness Simulator", href: "/color-blindness-simulator" }]} />
+            <BreadcrumbNav items={[{ label: "Color Blindness Simulator", href: "/color-blindness-simulator/" }]} />
           </div>
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight">

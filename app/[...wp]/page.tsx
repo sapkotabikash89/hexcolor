@@ -133,14 +133,16 @@ function mapYoastToSeo(yoast: any, link: string) {
     return {
       title: undefined,
       metaDesc: undefined,
-      canonical: link || undefined,
+      canonical: link ? (link.endsWith("/") ? link : `${link}/`) : undefined,
     }
   }
   const ogImg = Array.isArray(yoast.og_image) && yoast.og_image.length ? yoast.og_image[0] : null
+  const canonicalValue = yoast.canonical || link || undefined
+  const canonical = canonicalValue && !canonicalValue.endsWith("/") ? `${canonicalValue}/` : canonicalValue
   return {
     title: yoast.title || undefined,
     metaDesc: yoast.description || undefined,
-    canonical: yoast.canonical || link || undefined,
+    canonical,
     opengraphTitle: yoast.og_title || undefined,
     opengraphDescription: yoast.og_description || undefined,
     opengraphType: yoast.og_type || undefined,
@@ -635,6 +637,11 @@ export default async function WPPostPage({ params }: WPPageProps) {
   const moreLink = firstCategory ? `/category/${firstCategory.slug}` : "/blog"
   const colorName = detectColorName(node, (effectiveHex || postColor)?.toUpperCase())
   const isSingleColor = !!colorName
+  const colorCodesTitle = (() => {
+    if (!colorName) return "Color Codes, Harmonies and Tools"
+    const n = colorName.charAt(0).toUpperCase() + colorName.slice(1)
+    return `${n} Color Codes, Harmonies and Tools`
+  })()
 
   // Show color UI only if hex is available from title (not from API or shortcode)
   const hasColorUI = !!titleHex
@@ -841,7 +848,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                     <section id="technical-information" style={{ scrollMarginTop: "96px" }} key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4">
                       {/* Enhanced Technical Information with hex data */}
                       <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <h3 className="text-lg font-semibold text-blue-800 mb-3">Technical Information</h3>
+                        <h3 className="text-lg font-semibold text-blue-800 mb-3 underline">{colorCodesTitle}</h3>
                         <div className="space-y-3">
                           <div>
                             <span className="font-medium text-gray-700">Color Hex:</span>
@@ -934,10 +941,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 style={{ scrollMarginTop: "96px" }}
               >
                 <div
-                  className="flex items-center bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight"
+                  className="flex items-center justify-between bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight"
                   style={{ borderLeftColor: effectiveHex }}
                 >
-                  Technical Information
+                  <span className="underline">{colorCodesTitle}</span>
                 </div>
                 <div className="px-4 sm:px-6 py-2">
                   <ColorPageContent
@@ -975,6 +982,19 @@ export default async function WPPostPage({ params }: WPPageProps) {
         </div>
       </Suspense>
       <HelpfulVote uri={uri} />
+      {node?.tags?.nodes && node.tags.nodes.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {node.tags.nodes.map((tag: any) => (
+            <a
+              key={tag.slug}
+              href={`/tags/${tag.slug}`}
+              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground hover:bg-muted/80 transition-colors"
+            >
+              #{tag.name}
+            </a>
+          ))}
+        </div>
+      )}
       <Suspense
         fallback={
           <section className="rounded-xl border border-border bg-muted/30 shadow-sm md:shadow p-1 sm:p-2 md:p-4 mt-8">
@@ -1082,6 +1102,16 @@ export default async function WPPostPage({ params }: WPPageProps) {
           />
           <div className="text-center space-y-4">
             <h1 className="text-3xl md:text-4xl font-bold">{node.title}</h1>
+            {firstCategory && (
+              <div className="flex justify-center">
+                <a
+                  href={`/category/${firstCategory.slug}`}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-background/80 text-foreground border border-border hover:bg-background transition-colors"
+                >
+                  {firstCategory.name}
+                </a>
+              </div>
+            )}
             {hasColorUI && (
               <div className="max-w-4xl mx-auto">
                 <div className="font-mono text-xs md:text-sm flex flex-wrap justify-center gap-4">

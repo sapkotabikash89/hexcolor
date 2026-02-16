@@ -18,16 +18,16 @@ export default function EditorialPolicyPage() {
     <div className="flex flex-col min-h-screen">
       <WebPageSchema
         name="Editorial Policy"
-        url="https://hexcolormeans.com/editorial-policy"
+        url="https://hexcolormeans.com/editorial-policy/"
         description="Learn about HexColorMeans' editorial standards, research practices, and commitment to accurate color information."
       />
       <BreadcrumbSchema items={[
-        { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Editorial Policy", item: "https://hexcolormeans.com/editorial-policy" }
+        { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
+        { name: "Editorial Policy", item: "https://hexcolormeans.com/editorial-policy/" }
       ]} />
       <Header />
       <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
-        <BreadcrumbNav items={[{ label: "Editorial Policy", href: "/editorial-policy" }]} />
+        <BreadcrumbNav items={[{ label: "Editorial Policy", href: "/editorial-policy/" }]} />
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           <article id="content" className="main-content grow-content flex-1 space-y-4">
             <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Editorial Policy</h1>

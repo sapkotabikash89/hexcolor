@@ -22,12 +22,12 @@ export const metadata: Metadata = {
         follow: true,
     },
     alternates: {
-        canonical: "https://hexcolormeans.com/html-color-picker",
+        canonical: "https://hexcolormeans.com/html-color-picker/",
     },
     openGraph: {
         title: "HTML Color Picker - Precision Web Design Tool | HexColorMeans",
         description: "Select and explore HTML color codes with our professional-grade interactive picker. Get instant HEX, RGB, and HSL values with accessibility insights.",
-        url: "https://hexcolormeans.com/html-color-picker",
+        url: "https://hexcolormeans.com/html-color-picker/",
         siteName: "HexColorMeans",
         type: "website",
         images: [

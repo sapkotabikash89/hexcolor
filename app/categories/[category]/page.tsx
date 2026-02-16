@@ -33,6 +33,10 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   return {
     title: `${capitalizedCategory} - HexColorMeans`,
     description: `Explore ${capitalizedCategory.toLowerCase()} articles and guides on HexColorMeans. Latest posts about ${capitalizedCategory.toLowerCase()} meanings, psychology, and symbolism.`,
+    robots: {
+      index: false,
+      follow: true,
+    },
   };
 }
 

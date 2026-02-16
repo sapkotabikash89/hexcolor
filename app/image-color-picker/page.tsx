@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description: "Upload any image and extract exact hex, RGB, and HSL codes with our professional image color picker. Fast, accurate, and privacy-focused pixel extraction for professional design workflow.",
   keywords: ["image color picker", "extract color from image", "color picker from image", "get color from image", "online eyedropper tool", "pixel color extractor", "image palette generator", "photo color extractor"],
   alternates: {
-    canonical: "https://hexcolormeans.com/image-color-picker",
+    canonical: "https://hexcolormeans.com/image-color-picker/",
   },
   openGraph: {
     title: "Image Color Picker - Free Online Tool to Extract Colors from Images | HexColorMeans",
     description: "Analyze and extract exact pixel values from any digital asset with our professional online eyedropper tool. Local processing for maximum privacy and accuracy.",
-    url: "https://hexcolormeans.com/image-color-picker",
+    url: "https://hexcolormeans.com/image-color-picker/",
     siteName: "HexColorMeans",
     type: "website",
     images: [
@@ -88,19 +88,19 @@ export default function ImageColorPickerPage() {
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
       <WebPageSchema
         name="Image Color Picker"
-        url="https://hexcolormeans.com/image-color-picker"
+        url="https://hexcolormeans.com/image-color-picker/"
         description="Professional online image color picker to extract exact HEX, RGB, and HSL codes from any digital asset."
       />
       <BreadcrumbSchema items={[
-        { name: "Home", item: "https://hexcolormeans.com" },
-        { name: "Image Color Picker", item: "https://hexcolormeans.com/image-color-picker" }
+        { name: "Home", item: "https://hexcolormeans.com/" },
+        { name: "Image Color Picker", item: "https://hexcolormeans.com/image-color-picker/" }
       ]} />
       <Header />
 
       <section className="bg-muted/30 py-12 px-4 border-b">
         <div className="w-full max-w-[1300px] mx-auto">
           <div className="mb-6">
-            <BreadcrumbNav items={[{ label: "Image Color Picker", href: "/image-color-picker" }]} />
+            <BreadcrumbNav items={[{ label: "Image Color Picker", href: "/image-color-picker/" }]} />
           </div>
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight">

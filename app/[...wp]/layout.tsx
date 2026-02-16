@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "HexColorMeans" }],
   alternates: {
-    canonical: "https://hexcolormeans.com",
+    canonical: "https://hexcolormeans.com/",
   },
   openGraph: {
     title: "HexColorMeans - Where Every Color Has Meaning",
