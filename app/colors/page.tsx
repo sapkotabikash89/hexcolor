@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Color Library - Browse Thousands of Colors | HexColorMeans",
     description:
-        "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
+      "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
     images: ["https://hexcolormeans.com/color%20library-list%20of%20all%20colors.webp"],
   },
 }
@@ -70,7 +71,9 @@ export default function ColorsPage() {
         <div className="flex flex-col lg:flex-row gap-6">
           <article id="content" className="main-content grow-content flex-1" itemProp="articleBody">
             <div className="space-y-12">
-              <ColorLibrary initialQuery="" />
+              <Suspense fallback={<div className="p-12 text-center">Loading color library...</div>}>
+                <ColorLibrary initialQuery="" />
+              </Suspense>
 
               <div className="mt-8 pt-8 border-t flex flex-col items-center gap-6">
                 <p className="text-center max-w-2xl text-muted-foreground">

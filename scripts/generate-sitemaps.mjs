@@ -88,17 +88,43 @@ ${toolPages.map(page => `  <url>
  */
 function generateColorsSitemap() {
     try {
-        // Load known colors from the JSON file
-        const colorMeaningPath = path.join(__dirname, '..', 'lib', 'color-meaning.json');
+        // Load known colors from the TS file (parsing as text since we can't import TS in Node directly)
+        // Load known colors from the TS file (parsing as text since we can't import TS in Node directly)
         const knownColorsPath = path.join(__dirname, '..', 'lib', 'known-colors-complete.ts');
+        const colorMeaningPath = path.join(__dirname, '..', 'lib', 'color-meaning.json');
 
-        let colorHexes = [];
+        // Use a Set to strictly store unique, lowercase clean hexes
+        const uniqueHexes = new Set();
 
-        // Try to load from color-meaning.json
-        if (fs.existsSync(colorMeaningPath)) {
-            const colorData = JSON.parse(fs.readFileSync(colorMeaningPath, 'utf8'));
-            colorHexes = Object.keys(colorData).map(hex => hex.toLowerCase());
+        // 1. Add Known Colors
+        if (fs.existsSync(knownColorsPath)) {
+            const fileContent = fs.readFileSync(knownColorsPath, 'utf8');
+            // Regex to match hex codes in the array: '000000',
+            const matches = fileContent.match(/'([0-9A-Fa-f]{6})'/g);
+            if (matches) {
+                matches.forEach(m => {
+                    uniqueHexes.add(m.replace(/'/g, '').toLowerCase());
+                });
+            }
+            console.log(`ℹ️  Found ${matches ? matches.length : 0} known colors in known-colors-complete.ts`);
+        } else {
+            console.warn('⚠️  known-colors-complete.ts not found!');
         }
+
+        // 2. Add Colors from Meaning Database (The big list)
+        if (fs.existsSync(colorMeaningPath)) {
+            try {
+                const colorData = JSON.parse(fs.readFileSync(colorMeaningPath, 'utf8'));
+                Object.keys(colorData).forEach(hex => {
+                    uniqueHexes.add(hex.toLowerCase());
+                });
+                console.log(`ℹ️  Loaded colors from color-meaning.json. Total unique hexes: ${uniqueHexes.size}`);
+            } catch (e) {
+                console.error('Error reading color-meaning.json:', e.message);
+            }
+        }
+
+        let colorHexes = Array.from(uniqueHexes).sort();
 
         // Load blog posts to exclude their hexes (prevent duplicate content)
         const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
@@ -110,7 +136,7 @@ function generateColorsSitemap() {
                     // Extract hex from title: "0000FF Color Blue Meaning..." -> "0000FF"
                     const match = post.title.trim().match(/^([0-9A-Fa-f]{6})\b/);
                     if (match) excludedHexes.add(match[1].toLowerCase());
-                    
+
                     const matchHash = post.title.trim().match(/^#([0-9A-Fa-f]{6})\b/);
                     if (matchHash) excludedHexes.add(matchHash[1].toLowerCase());
                 });
@@ -121,7 +147,7 @@ function generateColorsSitemap() {
         }
 
         // Filter excluded hexes
-        if (excludedHexes.size > 0) {
+        if (excludedHexes.size > 0 && colorHexes.length > 0) {
             const originalCount = colorHexes.length;
             colorHexes = colorHexes.filter(hex => {
                 const cleanHex = hex.replace('#', '').toLowerCase();
@@ -193,7 +219,7 @@ ${posts.map(post => {
                 } catch (e) {
                     dateStr = now; // Fallback to now if invalid
                 }
-                
+
                 return `  <url>
     <loc>${url}</loc>
     <lastmod>${dateStr}</lastmod>
@@ -265,10 +291,10 @@ function generateImagesSitemap() {
         const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
         if (fs.existsSync(blogPostsDataPath)) {
             const posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
-            
-            const postsWithImages = posts.filter(post => 
-                post.featuredImage && 
-                post.featuredImage.node && 
+
+            const postsWithImages = posts.filter(post =>
+                post.featuredImage &&
+                post.featuredImage.node &&
                 post.featuredImage.node.sourceUrl
             );
 
@@ -277,7 +303,7 @@ function generateImagesSitemap() {
                 const pageUrl = uri.startsWith('http') ? uri : `${BASE_URL}${uri}`;
                 const imageUrl = post.featuredImage.node.sourceUrl;
                 const imageTitle = post.featuredImage.node.altText || post.title || 'Image';
-                
+
                 return { pageUrl, imageUrl, imageTitle };
             });
 
@@ -288,16 +314,16 @@ function generateImagesSitemap() {
         const colorMeaningPath = path.join(__dirname, '..', 'lib', 'color-meaning.json');
         if (fs.existsSync(colorMeaningPath)) {
             const colorData = JSON.parse(fs.readFileSync(colorMeaningPath, 'utf8'));
-            
+
             const colorEntries = Object.keys(colorData).map(key => {
                 const hex = `#${key}`;
                 const data = colorData[key];
                 const name = data.name || 'Color';
                 const rgb = hexToRgb(key);
-                
+
                 // Construct Page URL
                 const pageUrl = `${BASE_URL}/colors/${key.toLowerCase()}/`;
-                
+
                 // Construct Image URL
                 const gumletImage = getGumletColorImage({
                     colorName: name,
@@ -375,19 +401,19 @@ function generateRedirects() {
             // Extract hex from title
             const match = post.title.trim().match(/^([0-9A-Fa-f]{6})\b/);
             const matchHash = post.title.trim().match(/^#([0-9A-Fa-f]{6})\b/);
-            
+
             let hex = null;
             if (match) hex = match[1];
             else if (matchHash) hex = matchHash[1];
 
             if (hex) {
                 const targetPath = post.uri || `/`; // Fallback to root if no uri
-                
+
                 // Cloudflare _redirects format: /source /target code
                 // Generate for both uppercase and lowercase to be safe
                 // Case 1: Uppercase hex
                 redirects.push(`/colors/${hex.toUpperCase()} ${targetPath} 301`);
-                
+
                 // Case 2: Lowercase hex (if different)
                 if (hex.toUpperCase() !== hex.toLowerCase()) {
                     redirects.push(`/colors/${hex.toLowerCase()} ${targetPath} 301`);
@@ -400,7 +426,7 @@ function generateRedirects() {
             fs.writeFileSync(path.join(PUBLIC_DIR, '_redirects'), content);
             console.log(`✅ Generated _redirects (${redirects.length} rules)`);
         } else {
-             console.log('ℹ️  No hex-specific redirects needed.');
+            console.log('ℹ️  No hex-specific redirects needed.');
         }
 
     } catch (error) {

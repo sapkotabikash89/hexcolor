@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, Suspense } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +12,7 @@ import { hexToRgb, rgbToHsl } from "@/lib/color-utils"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { LibraryColorSwatch } from "@/components/library-color-swatch"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
 
 // Import the optimized color library data
 import colorLibraryData from "@/lib/color-library-data.json"
@@ -19,17 +20,80 @@ import colorLibraryData from "@/lib/color-library-data.json"
 type ColorItem = typeof colorLibraryData[number];
 
 export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
-  const [searchQuery, setSearchQuery] = useState(initialQuery)
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Initialize state from URL params if available, otherwise use defaults
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || initialQuery)
   const [activeCategory, setActiveCategory] = useState("all")
   const [previewResults, setPreviewResults] = useState<Array<{ name: string; hex: string }>>([])
   const [loading, setLoading] = useState(false)
   const debounceRef = useRef<number | null>(null)
-  const [page, setPage] = useState(1)
+
+  const pageParam = searchParams.get('page')
+  const [page, setPage] = useState(pageParam ? parseInt(pageParam) : 1)
+
   const perPage = 50
 
   // All colors from the optimized data file
   const allColors = colorLibraryData;
   const [isLoading, setIsLoading] = useState(false)
+
+  // Sync state with URL params when they change (e.g. back button)
+  useEffect(() => {
+    const p = searchParams.get('page')
+    setPage(p ? parseInt(p) : 1)
+
+    const q = searchParams.get('q')
+    if (q !== null && q !== searchQuery) {
+      setSearchQuery(q)
+    }
+  }, [searchParams])
+
+  // Update URL when page changes
+  const updateUrl = (newPage: number, newQuery: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (newPage > 1) {
+      params.set('page', newPage.toString())
+    } else {
+      params.delete('page')
+    }
+
+    if (newQuery) {
+      params.set('q', newQuery)
+    } else {
+      params.delete('q')
+    }
+
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
+  // Intercept setPage to also update URL
+  const handleSetPage = (newPage: number | ((prev: number) => number)) => {
+    let p: number;
+    if (typeof newPage === 'function') {
+      p = newPage(page)
+    } else {
+      p = newPage
+    }
+    setPage(p)
+    // We don't call updateUrl here strictly because we might prefer the Link href to handle navigation
+    // BUT for the onClick handlers (user interaction), we might want to push state.
+    // However, since we now have correct hrefs, the router will handle it?
+    // Actually, next/link with shallow routing might be better, but we want full crawlability.
+    // The current href implementation does full navigation or client-side transition.
+    // Let's rely on the useEffect [searchParams] to sync state, 
+    // and let the onClick handlers just be for preventing default if we want custom behavior,
+    // OR just let the Link do its job.
+
+    // For consistency with existing code which calls setPage:
+    // We should probably remove manual setPage calls in onClick if we trust the Link.
+    // But the existing code has extensive onClick logic.
+    // Let's keep the local state update for immediate UI feedback, 
+    // and arguably the Link click will update the URL, triggering the useEffect, ensuring consistency.
+  }
 
   const buildMobileList = (pages: number) => {
     if (pages <= 4) return Array.from({ length: pages }, (_, i) => i + 1)
@@ -216,14 +280,18 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                 <Pagination>
                   <PaginationContent className="flex-nowrap sm:flex-wrap">
                     <PaginationItem>
-                      <PaginationPrevious
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          setPage((p) => Math.max(1, p - 1))
-                        }}
-                      />
+                      {page <= 1 ? (
+                        <span className="flex h-9 w-9 items-center justify-center text-muted-foreground opacity-50 cursor-not-allowed" aria-disabled="true">
+                          <span className="sr-only">Previous</span>
+                          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
+                        </span>
+                      ) : (
+                        <PaginationPrevious
+                          href={searchQuery ? `?q=${searchQuery}&page=${page - 1}` : `?page=${page - 1}`}
+                        />
+                      )}
                     </PaginationItem>
+
                     <div className="hidden sm:flex">
                       {desktop.map((n, idx) =>
                         n === "ellipsis" ? (
@@ -233,20 +301,17 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                         ) : (
                           <PaginationItem key={`n-${n}`}>
                             <PaginationLink
-                              href="#"
+                              href={searchQuery ? `?q=${searchQuery}&page=${n}` : `?page=${n}`}
                               isActive={n === page}
                               className={n === page ? "bg-primary text-primary-foreground rounded-full" : ""}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                setPage(n as number)
-                              }}
                             >
-                              {n as number}
+                              {n}
                             </PaginationLink>
                           </PaginationItem>
                         ),
                       )}
                     </div>
+
                     <div className="flex sm:hidden">
                       {mobile.map((n, idx) =>
                         n === "ellipsis" ? (
@@ -256,28 +321,28 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                         ) : (
                           <PaginationItem key={`mn-${idx}-${n}`}>
                             <PaginationLink
-                              href="#"
+                              href={searchQuery ? `?q=${searchQuery}&page=${n}` : `?page=${n}`}
                               isActive={(n as number) === page}
                               className={(n as number) === page ? "bg-primary text-primary-foreground rounded-full" : ""}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                setPage(n as number)
-                              }}
                             >
-                              {n as number}
+                              {n}
                             </PaginationLink>
                           </PaginationItem>
                         ),
                       )}
                     </div>
+
                     <PaginationItem>
-                      <PaginationNext
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          setPage((p) => Math.min(pages, p + 1))
-                        }}
-                      />
+                      {page >= pages ? (
+                        <span className="flex h-9 w-9 items-center justify-center text-muted-foreground opacity-50 cursor-not-allowed" aria-disabled="true">
+                          <span className="sr-only">Next</span>
+                          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M6.1584 3.13523C6.35985 2.94621 6.67627 2.95603 6.86529 3.15749L10.6153 7.15749C10.7956 7.34982 10.7956 7.6491 10.6153 7.84143L6.86529 11.8414C6.67627 12.0429 6.35985 12.0527 6.1584 11.8637C5.95694 11.6747 5.94713 11.3583 6.13615 11.1568L9.56556 7.49946L6.13615 3.84211C5.94713 3.64066 5.95694 3.32424 6.1584 3.13523Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
+                        </span>
+                      ) : (
+                        <PaginationNext
+                          href={searchQuery ? `?q=${searchQuery}&page=${page + 1}` : `?page=${page + 1}`}
+                        />
+                      )}
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>
@@ -302,14 +367,16 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                 <Pagination>
                   <PaginationContent className="flex-nowrap sm:flex-wrap">
                     <PaginationItem>
-                      <PaginationPrevious
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          setPage((p) => Math.max(1, p - 1))
-                          window.scrollTo({ top: 0, behavior: "smooth" })
-                        }}
-                      />
+                      {page <= 1 ? (
+                        <span className="flex h-9 w-9 items-center justify-center text-muted-foreground opacity-50 cursor-not-allowed" aria-disabled="true">
+                          <span className="sr-only">Previous</span>
+                          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
+                        </span>
+                      ) : (
+                        <PaginationPrevious
+                          href={searchQuery ? `?q=${searchQuery}&page=${page - 1}` : `?page=${page - 1}`}
+                        />
+                      )}
                     </PaginationItem>
                     <div className="hidden sm:flex">
                       {nums.map((n, idx) =>
@@ -320,14 +387,9 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                         ) : (
                           <PaginationItem key={`b-n-${n as number}`}>
                             <PaginationLink
-                              href="#"
+                              href={searchQuery ? `?q=${searchQuery}&page=${n}` : `?page=${n}`}
                               isActive={(n as number) === page}
                               className={(n as number) === page ? "bg-primary text-primary-foreground rounded-full" : ""}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                setPage(n as number)
-                                window.scrollTo({ top: 0, behavior: "smooth" })
-                              }}
                             >
                               {n as number}
                             </PaginationLink>
@@ -344,14 +406,9 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                         ) : (
                           <PaginationItem key={`b-mn-${idx}-${n}`}>
                             <PaginationLink
-                              href="#"
+                              href={searchQuery ? `?q=${searchQuery}&page=${n}` : `?page=${n}`}
                               isActive={(n as number) === page}
                               className={(n as number) === page ? "bg-primary text-primary-foreground rounded-full" : ""}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                setPage(n as number)
-                                window.scrollTo({ top: 0, behavior: "smooth" })
-                              }}
                             >
                               {n as number}
                             </PaginationLink>
@@ -360,14 +417,16 @@ export function ColorLibrary({ initialQuery = "" }: { initialQuery?: string }) {
                       )}
                     </div>
                     <PaginationItem>
-                      <PaginationNext
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          setPage((p) => Math.min(pages, p + 1))
-                          window.scrollTo({ top: 0, behavior: "smooth" })
-                        }}
-                      />
+                      {page >= pages ? (
+                        <span className="flex h-9 w-9 items-center justify-center text-muted-foreground opacity-50 cursor-not-allowed" aria-disabled="true">
+                          <span className="sr-only">Next</span>
+                          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M6.1584 3.13523C6.35985 2.94621 6.67627 2.95603 6.86529 3.15749L10.6153 7.15749C10.7956 7.34982 10.7956 7.6491 10.6153 7.84143L6.86529 11.8414C6.67627 12.0429 6.35985 12.0527 6.1584 11.8637C5.95694 11.6747 5.94713 11.3583 6.13615 11.1568L9.56556 7.49946L6.13615 3.84211C5.94713 3.64066 5.95694 3.32424 6.1584 3.13523Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
+                        </span>
+                      ) : (
+                        <PaginationNext
+                          href={searchQuery ? `?q=${searchQuery}&page=${page + 1}` : `?page=${page + 1}`}
+                        />
+                      )}
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>
