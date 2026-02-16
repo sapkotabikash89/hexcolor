@@ -152,11 +152,11 @@
 @layer utilities {
   @media (max-width: 640px) {
     .mobile-section {
-      @apply p-1;
+      @apply px-2 py-4;
     }
 
     .mobile-card {
-      @apply p-1;
+      @apply p-2;
     }
   }
 
@@ -180,7 +180,7 @@
 }
 
 .cm-wrap>*:not(h2) {
-  @apply px-4 sm:px-6;
+  @apply px-2 sm:px-6;
 }
 
 .cm-wrap>*+* {

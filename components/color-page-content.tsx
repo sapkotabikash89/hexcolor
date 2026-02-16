@@ -62,7 +62,7 @@ const MarkdownText = ({ content }: { content: string }) => {
   if (!content) return null;
   // Split by link pattern [text](url)
   const parts = content.split(/(\[[^\]]+\]\([^)]+\))/g);
-  
+
   return (
     <>
       {parts.map((part, i) => {
@@ -273,49 +273,49 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
                 </div>
               ) : (
                 (() => {
-                const getUniqueKnownColors = (colors: string[]) => {
-                  const known = colors.map(c => getClosestKnownColor(c))
-                  const unique = new Map<string, { name: string; hex: string }>()
-                  for (const c of known) {
-                    if (c.hex.toUpperCase() !== hex.toUpperCase() && !unique.has(c.hex.toUpperCase())) {
-                      unique.set(c.hex.toUpperCase(), c)
+                  const getUniqueKnownColors = (colors: string[]) => {
+                    const known = colors.map(c => getClosestKnownColor(c))
+                    const unique = new Map<string, { name: string; hex: string }>()
+                    for (const c of known) {
+                      if (c.hex.toUpperCase() !== hex.toUpperCase() && !unique.has(c.hex.toUpperCase())) {
+                        unique.set(c.hex.toUpperCase(), c)
+                      }
                     }
+                    return Array.from(unique.values()).slice(0, 3)
                   }
-                  return Array.from(unique.values()).slice(0, 3)
-                }
 
-                const analogous = getColorHarmony(hex, "analogous")
-                const splitComp = getColorHarmony(hex, "split-complementary")
-                const pairingColors = getUniqueKnownColors([...analogous, ...splitComp])
+                  const analogous = getColorHarmony(hex, "analogous")
+                  const splitComp = getColorHarmony(hex, "split-complementary")
+                  const pairingColors = getUniqueKnownColors([...analogous, ...splitComp])
 
-                const triadic = getColorHarmony(hex, "triadic")
-                const complementaryColor = getColorHarmony(hex, "complementary")[1]
-                const conflictingColors = getUniqueKnownColors([...triadic, complementaryColor])
+                  const triadic = getColorHarmony(hex, "triadic")
+                  const complementaryColor = getColorHarmony(hex, "complementary")[1]
+                  const conflictingColors = getUniqueKnownColors([...triadic, complementaryColor])
 
-                const renderColorLink = (c: { name: string; hex: string }, i: number, arr: any[]) => (
-                  <span key={c.hex}>
-                    <Link href={getColorPageLink(c.hex)} className="text-primary hover:underline">
-                      {c.name} ({c.hex})
-                    </Link>
-                    {i < arr.length - 1 ? (i === arr.length - 2 ? ", and " : ", ") : ""}
-                  </span>
-                )
+                  const renderColorLink = (c: { name: string; hex: string }, i: number, arr: any[]) => (
+                    <span key={c.hex}>
+                      <Link href={getColorPageLink(c.hex)} className="text-primary hover:underline">
+                        {c.name} ({c.hex})
+                      </Link>
+                      {i < arr.length - 1 ? (i === arr.length - 2 ? ", and " : ", ") : ""}
+                    </span>
+                  )
 
-                return (
-                  <div className="space-y-4">
-                    <p>
-                      <span className="font-semibold">{label}</span> RGB value is ({rgb.r}, {rgb.g}, {rgb.b}). The hex color red value is {rgb.r}, green is {rgb.g}, and blue is {rgb.b}. Its HSL format shows a hue of {hsl.h}°, saturation of {hsl.s}%, and lightness of {hsl.l}%, while the CMYK process values are {cmyk.c}%, {cmyk.m}%, {cmyk.y}%, and {cmyk.k}%.
-                    </p>
-                    <p>
-                      Colors that pair well with <span className="font-semibold">{label}</span> include{" "}
-                      {pairingColors.map((c, i) => renderColorLink(c, i, pairingColors))}
-                      , as they maintain visual balance and harmony, whereas{" "}
-                      {conflictingColors.map((c, i) => renderColorLink(c, i, conflictingColors))}
-                      {" "}tend to conflict with this color due to strong contrast or opposing tonal characteristics.
-                    </p>
-                  </div>
-                )
-              })()
+                  return (
+                    <div className="space-y-4">
+                      <p>
+                        <span className="font-semibold">{label}</span> RGB value is ({rgb.r}, {rgb.g}, {rgb.b}). The hex color red value is {rgb.r}, green is {rgb.g}, and blue is {rgb.b}. Its HSL format shows a hue of {hsl.h}°, saturation of {hsl.s}%, and lightness of {hsl.l}%, while the CMYK process values are {cmyk.c}%, {cmyk.m}%, {cmyk.y}%, and {cmyk.k}%.
+                      </p>
+                      <p>
+                        Colors that pair well with <span className="font-semibold">{label}</span> include{" "}
+                        {pairingColors.map((c, i) => renderColorLink(c, i, pairingColors))}
+                        , as they maintain visual balance and harmony, whereas{" "}
+                        {conflictingColors.map((c, i) => renderColorLink(c, i, conflictingColors))}
+                        {" "}tend to conflict with this color due to strong contrast or opposing tonal characteristics.
+                      </p>
+                    </div>
+                  )
+                })()
               )}
             </div>
           </div>
@@ -436,7 +436,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           )}
         </div>
         {openConversion ? (
-          <div className="px-3 sm:px-6 py-2 space-y-4">
+          <div className="px-2 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
               Accurate conversions of {label} across RGB, Hex, CMYK, HSL, and Lab ensure consistent color fidelity across digital, print, and design applications.
             </p>
@@ -470,7 +470,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           )}
         </div>
         {openBars ? (
-          <div className="px-3 sm:px-6 py-2 space-y-6">
+          <div className="px-2 sm:px-6 py-2 space-y-6">
             <p className="text-muted-foreground">
               Detailed RGB and CMYK values of {label} displayed in a horizontal bar provide clear reference for digital and print color accuracy.
             </p>
@@ -505,7 +505,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           )}
         </div>
         {openVariations ? (
-          <div className="px-3 sm:px-6 py-2 space-y-4">
+          <div className="px-2 sm:px-6 py-2 space-y-4">
             <p className="text-muted-foreground">
               A full range of {label} variations, including tints, shades, and tones, provides highlights, depth, and subtle desaturated options for UI design.
             </p>
@@ -581,13 +581,13 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           )}
         </div>
         {openHarmonies ? (
-          <div className="px-3 sm:px-6 py-2 space-y-6">
+          <div className="px-2 sm:px-6 py-2 space-y-6">
             <p className="text-muted-foreground">
               Harmonious color schemes for {label} created using the <Link href="/color-wheel/" className="text-primary hover:underline">color wheel</Link> ensure visually balanced palettes.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {Object.entries(harmonies).map(([type, harmony]) => (
-                <div key={type} className="space-y-3 p-5 border-2 border-border rounded-lg">
+                <div key={type} className="space-y-3 p-3 sm:p-5 border-2 border-border rounded-lg">
                   <div className="flex items-start justify-between gap-4">
                     <h3 className="font-semibold text-2xl min-w-0">{harmony.name}</h3>
                     <TooltipProvider>
@@ -638,62 +638,62 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             <ChevronDown className="w-5 h-5" />
           )}
         </div>
-          {openContrast ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker/" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium">Foreground:</label>
-                  <button
-                    onClick={() => {
-                      setTempForeground(foreground)
-                      setShowForegroundPicker(true)
-                    }}
-                    className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
-                    style={{ backgroundColor: foreground }}
-                  >
-                    <Pipette 
-                      className="absolute inset-0 m-auto w-4 h-4" 
-                      style={{ color: getContrastColor(foreground) }}
-                    />
-                  </button>
-                  <span className="font-mono text-sm">{foreground}</span>
-                </div>
-                <Button variant="outline" size="sm" onClick={swapColors} className="gap-2 bg-transparent">
-                  Swap
-                </Button>
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium">Background:</label>
-                  <button
-                    onClick={() => {
-                      setTempBackground(background)
-                      setShowBackgroundPicker(true)
-                    }}
-                    className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
-                    style={{ backgroundColor: background }}
-                  >
-                    <Pipette 
-                      className="absolute inset-0 m-auto w-4 h-4" 
-                      style={{ color: getContrastColor(background) }}
-                    />
-                  </button>
-                  <span className="font-mono text-sm">{background}</span>
-                </div>
+        {openContrast ? (
+          <div className="px-2 sm:px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              Luminance contrast ratios for {label} against standard backgrounds ensure readable, accessible text following <Link href="/contrast-checker/" className="text-primary hover:underline">Contrast Checker</Link> and WCAG 2.1 AA/AAA standards.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium">Foreground:</label>
+                <button
+                  onClick={() => {
+                    setTempForeground(foreground)
+                    setShowForegroundPicker(true)
+                  }}
+                  className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
+                  style={{ backgroundColor: foreground }}
+                >
+                  <Pipette
+                    className="absolute inset-0 m-auto w-4 h-4"
+                    style={{ color: getContrastColor(foreground) }}
+                  />
+                </button>
+                <span className="font-mono text-sm">{foreground}</span>
               </div>
-              <div className="p-8 rounded-lg" style={{ backgroundColor: background, color: foreground }}>
-                <p className="text-3xl font-bold mb-2">Sample Text</p>
-                <p className="text-lg">This is how your text will look with these colors.</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <ContrastResult label="Large Text (18pt+)" ratio={contrastRatio} aaThreshold={3} aaaThreshold={4.5} />
-                <ContrastResult label="Normal Text" ratio={contrastRatio} aaThreshold={4.5} aaaThreshold={7} />
-                <ContrastResult label="UI Components" ratio={contrastRatio} aaThreshold={3} aaaThreshold={4.5} />
+              <Button variant="outline" size="sm" onClick={swapColors} className="gap-2 bg-transparent">
+                Swap
+              </Button>
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium">Background:</label>
+                <button
+                  onClick={() => {
+                    setTempBackground(background)
+                    setShowBackgroundPicker(true)
+                  }}
+                  className="w-16 h-10 rounded-md border-2 border-border cursor-pointer relative"
+                  style={{ backgroundColor: background }}
+                >
+                  <Pipette
+                    className="absolute inset-0 m-auto w-4 h-4"
+                    style={{ color: getContrastColor(background) }}
+                  />
+                </button>
+                <span className="font-mono text-sm">{background}</span>
               </div>
             </div>
-          ) : null}
-        </Card>
+            <div className="p-8 rounded-lg" style={{ backgroundColor: background, color: foreground }}>
+              <p className="text-3xl font-bold mb-2">Sample Text</p>
+              <p className="text-lg">This is how your text will look with these colors.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <ContrastResult label="Large Text (18pt+)" ratio={contrastRatio} aaThreshold={3} aaaThreshold={4.5} />
+              <ContrastResult label="Normal Text" ratio={contrastRatio} aaThreshold={4.5} aaaThreshold={7} />
+              <ContrastResult label="UI Components" ratio={contrastRatio} aaThreshold={3} aaaThreshold={4.5} />
+            </div>
+          </div>
+        ) : null}
+      </Card>
 
       {/* Color Blindness Simulator */}
       <Card id="blindness-simulator" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
@@ -709,57 +709,57 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             <ChevronDown className="w-5 h-5" />
           )}
         </div>
-          {openBlindness ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator/" className="text-primary hover:underline">Color Blindness Simulator</Link>.
-              </p>
-              <Select value={colorBlindnessType} onValueChange={setColorBlindnessType}>
-                <SelectTrigger className="w-full md:w-64" aria-label="Select color blindness type">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="protanopia">Protanopia (Red-Blind)</SelectItem>
-                  <SelectItem value="protanomaly">Protanomaly (Red-Weak)</SelectItem>
-                  <SelectItem value="deuteranopia">Deuteranopia (Green-Blind)</SelectItem>
-                  <SelectItem value="deuteranomaly">Deuteranomaly (Green-Weak)</SelectItem>
-                  <SelectItem value="tritanopia">Tritanopia (Blue-Blind)</SelectItem>
-                  <SelectItem value="tritanomaly">Tritanomaly (Blue-Weak)</SelectItem>
-                  <SelectItem value="achromatopsia">Achromatopsia (Total Color Blind)</SelectItem>
-                  <SelectItem value="achromatomaly">Achromatomaly (Partial Color Blind)</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-center">Normal Vision</h4>
-                  <div
-                    className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
-                    style={{ backgroundColor: hex, color: getContrastColor(hex) }}
-                  >
-                    {label}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-center capitalize">
-                    {colorBlindnessType.replace(/([A-Z])/g, " $1").trim()}
-                  </h4>
-                  <div
-                    className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
-                    style={{
-                      backgroundColor: simulateColorBlindness(hex, colorBlindnessType),
-                      color: getContrastColor(simulateColorBlindness(hex, colorBlindnessType)),
-                    }}
-                  >
-                    {simulateColorBlindness(hex, colorBlindnessType)}
-                  </div>
+        {openBlindness ? (
+          <div className="px-2 sm:px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              Simulated views of {label} for different color vision deficiencies help identify potential confusion using the <Link href="/color-blindness-simulator/" className="text-primary hover:underline">Color Blindness Simulator</Link>.
+            </p>
+            <Select value={colorBlindnessType} onValueChange={setColorBlindnessType}>
+              <SelectTrigger className="w-full md:w-64" aria-label="Select color blindness type">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="protanopia">Protanopia (Red-Blind)</SelectItem>
+                <SelectItem value="protanomaly">Protanomaly (Red-Weak)</SelectItem>
+                <SelectItem value="deuteranopia">Deuteranopia (Green-Blind)</SelectItem>
+                <SelectItem value="deuteranomaly">Deuteranomaly (Green-Weak)</SelectItem>
+                <SelectItem value="tritanopia">Tritanopia (Blue-Blind)</SelectItem>
+                <SelectItem value="tritanomaly">Tritanomaly (Blue-Weak)</SelectItem>
+                <SelectItem value="achromatopsia">Achromatopsia (Total Color Blind)</SelectItem>
+                <SelectItem value="achromatomaly">Achromatomaly (Partial Color Blind)</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <h4 className="font-medium text-center">Normal Vision</h4>
+                <div
+                  className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
+                  style={{ backgroundColor: hex, color: getContrastColor(hex) }}
+                >
+                  {label}
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Note: These simulations are approximations. Actual color vision deficiency varies by individual.
-              </p>
+              <div className="space-y-2">
+                <h4 className="font-medium text-center capitalize">
+                  {colorBlindnessType.replace(/([A-Z])/g, " $1").trim()}
+                </h4>
+                <div
+                  className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
+                  style={{
+                    backgroundColor: simulateColorBlindness(hex, colorBlindnessType),
+                    color: getContrastColor(simulateColorBlindness(hex, colorBlindnessType)),
+                  }}
+                >
+                  {simulateColorBlindness(hex, colorBlindnessType)}
+                </div>
+              </div>
             </div>
-          ) : null}
-        </Card>
+            <p className="text-xs text-muted-foreground">
+              Note: These simulations are approximations. Actual color vision deficiency varies by individual.
+            </p>
+          </div>
+        ) : null}
+      </Card>
 
       {/* CSS Examples */}
       <Card id="css-examples" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
@@ -776,7 +776,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
           )}
         </div>
         {openCss ? (
-          <div className="px-6 py-2 space-y-4">
+          <div className="px-2 sm:px-6 py-2 space-y-4">
             <CSSExample
               title="Background Color"
               code={`background-color: ${hex};`}
@@ -838,15 +838,15 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             <ChevronDown className="w-5 h-5" />
           )}
         </div>
-          {openPatterns ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                High-resolution seamless patterns featuring {label} provide ready-to-use backgrounds, wallpapers, and print designs for any project.
-              </p>
-              <ColorPatterns color={hex} />
-            </div>
-          ) : null}
-        </Card>
+        {openPatterns ? (
+          <div className="px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              High-resolution seamless patterns featuring {label} provide ready-to-use backgrounds, wallpapers, and print designs for any project.
+            </p>
+            <ColorPatterns color={hex} />
+          </div>
+        ) : null}
+      </Card>
 
       {/* Icons */}
       <Card id="icons" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
@@ -862,15 +862,15 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             <ChevronDown className="w-5 h-5" />
           )}
         </div>
-          {openIcons ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                A collection of popular icons in {label} offers ready-to-use visuals for interfaces, designs, and creative projects.
-              </p>
-              <ColorIcons color={hex} />
-            </div>
-          ) : null}
-        </Card>
+        {openIcons ? (
+          <div className="px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              A collection of popular icons in {label} offers ready-to-use visuals for interfaces, designs, and creative projects.
+            </p>
+            <ColorIcons color={hex} />
+          </div>
+        ) : null}
+      </Card>
 
       {/* Mockups */}
       <Card id="mockups" className="p-0 overflow-hidden space-y-0 scroll-mt-24">
@@ -886,15 +886,15 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             <ChevronDown className="w-5 h-5" />
           )}
         </div>
-          {openMockups ? (
-            <div className="px-6 py-2 space-y-4">
-              <p className="text-muted-foreground">
-                Real-world mockups of {label} showcase its versatility across fashion, interiors, branding, and product packaging.
-              </p>
-              <ColorMockups color={hex} />
-            </div>
-          ) : null}
-        </Card>
+        {openMockups ? (
+          <div className="px-6 py-2 space-y-4">
+            <p className="text-muted-foreground">
+              Real-world mockups of {label} showcase its versatility across fashion, interiors, branding, and product packaging.
+            </p>
+            <ColorMockups color={hex} />
+          </div>
+        ) : null}
+      </Card>
 
       {/* Related Colors */}
       {mode !== "sectionsOnly" ? (

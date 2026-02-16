@@ -383,7 +383,7 @@ export default async function ColorPage({ params }: ColorPageProps) {
       </div>
 
       {/* Main Content */}
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-8">
+      <main className="w-full max-w-[1300px] mx-auto px-2 sm:px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Left Sidebar Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}
