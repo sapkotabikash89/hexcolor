@@ -13,6 +13,9 @@ export const metadata = {
   title: "Spiritual Colors - Explore Symbolism, Energy and Meaning",
   description:
     "Discover spiritual colors, their symbolism, energetic qualities, chakra connections, and practical uses. Curated articles from our headless WordPress CMS.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/categories/spiritual-colors/",
+  },
   robots: {
     index: false,
     follow: true,

@@ -9,6 +9,9 @@ import { getAllPosts } from "@/lib/wordpress";
 export const metadata = {
   title: "Blog - Latest Articles on Color Meanings, Psychology & Design",
   description: "Read all articles about colors, their meanings, psychology, spirituality, and cultural symbolism. Latest posts from HexColorMeans.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/blog/",
+  },
   robots: {
     index: false,
     follow: true,

@@ -13,6 +13,9 @@ export const metadata = {
   title: "Shades Meaning - Explore Color Variations and Interpretations",
   description:
     "Explore shades meanings, variations, and interpretations. Curated articles from our headless WordPress CMS.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/categories/shades-meaning/",
+  },
   robots: {
     index: false,
     follow: true,

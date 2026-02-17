@@ -11,6 +11,9 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "About Us - HexColorMeans",
   description: "Learn about HexColorMeans, a place created to understand color beyond appearance, exploring meaning, psychology, and precision.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/about-us/",
+  },
 }
 
 export default function AboutUsPage() {

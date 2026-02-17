@@ -11,6 +11,9 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "Terms and Conditions - HexColorMeans",
   description: "Terms and conditions for using HexColorMeans. Outlines the rules and responsibilities for using our website.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/terms-and-conditions/",
+  },
 }
 
 export default function TermsAndConditionsPage() {

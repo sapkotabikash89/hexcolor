@@ -11,6 +11,9 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "Disclaimer - HexColorMeans",
   description: "Disclaimer for HexColorMeans. Information provided is for general educational purposes only.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/disclaimer/",
+  },
 }
 
 export default function DisclaimerPage() {

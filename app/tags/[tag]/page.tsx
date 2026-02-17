@@ -36,6 +36,9 @@ export async function generateMetadata({ params }: TagPageProps) {
   return {
     title: `${capitalizedTag} - Tag Articles | HexColorMeans`,
     description: `Explore articles tagged with ${capitalizedTag.toLowerCase()} on HexColorMeans. Discover meanings, psychology, and symbolism related to ${capitalizedTag.toLowerCase()}.`,
+    alternates: {
+      canonical: `https://hexcolormeans.com/tags/${tag}/`,
+    },
     robots: {
       index: false,
       follow: true,

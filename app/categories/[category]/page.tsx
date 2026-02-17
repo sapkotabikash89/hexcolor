@@ -33,6 +33,9 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   return {
     title: `${capitalizedCategory} - HexColorMeans`,
     description: `Explore ${capitalizedCategory.toLowerCase()} articles and guides on HexColorMeans. Latest posts about ${capitalizedCategory.toLowerCase()} meanings, psychology, and symbolism.`,
+    alternates: {
+      canonical: `https://hexcolormeans.com/categories/${categorySlug}/`,
+    },
     robots: {
       index: false,
       follow: true,
@@ -43,7 +46,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category: categorySlug } = await params;
   const { posts: rawPosts, categoryName } = await getPostsByCategory(categorySlug);
-  
+
   // Ensure strict type compatibility with CategoryPosts component
   const posts = rawPosts.map(post => ({
     ...post,

@@ -11,6 +11,9 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "Privacy Policy - HexColorMeans",
   description: "Learn how HexColorMeans collects, protects, and uses your data. Our privacy practices are designed with care and transparency.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/privacy-policy/",
+  },
 }
 
 export default function PrivacyPolicyPage() {

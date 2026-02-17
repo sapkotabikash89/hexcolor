@@ -11,6 +11,9 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "Contact Us - HexColorMeans",
   description: "Get in touch with the HexColorMeans team for questions, feedback, or collaborations regarding color meanings and data.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/contact/",
+  },
 }
 
 export default function ContactPage() {

@@ -11,6 +11,9 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "Cookie Policy - HexColorMeans",
   description: "Learn how HexColorMeans uses cookies to improve your browsing experience and understand website usage.",
+  alternates: {
+    canonical: "https://hexcolormeans.com/cookie-policy/",
+  },
 }
 
 export default function CookiePolicyPage() {
