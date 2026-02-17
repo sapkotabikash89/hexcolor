@@ -58,23 +58,30 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
     const cmykString = `${cmyk.c}, ${cmyk.m}, ${cmyk.y}, ${cmyk.k}`
     const linkTitle = `View ${name} color page`
 
-    const cardContent = (
+    return (
         <Card
-            className="group relative flex flex-col overflow-hidden border-2 border-border shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer aspect-square bg-white"
-            onClick={hasStaticPage ? undefined : () => router.push(href)}
+            className="group relative flex flex-col overflow-hidden border-2 border-border shadow-md hover:shadow-xl transition-all duration-300 aspect-square bg-white"
         >
+            {/* Primary Semantic Link targeting the crawlable URL */}
+            <a
+                href={href}
+                className="absolute inset-0 z-0"
+                aria-label={linkTitle}
+                title={linkTitle}
+            />
+
             <div
-                className="flex-1 p-4 flex flex-col justify-end"
+                className="flex-1 p-4 flex flex-col justify-end relative z-1 pointer-events-none"
                 style={{ backgroundColor: hex, color: contrastColor }}
             >
-                <div className="space-y-2">
+                <div className="space-y-2 pointer-events-auto">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="text-xs uppercase font-bold opacity-70">Hex</span>
                             <span className="font-mono font-bold text-sm sm:text-base">{hex.toUpperCase()}</span>
                             <button
                                 onClick={(e) => handleCopy(e, hex.toUpperCase(), "hex")}
-                                className="p-1.5 rounded-md hover:bg-black/10 transition-colors relative"
+                                className="p-1.5 rounded-md hover:bg-black/10 transition-colors relative z-10"
                                 aria-label="Copy Hex"
                             >
                                 <Copy className="w-3.5 h-3.5" />
@@ -90,7 +97,7 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
                         <span className="font-mono font-bold text-sm sm:text-base whitespace-nowrap">{rgbString}</span>
                         <button
                             onClick={(e) => handleCopy(e, rgbString, "rgb")}
-                            className="p-1.5 rounded-md hover:bg-black/10 transition-colors relative"
+                            className="p-1.5 rounded-md hover:bg-black/10 transition-colors relative z-10"
                             aria-label="Copy RGB"
                         >
                             <Copy className="w-3.5 h-3.5" />
@@ -105,7 +112,7 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
                         <span className="font-mono font-bold text-sm sm:text-base whitespace-nowrap">{cmykString}</span>
                         <button
                             onClick={(e) => handleCopy(e, cmykString, "cmyk")}
-                            className="p-1.5 rounded-md hover:bg-black/10 transition-colors relative"
+                            className="p-1.5 rounded-md hover:bg-black/10 transition-colors relative z-10"
                             aria-label="Copy CMYK"
                         >
                             <Copy className="w-3.5 h-3.5" />
@@ -117,12 +124,12 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
                 </div>
             </div>
 
-            <div className="p-3 bg-white border-t flex items-center justify-between">
-                <p className="text-sm font-bold truncate pr-4">{name}</p>
+            <div className="p-3 bg-white border-t flex items-center justify-between relative z-1">
+                <p className="text-sm font-bold truncate pr-4 pointer-events-none">{name}</p>
                 <button
                     onClick={handleLove}
                     className={cn(
-                        "flex items-center gap-1.5 px-2 py-1 rounded-full transition-all duration-300",
+                        "flex items-center gap-1.5 px-2 py-1 rounded-full transition-all duration-300 relative z-10",
                         isLiked ? "bg-red-50 text-red-500 shadow-sm" : "bg-muted text-muted-foreground hover:bg-red-50 hover:text-red-400"
                     )}
                 >
@@ -132,14 +139,4 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
             </div>
         </Card>
     )
-
-    if (hasStaticPage) {
-        return (
-            <a href={href} title={linkTitle} aria-label={linkTitle}>
-                {cardContent}
-            </a>
-        )
-    }
-
-    return cardContent
 }
