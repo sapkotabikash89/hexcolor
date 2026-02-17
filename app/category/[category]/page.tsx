@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
     title: `${capitalizedCategory} - HexColorMeans`,
     description: `Explore ${capitalizedCategory.toLowerCase()} articles and guides on HexColorMeans. Latest posts about ${capitalizedCategory.toLowerCase()} meanings, psychology, and symbolism.`,
     alternates: {
-      canonical: `https://hexcolormeans.com/categories/${categorySlug}/`,
+      canonical: `https://hexcolormeans.com/category/${categorySlug}/`,
     },
     robots: {
       index: false,
@@ -61,16 +61,16 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   // Define breadcrumbs
   const crumbs = [
-    { label: categoryName, href: `/categories/${categorySlug}` },
+    { label: categoryName, href: `/category/${categorySlug}` },
   ];
 
   return (
     <div className="flex flex-col min-h-screen">
-      <CollectionPageSchema name={categoryName} url={`https://hexcolormeans.com/categories/${categorySlug}`} />
+      <CollectionPageSchema name={categoryName} url={`https://hexcolormeans.com/category/${categorySlug}`} />
       <BreadcrumbSchema items={[
         { name: "HexColorMeans", item: "https://hexcolormeans.com" },
-        { name: "Categories", item: "https://hexcolormeans.com/categories" },
-        { name: categoryName, item: `https://hexcolormeans.com/categories/${categorySlug}` }
+        { name: "Categories", item: "https://hexcolormeans.com/category" },
+        { name: categoryName, item: `https://hexcolormeans.com/category/${categorySlug}` }
       ]} />
       <Header />
       <section className="bg-muted/30 py-12 px-4">

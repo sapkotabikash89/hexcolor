@@ -78,7 +78,7 @@ export function Header() {
   const blogPosts = Array.isArray(blogPostsData) ? blogPostsData : []
   const categoryMap = new Map<string, { name: string; slug: string }>()
   blogPosts.forEach((post: any) => {
-    ;(post.categories?.nodes || []).forEach((c: any) => {
+    ; (post.categories?.nodes || []).forEach((c: any) => {
       if (c?.slug && c?.name && !categoryMap.has(c.slug)) {
         categoryMap.set(c.slug, { name: c.name, slug: c.slug })
       }
@@ -96,7 +96,7 @@ export function Header() {
     ) {
       return `/category/${slug}/`
     }
-    return `/categories/${slug}`
+    return `/category/${slug}/`
   }
 
   const getCategoryIcon = (slug: string) => {

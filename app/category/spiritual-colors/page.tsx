@@ -14,7 +14,7 @@ export const metadata = {
   description:
     "Discover spiritual colors, their symbolism, energetic qualities, chakra connections, and practical uses. Curated articles from our headless WordPress CMS.",
   alternates: {
-    canonical: "https://hexcolormeans.com/categories/spiritual-colors/",
+    canonical: "https://hexcolormeans.com/category/spiritual-colors/",
   },
   robots: {
     index: false,
@@ -37,7 +37,7 @@ export default async function SpiritualColorsCategoryPage() {
   }));
 
   const crumbs = [
-    { label: categoryName, href: "/categories/spiritual-colors" },
+    { label: categoryName, href: "/category/spiritual-colors" },
   ];
 
   return (

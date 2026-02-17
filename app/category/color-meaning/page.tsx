@@ -14,7 +14,7 @@ export const metadata = {
   description:
     "Explore color meanings, psychology, spirituality, and cultural symbolism. Curated articles from our headless WordPress CMS.",
   alternates: {
-    canonical: "https://hexcolormeans.com/categories/color-meaning/",
+    canonical: "https://hexcolormeans.com/category/color-meaning/",
   },
   robots: {
     index: false,
@@ -38,7 +38,7 @@ export default async function HexColorMeansingCategoryPage() {
 
   // Define breadcrumbs
   const crumbs = [
-    { label: categoryName, href: "/categories/color-meaning" },
+    { label: categoryName, href: "/category/color-meaning" },
   ];
 
   return (

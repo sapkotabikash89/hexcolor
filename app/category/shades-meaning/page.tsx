@@ -14,7 +14,7 @@ export const metadata = {
   description:
     "Explore shades meanings, variations, and interpretations. Curated articles from our headless WordPress CMS.",
   alternates: {
-    canonical: "https://hexcolormeans.com/categories/shades-meaning/",
+    canonical: "https://hexcolormeans.com/category/shades-meaning/",
   },
   robots: {
     index: false,
@@ -38,7 +38,7 @@ export default async function ShadesMeaningCategoryPage() {
 
   // Define breadcrumbs
   const crumbs = [
-    { label: categoryName, href: "/categories/shades-meaning" },
+    { label: categoryName, href: "/category/shades-meaning" },
   ];
 
   return (
