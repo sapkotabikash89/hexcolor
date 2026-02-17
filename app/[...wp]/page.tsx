@@ -10,7 +10,7 @@ import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { WPColorContext } from "@/components/wp-color-context"
 import { WPSEOHead } from "@/components/wpseo-head"
-import { BreadcrumbSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
+import { UnifiedBlogSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
 import { getContrastColor, hexToRgb, rgbToHsl, rgbToCmyk } from "@/lib/color-utils"
 import { AnchorHashNav } from "@/components/anchor-hash-nav"
@@ -721,17 +721,20 @@ export default async function WPPostPage({ params }: WPPageProps) {
               shareUrl=""
               shareTitle={node?.title || ""}
             />
-            <ImageObjectSchema
-              url={articleImageUrl!}
-              width={1200}
-              height={800}
-              caption={alt || undefined}
-              description={node?.seo?.opengraphDescription || node?.seo?.metaDesc || undefined}
-              author="HexColorMeans"
-              representativeOfPage={true}
-            />
           </section>
         )}
+        <UnifiedBlogSchema
+          title={node.seo?.title || node.title}
+          description={node.seo?.metaDesc || node.seo?.opengraphDescription || ""}
+          url={canonical || `${site}${node.uri}`}
+          datePublished={node.seo?.opengraphPublishedTime}
+          dateModified={node.seo?.opengraphModifiedTime}
+          image={articleImageUrl}
+          categories={node.categories?.nodes || []}
+          breadcrumbs={crumbs || []}
+          colorName={colorName || undefined}
+          colorHex={effectiveHex || undefined}
+        />
         {isShadesMeaningCategory && shadesList.length > 0 && (
           <div className="xl:hidden">
             <ShadesTOC
@@ -1045,29 +1048,6 @@ export default async function WPPostPage({ params }: WPPageProps) {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {node?.__typename === "Post" && (() => {
-        const author = node?.seo?.opengraphAuthor
-        const description = node?.seo?.metaDesc || node?.seo?.opengraphDescription || ""
-        const datePublished = node?.seo?.opengraphPublishedTime || node?.date
-        const dateModified = node?.seo?.opengraphModifiedTime || node?.date
-        return (
-          <ArticleSchema
-            title={node.title}
-            description={description}
-            authorName={author || undefined}
-            authorType="Person"
-            publisherName="HexColorMeans"
-            publisherLogo={`${site}/logo.webp`}
-            image={articleImageUrl}
-            datePublished={datePublished || undefined}
-            dateModified={dateModified || undefined}
-            url={canonical || `${site}${node.uri}`}
-            articleSection={node?.categories?.nodes?.[0]?.name || "Blog"}
-            colorName={colorName || undefined}
-            colorHex={effectiveHex || undefined}
-          />
-        )
-      })()}
       {hasColorUI && <WPColorContext color={accentColor || '#000000'} />}
       <Header />
       <section
@@ -1079,15 +1059,6 @@ export default async function WPPostPage({ params }: WPPageProps) {
       >
         <div className={cn("w-full mx-auto", isColorMeaningCategory ? "max-w-[1300px]" : "max-w-[1300px]")}>
           <BreadcrumbNav items={crumbs} />
-          <BreadcrumbSchema
-            items={[
-              { name: "HexColorMeans", item: site },
-              ...(firstCategory
-                ? [{ name: firstCategory.name, item: `${site}/category/${firstCategory.slug}` }]
-                : [{ name: "Blog", item: `${site}/blog` }]),
-              { name: shortTitle(node.title), item: `${site}${node.uri}` },
-            ]}
-          />
           <div className="text-center space-y-4">
             <h1 className="text-3xl md:text-4xl font-bold">{node.title}</h1>
             {firstCategory && (

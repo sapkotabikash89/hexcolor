@@ -333,7 +333,7 @@ export function ArticleSchema({
       name: colorName || "Color",
       description: colorHex || undefined,
     }
-    
+
     if (colorHex) {
       schema.mainEntity.additionalProperty = {
         "@type": "PropertyValue",
@@ -385,4 +385,178 @@ export function ToolApplicationSchema({
     },
   }
   return <Script id={`${slug}-webapp-schema`} type="application/ld+json" strategy="beforeInteractive">{JSON.stringify(schema)}</Script>
+}
+
+export function UnifiedBlogSchema({
+  title,
+  description,
+  url,
+  datePublished,
+  dateModified,
+  image,
+  authorName = "HexColorMeans",
+  publisherName = "HexColorMeans",
+  publisherLogo = "https://hexcolormeans.com/logo.webp",
+  categories = [],
+  breadcrumbs = [],
+  colorName,
+  colorHex,
+}: {
+  title: string
+  description?: string
+  url: string
+  datePublished?: string
+  dateModified?: string
+  image?: string
+  authorName?: string
+  publisherName?: string
+  publisherLogo?: string
+  categories?: { name: string; slug: string }[]
+  breadcrumbs: { label: string; href: string }[]
+  colorName?: string
+  colorHex?: string
+}) {
+  const siteUrl = "https://hexcolormeans.com"
+  const organizationId = `${siteUrl}/#organization`
+  const websiteId = `${siteUrl}/#website`
+  const webpageId = `${url}#webpage`
+  const articleId = `${url}#article`
+  const primaryImageId = `${url}#primaryimage`
+
+  const graph = [
+    {
+      "@type": "Organization",
+      "@id": organizationId,
+      name: publisherName,
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        "@id": `${siteUrl}/#logo`,
+        url: publisherLogo,
+        contentUrl: publisherLogo,
+        width: 192,
+        height: 192,
+        caption: publisherName,
+      },
+      image: { "@id": `${siteUrl}/#logo` },
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      url: siteUrl,
+      name: publisherName,
+      description: "Know your color - Explore color information, meanings, conversions, and professional tools",
+      publisher: { "@id": organizationId },
+      potentialAction: [
+        {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${siteUrl}/colors/{search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      ],
+      inLanguage: "en-US",
+    },
+    {
+      "@type": "ImageObject",
+      "@id": primaryImageId,
+      inLanguage: "en-US",
+      url: image,
+      contentUrl: image,
+      width: 1200,
+      height: 630,
+      caption: title,
+    },
+    {
+      "@type": "WebPage",
+      "@id": webpageId,
+      url: url,
+      name: title,
+      isPartOf: { "@id": websiteId },
+      primaryImageOfPage: { "@id": primaryImageId },
+      image: { "@id": primaryImageId },
+      datePublished: datePublished,
+      dateModified: dateModified,
+      description: description,
+      breadcrumb: { "@id": `${url}#breadcrumb` },
+      inLanguage: "en-US",
+      potentialAction: [
+        {
+          "@type": "ReadAction",
+          target: [url],
+        },
+      ],
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${url}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: siteUrl,
+        },
+        ...breadcrumbs.map((crumb, index) => ({
+          "@type": "ListItem",
+          position: index + 2,
+          name: crumb.label,
+          item: crumb.href.startsWith("http") ? crumb.href : `${siteUrl}${crumb.href}`,
+        })),
+      ],
+    },
+    {
+      "@type": "Article",
+      "@id": articleId,
+      isPartOf: { "@id": webpageId },
+      author: {
+        "@type": "Organization",
+        "@id": organizationId,
+        name: authorName,
+      },
+      headline: title,
+      datePublished: datePublished,
+      dateModified: dateModified,
+      mainEntityOfPage: { "@id": webpageId },
+      publisher: { "@id": organizationId },
+      image: { "@id": primaryImageId },
+      articleSection: categories.map((c) => c.name),
+      inLanguage: "en-US",
+      ...(colorName || colorHex
+        ? {
+          mainEntity: {
+            "@type": "Thing",
+            name: colorName || "Color",
+            description: colorHex || undefined,
+            ...(colorHex
+              ? {
+                additionalProperty: {
+                  "@type": "PropertyValue",
+                  name: "Hex Code",
+                  value: colorHex,
+                },
+              }
+              : {}),
+          },
+        }
+        : {}),
+    },
+  ]
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": graph.filter((item) => {
+      // Filter out ImageObject if no image URL is provided
+      if (item["@type"] === "ImageObject" && !item.url) return false
+      return true
+    }),
+  }
+
+  return (
+    <Script id="unified-blog-schema" type="application/ld+json" strategy="beforeInteractive">
+      {JSON.stringify(schema)}
+    </Script>
+  )
 }
