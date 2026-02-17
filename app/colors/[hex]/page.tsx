@@ -15,7 +15,7 @@ import { normalizeHex, isValidHex, getContrastColor, hexToRgb, rgbToHsl, rgbToCm
 import { getGumletColorImage } from "@/lib/image-utils"
 import { KNOWN_COLOR_HEXES } from "@/lib/known-colors-complete"
 import { notFound } from "next/navigation"
-import { BreadcrumbSchema, FAQSchema, ImageObjectSchema, ArticleSchema } from "@/components/structured-data"
+import { UnifiedColorSchema } from "@/components/structured-data"
 import { CopyButton } from "@/components/copy-button"
 import { generateColorInformation, generateColorFAQs } from "@/lib/generateColorContent"
 import { TableOfContents } from "@/components/table-of-contents"
@@ -297,33 +297,17 @@ export default async function ColorPage({ params }: ColorPageProps) {
       <Suspense fallback={null}>
         <URLNormalizer />
       </Suspense>
-      <BreadcrumbSchema items={breadcrumbItems} />
-      <FAQSchema faqs={faqItems} />
-      <ArticleSchema
+      <UnifiedColorSchema
         title={`${displayLabel} Color Meaning, Codes and Information`}
         description={pageDescription}
-        authorName="HexColorMeans"
-        authorType="Organization"
         url={pageUrl}
         image={imageUrl}
-        articleSection="Color Meanings"
         colorName={colorName}
         colorHex={normalizedHex}
+        breadcrumbs={breadcrumbItems}
+        faqs={faqItems}
       />
-
       <Header />
-
-      <ImageObjectSchema
-        url={imageUrl}
-        width={1200}
-        height={630}
-        name={colorName ? `${colorName} (${normalizedHex}) color swatch` : `${normalizedHex} color swatch`}
-        alt={imageAlt}
-        description={colorName
-          ? `Detailed color guide showing ${colorName} (${normalizedHex}) technical specifications and analysis.`
-          : `Detailed technical specifications for color ${normalizedHex}.`}
-        representativeOfPage={true}
-      />
 
       {/* Dynamic Color Hero */}
       <section

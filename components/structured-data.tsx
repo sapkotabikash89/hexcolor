@@ -398,9 +398,11 @@ export function UnifiedBlogSchema({
   publisherName = "HexColorMeans",
   publisherLogo = "https://hexcolormeans.com/logo.webp",
   categories = [],
-  breadcrumbs = [],
+  breadcrumbs,
   colorName,
   colorHex,
+  faqs,
+  authorType = "Organization",
 }: {
   title: string
   description?: string
@@ -409,12 +411,14 @@ export function UnifiedBlogSchema({
   dateModified?: string
   image?: string
   authorName?: string
+  authorType?: "Person" | "Organization"
   publisherName?: string
   publisherLogo?: string
   categories?: { name: string; slug: string }[]
   breadcrumbs: { label: string; href: string }[]
   colorName?: string
   colorHex?: string
+  faqs?: FAQItem[]
 }) {
   const siteUrl = "https://hexcolormeans.com"
   const organizationId = `${siteUrl}/#organization`
@@ -422,8 +426,9 @@ export function UnifiedBlogSchema({
   const webpageId = `${url}#webpage`
   const articleId = `${url}#article`
   const primaryImageId = `${url}#primaryimage`
+  const breadcrumbId = `${url}#breadcrumb`
 
-  const graph = [
+  const graph: any[] = [
     {
       "@type": "Organization",
       "@id": organizationId,
@@ -480,7 +485,7 @@ export function UnifiedBlogSchema({
       datePublished: datePublished,
       dateModified: dateModified,
       description: description,
-      breadcrumb: { "@id": `${url}#breadcrumb` },
+      breadcrumb: { "@id": breadcrumbId },
       inLanguage: "en-US",
       potentialAction: [
         {
@@ -491,7 +496,7 @@ export function UnifiedBlogSchema({
     },
     {
       "@type": "BreadcrumbList",
-      "@id": `${url}#breadcrumb`,
+      "@id": breadcrumbId,
       itemListElement: [
         {
           "@type": "ListItem",
@@ -512,8 +517,8 @@ export function UnifiedBlogSchema({
       "@id": articleId,
       isPartOf: { "@id": webpageId },
       author: {
-        "@type": "Organization",
-        "@id": organizationId,
+        "@type": authorType,
+        "@id": authorType === "Person" ? `${siteUrl}/#/schema/person/${authorName.toLowerCase().replace(/\s+/g, '-')}` : organizationId,
         name: authorName,
       },
       headline: title,
@@ -545,10 +550,40 @@ export function UnifiedBlogSchema({
     },
   ]
 
+  if (authorType === "Person") {
+    graph.push({
+      "@type": "Person",
+      "@id": `${siteUrl}/#/schema/person/${authorName.toLowerCase().replace(/\s+/g, '-')}`,
+      name: authorName,
+      image: {
+        "@type": "ImageObject",
+        "@id": `${siteUrl}/#personlogo`,
+        url: "https://secure.gravatar.com/avatar/6556e4c27303e2ad6e2572b226e69623?s=96&d=mm&r=g",
+        contentUrl: "https://secure.gravatar.com/avatar/6556e4c27303e2ad6e2572b226e69623?s=96&d=mm&r=g",
+        caption: authorName,
+      },
+      sameAs: [siteUrl],
+    })
+  }
+
+  if (faqs && faqs.length > 0) {
+    graph.push({
+      "@type": "FAQPage",
+      "@id": `${url}#faq`,
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    })
+  }
+
   const schema = {
     "@context": "https://schema.org",
     "@graph": graph.filter((item) => {
-      // Filter out ImageObject if no image URL is provided
       if (item["@type"] === "ImageObject" && !item.url) return false
       return true
     }),
@@ -556,6 +591,147 @@ export function UnifiedBlogSchema({
 
   return (
     <Script id="unified-blog-schema" type="application/ld+json" strategy="beforeInteractive">
+      {JSON.stringify(schema)}
+    </Script>
+  )
+}
+
+export function UnifiedColorSchema({
+  title,
+  description,
+  url,
+  image,
+  colorName,
+  colorHex,
+  breadcrumbs,
+  faqs,
+}: {
+  title: string
+  description: string
+  url: string
+  image: string
+  colorName?: string
+  colorHex: string
+  breadcrumbs: { name: string; item: string }[]
+  faqs: FAQItem[]
+}) {
+  const siteUrl = "https://hexcolormeans.com"
+  const organizationId = `${siteUrl}/#organization`
+  const websiteId = `${siteUrl}/#website`
+  const webpageId = `${url}#webpage`
+  const primaryImageId = `${url}#primaryimage`
+  const breadcrumbId = `${url}#breadcrumb`
+
+  const graph: any[] = [
+    {
+      "@type": "Organization",
+      "@id": organizationId,
+      name: "HexColorMeans",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        "@id": `${siteUrl}/#logo`,
+        url: `${siteUrl}/logo.webp`,
+        contentUrl: `${siteUrl}/logo.webp`,
+        width: 192,
+        height: 192,
+        caption: "HexColorMeans",
+      },
+      image: { "@id": `${siteUrl}/#logo` },
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      url: siteUrl,
+      name: "HexColorMeans",
+      description: "Know your color - Explore color information, meanings, conversions, and professional tools",
+      publisher: { "@id": organizationId },
+      potentialAction: [
+        {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${siteUrl}/colors/{search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      ],
+      inLanguage: "en-US",
+    },
+    {
+      "@type": "ImageObject",
+      "@id": primaryImageId,
+      inLanguage: "en-US",
+      url: image,
+      contentUrl: image,
+      width: 1200,
+      height: 630,
+      caption: title,
+    },
+    {
+      "@type": "WebPage",
+      "@id": webpageId,
+      url: url,
+      name: title,
+      isPartOf: { "@id": websiteId },
+      primaryImageOfPage: { "@id": primaryImageId },
+      image: { "@id": primaryImageId },
+      description: description,
+      breadcrumb: { "@id": breadcrumbId },
+      inLanguage: "en-US",
+      potentialAction: [
+        {
+          "@type": "ReadAction",
+          target: [url],
+        },
+      ],
+      mainEntity: {
+        "@type": "Thing",
+        name: colorName || colorHex,
+        description: `Color information and codes for ${colorName ? `${colorName} (${colorHex})` : colorHex}.`,
+        additionalProperty: [
+          {
+            "@type": "PropertyValue",
+            name: "Hex Code",
+            value: colorHex,
+          },
+        ],
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": breadcrumbId,
+      itemListElement: breadcrumbs.map((crumb, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: crumb.name,
+        item: crumb.item,
+      })),
+    },
+  ]
+
+  if (faqs && faqs.length > 0) {
+    graph.push({
+      "@type": "FAQPage",
+      "@id": `${url}#faq`,
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    })
+  }
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": graph,
+  }
+
+  return (
+    <Script id="unified-color-schema" type="application/ld+json" strategy="beforeInteractive">
       {JSON.stringify(schema)}
     </Script>
   )

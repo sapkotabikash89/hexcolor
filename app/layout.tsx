@@ -98,6 +98,9 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} px-0`}>
         <div className="min-h-screen relative bg-background font-sans antialiased">
+          <WebsiteSchema />
+          <OrganizationSchema />
+          <SoftwareApplicationSchema />
           {children}
         </div>
 
