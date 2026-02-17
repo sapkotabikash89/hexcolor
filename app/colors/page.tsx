@@ -72,7 +72,7 @@ export default function ColorsPage() {
           <article id="content" className="main-content grow-content flex-1" itemProp="articleBody">
             <div className="space-y-12">
               <Suspense fallback={<div className="p-12 text-center">Loading color library...</div>}>
-                <ColorLibrary activeCategory="all" page={1} />
+                <ColorLibrary initialCategory="all" page={1} />
               </Suspense>
 
               <div className="mt-8 pt-8 border-t flex flex-col items-center gap-6">

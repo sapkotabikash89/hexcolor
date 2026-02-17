@@ -19,12 +19,12 @@ import colorLibraryData from "@/lib/color-library-data.json"
 type ColorItem = typeof colorLibraryData[number];
 
 export function ColorLibrary({
-  activeCategory = "all",
+  initialCategory = "all",
   page = 1,
   hidePagination = false,
   basePath = "/colors"
 }: {
-  activeCategory?: string;
+  initialCategory?: string;
   page?: number;
   hidePagination?: boolean;
   basePath?: string;
@@ -32,6 +32,9 @@ export function ColorLibrary({
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
+
+  // Initialize category from URL params, fallback to initialCategory prop
+  const currentCategory = searchParams.get('cat') || initialCategory
 
   // Initialize state from URL params if available for search
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || "")
@@ -47,10 +50,7 @@ export function ColorLibrary({
 
   // Link helper
   const getPageLink = (p: number, cat: string) => {
-    let link = basePath;
-    if (cat !== "all") {
-      link = `/colors/category/${cat}`;
-    }
+    let link = "/colors";
 
     if (p > 1) {
       link = `${link}/page/${p}/`;
@@ -58,10 +58,19 @@ export function ColorLibrary({
       link = `${link}/`;
     }
 
-    if (searchQuery) {
-      link = `${link}?q=${encodeURIComponent(searchQuery)}`;
+    const params = new URLSearchParams(searchParams.toString());
+    if (cat !== "all") {
+      params.set('cat', cat);
+    } else {
+      params.delete('cat');
     }
-    return link;
+    // Search query is handled by state but should be in links too
+    if (searchQuery) {
+      params.set('q', searchQuery);
+    }
+
+    const search = params.toString();
+    return search ? `${link}?${search}` : link;
   }
 
   const buildMobileList = (pages: number) => {
@@ -169,8 +178,8 @@ export function ColorLibrary({
   const filteredColors = () => {
     if (!searchQuery) {
       // When no search query, we use the imported all colors
-      if (activeCategory === "all") return allColors
-      return allColors.filter((c) => c.category === activeCategory)
+      if (currentCategory === "all") return allColors
+      return allColors.filter((c) => c.category === currentCategory)
     }
 
     // When there's a search query, we use the preview results
@@ -244,10 +253,10 @@ export function ColorLibrary({
           {categories.map((cat) => (
             <Link
               key={cat.value}
-              href={cat.value === "all" ? "/colors/" : `/colors/category/${cat.value}/`}
+              href={cat.value === "all" ? "/colors/" : `/colors/?cat=${cat.value}`}
               className={cn(
                 "px-3 py-1.5 text-sm font-medium rounded-md transition-colors",
-                activeCategory === cat.value
+                currentCategory === cat.value
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-background/50 hover:text-foreground"
               )}
@@ -268,7 +277,7 @@ export function ColorLibrary({
                       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
                     </span>
                   ) : (
-                    <PaginationPrevious href={getPageLink(page - 1, activeCategory)} />
+                    <PaginationPrevious href={getPageLink(page - 1, currentCategory)} />
                   )}
                 </PaginationItem>
 
@@ -281,7 +290,7 @@ export function ColorLibrary({
                     ) : (
                       <PaginationItem key={`n-${n}`}>
                         <PaginationLink
-                          href={getPageLink(n as number, activeCategory)}
+                          href={getPageLink(n as number, currentCategory)}
                           isActive={n === page}
                           className={n === page ? "bg-primary text-primary-foreground rounded-full" : ""}
                         >
@@ -301,7 +310,7 @@ export function ColorLibrary({
                     ) : (
                       <PaginationItem key={`mn-${idx}-${n}`}>
                         <PaginationLink
-                          href={getPageLink(n as number, activeCategory)}
+                          href={getPageLink(n as number, currentCategory)}
                           isActive={(n as number) === page}
                           className={(n as number) === page ? "bg-primary text-primary-foreground rounded-full" : ""}
                         >
@@ -319,7 +328,7 @@ export function ColorLibrary({
                       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M6.1584 3.13523C6.35985 2.94621 6.67627 2.95603 6.86529 3.15749L10.6153 7.15749C10.7956 7.34982 10.7956 7.6491 10.6153 7.84143L6.86529 11.8414C6.67627 12.0429 6.35985 12.0527 6.1584 11.8637C5.95694 11.6747 5.94713 11.3583 6.13615 11.1568L9.56556 7.49946L6.13615 3.84211C5.94713 3.64066 5.95694 3.32424 6.1584 3.13523Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
                     </span>
                   ) : (
-                    <PaginationNext href={getPageLink(page + 1, activeCategory)} />
+                    <PaginationNext href={getPageLink(page + 1, currentCategory)} />
                   )}
                 </PaginationItem>
               </PaginationContent>
@@ -344,7 +353,7 @@ export function ColorLibrary({
                       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
                     </span>
                   ) : (
-                    <PaginationPrevious href={getPageLink(page - 1, activeCategory)} />
+                    <PaginationPrevious href={getPageLink(page - 1, currentCategory)} />
                   )}
                 </PaginationItem>
 
@@ -357,7 +366,7 @@ export function ColorLibrary({
                     ) : (
                       <PaginationItem key={`b-n-${n}`}>
                         <PaginationLink
-                          href={getPageLink(n as number, activeCategory)}
+                          href={getPageLink(n as number, currentCategory)}
                           isActive={n === page}
                           className={n === page ? "bg-primary text-primary-foreground rounded-full" : ""}
                         >
@@ -377,7 +386,7 @@ export function ColorLibrary({
                     ) : (
                       <PaginationItem key={`b-mn-${idx}-${n}`}>
                         <PaginationLink
-                          href={getPageLink(n as number, activeCategory)}
+                          href={getPageLink(n as number, currentCategory)}
                           isActive={(n as number) === page}
                           className={(n as number) === page ? "bg-primary text-primary-foreground rounded-full" : ""}
                         >
@@ -395,7 +404,7 @@ export function ColorLibrary({
                       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M6.1584 3.13523C6.35985 2.94621 6.67627 2.95603 6.86529 3.15749L10.6153 7.15749C10.7956 7.34982 10.7956 7.6491 10.6153 7.84143L6.86529 11.8414C6.67627 12.0429 6.35985 12.0527 6.1584 11.8637C5.95694 11.6747 5.94713 11.3583 6.13615 11.1568L9.56556 7.49946L6.13615 3.84211C5.94713 3.64066 5.95694 3.32424 6.1584 3.13523Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
                     </span>
                   ) : (
-                    <PaginationNext href={getPageLink(page + 1, activeCategory)} />
+                    <PaginationNext href={getPageLink(page + 1, currentCategory)} />
                   )}
                 </PaginationItem>
               </PaginationContent>
