@@ -125,7 +125,12 @@ export function LibraryColorSwatch({ name, hex }: LibraryColorSwatchProps) {
             </div>
 
             <div className="p-3 bg-white border-t flex items-center justify-between relative z-1">
-                <p className="text-sm font-bold truncate pr-4 pointer-events-none">{name}</p>
+                <a
+                    href={href}
+                    className="text-sm font-bold truncate pr-4 pointer-events-auto hover:underline hover:text-primary transition-colors relative z-10"
+                >
+                    {name}
+                </a>
                 <button
                     onClick={handleLove}
                     className={cn(

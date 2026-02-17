@@ -22,6 +22,14 @@ export function ColorCombination({
 }) {
   const router = useRouter()
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+  const navigate = (hex: string) => {
+    if (onColorChange) {
+      onColorChange(hex)
+    } else {
+      // Use centralized linking logic for safe color navigation
+      router.push(getColorPageLink(hex))
+    }
+  }
   return (
     <div
       className={`w-full rounded-2xl overflow-hidden flex ${vertical ? "flex-col" : "flex-row"} ${className}`}
@@ -66,20 +74,12 @@ export function ColorCombination({
           setTimeout(() => setCopiedIndex(null), 1500)
         }
         return (
-          <a
+          <button
             key={`${hex}-${i}`}
-            href={getColorPageLink(hex)}
             className={`relative ${vertical ? "w-full flex-1" : "h-full flex-1"}`}
             style={{ backgroundColor: hex, border: "1px solid white", minHeight: vertical ? "50px" : undefined }}
-            onClick={(e) => {
-              if (onColorChange) {
-                e.preventDefault()
-                onColorChange(hex)
-              }
-              // For SEO, we want to allow standard navigation if no onColorChange
-            }}
+            onClick={() => navigate(hex)}
             title={hex}
-            aria-label={`View color ${hex}`}
           >
             {isOriginal ? (
               <span
@@ -91,12 +91,8 @@ export function ColorCombination({
             ) : null}
             <div className="absolute bottom-1 left-0 right-0 flex justify-center">
               <span
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleCopy()
-                }}
-                className="text-[10px] font-mono px-1 rounded bg-black/30 text-white cursor-pointer pointer-events-auto"
+                onClick={handleCopy}
+                className="text-[10px] font-mono px-1 rounded bg-black/30 text-white"
                 style={{ color: contrast === "#000000" ? "#000" : "#fff", backgroundColor: contrast === "#000000" ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)" }}
               >
                 {hex.toUpperCase()}
@@ -107,7 +103,7 @@ export function ColorCombination({
                 Copied!
               </div>
             )}
-          </a>
+          </button>
         )
       })}
     </div>

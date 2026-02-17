@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getColorPageLink } from "@/lib/color-linking-utils"
 
 const colorGroups = {
     Red: [
@@ -77,7 +76,7 @@ export function ColorLibraryPreview() {
                             {colors.map((color) => (
                                 <Link
                                     key={color.hex}
-                                    href={getColorPageLink(color.hex)}
+                                    href={`/colors/${color.hex.replace("#", "")}`}
                                     className="group block space-y-2 transition-transform hover:-translate-y-1"
                                 >
                                     <div

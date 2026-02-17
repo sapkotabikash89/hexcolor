@@ -18,7 +18,7 @@ export function ColorSwatch({ color, onClick, showHex = false }: ColorSwatchProp
   const router = useRouter()
   const isMobile = useIsMobile()
   const [showCopied, setShowCopied] = useState(false)
-  const swatchRef = useRef<HTMLAnchorElement>(null)
+  const swatchRef = useRef<HTMLDivElement>(null)
 
   const handleCopy = async (e?: React.MouseEvent) => {
     e?.stopPropagation()
@@ -54,32 +54,41 @@ export function ColorSwatch({ color, onClick, showHex = false }: ColorSwatchProp
     setTimeout(() => setShowCopied(false), 1500)
   }
 
+  const handleSwatchClick = () => {
+    window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color } }))
+
+    if (onClick) {
+      onClick()
+    } else {
+      // Use centralized linking logic for safe color navigation
+      router.push(getColorPageLink(color))
+    }
+  }
+
+  const handleNavigate = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (onClick) {
+      onClick()
+    } else {
+      // Use centralized linking logic for safe color navigation
+      router.push(getColorPageLink(color))
+    }
+  }
+
   return (
     <div className="flex flex-col items-center gap-1">
-      <a
-        href={getColorPageLink(color)}
+      <div
         className="relative w-20 h-20 rounded-lg cursor-pointer hover:scale-105 transition-transform group"
         style={{ backgroundColor: color }}
-        onClick={(e) => {
-          if (onClick) {
-            e.preventDefault()
-            onClick()
-          } else {
-            // Let the standard link-click handling take over if no onClick
-            // or we could dispatch our custom event
-            window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color } }))
-          }
-        }}
+        onClick={handleSwatchClick}
         ref={swatchRef}
-        aria-label={`View color ${color}`}
-        title={`View color ${color}`}
       >
         {showCopied && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg">
             <span className="text-white text-xs font-bold">Copied!</span>
           </div>
         )}
-      </a>
+      </div>
       {showHex && (
         <div className="relative">
           <CopyButton
