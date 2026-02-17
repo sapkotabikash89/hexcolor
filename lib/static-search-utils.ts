@@ -177,9 +177,9 @@ export function performStaticSearch(input: string, blogPosts: BlogPost[] = []): 
   // Rule #3: Priority rules - Blog post match first
   const blogMatch = searchBlogPosts(input, inputType, blogPosts)
   if (blogMatch) {
-    // Return the blog post URL directly
-    // Ensure the URI starts with / for proper URL construction
-    const uri = blogMatch.uri.startsWith('/') ? blogMatch.uri : `/${blogMatch.uri}`
+    // Ensure the URI starts with / and ends with / for proper URL construction
+    let uri = blogMatch.uri.startsWith('/') ? blogMatch.uri : `/${blogMatch.uri}`
+    if (!uri.endsWith('/')) uri = `${uri}/`
     const baseUrl = "https://hexcolormeans.com"
     return new URL(uri, baseUrl).toString()
   }

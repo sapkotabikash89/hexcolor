@@ -206,8 +206,9 @@ function generatePostsSitemap() {
             const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${posts.map(post => {
-                const uri = post.uri || '';
-                const url = uri.startsWith('http') ? uri : `${BASE_URL}${uri}`;
+                let uri = post.uri || '';
+                if (uri && !uri.endsWith('/')) uri = `${uri}/`;
+                const url = uri.startsWith('http') ? (uri.endsWith('/') ? uri : `${uri}/`) : `${BASE_URL}${uri}`;
                 // Ensure date is in ISO 8601 format (YYYY-MM-DDThh:mm:ssTZD)
                 let dateStr = post.date || now;
                 try {
@@ -297,8 +298,9 @@ function generateImagesSitemap() {
             );
 
             const postEntries = postsWithImages.map(post => {
-                const uri = post.uri || '';
-                const pageUrl = uri.startsWith('http') ? uri : `${BASE_URL}${uri}`;
+                let uri = post.uri || '';
+                if (uri && !uri.endsWith('/')) uri = `${uri}/`;
+                const pageUrl = uri.startsWith('http') ? (uri.endsWith('/') ? uri : `${uri}/`) : `${BASE_URL}${uri}`;
                 const imageUrl = post.featuredImage.node.sourceUrl;
                 const imageTitle = post.featuredImage.node.altText || post.title || 'Image';
 

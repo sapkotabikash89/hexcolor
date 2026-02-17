@@ -38,7 +38,7 @@ export default async function ShadesMeaningCategoryPage() {
 
   // Define breadcrumbs
   const crumbs = [
-    { label: categoryName, href: "/category/shades-meaning" },
+    { label: categoryName, href: "/category/shades-meaning/" },
   ];
 
   return (

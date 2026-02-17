@@ -270,3 +270,13 @@
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
+/* Support for internal link coloring in shades meaning posts */
+.shades-meaning-content .cm-wrap a,
+.shades-meaning-content a {
+  color: #E0115F !important;
+  text-decoration: underline;
+}
+
+.shades-meaning-content a:hover {
+  opacity: 0.8;
+}

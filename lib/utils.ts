@@ -28,8 +28,8 @@ export function autoLinkShadeNames(html: string, isShadesMeaning: boolean = fals
       return match
     }
 
-    const href = `/colors/${cleanHex.toLowerCase()}`
-    const linkColor = isShadesMeaning ? "inherit" : `#${cleanHex}`
+    const href = `/colors/${cleanHex.toLowerCase()}/`
+    const linkColor = isShadesMeaning ? "#E0115F" : `#${cleanHex}`
 
     return `<a href="${href}" style="color: ${linkColor}; text-decoration: underline;" class="hover:opacity-80 transition-opacity">${colorName} (#${cleanHex})</a>`
   })

@@ -9,7 +9,7 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
-const SITE_URL = "https://hexcolormeans.com"
+const SITE_URL = "https://hexcolormeans.com/"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

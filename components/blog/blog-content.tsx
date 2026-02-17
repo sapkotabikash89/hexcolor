@@ -4,11 +4,12 @@ import { useEffect, useRef } from "react"
 
 interface BlogContentProps {
   html: string
+  isShadesMeaning?: boolean
   className?: string
   style?: React.CSSProperties
 }
 
-export function BlogContent({ html, className = '', style }: BlogContentProps) {
+export function BlogContent({ html, isShadesMeaning, className = '', style }: BlogContentProps) {
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export function BlogContent({ html, className = '', style }: BlogContentProps) {
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, '')
         }
-        
+
         if (id) {
           heading.id = id
         }
@@ -50,7 +51,7 @@ export function BlogContent({ html, className = '', style }: BlogContentProps) {
   return (
     <div
       ref={contentRef}
-      className={`wp-content not-prose ${className}`}
+      className={`wp-content not-prose ${className} ${isShadesMeaning ? 'shades-meaning-content' : ''}`}
       style={style}
       dangerouslySetInnerHTML={{ __html: html }}
     />

@@ -402,6 +402,9 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
       u.hostname = "hexcolormeans.com"
       u.protocol = "https:"
       u.port = ""
+      if (u.pathname && !u.pathname.endsWith("/")) {
+        u.pathname = `${u.pathname}/`
+      }
       canonical = u.toString()
     } catch { }
   }
@@ -568,8 +571,8 @@ export default async function WPPostPage({ params }: WPPageProps) {
     const categoryLabel = firstCategory.name
     const categoryHref = `/category/${firstCategory.slug}`
     crumbs = [
-      { label: categoryLabel, href: categoryHref },
-      { label: shortTitle(node.title), href: node.uri },
+      { label: categoryLabel, href: `${categoryHref}/` },
+      { label: shortTitle(node.title), href: `${node.uri.endsWith('/') ? node.uri : node.uri + '/'}` },
     ]
   } else {
     // For posts without categories, we could either:
@@ -578,8 +581,8 @@ export default async function WPPostPage({ params }: WPPageProps) {
     // Following the requirement to not use generic placeholders like "Color Meanings"
     // and never use /blog/ as parent, let's default to a "General" category
     crumbs = [
-      { label: "Blog", href: "/blog" },
-      { label: shortTitle(node.title), href: node.uri },
+      { label: "Blog", href: "/blog/" },
+      { label: shortTitle(node.title), href: `${node.uri.endsWith('/') ? node.uri : node.uri + '/'}` },
     ]
   }
   const catSlugs = (node?.categories?.nodes || []).map((c: any) => c.slug).filter(Boolean)
@@ -806,7 +809,8 @@ export default async function WPPostPage({ params }: WPPageProps) {
                       <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden">
                         {parts[0] && (
                           <BlogContent
-                            html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[0]), accentColor), isShadesMeaning)}
+                            html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[0]), accentColor), isShadesMeaningCategory)}
+                            isShadesMeaning={isShadesMeaningCategory}
                             className="cm-wrap"
                             style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
                           />
@@ -816,7 +820,8 @@ export default async function WPPostPage({ params }: WPPageProps) {
                         </div>
                         {parts[1] && (
                           <BlogContent
-                            html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[1]), accentColor), isShadesMeaning)}
+                            html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[1]), accentColor), isShadesMeaningCategory)}
+                            isShadesMeaning={isShadesMeaningCategory}
                             className="cm-wrap"
                             style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
                           />
@@ -888,7 +893,8 @@ export default async function WPPostPage({ params }: WPPageProps) {
                       </div>
                       {/* Render the rest of the technical content */}
                       <BlogContent
-                        html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaning)}
+                        html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaningCategory)}
+                        isShadesMeaning={isShadesMeaningCategory}
                         className="cm-wrap"
                         style={{
                           "--page-accent-color": accentColor,
@@ -905,7 +911,8 @@ export default async function WPPostPage({ params }: WPPageProps) {
               return (
                 <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden min-w-0">
                   <BlogContent
-                    html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaning)}
+                    html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaningCategory)}
+                    isShadesMeaning={isShadesMeaningCategory}
                     className="cm-wrap"
                     style={{
                       "--page-accent-color": accentColor,

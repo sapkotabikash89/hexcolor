@@ -62,8 +62,8 @@ export default async function TagPage({ params }: TagPageProps) {
   }));
 
   const crumbs = [
-    { label: "Tags", href: "/tags" },
-    { label: tagName, href: `/tags/${tag}` },
+    { label: "Tags", href: "/tags/" },
+    { label: tagName, href: `/tags/${tag}/` },
   ];
 
   return (
