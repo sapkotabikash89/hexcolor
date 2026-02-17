@@ -7,8 +7,7 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { getContrastColor } from "@/lib/color-utils"
-import { hexToRgb, rgbToHsl } from "@/lib/color-utils"
+import { getContrastColor, hexToRgb, rgbToHsl } from "@/lib/color-utils"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { LibraryColorSwatch } from "@/components/library-color-swatch"
@@ -398,16 +397,21 @@ export function ColorLibrary({
                   ) : (
                     <PaginationNext href={getPageLink(page + 1, activeCategory)} />
                   )}
-                </div>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
+      </div>
 
-                {filteredColors().length === 0 && (
-                  <Card className="p-12 text-center">
-                    <p className="text-muted-foreground">No colors found matching your search.</p>
-                    <Button variant="outline" className="mt-4 bg-transparent" onClick={() => setSearchQuery("")}>
-                      Clear Search
-                    </Button>
-                  </Card>
-                )}
-              </div>
-              )
+      {filteredColors().length === 0 && (
+        <Card className="p-12 text-center">
+          <p className="text-muted-foreground">No colors found matching your search.</p>
+          <Button variant="outline" className="mt-4 bg-transparent" onClick={() => setSearchQuery("")}>
+            Clear Search
+          </Button>
+        </Card>
+      )}
+    </div>
+  )
 }
