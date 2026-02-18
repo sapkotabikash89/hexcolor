@@ -12,17 +12,17 @@ import { ShareButtons } from "@/components/share-buttons"
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Color Library - Browse Thousands of Colors | HexColorMeans",
+  title: "Color Library: 1200+ Color Names, Codes and Shades | HexColorMeans",
   description:
-    "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
+    "Explore our Color Library featuring 1,200+ color names with verified Hex, RGB, and CMYK codes. Quickly find exact shades or browse categories for palette inspiration, all organized for speed, clarity, and technical accuracy.",
   keywords: ["color library", "color names", "hex colors", "color palette", "color collection"],
   alternates: {
     canonical: "https://hexcolormeans.com/colors/",
   },
   openGraph: {
-    title: "Color Library - Browse Thousands of Colors | HexColorMeans",
+    title: "Color Library: 1200+ Color Names, Codes and Shades | HexColorMeans",
     description:
-      "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
+      "Explore our Color Library featuring 1,200+ color names with verified Hex, RGB, and CMYK codes. Quickly find exact shades or browse categories for palette inspiration, all organized for speed, clarity, and technical accuracy.",
     url: "https://hexcolormeans.com/colors/",
     siteName: "HexColorMeans",
     type: "website",
@@ -37,9 +37,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Color Library - Browse Thousands of Colors | HexColorMeans",
+    title: "Color Library: 1200+ Color Names, Codes and Shades | HexColorMeans",
     description:
-      "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
+      "Explore our Color Library featuring 1,200+ color names with verified Hex, RGB, and CMYK codes. Quickly find exact shades or browse categories for palette inspiration, all organized for speed, clarity, and technical accuracy.",
     images: ["https://hexcolormeans.com/color-library-hexcolormeans.webp"],
   },
 }
@@ -61,7 +61,7 @@ export default function ColorsPage() {
           <div className="text-center space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">Color Library</h1>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              Browse a growing collection of colors organized by category, complete with clear names and precise hex codes.
+              Explore our Color Library featuring 1,200+ color names with verified Hex, RGB, and CMYK codes. Quickly find exact shades or browse categories for palette inspiration, all organized for speed, clarity, and technical accuracy.
             </p>
           </div>
         </div>
@@ -76,12 +76,6 @@ export default function ColorsPage() {
               </Suspense>
 
               <div className="mt-8 pt-8 border-t flex flex-col items-center gap-6">
-                <p className="text-center max-w-2xl text-muted-foreground">
-                  Access verified Hex, RGB, and HSL data across thousands of unique color entries. Whether you are searching for the precise value of a specific shade or exploring categories for palette inspiration, the HexColorMeans Color Library is engineered for rapid information retrieval and technical accuracy.
-                </p>
-                <p className="text-muted-foreground font-medium italic text-center">
-                  Empowering your creative workflow with data-driven color decisions.
-                </p>
                 <ShareButtons title="Explore the HexColorMeans Digital Color Compendium" />
               </div>
             </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, Suspense } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,10 +8,9 @@ import Link from "next/link"
 import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getContrastColor, hexToRgb, rgbToHsl } from "@/lib/color-utils"
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { LibraryColorSwatch } from "@/components/library-color-swatch"
-import { useSearchParams, useRouter, usePathname } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
 // Import the optimized color library data
 import colorLibraryData from "@/lib/color-library-data.json"
@@ -22,16 +21,12 @@ export function ColorLibrary({
   initialCategory = "all",
   page = 1,
   hidePagination = false,
-  basePath = "/colors"
 }: {
   initialCategory?: string;
   page?: number;
   hidePagination?: boolean;
-  basePath?: string;
 }) {
   const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
 
   // Initialize category from URL params, fallback to initialCategory prop
   const currentCategory = searchParams.get('cat') || initialCategory
@@ -42,41 +37,8 @@ export function ColorLibrary({
   const [loading, setLoading] = useState(false)
   const debounceRef = useRef<number | null>(null)
 
-  const perPage = 50
-
   // All colors from the optimized data file
   const allColors = colorLibraryData;
-  const [isLoading, setIsLoading] = useState(false)
-
-  // Link helper
-  const getPageLink = (p: number, cat: string) => {
-    let link = "/colors";
-
-    if (p > 1) {
-      link = `${link}/page/${p}/`;
-    } else {
-      link = `${link}/`;
-    }
-
-    const params = new URLSearchParams(searchParams.toString());
-    if (cat !== "all") {
-      params.set('cat', cat);
-    } else {
-      params.delete('cat');
-    }
-    // Search query is handled by state but should be in links too
-    if (searchQuery) {
-      params.set('q', searchQuery);
-    }
-
-    const search = params.toString();
-    return search ? `${link}?${search}` : link;
-  }
-
-  const buildMobileList = (pages: number) => {
-    if (pages <= 4) return Array.from({ length: pages }, (_, i) => i + 1)
-    return [1, 2, "ellipsis", pages - 1, pages]
-  }
 
   useEffect(() => {
     const q = searchParams.get('q')
@@ -133,13 +95,6 @@ export function ColorLibrary({
       if (debounceRef.current) window.clearTimeout(debounceRef.current)
     }
   }, [searchQuery, allColors])
-
-  const buildPageList = (pages: number, current: number) => {
-    if (pages <= 8) return Array.from({ length: pages }, (_, i) => i + 1)
-    if (current <= 4) return [1, 2, 3, 4, 5, "ellipsis", pages - 2, pages - 1, pages]
-    if (current >= pages - 3) return [1, 2, 3, "ellipsis", pages - 4, pages - 3, pages - 2, pages - 1, pages]
-    return [1, 2, "ellipsis", current - 1, current, current + 1, "ellipsis", pages - 2, pages - 1, pages]
-  }
 
   const getCategory = (hex: string) => {
     const rgb = hexToRgb(hex)
@@ -203,9 +158,21 @@ export function ColorLibrary({
     { value: "grays", label: "Grays" },
   ]
 
-  const total = filteredColors().length
-  const pages = Math.ceil(total / perPage)
-  const colorsToShow = hidePagination ? filteredColors() : filteredColors().slice((page - 1) * perPage, page * perPage)
+  const shadeMeta: { [key: string]: { label: string; href: string } } = {
+    reds: { label: "Shades of Red", href: "/shades-of-red-color/" },
+    pinks: { label: "Shades of Pink", href: "/shades-of-pink-color/" },
+    oranges: { label: "Shades of Orange", href: "/shades-of-orange-color/" },
+    yellows: { label: "Shades of Yellow", href: "/shades-of-yellow-color/" },
+    greens: { label: "Shades of Green", href: "/shades-of-green-color/" },
+    blues: { label: "Shades of Blue", href: "/shades-of-blue-color/" },
+    purples: { label: "Shades of Purple", href: "/shades-of-purple-color/" },
+    browns: { label: "Shades of Brown", href: "/shades-of-brown-color/" },
+    grays: { label: "Shades of Gray", href: "/shades-of-gray-color/" },
+  }
+
+  const shadeOrder = ["reds", "pinks", "oranges", "yellows", "greens", "blues", "purples", "browns", "grays"] as const
+
+  const colorsToShow = filteredColors()
 
   return (
     <div className="space-y-8">
@@ -266,150 +233,50 @@ export function ColorLibrary({
           ))}
         </nav>
 
-        {!hidePagination && pages > 1 && (
-          <div className="mb-6">
-            <Pagination>
-              <PaginationContent className="flex-nowrap sm:flex-wrap">
-                <PaginationItem>
-                  {page <= 1 ? (
-                    <span className="flex h-9 w-9 items-center justify-center text-muted-foreground opacity-50 cursor-not-allowed" aria-disabled="true">
-                      <span className="sr-only">Previous</span>
-                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                    </span>
-                  ) : (
-                    <PaginationPrevious href={getPageLink(page - 1, currentCategory)} />
-                  )}
-                </PaginationItem>
-
-                <div className="hidden sm:flex">
-                  {buildPageList(pages, page).map((n, idx) =>
-                    n === "ellipsis" ? (
-                      <PaginationItem key={`e-${idx}`}>
-                        <PaginationEllipsis />
-                      </PaginationItem>
+        {!searchQuery && currentCategory === "all" ? (
+          <div className="space-y-10">
+            {shadeOrder.map((shade) => {
+              const colorsForShade = colorsToShow.filter((color) => {
+                const cat = (color as any).category ?? getCategory(color.hex)
+                return cat === shade
+              })
+              if (colorsForShade.length === 0) return null
+              const meta = shadeMeta[shade]
+              return (
+                <section key={shade} className="space-y-4">
+                  <h2 className="text-2xl font-bold">
+                    {meta ? (
+                      <Link href={meta.href} className="hover:underline">
+                        {meta.label}
+                      </Link>
                     ) : (
-                      <PaginationItem key={`n-${n}`}>
-                        <PaginationLink
-                          href={getPageLink(n as number, currentCategory)}
-                          isActive={n === page}
-                          className={n === page ? "bg-primary text-primary-foreground rounded-full" : ""}
-                        >
-                          {n}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ),
-                  )}
-                </div>
-
-                <div className="flex sm:hidden">
-                  {buildMobileList(pages).map((n, idx) =>
-                    n === "ellipsis" ? (
-                      <PaginationItem key={`me-${idx}`}>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    ) : (
-                      <PaginationItem key={`mn-${idx}-${n}`}>
-                        <PaginationLink
-                          href={getPageLink(n as number, currentCategory)}
-                          isActive={(n as number) === page}
-                          className={(n as number) === page ? "bg-primary text-primary-foreground rounded-full" : ""}
-                        >
-                          {n}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ),
-                  )}
-                </div>
-
-                <PaginationItem>
-                  {page >= pages ? (
-                    <span className="flex h-9 w-9 items-center justify-center text-muted-foreground opacity-50 cursor-not-allowed" aria-disabled="true">
-                      <span className="sr-only">Next</span>
-                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M6.1584 3.13523C6.35985 2.94621 6.67627 2.95603 6.86529 3.15749L10.6153 7.15749C10.7956 7.34982 10.7956 7.6491 10.6153 7.84143L6.86529 11.8414C6.67627 12.0429 6.35985 12.0527 6.1584 11.8637C5.95694 11.6747 5.94713 11.3583 6.13615 11.1568L9.56556 7.49946L6.13615 3.84211C5.94713 3.64066 5.95694 3.32424 6.1584 3.13523Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                    </span>
-                  ) : (
-                    <PaginationNext href={getPageLink(page + 1, currentCategory)} />
-                  )}
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+                      shade
+                    )}
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {colorsForShade.map((color, index) => (
+                      <LibraryColorSwatch key={`${shade}-${index}`} name={color.name} hex={color.hex} />
+                    ))}
+                  </div>
+                </section>
+              )
+            })}
           </div>
-        )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {colorsToShow.map((color, index) => (
-            <LibraryColorSwatch key={index} name={color.name} hex={color.hex} />
-          ))}
-        </div>
-
-        {!hidePagination && pages > 1 && (
-          <div className="mt-8">
-            <Pagination>
-              <PaginationContent className="flex-nowrap sm:flex-wrap">
-                <PaginationItem>
-                  {page <= 1 ? (
-                    <span className="flex h-9 w-9 items-center justify-center text-muted-foreground opacity-50 cursor-not-allowed" aria-disabled="true">
-                      <span className="sr-only">Previous</span>
-                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                    </span>
-                  ) : (
-                    <PaginationPrevious href={getPageLink(page - 1, currentCategory)} />
-                  )}
-                </PaginationItem>
-
-                <div className="hidden sm:flex">
-                  {buildPageList(pages, page).map((n, idx) =>
-                    n === "ellipsis" ? (
-                      <PaginationItem key={`b-e-${idx}`}>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    ) : (
-                      <PaginationItem key={`b-n-${n}`}>
-                        <PaginationLink
-                          href={getPageLink(n as number, currentCategory)}
-                          isActive={n === page}
-                          className={n === page ? "bg-primary text-primary-foreground rounded-full" : ""}
-                        >
-                          {n}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ),
-                  )}
-                </div>
-
-                <div className="flex sm:hidden">
-                  {buildMobileList(pages).map((n, idx) =>
-                    n === "ellipsis" ? (
-                      <PaginationItem key={`b-me-${idx}`}>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    ) : (
-                      <PaginationItem key={`b-mn-${idx}-${n}`}>
-                        <PaginationLink
-                          href={getPageLink(n as number, currentCategory)}
-                          isActive={(n as number) === page}
-                          className={(n as number) === page ? "bg-primary text-primary-foreground rounded-full" : ""}
-                        >
-                          {n}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ),
-                  )}
-                </div>
-
-                <PaginationItem>
-                  {page >= pages ? (
-                    <span className="flex h-9 w-9 items-center justify-center text-muted-foreground opacity-50 cursor-not-allowed" aria-disabled="true">
-                      <span className="sr-only">Next</span>
-                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"><path d="M6.1584 3.13523C6.35985 2.94621 6.67627 2.95603 6.86529 3.15749L10.6153 7.15749C10.7956 7.34982 10.7956 7.6491 10.6153 7.84143L6.86529 11.8414C6.67627 12.0429 6.35985 12.0527 6.1584 11.8637C5.95694 11.6747 5.94713 11.3583 6.13615 11.1568L9.56556 7.49946L6.13615 3.84211C5.94713 3.64066 5.95694 3.32424 6.1584 3.13523Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                    </span>
-                  ) : (
-                    <PaginationNext href={getPageLink(page + 1, currentCategory)} />
-                  )}
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+        ) : (
+          <>
+            {!searchQuery && currentCategory !== "all" && shadeMeta[currentCategory] && (
+              <h2 className="text-2xl font-bold mb-4">
+                <Link href={shadeMeta[currentCategory].href} className="hover:underline">
+                  {shadeMeta[currentCategory].label}
+                </Link>
+              </h2>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {colorsToShow.map((color, index) => (
+                <LibraryColorSwatch key={index} name={color.name} hex={color.hex} />
+              ))}
+            </div>
+          </>
         )}
       </div>
 
