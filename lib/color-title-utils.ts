@@ -51,7 +51,7 @@ export function detectColorInTitle(title: string): string | null {
     black: "#000000",
     white: "#FFFFFF",
     gray: "#808080",
-    brown: "#A52A2A",
+    brown: "#895129",
     maroon: "#800000",
     burgundy: "#800020",
   };
