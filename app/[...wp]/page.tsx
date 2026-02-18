@@ -408,8 +408,8 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
       canonical = u.toString()
     } catch { }
   }
-  const robotsIndex = node.seo?.metaRobotsNoindex === "noindex" ? false : true
-  const robotsFollow = node.seo?.metaRobotsNofollow === "nofollow" ? false : true
+  const hasNoindex = node.seo?.metaRobotsNoindex === "noindex"
+  const hasNofollow = node.seo?.metaRobotsNofollow === "nofollow"
   const adv = node.seo?.metaRobotsAdvanced || ""
   const googleBot: Record<string, any> = {}
   adv.split(",").forEach((pair: string) => {
@@ -421,17 +421,23 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
     if (k === "noarchive") googleBot["noarchive"] = true
     if (k === "noimageindex") googleBot["noimageindex"] = true
   })
+  const hasGoogleBotDirectives = Object.keys(googleBot).length > 0
+
+  const robots =
+    hasNoindex || hasNofollow || hasGoogleBotDirectives
+      ? {
+        index: hasNoindex ? false : undefined,
+        follow: hasNofollow ? false : undefined,
+        googleBot: hasGoogleBotDirectives ? googleBot : undefined,
+      }
+      : undefined
   return {
     title: node.seo.title || node.title,
     description: node.seo.metaDesc || node.seo.opengraphDescription || "",
     alternates: {
       canonical,
     },
-    robots: {
-      index: robotsIndex,
-      follow: robotsFollow,
-      googleBot,
-    },
+    robots,
     openGraph: {
       title: node.seo.opengraphTitle || node.seo.title || node.title,
       description: node.seo.opengraphDescription || node.seo.metaDesc || "",

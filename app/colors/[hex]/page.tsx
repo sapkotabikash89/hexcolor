@@ -183,11 +183,6 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       description: baseDescription,
       images: [imageUrl],
     },
-    // Additional SEO enhancements
-    robots: {
-      index: true, // Index ALL generated color pages
-      follow: true,
-    },
   }
 }
 

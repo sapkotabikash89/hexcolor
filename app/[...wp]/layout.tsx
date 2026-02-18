@@ -51,17 +51,6 @@ export const metadata: Metadata = {
     images: ["https://hexcolormeans.com/colormean-know%20your%20color.webp"],
   },
   icons: { icon: "/favicon.webp" },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
 }
 
 export const viewport: Viewport = {
