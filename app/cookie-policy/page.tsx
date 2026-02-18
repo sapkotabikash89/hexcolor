@@ -14,6 +14,29 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://hexcolormeans.com/cookie-policy/",
   },
+  openGraph: {
+    title: "Cookie Policy - HexColorMeans",
+    description:
+      "Learn how HexColorMeans uses cookies to improve your browsing experience and understand website usage.",
+    url: "https://hexcolormeans.com/cookie-policy/",
+    type: "website",
+    siteName: "HexColorMeans",
+    images: [
+      {
+        url: "https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp",
+        width: 1200,
+        height: 630,
+        alt: "HexColorMeans - Professional Color Tools and Information",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cookie Policy - HexColorMeans",
+    description:
+      "Learn how HexColorMeans uses cookies to improve your browsing experience and understand website usage.",
+    images: ["https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp"],
+  },
 }
 
 export default function CookiePolicyPage() {

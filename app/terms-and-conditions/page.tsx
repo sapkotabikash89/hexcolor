@@ -14,6 +14,29 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://hexcolormeans.com/terms-and-conditions/",
   },
+  openGraph: {
+    title: "Terms and Conditions - HexColorMeans",
+    description:
+      "Terms and conditions for using HexColorMeans. Outlines the rules and responsibilities for using our website.",
+    url: "https://hexcolormeans.com/terms-and-conditions/",
+    type: "website",
+    siteName: "HexColorMeans",
+    images: [
+      {
+        url: "https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp",
+        width: 1200,
+        height: 630,
+        alt: "HexColorMeans - Professional Color Tools and Information",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms and Conditions - HexColorMeans",
+    description:
+      "Terms and conditions for using HexColorMeans. Outlines the rules and responsibilities for using our website.",
+    images: ["https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp"],
+  },
 }
 
 export default function TermsAndConditionsPage() {

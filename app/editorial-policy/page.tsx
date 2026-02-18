@@ -14,6 +14,29 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://hexcolormeans.com/editorial-policy/",
   },
+  openGraph: {
+    title: "Editorial Policy - HexColorMeans",
+    description:
+      "Learn about HexColorMeans' editorial standards, research practices, and commitment to accurate color information.",
+    url: "https://hexcolormeans.com/editorial-policy/",
+    type: "website",
+    siteName: "HexColorMeans",
+    images: [
+      {
+        url: "https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp",
+        width: 1200,
+        height: 630,
+        alt: "HexColorMeans - Professional Color Tools and Information",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Editorial Policy - HexColorMeans",
+    description:
+      "Learn about HexColorMeans' editorial standards, research practices, and commitment to accurate color information.",
+    images: ["https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp"],
+  },
 }
 
 export default function EditorialPolicyPage() {

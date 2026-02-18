@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://hexcolormeans.com/color%20library-list%20of%20all%20colors.webp",
+        url: "https://hexcolormeans.com/color-library-hexcolormeans.webp",
         width: 1200,
         height: 630,
         alt: "Color Library preview",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     title: "Color Library - Browse Thousands of Colors | HexColorMeans",
     description:
       "Explore our comprehensive color library with thousands of colors organized by category. Find the perfect color with hex codes, RGB values, and color names.",
-    images: ["https://hexcolormeans.com/color%20library-list%20of%20all%20colors.webp"],
+    images: ["https://hexcolormeans.com/color-library-hexcolormeans.webp"],
   },
 }
 

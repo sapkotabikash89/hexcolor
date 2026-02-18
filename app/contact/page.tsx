@@ -14,6 +14,29 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://hexcolormeans.com/contact/",
   },
+  openGraph: {
+    title: "Contact Us - HexColorMeans",
+    description:
+      "Get in touch with the HexColorMeans team for questions, feedback, or collaborations regarding color meanings and data.",
+    url: "https://hexcolormeans.com/contact/",
+    type: "website",
+    siteName: "HexColorMeans",
+    images: [
+      {
+        url: "https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp",
+        width: 1200,
+        height: 630,
+        alt: "HexColorMeans - Professional Color Tools and Information",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Us - HexColorMeans",
+    description:
+      "Get in touch with the HexColorMeans team for questions, feedback, or collaborations regarding color meanings and data.",
+    images: ["https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp"],
+  },
 }
 
 export default function ContactPage() {

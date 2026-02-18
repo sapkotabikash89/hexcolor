@@ -10,9 +10,33 @@ export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "About Us - HexColorMeans",
-  description: "Learn about HexColorMeans, a place created to understand color beyond appearance, exploring meaning, psychology, and precision.",
+  description:
+    "Learn about HexColorMeans, a place created to understand color beyond appearance, exploring meaning, psychology, and precision.",
   alternates: {
     canonical: "https://hexcolormeans.com/about-us/",
+  },
+  openGraph: {
+    title: "About Us - HexColorMeans",
+    description:
+      "Learn about HexColorMeans, a place created to understand color beyond appearance, exploring meaning, psychology, and precision.",
+    url: "https://hexcolormeans.com/about-us/",
+    type: "website",
+    siteName: "HexColorMeans",
+    images: [
+      {
+        url: "https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp",
+        width: 1200,
+        height: 630,
+        alt: "HexColorMeans - Professional Color Tools and Information",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Us - HexColorMeans",
+    description:
+      "Learn about HexColorMeans, a place created to understand color beyond appearance, exploring meaning, psychology, and precision.",
+    images: ["https://hexcolormeans.com/hexcolormeans-where-every-color-has-meaning.webp"],
   },
 }
 

@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     siteName: "HexColorMeans",
     images: [
       {
-        url: `${SITE_URL}/advanced-color-picker-tool-online-free.webp`,
+        url: `${SITE_URL}/hexcolormeans-where-every-color-has-meaning.webp`,
         width: 1200,
         height: 630,
         alt: "HexColorMeans - Professional Color Tools and Information",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HexColorMeans - Where Every Color Has Meaning",
     description: "Explore colors with detailed information, meanings, conversions, and professional tools.",
-    images: [`${SITE_URL}/advanced-color-picker-tool-online-free.webp`],
+    images: [`${SITE_URL}/hexcolormeans-where-every-color-has-meaning.webp`],
   },
   icons: {
     icon: [
