@@ -129,7 +129,46 @@ if (fs.existsSync(assetsDir)) {
     warnings++;
 }
 
-// Summary
+console.log('\n🧹 Checking HTML files for leading comments...');
+
+const htmlFiles = [];
+
+const collectHtmlFiles = (dir) => {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    entries.forEach((entry) => {
+        const entryPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+            collectHtmlFiles(entryPath);
+        } else if (entry.name === 'index.html') {
+            htmlFiles.push(entryPath);
+        }
+    });
+};
+
+collectHtmlFiles(OUT_DIR);
+
+let cleanedFiles = 0;
+
+const leadingCommentPattern = /^(\s*<!DOCTYPE html>)<!--[\s\S]*?-->/i;
+
+htmlFiles.forEach((filePath) => {
+    const contents = fs.readFileSync(filePath, 'utf8');
+    if (leadingCommentPattern.test(contents)) {
+        const updated = contents.replace(leadingCommentPattern, '$1');
+        if (updated !== contents) {
+            fs.writeFileSync(filePath, updated);
+            cleanedFiles++;
+        }
+    }
+});
+
+if (cleanedFiles > 0) {
+    console.log(`   ✅ Removed leading comments from ${cleanedFiles} HTML files`);
+    warnings++;
+} else {
+    console.log('   ✅ No leading comments found after <!DOCTYPE html>');
+}
+
 console.log('\n' + '='.repeat(50));
 console.log('📊 VERIFICATION SUMMARY');
 console.log('='.repeat(50));

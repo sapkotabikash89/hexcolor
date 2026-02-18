@@ -7,6 +7,7 @@
   "scripts": {
     "prebuild": "rm -rf .next/cache && npm run sync && node scripts/update-shade-colors.mjs lib/posts/shades-of-*.json && node scripts/generate-sitemaps.mjs",
     "build": "next build",
+    "postbuild": "node scripts/verify-static-export.mjs",
     "export": "next build",
     "dev": "next dev",
     "lint": "next lint",
