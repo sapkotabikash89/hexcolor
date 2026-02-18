@@ -116,7 +116,7 @@ export function Header() {
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center justify-between gap-1 flex-1 max-w-[500px] xl:max-w-none">
+        <nav className="hidden md:flex items-center justify-center gap-4 flex-1 max-w-[500px] xl:max-w-none">
           {/* Tools submenu */}
           <div className="relative group">
             <Tooltip>
@@ -124,11 +124,11 @@ export function Header() {
                 <Link href="/color-wheel/">
                   <Button variant="ghost" size="sm" className="gap-2" aria-label="Tools">
                     <Grid className="w-4 h-4" aria-hidden="true" />
-                    <span className="hidden xl:inline">Tools</span>
+                    <span className="hidden lg:inline">Tools</span>
                   </Button>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="top" className="xl:hidden">
+              <TooltipContent side="top" className="lg:hidden">
                 <p>Tools</p>
               </TooltipContent>
             </Tooltip>
@@ -182,11 +182,11 @@ export function Header() {
               <Link href="/colors/">
                 <Button variant="ghost" size="sm" className="gap-2" aria-label="Color Library">
                   <Library className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden xl:inline">Color Library</span>
+                  <span className="hidden lg:inline">Color Library</span>
                 </Button>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="top" className="xl:hidden">
+            <TooltipContent side="top" className="lg:hidden">
               <p>Color Library</p>
             </TooltipContent>
           </Tooltip>
@@ -196,11 +196,11 @@ export function Header() {
                 <Link href="/blog/">
                   <Button variant="ghost" size="sm" className="gap-2" aria-label="Blog">
                     <BookOpen className="w-4 h-4" aria-hidden="true" />
-                    <span className="hidden xl:inline">Blog</span>
+                    <span className="hidden lg:inline">Blog</span>
                   </Button>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="xl:hidden">
+              <TooltipContent side="bottom" className="lg:hidden">
                 <p>Blog</p>
               </TooltipContent>
             </Tooltip>
@@ -239,11 +239,11 @@ export function Header() {
               <Link href="/contact/">
                 <Button variant="ghost" size="sm" className="gap-2" aria-label="Contact">
                   <Mail className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden xl:inline">Contact</span>
+                  <span className="hidden lg:inline">Contact</span>
                 </Button>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="bottom" className="xl:hidden">
+            <TooltipContent side="bottom" className="lg:hidden">
               <p>Contact</p>
             </TooltipContent>
           </Tooltip>
@@ -252,11 +252,11 @@ export function Header() {
               <Link href="/privacy-policy/">
                 <Button variant="ghost" size="sm" className="gap-2" aria-hidden="true" aria-label="Privacy">
                   <ShieldCheck className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden xl:inline">Privacy</span>
+                  <span className="hidden lg:inline">Privacy</span>
                 </Button>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="bottom" className="xl:hidden">
+            <TooltipContent side="bottom" className="lg:hidden">
               <p>Privacy</p>
             </TooltipContent>
           </Tooltip>
@@ -279,7 +279,7 @@ export function Header() {
           {/* Search Bar */}
           <div className="flex items-center flex-1 md:flex-none md:w-auto">
             {/* Desktop Search */}
-            <form onSubmit={handleSearch} className="relative hidden md:block w-32 lg:w-48 xl:w-64">
+            <form onSubmit={handleSearch} className="relative hidden md:block md:w-56 lg:w-48 xl:w-64">
               <Input
                 type="text"
                 placeholder="Search color..."

@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${canonicalUrl}opengraph-image.webp`,
+        url: `${canonicalUrl}hexcolormeans-where-every-color-has-meaning.webp`,
         width: 1200,
         height: 630,
         alt: "HexColorMeans - Professional Color Tools",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HexColorMeans: Where Every Color Has Meaning",
     description: "Professional color tools and information for designers and developers",
-    images: [`${canonicalUrl}opengraph-image.webp`],
+    images: [`${canonicalUrl}hexcolormeans-where-every-color-has-meaning.webp`],
   },
 }
 
