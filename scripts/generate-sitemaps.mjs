@@ -198,35 +198,89 @@ function getGumletColorImage(params) {
     return { url, alt, filename };
 }
 
-/**
- * Generate sitemap-images.xml
- */
+const GUMLET_BASE_URL = 'https://hexcolormeans.gumlet.io';
+const WORDPRESS_UPLOADS_PATH = '/wp-content/uploads/';
+const ARTICLE_IMAGE_BASE = `${GUMLET_BASE_URL}${WORDPRESS_UPLOADS_PATH}`;
+
+function normalizeArticleImageUrl(url) {
+    if (!url) return null;
+    if (url.includes('hexcolormeans.gumlet.io')) return url;
+    const directMatch = url.match(/^https?:\/\/blog\.hexcolormeans\.com(\/wp-content\/.+)$/);
+    if (directMatch) {
+        return `${GUMLET_BASE_URL}${directMatch[1]}`;
+    }
+    if (url.startsWith('//blog.hexcolormeans.com/')) {
+        return url.replace('//blog.hexcolormeans.com', GUMLET_BASE_URL);
+    }
+    return url;
+}
+
 function generateImagesSitemap() {
     try {
         let allImageUrls = [];
 
-        // 1. Process Blog Posts
         const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
         if (fs.existsSync(blogPostsDataPath)) {
             const posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
-
-            const postsWithImages = posts.filter(post =>
-                post.featuredImage &&
-                post.featuredImage.node &&
-                post.featuredImage.node.sourceUrl
-            );
-
-            const postEntries = postsWithImages.map(post => {
+            posts.forEach(post => {
                 let uri = post.uri || '';
                 if (uri && !uri.endsWith('/')) uri = `${uri}/`;
                 const pageUrl = uri.startsWith('http') ? (uri.endsWith('/') ? uri : `${uri}/`) : `${BASE_URL}${uri}`;
-                const imageUrl = post.featuredImage.node.sourceUrl;
-                const imageTitle = post.featuredImage.node.altText || post.title || 'Image';
 
-                return { pageUrl, imageUrl, imageTitle };
+                const imageSet = new Set();
+                const addImage = (url, titleCandidate) => {
+                    if (!url) return;
+                    const normalized = normalizeArticleImageUrl(url);
+                    if (!normalized) return;
+                    if (imageSet.has(normalized)) return;
+                    imageSet.add(normalized);
+                    const imageTitle =
+                        titleCandidate ||
+                        (post.featuredImage && post.featuredImage.node && post.featuredImage.node.altText) ||
+                        post.title ||
+                        'Image';
+                    allImageUrls.push({ pageUrl, imageUrl: normalized, imageTitle });
+                };
+
+                if (post.featuredImage && post.featuredImage.node && post.featuredImage.node.sourceUrl) {
+                    addImage(post.featuredImage.node.sourceUrl, post.featuredImage.node.altText);
+                }
+
+                if (post.seo && post.seo.opengraphImage) {
+                    if (post.seo.opengraphImage.sourceUrl) {
+                        addImage(post.seo.opengraphImage.sourceUrl);
+                    }
+                    if (post.seo.opengraphImage.mediaItemUrl) {
+                        addImage(post.seo.opengraphImage.mediaItemUrl);
+                    }
+                }
+
+                const rawSchema = post.seo && post.seo.schema && post.seo.schema.raw;
+                if (rawSchema) {
+                    try {
+                        const schema = JSON.parse(rawSchema);
+                        const graph = Array.isArray(schema['@graph']) ? schema['@graph'] : [];
+                        graph.forEach(node => {
+                            if (!node || typeof node !== 'object') return;
+                            if (typeof node.thumbnailUrl === 'string') {
+                                addImage(node.thumbnailUrl, post.title);
+                            }
+                            const img = node.image;
+                            if (!img) return;
+                            if (typeof img === 'string') {
+                                addImage(img, post.title);
+                            } else if (typeof img === 'object') {
+                                if (typeof img.url === 'string') {
+                                    addImage(img.url, post.title);
+                                } else if (typeof img.contentUrl === 'string') {
+                                    addImage(img.contentUrl, post.title);
+                                }
+                            }
+                        });
+                    } catch (e) {
+                    }
+                }
             });
-
-            allImageUrls = [...allImageUrls, ...postEntries];
         }
 
         if (allImageUrls.length > 0) {
