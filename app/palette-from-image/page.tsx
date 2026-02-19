@@ -123,7 +123,8 @@ export default function PaletteFromImagePage() {
             />
 
             {/* Tool Area */}
-            <section className="space-y-8">
+            <section className="space-y-8" aria-label="Palette from image tool interface">
+              <h2 className="sr-only">Palette from image tool</h2>
               <PaletteFromImageClient />
             </section>
 

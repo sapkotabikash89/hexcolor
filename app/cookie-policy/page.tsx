@@ -60,6 +60,7 @@ export default function CookiePolicyPage() {
 
             <div className="prose dark:prose-invert max-w-none space-y-8 text-muted-foreground leading-relaxed">
               <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Cookie Policy Overview</h2>
                 <p>
                   This Cookie Policy explains how <strong>HexColorMeans</strong> (<a href="https://hexcolormeans.com" className="text-primary hover:underline transition-colors">https://hexcolormeans.com</a>) uses cookies and similar technologies to improve your browsing experience, understand how the website is used, and ensure smooth and secure functionality. By visiting or interacting with our website, you consent to the practices described in this policy.
                 </p>

@@ -156,7 +156,8 @@ export default function ColorWheelPage() {
                         />
 
                         {/* Tool Area */}
-                        <section className="space-y-8">
+                        <section className="space-y-8" aria-label="Color wheel tool interface">
+                            <h2 className="sr-only">Color wheel tool</h2>
                             <ColorWheelClient />
                         </section>
 

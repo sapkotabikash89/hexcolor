@@ -135,7 +135,8 @@ export default function ColorPickerPage() {
             />
 
             {/* Tool Area */}
-            <section className="space-y-8">
+            <section className="space-y-8" aria-label="Color picker tool interface">
+              <h2 className="sr-only">Color picker tool</h2>
               <ColorPickerClient />
             </section>
 

@@ -130,7 +130,8 @@ export default function ColorBlindnessSimulatorPage() {
             />
 
             {/* Tool Area */}
-            <section className="space-y-8">
+            <section className="space-y-8" aria-label="Color blindness simulator tool interface">
+              <h2 className="sr-only">Color blindness simulator tool</h2>
               <ColorBlindnessSimulatorClient />
             </section>
 

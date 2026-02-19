@@ -731,7 +731,7 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
             </Select>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <h4 className="font-medium text-center">Normal Vision</h4>
+                <h3 className="font-medium text-center">Normal Vision</h3>
                 <div
                   className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
                   style={{ backgroundColor: hex, color: getContrastColor(hex) }}
@@ -740,9 +740,9 @@ export function ColorPageContent({ hex, mode = "full", faqs, colorInformation, n
                 </div>
               </div>
               <div className="space-y-2">
-                <h4 className="font-medium text-center capitalize">
+                <h3 className="font-medium text-center capitalize">
                   {colorBlindnessType.replace(/([A-Z])/g, " $1").trim()}
-                </h4>
+                </h3>
                 <div
                   className="w-full h-32 rounded-lg border-2 border-border flex items-center justify-center font-mono"
                   style={{
@@ -1120,7 +1120,7 @@ function ContrastResult({
 
   return (
     <div className="p-4 bg-muted rounded-lg space-y-2">
-      <h4 className="font-medium">{label}</h4>
+      <h3 className="font-medium">{label}</h3>
       <div className="text-2xl font-bold">{ratio.toFixed(2)}:1</div>
       <div className="space-y-1 text-sm">
         <div className="flex items-center gap-2">
@@ -1140,7 +1140,7 @@ function CSSExample({ title, code, preview }: { title: string; code: string; pre
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h4 className="font-medium text-xl">{title}</h4>
+        <h3 className="font-medium text-xl">{title}</h3>
       </div>
       <div className="p-3 bg-muted rounded-md font-mono text-sm">{code}</div>
       <div className="p-4 bg-background border-2 border-dashed border-border rounded-md">{preview}</div>

@@ -60,6 +60,7 @@ export default function PrivacyPolicyPage() {
 
             <div className="prose dark:prose-invert max-w-none space-y-8 text-muted-foreground leading-relaxed">
               <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Privacy Policy Overview</h2>
                 <p>
                   At <strong>HexColorMeans</strong>, accessible from <a href="https://hexcolormeans.com" className="text-primary hover:underline transition-colors">https://hexcolormeans.com</a>, your privacy is treated with care and respect. This Privacy Policy explains how information is collected, how it is used, and how it is protected when you visit or interact with our website. Transparency matters to us, and this page is designed to clearly outline our data practices in plain language.
                 </p>

@@ -1059,6 +1059,11 @@ export default async function WPPostPage({ params }: WPPageProps) {
     label: item.label,
   }))
 
+  const mainClassName =
+    isColorMeaningCategory || isShadesMeaningCategory
+      ? "w-full max-w-[1300px] mx-auto px-4 py-12"
+      : "w-full max-w-[1300px] mx-auto px-2 sm:px-4 py-12"
+
   return (
     <div className="flex flex-col min-h-screen">
       {hasColorUI && <WPColorContext color={accentColor || '#000000'} />}
@@ -1122,74 +1127,62 @@ export default async function WPPostPage({ params }: WPPageProps) {
         </div>
       </section>
 
-      {isColorMeaningCategory ? (
-        <>
-          <div className="xl:hidden w-full z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border mb-6">
-            <TableOfContents currentHex={effectiveHex || postColor} mobileOnly items={blogTocItems} />
-          </div>
-          <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
-              <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
-                <TableOfContents currentHex={effectiveHex || postColor} items={blogTocItems} />
-              </aside>
-              <div className="flex-1 min-w-0 w-full space-y-6">
-                {mainContent}
-              </div>
-              <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-                <ColorSidebar
-                  color={accentColor}
-                  showColorSchemes={hasColorUI}
-                  className="w-full space-y-6"
-                />
-              </aside>
-            </div>
-          </main>
-        </>
-      ) : (
-        <>
-          {titleContainsColor && <AnchorHashNav />}
-          {/* Check if this is a Shades Meaning category post */}
-          {isShadesMeaningCategory ? (
-            <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-              <div className="flex flex-col lg:flex-row gap-8 items-start">
-                {/* Left Sidebar for Shades Meaning */}
-                <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
-                  <ShadesSidebarTOC
-                    currentHex={effectiveHex || postColor}
-                    shades={shadesList}
-                    baseColorName={baseColorName || "Color"}
-                  />
-                </aside>
-
-                {/* Main Content Area */}
-                <div className="flex-1 min-w-0 w-full space-y-6">
-                  {mainContent}
-                </div>
-
-                {/* Right Sidebar */}
-                <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-                  <ColorSidebar
-                    color={accentColor}
-                    showColorSchemes={hasColorUI}
-                    className="w-full space-y-6"
-                  />
-                </aside>
-              </div>
-            </main>
-          ) : (
-            <main className="w-full max-w-[1300px] mx-auto px-2 sm:px-4 py-12">
-              <div className="flex flex-col lg:flex-row gap-8 min-w-0">
-                <div className="flex-1 space-y-6 min-w-0">
-                  {mainContent}
-                </div>
-                <aside className="hidden lg:block w-[340px] shrink-0">
-                  <ColorSidebar color={accentColor} showColorSchemes={hasColorUI} />
-                </aside>
-              </div>
-            </main>
-          )}
-        </>
+      {isColorMeaningCategory && (
+        <div className="xl:hidden w-full z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border mb-6">
+          <TableOfContents currentHex={effectiveHex || postColor} mobileOnly items={blogTocItems} />
+        </div>
       )}
+
+      {!isColorMeaningCategory && titleContainsColor && <AnchorHashNav />}
+
+      <main className={mainClassName}>
+        {isColorMeaningCategory ? (
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
+              <TableOfContents currentHex={effectiveHex || postColor} items={blogTocItems} />
+            </aside>
+            <div className="flex-1 min-w-0 w-full space-y-6">
+              {mainContent}
+            </div>
+            <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
+              <ColorSidebar
+                color={accentColor}
+                showColorSchemes={hasColorUI}
+                className="w-full space-y-6"
+              />
+            </aside>
+          </div>
+        ) : isShadesMeaningCategory ? (
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
+              <ShadesSidebarTOC
+                currentHex={effectiveHex || postColor}
+                shades={shadesList}
+                baseColorName={baseColorName || "Color"}
+              />
+            </aside>
+            <div className="flex-1 min-w-0 w-full space-y-6">
+              {mainContent}
+            </div>
+            <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
+              <ColorSidebar
+                color={accentColor}
+                showColorSchemes={hasColorUI}
+                className="w-full space-y-6"
+              />
+            </aside>
+          </div>
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-8 min-w-0">
+            <div className="flex-1 space-y-6 min-w-0">
+              {mainContent}
+            </div>
+            <aside className="hidden lg:block w-[340px] shrink-0">
+              <ColorSidebar color={accentColor} showColorSchemes={hasColorUI} />
+            </aside>
+          </div>
+        )}
+      </main>
 
       <Footer />
     </div>

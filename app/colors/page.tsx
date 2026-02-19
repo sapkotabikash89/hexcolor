@@ -69,7 +69,8 @@ export default function ColorsPage() {
 
       <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-6">
-          <article id="content" className="main-content grow-content flex-1" itemProp="articleBody">
+          <article id="content" className="main-content grow-content flex-1">
+            <h2 className="sr-only">Color library results and tools</h2>
             <div className="space-y-12">
               <Suspense fallback={<div className="p-12 text-center">Loading color library...</div>}>
                 <ColorLibrary initialCategory="all" page={1} />

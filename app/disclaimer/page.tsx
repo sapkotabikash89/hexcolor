@@ -60,6 +60,7 @@ export default function DisclaimerPage() {
 
             <div className="prose dark:prose-invert max-w-none space-y-8 text-muted-foreground leading-relaxed">
               <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Disclaimer Overview</h2>
                 <p>
                   The information provided by <strong>HexColorMeans</strong> (<a href="https://hexcolormeans.com" className="text-primary hover:underline transition-colors">https://hexcolormeans.com</a>) is intended for general informational and educational purposes only. All content on this website is created with care to help users understand color meanings, symbolism, psychology, spirituality, and technical color specifications. By using this website, you agree to the terms of this Disclaimer in full.
                 </p>

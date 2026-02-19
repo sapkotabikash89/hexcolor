@@ -60,6 +60,7 @@ export default function TermsAndConditionsPage() {
 
             <div className="prose dark:prose-invert max-w-none space-y-8 text-muted-foreground leading-relaxed">
               <section className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">Terms and Conditions Overview</h2>
                 <p>
                   Welcome to <strong>HexColorMeans</strong>. These Terms and Conditions outline the rules and responsibilities for using our website, located at <a href="https://hexcolormeans.com" className="text-primary hover:underline transition-colors">https://hexcolormeans.com</a>. By accessing or using HexColorMeans, you accept these terms in full. If you disagree with any part of these terms, please refrain from using the website.
                 </p>

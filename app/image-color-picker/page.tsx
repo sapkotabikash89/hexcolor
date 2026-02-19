@@ -123,7 +123,8 @@ export default function ImageColorPickerPage() {
             />
 
             {/* Tool Area */}
-            <section className="space-y-8">
+            <section className="space-y-8" aria-label="Image color picker tool interface">
+              <h2 className="sr-only">Image color picker tool</h2>
               <ImageColorPickerClient />
             </section>
 

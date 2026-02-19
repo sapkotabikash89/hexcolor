@@ -123,7 +123,8 @@ export default function ScreenColorPickerPage() {
             />
 
             {/* Tool Area */}
-            <section className="space-y-8">
+            <section className="space-y-8" aria-label="Screen color picker tool interface">
+              <h2 className="sr-only">Screen color picker tool</h2>
               <ScreenColorPickerClient />
             </section>
 

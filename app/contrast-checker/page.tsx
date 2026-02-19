@@ -125,7 +125,8 @@ export default function ContrastCheckerPage() {
             />
 
             {/* Tool Area */}
-            <section className="space-y-8">
+            <section className="space-y-8" aria-label="Contrast checker tool interface">
+              <h2 className="sr-only">Contrast checker tool</h2>
               <ContrastCheckerClient />
             </section>
 
