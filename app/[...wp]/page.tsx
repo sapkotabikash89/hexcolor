@@ -408,8 +408,10 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
       canonical = u.toString()
     } catch { }
   }
-  const hasNoindex = node.seo?.metaRobotsNoindex === "noindex"
-  const hasNofollow = node.seo?.metaRobotsNofollow === "nofollow"
+  const rawNoindex = node.seo?.metaRobotsNoindex
+  const rawNofollow = node.seo?.metaRobotsNofollow
+  const hasNoindex = rawNoindex === "noindex" || rawNoindex === true
+  const hasNofollow = rawNofollow === "nofollow" || rawNofollow === true
   const adv = node.seo?.metaRobotsAdvanced || ""
   const googleBot: Record<string, any> = {}
   adv.split(",").forEach((pair: string) => {
@@ -426,14 +428,61 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
   const robots =
     hasNoindex || hasNofollow || hasGoogleBotDirectives
       ? {
-        index: hasNoindex ? false : undefined,
-        follow: hasNofollow ? false : undefined,
-        googleBot: hasGoogleBotDirectives ? googleBot : undefined,
-      }
+          index: hasNoindex ? false : undefined,
+          follow: hasNofollow ? false : undefined,
+          googleBot: hasGoogleBotDirectives ? googleBot : undefined,
+        }
       : undefined
+
+  const titleText = String(node.title || "")
+  const lowerTitle = titleText.toLowerCase()
+  const hexInTitleMatch = titleText.match(/#?([0-9A-Fa-f]{6})\b/)
+  const explicitHex = hexInTitleMatch ? hexInTitleMatch[1].toUpperCase() : shortcodeHex ? shortcodeHex.replace("#", "").toUpperCase() : null
+  const colorNameMatch = lowerTitle.match(
+    /\b(red|green|blue|yellow|orange|purple|violet|pink|black|white|brown|grey|gray|gold|silver|beige|teal|cyan|magenta)\b/
+  )
+  const colorName = colorNameMatch ? colorNameMatch[1] : null
+  const baseKeywords: string[] = []
+  if (colorName) {
+    baseKeywords.push(
+      `${colorName} color meaning`,
+      `${colorName} color symbolism`,
+      `${colorName} color psychology`,
+      `${colorName} color spiritual meaning`,
+      `${colorName} color in design`,
+      `${colorName} color hex code`,
+      `${colorName} color palette ideas`
+    )
+  }
+  if (explicitHex) {
+    baseKeywords.push(
+      `${explicitHex} color`,
+      `${explicitHex} color meaning`,
+      `${explicitHex} hex color`,
+      `${explicitHex} color code`,
+      `${explicitHex} color psychology`,
+      `${explicitHex} color symbolism`
+    )
+  }
+  if (!colorName && !explicitHex) {
+    baseKeywords.push(
+      "color meaning article",
+      "color symbolism guide",
+      "color psychology explanation",
+      "color hex codes reference"
+    )
+  }
+  const categoryKeywords =
+    (node.categories?.nodes || [])
+      .map((c: any) => String(c?.name || "").toLowerCase())
+      .filter(Boolean)
+      .map((name) => `${name} color article`) || []
+  const combinedKeywords = Array.from(new Set([...baseKeywords, ...categoryKeywords]))
+
   return {
     title: node.seo.title || node.title,
     description: node.seo.metaDesc || node.seo.opengraphDescription || "",
+    keywords: combinedKeywords,
     alternates: {
       canonical,
     },
@@ -534,9 +583,23 @@ export default async function WPPostPage({ params }: WPPageProps) {
   }
   const img = node?.featuredImage?.node?.sourceUrl
   const alt = node?.featuredImage?.node?.altText || node?.title
-  const schemaRaw = node?.seo?.schema?.raw || undefined
+  const schemaRaw = node?.seo?.schema?.raw
+    ? node.seo.schema.raw.replace(/https?:\/\/blog\.hexcolormeans\.com/gi, "https://hexcolormeans.com")
+    : undefined
   const site = "https://hexcolormeans.com"
-  const canonical = node?.uri ? new URL(node.uri, site).toString() : undefined
+  let canonical = node?.uri ? new URL(node.uri, site).toString() : node.seo?.canonical || node.seo?.opengraphUrl || undefined
+  if (canonical) {
+    try {
+      const u = new URL(canonical, site)
+      u.hostname = "hexcolormeans.com"
+      u.protocol = "https:"
+      u.port = ""
+      if (u.pathname && !u.pathname.endsWith("/")) {
+        u.pathname = `${u.pathname}/`
+      }
+      canonical = u.toString()
+    } catch { }
+  }
   const titleHasColor = hasColorInTitle(node.title)
   const titleHasExplicitHex = hasExplicitHexInTitle(node.title)
   const titleHex = titleHasColor ? detectColorFromTitle(node.title) : null  // Still use color names for actual hex value when needed for display
@@ -715,6 +778,17 @@ export default async function WPPostPage({ params }: WPPageProps) {
 
   const mainContent = (
     <>
+      <WPSEOHead
+        schemaRaw={schemaRaw}
+        canonical={canonical}
+        robotsAdvanced={node.seo?.metaRobotsAdvanced}
+        ogAuthor={node.seo?.opengraphAuthor}
+        ogSection={node.seo?.opengraphSection}
+        ogTags={node.seo?.opengraphTags}
+        twitterCreator={node.seo?.twitterCreator}
+        estimatedReadingTime={node.readingTime}
+        cornerstone={node.seo?.cornerstone}
+      />
       <article id="content" className="main-content grow-content max-w-none space-y-6 min-w-0" itemProp="articleBody">
         {/* Featured Image - Always show at the top if available */}
         {img && (

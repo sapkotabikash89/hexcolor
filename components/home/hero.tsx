@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Palette, Grid, BookOpen } from "lucide-react"
+import { EyeOff, Contrast, MonitorSmartphone } from "lucide-react"
 
 export function Hero() {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
@@ -76,40 +76,6 @@ export function Hero() {
                             Get accurate color codes, meanings, psychology, and smart conversions in one place.
                             A reliable hub for designers, developers, and creators who want to work with color precision and purpose.
                         </p>
-                    </div>
-                    <div className="flex flex-wrap gap-4">
-                        <Button
-                            asChild
-                            size="lg"
-                            className="h-14 px-8 text-base font-semibold gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
-                        >
-                            <Link href="/color-picker/">
-                                <Palette className="w-5 h-5" />
-                                Color Picker
-                            </Link>
-                        </Button>
-                        <Button
-                            asChild
-                            size="lg"
-                            variant="outline"
-                            className="h-14 px-8 text-base font-semibold gap-2 shadow-sm hover:bg-accent transition-all"
-                        >
-                            <Link href="/color-wheel/">
-                                <Grid className="w-5 h-5" />
-                                Color Wheel
-                            </Link>
-                        </Button>
-                        <Button
-                            asChild
-                            size="lg"
-                            variant="ghost"
-                            className="h-14 px-8 text-base font-semibold gap-2 transition-all"
-                        >
-                            <Link href="/colors/">
-                                <BookOpen className="w-5 h-5" />
-                                Browse Library
-                            </Link>
-                        </Button>
                     </div>
                 </div>
 

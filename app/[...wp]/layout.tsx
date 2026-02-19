@@ -15,17 +15,6 @@ export const metadata: Metadata = {
   title: "HexColorMeans - Where Every Color Has Meaning | Color Information, Meanings & Tools",
   description:
     "Explore colors with HexColorMeans. Get detailed color information, meanings, conversions, harmonies, and use professional color tools including color picker, contrast checker, and more.",
-  keywords: [
-    "color picker",
-    "color codes",
-    "hex colors",
-    "rgb colors",
-    "color converter",
-    "color meanings",
-    "color harmonies",
-    "color palette",
-    "contrast checker",
-  ],
   authors: [{ name: "HexColorMeans" }],
 
 

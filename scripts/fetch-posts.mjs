@@ -50,6 +50,14 @@ const query = `
           schema {
             raw
           }
+          metaRobotsNoindex
+          metaRobotsNofollow
+          metaRobotsAdvanced
+          opengraphAuthor
+          opengraphSection
+          opengraphTags
+          twitterCreator
+          cornerstone
         }
       }
     }

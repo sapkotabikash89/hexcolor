@@ -64,7 +64,6 @@ function generateToolsSitemap() {
         { url: `${BASE_URL}/image-color-picker/`, priority: 0.8 },
         { url: `${BASE_URL}/palette-from-image/`, priority: 0.8 },
         { url: `${BASE_URL}/screen-color-picker/`, priority: 0.7 },
-        { url: `${BASE_URL}/colors/`, priority: 0.9 },
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -86,94 +85,14 @@ ${toolPages.map(page => `  <url>
  */
 function generateColorsSitemap() {
     try {
-        // Load known colors from the TS file (parsing as text since we can't import TS in Node directly)
-        // Load known colors from the TS file (parsing as text since we can't import TS in Node directly)
-        const knownColorsPath = path.join(__dirname, '..', 'lib', 'known-colors-complete.ts');
-        const colorMeaningPath = path.join(__dirname, '..', 'lib', 'color-meaning.json');
-
-        // Use a Set to strictly store unique, lowercase clean hexes
-        const uniqueHexes = new Set();
-
-        // 1. Add Known Colors
-        if (fs.existsSync(knownColorsPath)) {
-            const fileContent = fs.readFileSync(knownColorsPath, 'utf8');
-            // Regex to match hex codes in the array: '000000',
-            const matches = fileContent.match(/'([0-9A-Fa-f]{6})'/g);
-            if (matches) {
-                matches.forEach(m => {
-                    uniqueHexes.add(m.replace(/'/g, '').toLowerCase());
-                });
-            }
-            console.log(`ℹ️  Found ${matches ? matches.length : 0} known colors in known-colors-complete.ts`);
-        } else {
-            console.warn('⚠️  known-colors-complete.ts not found!');
-        }
-
-        // 2. Add Colors from Meaning Database (The big list)
-        if (fs.existsSync(colorMeaningPath)) {
-            try {
-                const colorData = JSON.parse(fs.readFileSync(colorMeaningPath, 'utf8'));
-                Object.keys(colorData).forEach(hex => {
-                    uniqueHexes.add(hex.toLowerCase());
-                });
-                console.log(`ℹ️  Loaded colors from color-meaning.json. Total unique hexes: ${uniqueHexes.size}`);
-            } catch (e) {
-                console.error('Error reading color-meaning.json:', e.message);
-            }
-        }
-
-        let colorHexes = Array.from(uniqueHexes).sort();
-
-        // Load blog posts to exclude their hexes (prevent duplicate content)
-        const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
-        const excludedHexes = new Set();
-        if (fs.existsSync(blogPostsDataPath)) {
-            try {
-                const posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
-                posts.forEach(post => {
-                    // Extract hex from title: "0000FF Color Blue Meaning..." -> "0000FF"
-                    const match = post.title.trim().match(/^([0-9A-Fa-f]{6})\b/);
-                    if (match) excludedHexes.add(match[1].toLowerCase());
-
-                    const matchHash = post.title.trim().match(/^#([0-9A-Fa-f]{6})\b/);
-                    if (matchHash) excludedHexes.add(matchHash[1].toLowerCase());
-                });
-                console.log(`ℹ️  Found ${excludedHexes.size} hex codes with blog posts to exclude from sitemap`);
-            } catch (e) {
-                console.error('Error reading blog posts for sitemap exclusion:', e.message);
-            }
-        }
-
-        // Filter excluded hexes
-        if (excludedHexes.size > 0 && colorHexes.length > 0) {
-            const originalCount = colorHexes.length;
-            colorHexes = colorHexes.filter(hex => {
-                const cleanHex = hex.replace('#', '').toLowerCase();
-                return !excludedHexes.has(cleanHex);
-            });
-            console.log(`ℹ️  Excluded ${originalCount - colorHexes.length} colors that have dedicated blog posts`);
-        }
-
-        // If we have colors, generate sitemap
-        if (colorHexes.length > 0) {
-            // Limit to first 50,000 URLs (sitemap limit)
-            const colors = colorHexes.slice(0, 50000);
-
-            const xml = `<?xml version="1.0" encoding="UTF-8"?>
+        // Color pages are intentionally excluded from sitemaps.
+        // Generate an empty sitemap-colors.xml for backward compatibility.
+        const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${colors.map(hex => `  <url>
-    <loc>${BASE_URL}/colors/${hex}/</loc>
-    <lastmod>${now}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>`).join('\n')}
 </urlset>`;
 
-            fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-colors.xml'), xml);
-            console.log(`✅ Generated sitemap-colors.xml (${colors.length} colors)`);
-        } else {
-            console.warn('⚠️  No color data found, skipping sitemap-colors.xml');
-        }
+        fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-colors.xml'), xml);
+        console.log('✅ Generated empty sitemap-colors.xml (color pages excluded)');
     } catch (error) {
         console.error('❌ Error generating colors sitemap:', error.message);
     }
@@ -310,37 +229,6 @@ function generateImagesSitemap() {
             allImageUrls = [...allImageUrls, ...postEntries];
         }
 
-        // 2. Process Color Pages
-        const colorMeaningPath = path.join(__dirname, '..', 'lib', 'color-meaning.json');
-        if (fs.existsSync(colorMeaningPath)) {
-            const colorData = JSON.parse(fs.readFileSync(colorMeaningPath, 'utf8'));
-
-            const colorEntries = Object.keys(colorData).map(key => {
-                const hex = `#${key}`;
-                const data = colorData[key];
-                const name = data.name || 'Color';
-                const rgb = hexToRgb(key);
-
-                // Construct Page URL
-                const pageUrl = `${BASE_URL}/colors/${key.toLowerCase()}/`;
-
-                // Construct Image URL
-                const gumletImage = getGumletColorImage({
-                    colorName: name,
-                    hex: key, // passing clean hex without hash as per original key
-                    rgb: rgb
-                });
-
-                return {
-                    pageUrl: pageUrl,
-                    imageUrl: gumletImage.url,
-                    imageTitle: gumletImage.alt
-                };
-            });
-
-            allImageUrls = [...allImageUrls, ...colorEntries];
-        }
-
         if (allImageUrls.length > 0) {
             const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -441,7 +329,6 @@ function generateMainSitemap() {
     const sitemaps = [
         `${BASE_URL}/sitemap-legal.xml`,
         `${BASE_URL}/sitemap-tools.xml`,
-        `${BASE_URL}/sitemap-colors.xml`,
         `${BASE_URL}/sitemap-posts.xml`,
         `${BASE_URL}/sitemap-images.xml`,
     ];

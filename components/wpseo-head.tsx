@@ -23,10 +23,14 @@ export function WPSEOHead({
   estimatedReadingTime?: string | number
   cornerstone?: boolean
 }) {
+  const normalizedSchemaRaw =
+    schemaRaw?.replace(/https?:\/\/blog\.hexcolormeans\.com/gi, "https://hexcolormeans.com") || undefined
   return (
     <Head>
       {canonical ? <link rel="canonical" href={canonical} /> : null}
-      {schemaRaw ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaRaw }} /> : null}
+      {normalizedSchemaRaw ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: normalizedSchemaRaw }} />
+      ) : null}
       {focuskw ? <meta name="keywords" content={focuskw} /> : null}
       {robotsAdvanced ? <meta name="robots" content={robotsAdvanced} /> : null}
       {ogAuthor ? <meta property="article:author" content={ogAuthor} /> : null}

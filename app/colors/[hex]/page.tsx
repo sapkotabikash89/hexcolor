@@ -160,6 +160,10 @@ export async function generateMetadata({ params }: ColorPageProps): Promise<Meta
       "design colors",
       "brand colors",
     ],
+    robots: {
+      index: false,
+      follow: true,
+    },
     alternates: {
       canonical: `https://hexcolormeans.com/colors/${cleanHex.toLowerCase()}/`,
     },

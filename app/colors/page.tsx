@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   description:
     "Explore our Color Library featuring 1,200+ color names with verified Hex, RGB, and CMYK codes. Quickly find exact shades or browse categories for palette inspiration, all organized for speed, clarity, and technical accuracy.",
   keywords: ["color library", "color names", "hex colors", "color palette", "color collection"],
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: "https://hexcolormeans.com/colors/",
   },
