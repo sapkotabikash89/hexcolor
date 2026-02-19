@@ -232,6 +232,7 @@ function generateImagesSitemap() {
                     if (!url) return;
                     const normalized = normalizeArticleImageUrl(url);
                     if (!normalized) return;
+                    if (!normalized.includes('/wp-content/uploads/')) return;
                     if (imageSet.has(normalized)) return;
                     imageSet.add(normalized);
                     const imageTitle =
