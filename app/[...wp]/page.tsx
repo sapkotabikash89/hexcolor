@@ -476,7 +476,7 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
     (node.categories?.nodes || [])
       .map((c: any) => String(c?.name || "").toLowerCase())
       .filter(Boolean)
-      .map((name) => `${name} color article`) || []
+      .map((name: string) => `${name} color article`) || []
   const combinedKeywords = Array.from(new Set([...baseKeywords, ...categoryKeywords]))
 
   return {
