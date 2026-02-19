@@ -290,16 +290,17 @@ export function HomeColorPicker() {
                 <Shuffle className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="truncate">Random</span>
               </Button>
-              <Link href="/image-color-picker/">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full gap-1 sm:gap-2 bg-transparent text-xs sm:text-sm px-2 sm:px-4"
-                >
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="w-full gap-1 sm:gap-2 bg-transparent text-xs sm:text-sm px-2 sm:px-4"
+              >
+                <Link href="/image-color-picker/">
                   <Pipette className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span className="truncate">Image</span>
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

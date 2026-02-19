@@ -169,6 +169,61 @@ if (cleanedFiles > 0) {
     console.log('   ✅ No leading comments found after <!DOCTYPE html>');
 }
 
+console.log('\n🧱 Normalizing void elements...');
+
+// Normalize self-closing void elements like <img ... /> -> <img ...>
+const voidTags = [
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
+];
+
+const voidPattern = new RegExp(
+    `<(${voidTags.join('|')})(\\s[^>]*)?\\s*/>`,
+    'gi',
+);
+
+let filesWithVoidFixes = 0;
+let totalVoidReplacements = 0;
+
+htmlFiles.forEach((filePath) => {
+    const contents = fs.readFileSync(filePath, 'utf8');
+    const matches = contents.match(voidPattern);
+    if (!matches || matches.length === 0) {
+        return;
+    }
+
+    const updated = contents.replace(
+        voidPattern,
+        (_match, tagName, attrs = '') => `<${tagName}${attrs || ''}>`,
+    );
+
+    if (updated !== contents) {
+        fs.writeFileSync(filePath, updated);
+        filesWithVoidFixes++;
+        totalVoidReplacements += matches.length;
+    }
+});
+
+if (filesWithVoidFixes > 0) {
+    console.log(
+        `   ✅ Normalized self-closing void elements in ${filesWithVoidFixes} HTML files (${totalVoidReplacements} replacement(s))`,
+    );
+} else {
+    console.log('   ✅ No self-closing void elements found to normalize');
+}
+
 console.log('\n' + '='.repeat(50));
 console.log('📊 VERIFICATION SUMMARY');
 console.log('='.repeat(50));

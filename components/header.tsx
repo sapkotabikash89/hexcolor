@@ -121,70 +121,105 @@ export function Header() {
           <div className="relative group">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="/color-wheel/">
-                  <Button variant="ghost" size="sm" className="gap-2" aria-label="Tools">
+                <Button asChild variant="ghost" size="sm" className="gap-2" aria-label="Tools">
+                  <Link href="/color-wheel/">
                     <Grid className="w-4 h-4" aria-hidden="true" />
                     <span className="hidden lg:inline">Tools</span>
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </TooltipTrigger>
               <TooltipContent side="top" className="lg:hidden">
                 <p>Tools</p>
               </TooltipContent>
             </Tooltip>
             <div className="absolute left-0 mt-2 w-[240px] bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-200">
-              <Link href="/color-wheel/">
-                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Wheel">
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                aria-label="Color Wheel"
+              >
+                <Link href="/color-wheel/">
                   <Disc className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Wheel
-                </Button>
-              </Link>
-              <Link href="/color-picker/">
-                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Picker">
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                aria-label="Color Picker"
+              >
+                <Link href="/color-picker/">
                   <Pipette className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Picker
-                </Button>
-              </Link>
-              <Link href="/contrast-checker/">
-                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Contrast Checker">
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                aria-label="Contrast Checker"
+              >
+                <Link href="/contrast-checker/">
                   <Contrast className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Contrast Checker
-                </Button>
-              </Link>
-              <Link href="/color-blindness-simulator/">
-                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Color Blindness Simulator">
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                aria-label="Color Blindness Simulator"
+              >
+                <Link href="/color-blindness-simulator/">
                   <Eye className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Color Blindness Simulator
-                </Button>
-              </Link>
-              <Link href="/image-color-picker/">
-                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Image Color Picker">
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                aria-label="Image Color Picker"
+              >
+                <Link href="/image-color-picker/">
                   <ImageIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Image Color Picker
-                </Button>
-              </Link>
-              <Link href="/palette-from-image/">
-                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Palette from Image">
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                aria-label="Palette from Image"
+              >
+                <Link href="/palette-from-image/">
                   <LayoutGrid className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Palette from Image
-                </Button>
-              </Link>
-              <Link href="/screen-color-picker/">
-                <Button variant="ghost" className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left" aria-label="Screen Color Picker">
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                aria-label="Screen Color Picker"
+              >
+                <Link href="/screen-color-picker/">
                   <Pipette className="w-4 h-4 shrink-0" aria-hidden="true" />
                   Screen Color Picker
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href="/colors/">
-                <Button variant="ghost" size="sm" className="gap-2" aria-label="Color Library">
+              <Button asChild variant="ghost" size="sm" className="gap-2" aria-label="Color Library">
+                <Link href="/colors/">
                   <Library className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden lg:inline">Color Library</span>
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </TooltipTrigger>
             <TooltipContent side="top" className="lg:hidden">
               <p>Color Library</p>
@@ -193,12 +228,12 @@ export function Header() {
           <div className="relative group">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="/blog/">
-                  <Button variant="ghost" size="sm" className="gap-2" aria-label="Blog">
+                <Button asChild variant="ghost" size="sm" className="gap-2" aria-label="Blog">
+                  <Link href="/blog/">
                     <BookOpen className="w-4 h-4" aria-hidden="true" />
                     <span className="hidden lg:inline">Blog</span>
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="lg:hidden">
                 <p>Blog</p>
@@ -206,29 +241,32 @@ export function Header() {
             </Tooltip>
             {categories.length > 0 && (
               <div className="absolute left-0 mt-2 w-[260px] bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-200">
-                <Link href="/blog/">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
-                    aria-label="All Blog Posts"
-                  >
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                  aria-label="All Blog Posts"
+                >
+                  <Link href="/blog/">
                     <LayoutGrid className="w-4 h-4 shrink-0" aria-hidden="true" />
                     All Blog Posts
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 {categories.map((cat) => {
                   const Icon = getCategoryIcon(cat.slug)
                   return (
-                    <Link key={cat.slug} href={getCategoryHref(cat.slug)}>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
-                        aria-label={cat.name}
-                      >
+                    <Button
+                      key={cat.slug}
+                      asChild
+                      variant="ghost"
+                      className="w-full justify-start gap-2 h-auto py-2 whitespace-normal text-left"
+                      aria-label={cat.name}
+                    >
+                      <Link href={getCategoryHref(cat.slug)}>
                         <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
                         {cat.name}
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   )
                 })}
               </div>
@@ -236,12 +274,12 @@ export function Header() {
           </div>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href="/contact/">
-                <Button variant="ghost" size="sm" className="gap-2" aria-label="Contact">
+              <Button asChild variant="ghost" size="sm" className="gap-2" aria-label="Contact">
+                <Link href="/contact/">
                   <Mail className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden lg:inline">Contact</span>
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="lg:hidden">
               <p>Contact</p>
@@ -249,12 +287,12 @@ export function Header() {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href="/privacy-policy/">
-                <Button variant="ghost" size="sm" className="gap-2" aria-hidden="true" aria-label="Privacy">
+              <Button asChild variant="ghost" size="sm" className="gap-2" aria-hidden="true" aria-label="Privacy">
+                <Link href="/privacy-policy/">
                   <ShieldCheck className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden lg:inline">Privacy</span>
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="lg:hidden">
               <p>Privacy</p>
@@ -319,72 +357,116 @@ export function Header() {
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-4 mt-8">
-                <Link href="/color-wheel/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/color-wheel/" onClick={() => setIsMobileMenuOpen(false)}>
                     <Disc className="w-4 h-4" />
                     Color Wheel
-                  </Button>
-                </Link>
-                <Link href="/color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
                     <Pipette className="w-4 h-4" />
                     Color Picker
-                  </Button>
-                </Link>
-                <Link href="/contrast-checker/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/contrast-checker/" onClick={() => setIsMobileMenuOpen(false)}>
                     <Contrast className="w-4 h-4" />
                     Contrast Checker
-                  </Button>
-                </Link>
-                <Link href="/color-blindness-simulator/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/color-blindness-simulator/" onClick={() => setIsMobileMenuOpen(false)}>
                     <Eye className="w-4 h-4" />
                     Color Blindness Simulator
-                  </Button>
-                </Link>
-                <Link href="/image-color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/image-color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
                     <ImageIcon className="w-4 h-4" />
                     Image Color Picker
-                  </Button>
-                </Link>
-                <Link href="/palette-from-image/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/palette-from-image/" onClick={() => setIsMobileMenuOpen(false)}>
                     <LayoutGrid className="w-4 h-4" />
                     Palette from Image
-                  </Button>
-                </Link>
-                <Link href="/screen-color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/screen-color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
                     <Pipette className="w-4 h-4" />
                     Screen Color Picker
-                  </Button>
-                </Link>
-                <Link href="/colors/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/colors/" onClick={() => setIsMobileMenuOpen(false)}>
                     <Library className="w-4 h-4" />
                     Color Library
-                  </Button>
-                </Link>
-                <Link href="/blog/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/blog/" onClick={() => setIsMobileMenuOpen(false)}>
                     <BookOpen className="w-4 h-4" />
                     Blog
-                  </Button>
-                </Link>
-                <Link href="/contact/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/contact/" onClick={() => setIsMobileMenuOpen(false)}>
                     <Mail className="w-4 h-4" />
                     Contact
-                  </Button>
-                </Link>
-                <Link href="/privacy-policy/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-2"
+                >
+                  <Link href="/privacy-policy/" onClick={() => setIsMobileMenuOpen(false)}>
                     <ShieldCheck className="w-4 h-4" />
                     Privacy
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </nav>
             </SheetContent>
           </Sheet>

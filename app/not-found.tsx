@@ -165,14 +165,12 @@ export default function NotFound() {
             library.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/">
-              <Button size="lg">Go Home</Button>
-            </Link>
-            <Link href="/colors/">
-              <Button size="lg" variant="outline" className="bg-transparent">
-                Browse Colors
-              </Button>
-            </Link>
+            <Button asChild size="lg">
+              <Link href="/">Go Home</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="bg-transparent">
+              <Link href="/colors/">Browse Colors</Link>
+            </Button>
           </div>
         </div>
       </main>

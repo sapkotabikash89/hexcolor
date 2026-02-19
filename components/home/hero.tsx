@@ -78,24 +78,38 @@ export function Hero() {
                         </p>
                     </div>
                     <div className="flex flex-wrap gap-4">
-                        <Link href="/color-picker/">
-                            <Button size="lg" className="h-14 px-8 text-base font-semibold gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all">
+                        <Button
+                            asChild
+                            size="lg"
+                            className="h-14 px-8 text-base font-semibold gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
+                        >
+                            <Link href="/color-picker/">
                                 <Palette className="w-5 h-5" />
                                 Color Picker
-                            </Button>
-                        </Link>
-                        <Link href="/color-wheel/">
-                            <Button size="lg" variant="outline" className="h-14 px-8 text-base font-semibold gap-2 shadow-sm hover:bg-accent transition-all">
+                            </Link>
+                        </Button>
+                        <Button
+                            asChild
+                            size="lg"
+                            variant="outline"
+                            className="h-14 px-8 text-base font-semibold gap-2 shadow-sm hover:bg-accent transition-all"
+                        >
+                            <Link href="/color-wheel/">
                                 <Grid className="w-5 h-5" />
                                 Color Wheel
-                            </Button>
-                        </Link>
-                        <Link href="/colors/">
-                            <Button size="lg" variant="ghost" className="h-14 px-8 text-base font-semibold gap-2 transition-all">
+                            </Link>
+                        </Button>
+                        <Button
+                            asChild
+                            size="lg"
+                            variant="ghost"
+                            className="h-14 px-8 text-base font-semibold gap-2 transition-all"
+                        >
+                            <Link href="/colors/">
                                 <BookOpen className="w-5 h-5" />
                                 Browse Library
-                            </Button>
-                        </Link>
+                            </Link>
+                        </Button>
                     </div>
                 </div>
 

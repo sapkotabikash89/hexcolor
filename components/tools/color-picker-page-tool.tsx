@@ -304,16 +304,17 @@ export function ColorPickerPageTool({ selectedColor: initialColor = "#11DF1B", o
                                         <Shuffle className="w-3 h-3 sm:w-4 sm:h-4" />
                                         <span className="truncate">Random Color</span>
                                     </Button>
-                                    <Link href="/image-color-picker/" className="w-full">
-                                        <Button
-                                            variant="outline"
-                                            size="lg"
-                                            className="w-full gap-1 sm:gap-2 bg-transparent text-xs sm:text-sm px-2 sm:px-4"
-                                        >
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        size="lg"
+                                        className="w-full gap-1 sm:gap-2 bg-transparent text-xs sm:text-sm px-2 sm:px-4"
+                                    >
+                                        <Link href="/image-color-picker/" className="w-full">
                                             <Pipette className="w-3 h-3 sm:w-4 sm:h-4" />
                                             <span className="truncate">Image Color Picker</span>
-                                        </Button>
-                                    </Link>
+                                        </Link>
+                                    </Button>
                                 </div>
                             </div>
                         </div>

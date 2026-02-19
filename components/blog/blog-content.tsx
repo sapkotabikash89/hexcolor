@@ -15,36 +15,54 @@ export function BlogContent({ html, isShadesMeaning, className = '', style }: Bl
   useEffect(() => {
     if (!contentRef.current) return
 
-    // Find all H2 elements
     const headings = contentRef.current.querySelectorAll('h2')
+    const usedIds = new Set<string>()
+
     headings.forEach((heading) => {
-      // If heading doesn't have an id, create one from text
-      if (!heading.id) {
-        const text = (heading.textContent || '').toLowerCase()
-        let id = ''
-
-        // Smart ID generation to match BLOG_NAV_ITEMS
-        if (/(definition|what is|meaning of)/.test(text)) id = "definition"
-        else if (/history/.test(text)) id = "history"
-        else if (/(symbolism|symbolize)/.test(text)) id = "symbolism"
-        else if (/spiritual/.test(text)) id = "spiritual-meaning"
-        else if (/psycholog/.test(text)) id = "psychology"
-        else if (/(personality|traits)/.test(text)) id = "personality"
-        else if (/(cultural|religious|biblical)/.test(text)) id = "cultural-meaning"
-        else if (/dream/.test(text)) id = "dreams-meaning"
-        else if (/(uses|how to use|application)/.test(text)) id = "uses"
-        else if (/technical/.test(text)) id = "technical-information"
-        else {
-          // Fallback: sanitize text
-          id = text
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '')
+      if (heading.id) {
+        let currentId = heading.id
+        if (usedIds.has(currentId)) {
+          const baseId = currentId
+          let counter = 2
+          while (usedIds.has(currentId)) {
+            currentId = `${baseId}-${counter}`
+            counter += 1
+          }
+          heading.id = currentId
         }
-
-        if (id) {
-          heading.id = id
-        }
+        usedIds.add(currentId)
+        return
       }
+
+      const text = (heading.textContent || '').toLowerCase()
+      let id = ''
+
+      if (/(definition|what is|meaning of)/.test(text)) id = "definition"
+      else if (/history/.test(text)) id = "history"
+      else if (/(symbolism|symbolize)/.test(text)) id = "symbolism"
+      else if (/spiritual/.test(text)) id = "spiritual-meaning"
+      else if (/psycholog/.test(text)) id = "psychology"
+      else if (/(personality|traits)/.test(text)) id = "personality"
+      else if (/(cultural|religious|biblical)/.test(text)) id = "cultural-meaning"
+      else if (/dream/.test(text)) id = "dreams-meaning"
+      else if (/(uses|how to use|application)/.test(text)) id = "uses"
+      else if (/technical/.test(text)) id = "technical-information"
+      else {
+        id = text
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '')
+      }
+
+      if (!id) return
+
+      let uniqueId = id
+      let counter = 2
+      while (usedIds.has(uniqueId)) {
+        uniqueId = `${id}-${counter}`
+        counter += 1
+      }
+      heading.id = uniqueId
+      usedIds.add(uniqueId)
     })
   }, [html])
 
