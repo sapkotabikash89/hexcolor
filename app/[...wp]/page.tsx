@@ -1573,7 +1573,15 @@ function enhanceContentHtml(html: string, accentColor: string): string {
       if (u.hostname === "localhost" || u.hostname === "blog.hexcolormeans.com" || u.hostname === "cms.colormean.com") {
         u.protocol = "https:"
         u.hostname = "hexcolormeans.com"
-        return u.toString()
+      }
+      if (u.hostname === "hexcolormeans.com") {
+        const path = u.pathname || ""
+        if (path && path !== "/" && !path.endsWith("/")) {
+          const lastSegment = path.split("/").filter(Boolean).pop() || ""
+          if (!lastSegment.includes(".")) {
+            u.pathname = `${path}/`
+          }
+        }
       }
       return u.toString()
     } catch {

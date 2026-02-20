@@ -48,27 +48,14 @@ export function LatestPosts({ posts }: { posts: any[] }) {
                 </div>
 
                 <div className="text-center pt-4">
-                    <Button variant="outline" size="lg" className="h-12 px-8 rounded-full font-semibold">
-                        <Link href="/blog/">
-                            Explore All Articles
-                        </Link>
-                    </Button>
+                    <Link
+                        href="/blog/"
+                        className="inline-flex items-center justify-center h-12 px-8 rounded-full font-semibold border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+                    >
+                        Explore All Articles
+                    </Link>
                 </div>
             </div>
         </div>
-    )
-}
-
-function Button({ variant, size, className, children }: any) {
-    const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors"
-    const variants = {
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
-    }
-    const sizes = {
-        lg: "h-11 px-8 rounded-md"
-    }
-    const classes = `${baseStyles} ${variants[variant as keyof typeof variants] || ""} ${sizes[size as keyof typeof sizes] || ""} ${className}`
-    return (
-        <span className={classes}>{children}</span>
     )
 }
