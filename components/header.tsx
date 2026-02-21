@@ -1,80 +1,15 @@
-"use client"
-
 import type React from "react"
-import { useEffect } from "react"
 import Link from "next/link"
 import NextImage from "next/image"
-import { useRouter } from "next/navigation"
-import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Palette, Droplet, Contrast, Eye, ImageIcon, CircleDot, Search, Menu, Pipette, Grid, Disc, LayoutGrid, Library, Layers, BookOpen, Mail, ShieldCheck } from "lucide-react"
-import { CustomColorPicker } from "@/components/custom-color-picker"
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { getColorPageLink } from "@/lib/color-linking-utils"
-import { performStaticSearch, performSimpleSearch } from "@/lib/static-search-utils"
 import blogPostsData from "@/lib/blog-posts-data.json"
+import { SearchBar } from "./search-bar.client"
+import { MobileMenu } from "./mobile-menu.client"
+import { ColorPickerTrigger } from "./color-picker-trigger.client"
 
 export function Header() {
-  const router = useRouter()
-  const [searchValue, setSearchValue] = useState("")
-  const [pickerColor, setPickerColor] = useState("#E0115F")
-  const [showCustomPicker, setShowCustomPicker] = useState(false)
-  const [tempColor, setTempColor] = useState("#E0115F")
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
-  // Use a custom hook to detect outside clicks for the search bar
-  const searchRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handleColorUpdate = (e: CustomEvent) => {
-      setPickerColor(e.detail.color)
-    }
-    window.addEventListener("colorUpdate", handleColorUpdate as EventListener)
-    return () => window.removeEventListener("colorUpdate", handleColorUpdate as EventListener)
-  }, [])
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    // Use static search logic with bundled blog post data
-    const blogPosts = Array.isArray(blogPostsData) ? blogPostsData : [];
-    const searchResult = blogPosts.length > 0
-      ? performStaticSearch(searchValue, blogPosts)
-      : performSimpleSearch(searchValue)
-
-    if (searchResult) {
-      // Use Next.js router for navigation to avoid Cloudflare redirects
-      router.push(searchResult.replace('https://hexcolormeans.com', ''))
-    } else {
-      // Fallback for empty/invalid input - do nothing
-      return
-    }
-  }
-
-
-  const handleColorChange = (color: string) => {
-    setTempColor(color)
-  }
-
-  const handleColorApply = (color?: string) => {
-    const selectedColor = typeof color === "string" ? color : tempColor
-    setPickerColor(selectedColor)
-    const cleanHex = selectedColor.replace("#", "")
-    setShowCustomPicker(false)
-
-    // Dispatch color update event for sidebar
-    window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: selectedColor } }))
-
-    // Navigate to the appropriate color page using centralized linking logic
-    // Use Next.js router to avoid Cloudflare redirects
-    const link = getColorPageLink(selectedColor)
-    const relativeLink = link.replace('https://hexcolormeans.com', '')
-    router.push(relativeLink)
-  }
-
   const blogPosts = Array.isArray(blogPostsData) ? blogPostsData : []
   const categoryMap = new Map<string, { name: string; slug: string }>()
   blogPosts.forEach((post: any) => {
@@ -300,188 +235,13 @@ export function Header() {
           </Tooltip>
         </nav>
 
-        {/* Color Picker & Search */}
         <div className="flex items-center gap-2 flex-1 md:flex-none justify-end md:justify-start">
-          <div className="relative">
-            <button
-              onClick={() => setShowCustomPicker(true)}
-              className="w-10 h-10 md:w-9 md:h-9 rounded-md border-2 border-border cursor-pointer flex-shrink-0 flex items-center justify-center"
-              style={{ backgroundColor: pickerColor }}
-              title="Pick a color"
-              aria-label="Pick a color"
-            >
-              <Pipette className="w-5 h-5 text-white mix-blend-difference" />
-            </button>
-          </div>
-
-          {/* Search Bar */}
-          <div className="flex items-center flex-1 md:flex-none md:w-auto">
-            {/* Desktop Search */}
-            <form onSubmit={handleSearch} className="relative hidden md:block md:w-56 lg:w-48 xl:w-64">
-              <Input
-                type="text"
-                placeholder="Search color..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="pr-10"
-              />
-              <Button type="submit" size="sm" variant="ghost" className="absolute right-0 top-0 h-full px-3" aria-label="Search">
-                <Search className="w-4 h-4" />
-              </Button>
-            </form>
-
-            {/* Mobile Search - Always Visible */}
-            <form onSubmit={handleSearch} className="relative md:hidden w-full flex-1">
-              <Input
-                type="text"
-                placeholder="Search color..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="pr-10 w-full"
-              />
-              <Button type="submit" size="sm" variant="ghost" className="absolute right-0 top-0 h-full px-3" aria-label="Search">
-                <Search className="w-4 h-4" />
-              </Button>
-            </form>
-          </div>
-
-          {/* Mobile Menu Icon */}
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden h-10 w-10 border-2 border-black rounded-md flex-shrink-0 ml-2" aria-label="Open menu">
-                <Menu className="w-5 h-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <SheetHeader className="sr-only">
-                <SheetTitle>Menu</SheetTitle>
-              </SheetHeader>
-              <nav className="flex flex-col gap-4 mt-8">
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/color-wheel/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Disc className="w-4 h-4" />
-                    Color Wheel
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Pipette className="w-4 h-4" />
-                    Color Picker
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/contrast-checker/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Contrast className="w-4 h-4" />
-                    Contrast Checker
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/color-blindness-simulator/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Eye className="w-4 h-4" />
-                    Color Blindness Simulator
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/image-color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <ImageIcon className="w-4 h-4" />
-                    Image Color Picker
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/palette-from-image/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <LayoutGrid className="w-4 h-4" />
-                    Palette from Image
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/screen-color-picker/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Pipette className="w-4 h-4" />
-                    Screen Color Picker
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/colors/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Library className="w-4 h-4" />
-                    Color Library
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/blog/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <BookOpen className="w-4 h-4" />
-                    Blog
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/contact/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Mail className="w-4 h-4" />
-                    Contact
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                >
-                  <Link href="/privacy-policy/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <ShieldCheck className="w-4 h-4" />
-                    Privacy
-                  </Link>
-                </Button>
-              </nav>
-            </SheetContent>
-          </Sheet>
+          <ColorPickerTrigger />
+          <SearchBar />
+          <MobileMenu />
         </div>
       </div>
 
-      {/* Custom Color Picker Dialog */}
-      {showCustomPicker && (
-        <CustomColorPicker
-          value={pickerColor}
-          onChange={handleColorChange}
-          onApply={handleColorApply}
-          onClose={() => setShowCustomPicker(false)}
-        />
-      )}
     </header>
   )
 }
