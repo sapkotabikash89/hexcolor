@@ -215,11 +215,24 @@ function normalizeArticleImageUrl(url) {
     return url;
 }
 
+function extractImageUrlsFromHtml(html) {
+    if (!html) return [];
+    const urls = [];
+    const imgRegex = /<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
+    let match;
+    while ((match = imgRegex.exec(html)) !== null) {
+        urls.push(match[1]);
+    }
+    return urls;
+}
+
 function generateImagesSitemap() {
     try {
         let allImageUrls = [];
 
         const blogPostsDataPath = path.join(__dirname, '..', 'lib', 'blog-posts-data.json');
+        const postsDir = path.join(__dirname, '..', 'lib', 'posts');
+        const hasPostsDir = fs.existsSync(postsDir);
         if (fs.existsSync(blogPostsDataPath)) {
             const posts = JSON.parse(fs.readFileSync(blogPostsDataPath, 'utf8'));
             posts.forEach(post => {
@@ -279,6 +292,31 @@ function generateImagesSitemap() {
                             }
                         });
                     } catch (e) {
+                    }
+                }
+
+                if (hasPostsDir) {
+                    let fullPost = null;
+                    let slug = post.slug || null;
+                    if (!slug && post.uri) {
+                        slug = post.uri.replace(/^\/|\/$/g, '').replace(/\//g, '-');
+                    }
+                    if (slug) {
+                        const fullPath = path.join(postsDir, `${slug}.json`);
+                        if (fs.existsSync(fullPath)) {
+                            try {
+                                fullPost = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+                            } catch (e) {
+                                fullPost = null;
+                            }
+                        }
+                    }
+                    const htmlContent = fullPost && typeof fullPost.content === 'string' ? fullPost.content : null;
+                    if (htmlContent) {
+                        const inlineUrls = extractImageUrlsFromHtml(htmlContent);
+                        inlineUrls.forEach(url => {
+                            addImage(url);
+                        });
                     }
                 }
             });
