@@ -1,4 +1,6 @@
-import React from "react"
+ "use client"
+
+import React, { useState } from "react"
 import {
     BookOpen,
     ArrowRightLeft,
@@ -24,6 +26,9 @@ import {
     Hammer,
     Info
 } from "lucide-react"
+import { CustomColorPicker } from "@/components/custom-color-picker"
+import { getColorPageLink } from "@/lib/color-linking-utils"
+import { useRouter } from "next/navigation"
 
 interface TableOfContentsProps {
     currentHex: string
@@ -46,6 +51,9 @@ const BLOG_ICONS: Record<string, any> = {
 }
 
 export function TableOfContents({ currentHex, mobileOnly = false, hideFaqs = false, items }: TableOfContentsProps) {
+    const router = useRouter()
+    const [showPicker, setShowPicker] = useState(false)
+
     let navItems = items || [
         { id: "information", label: "Color Codes", icon: FileText },
         { id: "meaning", label: "Meaning", icon: BookOpen },
@@ -89,13 +97,25 @@ export function TableOfContents({ currentHex, mobileOnly = false, hideFaqs = fal
         )
     }
 
+    const handleColorApply = (color?: string) => {
+        const selectedColor = typeof color === "string" ? color : currentHex
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: selectedColor } }))
+        }
+        const link = getColorPageLink(selectedColor)
+        const relativeLink = link.replace("https://hexcolormeans.com", "")
+        router.push(relativeLink)
+        setShowPicker(false)
+    }
+
     return (
         <nav className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4 hidden lg:block w-full">
             <div className="space-y-1">
                 <div className="mb-6 p-4 rounded-lg bg-card border shadow-sm flex items-center gap-3">
                     <div
-                        className="w-8 h-8 rounded-md shadow-sm border border-border flex items-center justify-center"
+                        className="w-8 h-8 rounded-md shadow-sm border border-border flex items-center justify-center cursor-pointer"
                         style={{ backgroundColor: currentHex }}
+                        onClick={() => setShowPicker(true)}
                     >
                         <Pipette className="w-4 h-4 text-white mix-blend-difference" />
                     </div>
@@ -120,6 +140,15 @@ export function TableOfContents({ currentHex, mobileOnly = false, hideFaqs = fal
                         </a>
                     )
                 })}
+
+                {showPicker && (
+                    <CustomColorPicker
+                        value={currentHex}
+                        onChange={() => {}}
+                        onApply={handleColorApply}
+                        onClose={() => setShowPicker(false)}
+                    />
+                )}
             </div>
         </nav>
     )
