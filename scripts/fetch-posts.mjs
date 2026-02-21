@@ -52,11 +52,7 @@ const query = `
           }
           metaRobotsNoindex
           metaRobotsNofollow
-          metaRobotsAdvanced
           opengraphAuthor
-          opengraphSection
-          opengraphTags
-          twitterCreator
           cornerstone
         }
       }
