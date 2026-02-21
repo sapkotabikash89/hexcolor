@@ -5,11 +5,9 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getColorHarmony } from "@/lib/color-utils"
-import { Download, Share } from "lucide-react"
-import { toast } from "sonner"
+import { Share } from "lucide-react"
 import { ColorExportDialog } from "@/components/color-export-dialog"
 import { ColorCombination } from "@/components/color-combination"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface ColorSidebarProps {
   color: string
@@ -43,28 +41,6 @@ export function ColorSidebarClient({
   }, [])
 
   const harmonies = getColorHarmony(color, harmonyType)
-
-  const downloadSwatch = (hex: string) => {
-    const canvas = document.createElement("canvas")
-    canvas.width = 200
-    canvas.height = 200
-    const ctx = canvas.getContext("2d")
-    if (ctx) {
-      ctx.fillStyle = hex
-      ctx.fillRect(0, 0, 200, 200)
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob)
-          const a = document.createElement("a")
-          a.href = url
-          a.download = `${hex.replace("#", "")}.png`
-          a.click()
-          URL.revokeObjectURL(url)
-          toast.success("Swatch downloaded!")
-        }
-      })
-    }
-  }
 
   useEffect(() => {
     if (!showLatestPosts) return
@@ -101,21 +77,6 @@ export function ColorSidebarClient({
                 <Share className="w-4 h-4" />
                 Export
               </Button>
-              <TooltipProvider>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="shrink-0"
-                      onClick={() => downloadSwatch(color)}
-                    >
-                      <Download className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Download swatch</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
             </div>
           </div>
 
@@ -190,4 +151,3 @@ function getContrastColor(hex: string): string {
   const brightness = (r * 299 + g * 587 + b * 114) / 1000
   return brightness > 128 ? "#000000" : "#FFFFFF"
 }
-
