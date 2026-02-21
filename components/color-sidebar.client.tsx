@@ -30,6 +30,10 @@ export function ColorSidebarClient({
   const [latestPosts, setLatestPosts] = useState<Array<{ title: string; uri: string }>>([])
 
   useEffect(() => {
+    setColor(initialColor)
+  }, [initialColor])
+
+  useEffect(() => {
     const handleColorUpdate = (e: CustomEvent) => {
       if (e.detail?.color) {
         setColor(e.detail.color)
