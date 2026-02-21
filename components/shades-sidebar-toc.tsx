@@ -1,7 +1,10 @@
-"use strict"
+ "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import { Pipette } from "lucide-react"
+import { CustomColorPicker } from "@/components/custom-color-picker"
+import { getColorPageLink } from "@/lib/color-linking-utils"
+import { useRouter } from "next/navigation"
 
 interface Shade {
     name: string
@@ -16,15 +19,30 @@ interface ShadesSidebarTOCProps {
 }
 
 export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSidebarTOCProps) {
+    const router = useRouter()
+    const [showPicker, setShowPicker] = useState(false)
+
     if (shades.length === 0) return null
+
+    const handleColorApply = (color?: string) => {
+        const selectedColor = typeof color === "string" ? color : currentHex
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("colorUpdate", { detail: { color: selectedColor } }))
+        }
+        const link = getColorPageLink(selectedColor)
+        const relativeLink = link.replace("https://hexcolormeans.com", "")
+        router.push(relativeLink)
+        setShowPicker(false)
+    }
 
     return (
         <nav className="sticky top-28 max-h-[calc(100vh-8rem)] w-full hidden lg:block">
             <div className="space-y-1">
                 <div className="mb-6 p-4 rounded-lg bg-card border shadow-sm flex items-center gap-3">
                     <div
-                        className="w-8 h-8 rounded-md shadow-sm border border-border flex items-center justify-center"
+                        className="w-8 h-8 rounded-md shadow-sm border border-border flex items-center justify-center cursor-pointer"
                         style={{ backgroundColor: currentHex }}
+                        onClick={() => setShowPicker(true)}
                     >
                         <Pipette className="w-4 h-4 text-white mix-blend-difference" />
                     </div>
@@ -55,6 +73,15 @@ export function ShadesSidebarTOC({ currentHex, shades, baseColorName }: ShadesSi
                         })}
                     </div>
                 </div>
+
+                {showPicker && (
+                    <CustomColorPicker
+                        value={currentHex}
+                        onChange={() => {}}
+                        onApply={handleColorApply}
+                        onClose={() => setShowPicker(false)}
+                    />
+                )}
             </div>
         </nav>
     )

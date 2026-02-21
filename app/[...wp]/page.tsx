@@ -410,8 +410,6 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
   }
   const rawNoindex = node.seo?.metaRobotsNoindex
   const rawNofollow = node.seo?.metaRobotsNofollow
-  const hasNoindex = rawNoindex === "noindex" || rawNoindex === true
-  const hasNofollow = rawNofollow === "nofollow" || rawNofollow === true
   const adv = node.seo?.metaRobotsAdvanced || ""
   const googleBot: Record<string, any> = {}
   adv.split(",").forEach((pair: string) => {
@@ -425,14 +423,17 @@ export async function generateMetadata({ params }: WPPageProps): Promise<Metadat
   })
   const hasGoogleBotDirectives = Object.keys(googleBot).length > 0
 
-  const robots =
-    hasNoindex || hasNofollow || hasGoogleBotDirectives
+  const robots = {
+    index: true,
+    follow: true,
+    googleBot: hasGoogleBotDirectives
       ? {
-          index: hasNoindex ? false : undefined,
-          follow: hasNofollow ? false : undefined,
-          googleBot: hasGoogleBotDirectives ? googleBot : undefined,
+          index: true,
+          follow: true,
+          ...googleBot,
         }
-      : undefined
+      : undefined,
+  }
 
   const titleText = String(node.title || "")
   const lowerTitle = titleText.toLowerCase()
