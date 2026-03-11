@@ -62,9 +62,6 @@ export const metadata: Metadata = {
       { url: "/favicon.webp" },
     ],
   },
-  verification: {
-    google: "6aCCEUx0SvVPIKAgXUdb96PSZ48p0WJNzj0074iCNnY",
-  },
 }
 
 export const viewport: Viewport = {
