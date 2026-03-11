@@ -1,5 +1,5 @@
 import type React from "react"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import NextImage from "next/image"
 import { Button } from "@/components/ui/button"
 import { Palette, Droplet, Contrast, Eye, ImageIcon, CircleDot, Search, Menu, Pipette, Grid, Disc, LayoutGrid, Library, Layers, BookOpen, Mail, ShieldCheck } from "lucide-react"

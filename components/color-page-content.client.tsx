@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { Select } from "@/components/ui/select"
 import { SelectItem, SelectContent, SelectValue, SelectTrigger } from "@/components/ui/select"
 import type React from "react"

@@ -6,6 +6,7 @@ import "./globals.css"
 import { WebsiteSchema, OrganizationSchema, SoftwareApplicationSchema } from "@/components/structured-data"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
+import { NavigationInterceptor } from "@/components/navigation-interceptor"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -94,6 +95,7 @@ export default function RootLayout({
 
         <ScrollToTop />
         <SonnerToaster />
+        <NavigationInterceptor />
 
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (
           <Script id="ga-defer-on-first-interaction" strategy="lazyOnload">

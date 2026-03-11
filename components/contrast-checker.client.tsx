@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { Button } from "@/components/ui/button"
 import { Pipette } from "lucide-react"
 import nextDynamic from "next/dynamic"

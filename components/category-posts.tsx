@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import Link from "next/link";
+import Link from "@/components/force-reload-link";
 import { FeaturedImage } from "@/components/blog/featured-image";
 
 interface Post {

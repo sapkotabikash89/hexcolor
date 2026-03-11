@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { Card } from "@/components/ui/card"
 import { getRelatedColors, getContrastColor } from "@/lib/color-utils"
 import { cn } from "@/lib/utils"

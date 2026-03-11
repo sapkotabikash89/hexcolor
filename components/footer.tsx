@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import NextImage from "next/image"
 import blogPostsData from "@/lib/blog-posts-data.json"
 

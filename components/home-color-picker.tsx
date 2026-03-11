@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Palette, Shuffle, Pipette } from "lucide-react"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 
 export function HomeColorPicker() {

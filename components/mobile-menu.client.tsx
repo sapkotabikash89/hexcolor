@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Menu, Disc, Pipette, Contrast, Eye, ImageIcon, LayoutGrid, Library, BookOpen, Mail, ShieldCheck } from "lucide-react"
