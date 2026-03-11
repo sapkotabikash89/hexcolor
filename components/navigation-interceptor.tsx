@@ -10,13 +10,26 @@ import { useEffect } from "react"
  */
 export function NavigationInterceptor() {
   useEffect(() => {
+    // Helper to check if the pathname actually changed
+    // We don't want to hard-reload if only the query string (?key=val) or hash (#sec) changed
+    const isPathChanged = (newUrlStr: string) => {
+      try {
+        const currentUrl = new URL(window.location.href, window.location.origin)
+        const newUrl = new URL(newUrlStr, window.location.origin)
+        return currentUrl.pathname !== newUrl.pathname
+      } catch (e) {
+        // If parsing fails for any reason, safely default to a hard reload
+        return true
+      }
+    }
+
     // Intercept history.pushState so calls like router.push() trigger full reloads
     const originalPushState = history.pushState.bind(history)
     history.pushState = function (state, title, url) {
-      // Let Next.js do its internal routing first, then force a reload
+      // Let Next.js do its internal routing first
       originalPushState(state, title, url)
-      if (url && typeof url === "string") {
-        // Small delay to allow Next.js route handlers to fire, then reload
+      
+      if (url && typeof url === "string" && isPathChanged(url)) {
         window.location.href = url
       }
     }
@@ -24,7 +37,8 @@ export function NavigationInterceptor() {
     const originalReplaceState = history.replaceState.bind(history)
     history.replaceState = function (state, title, url) {
       originalReplaceState(state, title, url)
-      if (url && typeof url === "string") {
+      
+      if (url && typeof url === "string" && isPathChanged(url)) {
         window.location.href = url
       }
     }
