@@ -62,6 +62,10 @@ export const metadata: Metadata = {
       { url: "/favicon.webp" },
     ],
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export const viewport: Viewport = {
