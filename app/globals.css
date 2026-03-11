@@ -120,14 +120,11 @@
   }
 
   /* Scoped link styling for blog post content */
+  article.post-content a,
   article.main-content a {
     @apply text-primary hover:opacity-80 transition-opacity;
   }
 
-  /* Also target legacy content wrapper if used */
-  .cm-wrap a {
-    @apply text-primary hover:opacity-80 transition-opacity;
-  }
 }
 
 /* Custom scrollbar */
@@ -163,33 +160,118 @@
   .wikihow-h2 {
     @apply flex items-center bg-muted border-l-[10px] text-2xl font-bold py-4 px-4 m-0 leading-tight;
   }
+
+  /* Global Page Layout Styles */
+  .site-container {
+    @apply w-full max-w-[1300px] mx-auto px-4;
+  }
+
+  .page-layout {
+    @apply flex flex-col lg:flex-row gap-8 py-8 sm:py-12;
+  }
+
+  .mv-content-body {
+    @apply flex-1 min-w-0;
+  }
+
+  /* Article Content Flow Styles */
+  .post-content {
+    @apply space-y-6;
+  }
+
+  /* Blog typography styles: only apply to headings/paragraphs INSIDE .cm-wrap */
+  .post-content .cm-wrap h1,
+  .cm-wrap h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-8;
+  }
+
+  .post-content .cm-wrap h2,
+  .cm-wrap h2 {
+    @apply flex items-center bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight mt-12 mb-6;
+    border-left-color: var(--page-accent-color, var(--primary));
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .post-content .cm-wrap h3,
+  .cm-wrap h3 {
+    @apply text-2xl md:text-3xl font-semibold leading-snug mt-8 mb-4 px-4 sm:px-6;
+  }
+
+  .post-content .cm-wrap h4,
+  .cm-wrap h4 {
+    @apply text-lg md:text-xl font-semibold leading-snug mt-6 mb-3 px-4 sm:px-6;
+  }
+
+  .post-content .cm-wrap p,
+  .cm-wrap > p {
+    @apply leading-[1.85] text-lg px-4 sm:px-6;
+  }
+
+  .post-content .cm-wrap ul,
+  .cm-wrap > ul {
+    @apply list-none pl-4 mb-6 space-y-2 px-4 sm:px-6;
+  }
+
+  .post-content .cm-wrap ul > li,
+  .cm-wrap > ul > li {
+    @apply relative pl-6;
+  }
+
+  .post-content .cm-wrap ul > li::before,
+  .cm-wrap > ul > li::before {
+    content: "\2022";
+    @apply absolute left-0 top-[-0.1em] text-2xl leading-none;
+    color: var(--page-accent-color, var(--primary));
+  }
+
+  .post-content .cm-wrap ol,
+  .cm-wrap > ol {
+    @apply list-none pl-4 mb-6 space-y-4 px-4 sm:px-6;
+    counter-reset: item;
+  }
+
+  .post-content .cm-wrap ol > li,
+  .cm-wrap > ol > li {
+    counter-increment: item;
+    @apply relative pl-12 min-h-[1.75rem] leading-[1.6];
+  }
+
+  .post-content .cm-wrap ol > li::before,
+  .cm-wrap > ol > li::before {
+    content: counter(item);
+    @apply absolute left-0 top-[-0.1rem] w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm leading-none;
+    background-color: var(--page-accent-color, var(--primary));
+    color: var(--page-accent-contrast, #ffffff);
+  }
+
+  .post-content img {
+    @apply max-w-full h-auto object-contain rounded-xl border border-border shadow-sm md:shadow mx-auto my-8;
+  }
+
+  .post-content .cm-wrap blockquote,
+  .cm-wrap blockquote {
+    @apply border-l-4 pl-4 italic my-6 text-muted-foreground px-4 sm:px-6;
+    border-left-color: var(--page-accent-color, var(--primary));
+  }
+
+  .post-content .cm-wrap table,
+  .cm-wrap table {
+    @apply w-full border-collapse my-8 overflow-hidden rounded-xl border border-border;
+  }
+
+  .post-content .cm-wrap th,
+  .cm-wrap th {
+    @apply border-b border-r border-border px-4 py-3 bg-muted text-foreground font-semibold text-left;
+  }
+
+  .post-content .cm-wrap td,
+  .cm-wrap td {
+    @apply border-b border-r border-border px-4 py-3;
+  }
 }
 
-/* Blog post H2 styling */
-.cm-wrap h2 {
-  @apply flex items-center bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight;
-  border-left-color: var(--page-accent-color, var(--primary));
-}
 
-.cm-wrap h3 {
-  @apply text-2xl font-bold mt-6 mb-2;
-}
-
-.cm-wrap h4 {
-  @apply text-xl font-bold mt-4 mb-2;
-}
-
-.cm-wrap>*:not(h2) {
-  @apply px-2 sm:px-6;
-}
-
-.cm-wrap>*+* {
-  margin-top: 1rem;
-}
-
-.cm-wrap>h2+* {
-  margin-top: 0.5rem;
-}
 
 /* WordPress Content List Styles */
 .wp-content a:not(.wp-block-button__link):not(.button):not(.btn) {

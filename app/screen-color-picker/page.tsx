@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { GlobalLayout } from "@/components/layout/global-layout";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
@@ -113,9 +114,12 @@ export default function ScreenColorPickerPage() {
         </div>
       </section>
 
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
-          <article id="content" className="main-content grow-content flex-1 space-y-16">
+      <GlobalLayout
+        rightSidebar={<ColorSidebar color="#E0115F" />}
+        rightSidebarClassName="lg:block w-[340px] sticky top-24 self-start"
+        articleClassName="main-content grow-content flex-1 space-y-16"
+      >
+        <div className="py-12">
             <ToolApplicationSchema
               name="Screen Color Picker"
               slug="screen-color-picker"
@@ -228,14 +232,8 @@ export default function ScreenColorPickerPage() {
                 </Accordion>
               </div>
             </section>
-          </article>
-          <div className="hidden lg:block w-[340px]">
-            <div className="sticky top-24">
-              <ColorSidebar color="#E0115F" />
-            </div>
-          </div>
         </div>
-      </main>
+      </GlobalLayout>
 
       <ExploreColorTools current="screen-color-picker" />
       <Footer />

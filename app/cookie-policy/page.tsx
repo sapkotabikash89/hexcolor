@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { GlobalLayout } from "@/components/layout/global-layout"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbSchema, WebPageSchema } from "@/components/structured-data"
@@ -52,10 +53,14 @@ export default function CookiePolicyPage() {
         { name: "Cookie Policy", item: "https://hexcolormeans.com/cookie-policy/" }
       ]} />
       <Header />
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12 flex-1">
+      <GlobalLayout
+        rightSidebar={<ColorSidebar color="#E0115F" />}
+        rightSidebarClassName="lg:block w-[340px] sticky top-24 self-start"
+        articleClassName="main-content grow-content flex-1 space-y-4"
+      >
         <BreadcrumbNav items={[{ label: "Cookie Policy", href: "/cookie-policy/" }]} />
-        <div className="flex flex-col lg:flex-row gap-6 mt-6">
-          <article id="content" className="main-content grow-content flex-1 space-y-4">
+        <div className="mt-6">
+          <div>
             <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Cookie Policy</h1>
 
             <div className="prose dark:prose-invert max-w-none space-y-8 text-muted-foreground leading-relaxed">
@@ -133,10 +138,9 @@ export default function CookiePolicyPage() {
             <div className="flex justify-center py-4 mt-8 border-t pt-8">
               <ShareButtons title="HexColorMeans Cookie Policy" />
             </div>
-          </article>
-          <ColorSidebar color="#E0115F" />
+          </div>
         </div>
-      </main>
+      </GlobalLayout>
       <Footer />
     </div>
   )

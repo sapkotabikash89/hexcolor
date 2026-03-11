@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { GlobalLayout } from "@/components/layout/global-layout";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
@@ -113,9 +114,11 @@ export default function ImageColorPickerPage() {
         </div>
       </section>
 
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
-          <article id="content" className="main-content grow-content flex-1 space-y-16">
+      <GlobalLayout
+        rightSidebar={<ColorSidebar color="#0856B6" />}
+        rightSidebarClassName="lg:block w-[340px] sticky top-24 self-start"
+      >
+        <div className="py-12">
             <ToolApplicationSchema
               name="Image Color Picker"
               slug="image-color-picker"
@@ -223,14 +226,8 @@ export default function ImageColorPickerPage() {
                 </Accordion>
               </div>
             </section>
-          </article>
-          <div className="hidden lg:block w-[340px]">
-            <div className="sticky top-24">
-              <ColorSidebar color="#0856B6" />
-            </div>
-          </div>
         </div>
-      </main>
+      </GlobalLayout>
 
       <ExploreColorTools current="image-color-picker" />
       <Footer />

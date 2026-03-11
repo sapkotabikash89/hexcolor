@@ -1,5 +1,6 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { GlobalLayout } from "@/components/layout/global-layout";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ColorSidebar } from "@/components/sidebar";
 import { CategoryPosts } from "@/components/category-posts";
@@ -82,18 +83,20 @@ export default async function TagPage({ params }: TagPageProps) {
           </div>
         </div>
       </section>
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <article id="content" className="main-content grow-content flex-1">
+
+      <GlobalLayout
+        rightSidebar={<ColorSidebar color="#E0115F" />}
+        rightSidebarClassName="lg:block w-[340px] sticky top-24 self-start"
+        articleClassName="main-content grow-content flex-1"
+      >
+        <div className="py-12">
             <CategoryPosts
               initialPosts={posts}
               categoryName={tagName}
               categorySlug={tag}
             />
-          </article>
-          <ColorSidebar color="#E0115F" />
         </div>
-      </main>
+      </GlobalLayout>
       <Footer />
     </div>
   );

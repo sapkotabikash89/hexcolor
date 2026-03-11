@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { GlobalLayout } from "@/components/layout/global-layout";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import dynamic from "next/dynamic";
 
@@ -239,47 +240,33 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
         <TableOfContents currentHex={currentHex} mobileOnly hideFaqs />
       </div>
 
-      {/* Main Content */}
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
+      <GlobalLayout
+        leftSidebar={<TableOfContents currentHex={currentHex} hideFaqs />}
+        leftSidebarClassName="lg:hidden xl:block w-52 sticky top-28 self-start shrink-0"
+        rightSidebar={<ColorSidebar color={currentHex} onColorChange={updateCurrentHex} />}
+        rightSidebarClassName="lg:block w-[340px] shrink-0 sticky top-24 self-start"
+        articleClassName="main-content grow-content flex-1 space-y-16"
+      >
+        <div className="py-12">
+          <div className="space-y-8">
+            {/* Advanced Color Picker Tool */}
+            <InteractiveColorPicker
+              selectedColor={currentHex}
+              onColorChange={updateCurrentHex}
+            />
 
-          {/* Left Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}
-          <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
-            <TableOfContents currentHex={currentHex} hideFaqs />
-          </aside>
-
-          {/* Center Content - Flexible width */}
-          <article className="flex-1 min-w-0 w-full">
-            <div className="space-y-8">
-              {/* Advanced Color Picker Tool */}
-              <InteractiveColorPicker
-                selectedColor={currentHex}
-                onColorChange={updateCurrentHex}
-              />
-
-              {/* Social Share Section */}
-              <div className="flex justify-center py-4">
-                <ShareButtons url={`https://hexcolormeans.com/html-color-picker?hex=${currentHex.replace("#", "").toLowerCase()}`} title={`${currentHex.toUpperCase()} HTML Color Code - HexColorMeans`} />
-              </div>
-
-              {/* Color Information */}
-              <ColorPageContent
-                key={currentHex}
-                hex={currentHex}
-                mode="full"
-                faqs={[]}
-                onColorChange={updateCurrentHex}
-                pageUrl={`https://hexcolormeans.com/html-color-picker?hex=${currentHex.replace("#", "").toUpperCase()}`}
-              />
-            </div>
-          </article>
-
-          {/* Right Sidebar - Hidden below xl to prioritize content width */}
-          <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-            <ColorSidebar color={currentHex} onColorChange={updateCurrentHex} />
-          </aside>
+            {/* Color Information */}
+            <ColorPageContent
+              key={currentHex}
+              hex={currentHex}
+              mode="full"
+              faqs={[]}
+              onColorChange={updateCurrentHex}
+              pageUrl={`https://hexcolormeans.com/html-color-picker?hex=${currentHex.replace("#", "").toUpperCase()}`}
+            />
+          </div>
         </div>
-      </main>
+      </GlobalLayout>
 
       <Footer />
     </div>

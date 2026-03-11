@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { ColorLibrary } from "@/components/color-library"
+import { GlobalLayout } from "@/components/layout/global-layout"
 import { BreadcrumbSchema, CollectionPageSchema } from "@/components/structured-data"
 
 import { ShareButtons } from "@/components/share-buttons"
@@ -71,25 +72,20 @@ export default function ColorsPage() {
         </div>
       </section>
 
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <article id="content" className="main-content grow-content flex-1">
-            <h2 className="sr-only">Color library results and tools</h2>
-            <div className="space-y-12">
-              <Suspense fallback={<div className="p-12 text-center">Loading color library...</div>}>
-                <ColorLibrary initialCategory="all" page={1} />
-              </Suspense>
+      <GlobalLayout
+        rightSidebar={<ColorSidebar color="#E0115F" />}
+      >
+        <h2 className="sr-only">Color library results and tools</h2>
+        <div className="space-y-12">
+          <Suspense fallback={<div className="p-12 text-center">Loading color library...</div>}>
+            <ColorLibrary initialCategory="all" page={1} />
+          </Suspense>
 
-              <div className="mt-8 pt-8 border-t flex flex-col items-center gap-6">
-                <ShareButtons title="Explore the HexColorMeans Digital Color Compendium" />
-              </div>
-            </div>
-          </article>
-          <aside className="hidden lg:block w-[340px] shrink-0">
-            <ColorSidebar color="#E0115F" />
-          </aside>
+          <div className="mt-8 pt-8 border-t flex flex-col items-center gap-6">
+            <ShareButtons title="Explore the HexColorMeans Digital Color Compendium" />
+          </div>
         </div>
-      </main>
+      </GlobalLayout>
 
       <Footer />
     </div>

@@ -3,6 +3,7 @@ import { Footer } from "@/components/footer";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ColorSidebar } from "@/components/sidebar";
 import { CategoryPosts } from "@/components/category-posts";
+import { GlobalLayout } from "@/components/layout/global-layout";
 
 import { getAllPosts } from "@/lib/wordpress";
 
@@ -53,18 +54,16 @@ export default async function BlogPage() {
           </div>
         </div>
       </section>
-      <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
-          <article id="content" className="main-content grow-content flex-1" itemProp="articleBody">
-            <CategoryPosts
-              initialPosts={transformedPosts}
-              categoryName="Blog"
-              categorySlug="blog"
-            />
-          </article>
-          <ColorSidebar color="#E0115F" />
-        </div>
-      </main>
+
+      <GlobalLayout
+        rightSidebar={<ColorSidebar color="#E0115F" />}
+      >
+        <CategoryPosts
+          initialPosts={transformedPosts}
+          categoryName="Blog"
+          categorySlug="blog"
+        />
+      </GlobalLayout>
       <Footer />
     </div>
   );

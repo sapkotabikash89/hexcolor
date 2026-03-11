@@ -1,2 +1,8 @@
 User-agent: *
+Allow: /
+
 Sitemap: https://hexcolormeans.com/sitemap.xml
+Sitemap: https://hexcolormeans.com/sitemap-posts.xml
+Sitemap: https://hexcolormeans.com/sitemap-tools.xml
+Sitemap: https://hexcolormeans.com/sitemap-legal.xml
+Sitemap: https://hexcolormeans.com/sitemap-images.xml

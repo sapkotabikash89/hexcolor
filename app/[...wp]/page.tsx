@@ -1,12 +1,13 @@
+import React, { Suspense } from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import Image from "next/image"
-import { Suspense } from "react"
 import Script from "next/script"
 import dynamic from "next/dynamic"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { GlobalLayout } from "@/components/layout/global-layout"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { WPColorContext } from "@/components/wp-color-context"
 import { WPSEOHead } from "@/components/wpseo-head"
@@ -547,7 +548,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
     return (
       <div className="flex flex-col min-h-screen">
         <Header />
-        <section className="bg-muted/30 py-12 px-4">
+        <section className="bg-muted/30 py-12 px-4 shadow-sm">
           <div className="w-full max-w-[1300px] mx-auto">
             <BreadcrumbNav items={crumbs} />
             <div className="text-center space-y-4">
@@ -555,12 +556,13 @@ export default async function WPPostPage({ params }: WPPageProps) {
             </div>
           </div>
         </section>
-        <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
+        
+        <GlobalLayout>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {related.map((p: any, i: number) => {
               const src = p?.featuredImage?.node?.sourceUrl
               return (
-                <div key={i} className="rounded-lg overflow-hidden border-2 border-border hover:shadow-lg transition-shadow">
+                <div key={i} className="rounded-lg overflow-hidden border-2 border-border hover:shadow-lg transition-shadow bg-background">
                   <Link href={p.uri} className="block">
                     {src && (
                       <FeaturedImage
@@ -577,7 +579,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               )
             })}
           </div>
-        </main>
+        </GlobalLayout>
         <Footer />
       </div>
     )
@@ -790,10 +792,10 @@ export default async function WPPostPage({ params }: WPPageProps) {
         estimatedReadingTime={node.readingTime}
         cornerstone={node.seo?.cornerstone}
       />
-      <article id="content" className="main-content grow-content max-w-none space-y-6 min-w-0" itemProp="articleBody">
+      <div className="main-content grow-content max-w-none space-y-6 min-w-0">
         {/* Featured Image - Always show at the top if available */}
         {img && (
-          <section key="featured-image" className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4 min-w-0 mb-6">
+          <div key="featured-image" className="not-prose bg-white rounded-xl border border-border shadow-sm md:shadow p-4 min-w-0 mb-8">
             <FeaturedImage
               src={img}
               alt={alt || "Featured image"}
@@ -805,7 +807,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
               shareUrl=""
               shareTitle={node?.title || ""}
             />
-          </section>
+          </div>
         )}
         <UnifiedBlogSchema
           title={node.seo?.title || node.title}
@@ -887,7 +889,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
 
                     const parts = sec.split(blockHtml)
                     return (
-                      <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden">
+                      <React.Fragment key={`sec-${i}`}>
                         {parts[0] && (
                           <BlogContent
                             html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(parts[0]), accentColor), isShadesMeaningCategory)}
@@ -896,7 +898,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                             style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
                           />
                         )}
-                        <div className="px-4 sm:px-6">
+                        <div className="not-prose my-6">
                           <ShadeSwatch hex={hex} rgb={rgb} cmyk={cmyk} />
                         </div>
                         {parts[1] && (
@@ -907,7 +909,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                             style={{ "--page-accent-color": accentColor, "--page-accent-contrast": getContrastColor(accentColor) } as React.CSSProperties}
                           />
                         )}
-                      </section>
+                      </React.Fragment>
                     )
                   }
                 }
@@ -922,52 +924,46 @@ export default async function WPPostPage({ params }: WPPageProps) {
                   const hsl = effectiveHex && rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null;
 
                   return (
-                    <section id="technical-information" style={{ scrollMarginTop: "96px" }} key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow p-1 sm:p-2 md:p-4">
+                    <React.Fragment key={`sec-${i}`}>
                       {/* Enhanced Technical Information with hex data */}
-                      <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <h3 className="text-lg font-semibold text-blue-800 mb-3 underline">{colorCodesTitle}</h3>
-                        <div className="space-y-3">
+                      <div id="technical-information" style={{ scrollMarginTop: "96px" }} className="p-6 bg-blue-50/50 rounded-xl border border-blue-200/50 my-8">
+                        <h3 className="text-2xl font-semibold text-blue-900 mb-4 underline decoration-blue-300 underline-offset-4">{colorCodesTitle}</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                           <div>
-                            <span className="font-medium text-gray-700">Color Hex:</span>
-                            <div className="mt-1">
-                              <CopyButton
+                            <span className="text-sm font-medium text-blue-800/70 block mb-1">HEX CODE</span>
+                            <CopyButton
                                 showIcon={false}
                                 variant="ghost"
                                 size="sm"
-                                className="p-0 h-auto font-mono text-lg"
+                                className="p-0 h-auto font-mono text-xl text-blue-900 border-none hover:bg-transparent"
                                 label={hexValue}
                                 value={hexValue}
                               />
-                            </div>
                           </div>
                           {rgb && (
                             <div>
-                              <span className="font-medium text-gray-700">RGB:</span>
-                              <div className="mt-1">
+                                <span className="text-sm font-medium text-blue-800/70 block mb-1">RGB VALUES</span>
                                 <CopyButton
                                   showIcon={false}
                                   variant="ghost"
                                   size="sm"
-                                  className="p-0 h-auto font-mono"
+                                  className="p-0 h-auto font-mono text-blue-900 border-none hover:bg-transparent"
                                   label={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}
                                   value={`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`}
                                 />
-                              </div>
                             </div>
                           )}
                           {hsl && (
                             <div>
-                              <span className="font-medium text-gray-700">HSL:</span>
-                              <div className="mt-1">
+                                <span className="text-sm font-medium text-blue-800/70 block mb-1">HSL VALUES</span>
                                 <CopyButton
                                   showIcon={false}
                                   variant="ghost"
                                   size="sm"
-                                  className="p-0 h-auto font-mono"
+                                  className="p-0 h-auto font-mono text-blue-900 border-none hover:bg-transparent"
                                   label={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`}
                                   value={`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`}
                                 />
-                              </div>
                             </div>
                           )}
                         </div>
@@ -982,7 +978,7 @@ export default async function WPPostPage({ params }: WPPageProps) {
                           "--page-accent-contrast": getContrastColor(accentColor)
                         } as React.CSSProperties}
                       />
-                    </section>
+                    </React.Fragment>
                   );
                 } else {
                   // Hide technical section if no color in title
@@ -990,17 +986,16 @@ export default async function WPPostPage({ params }: WPPageProps) {
                 }
               }
               return (
-                <section key={`sec-${i}`} className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden min-w-0">
-                  <BlogContent
-                    html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaningCategory)}
-                    isShadesMeaning={isShadesMeaningCategory}
-                    className="cm-wrap"
-                    style={{
-                      "--page-accent-color": accentColor,
-                      "--page-accent-contrast": getContrastColor(accentColor)
-                    } as React.CSSProperties}
-                  />
-                </section>
+                <BlogContent
+                  key={`sec-${i}`}
+                  html={autoLinkShadeNames(enhanceContentHtml(removeShortcode(sec), accentColor), isShadesMeaningCategory)}
+                  isShadesMeaning={isShadesMeaningCategory}
+                  className="cm-wrap"
+                  style={{
+                    "--page-accent-color": accentColor,
+                    "--page-accent-contrast": getContrastColor(accentColor)
+                  } as React.CSSProperties}
+                />
               )
             })()
 
@@ -1013,31 +1008,27 @@ export default async function WPPostPage({ params }: WPPageProps) {
           if (!hasTechnicalSection && titleContainsColor) {
             return [
               ...mappedSections,
-              <section
-                key="auto-tech-info-wrapper"
-                id="technical-information"
-                className="bg-white rounded-xl border border-border shadow-sm md:shadow overflow-hidden"
-                style={{ scrollMarginTop: "96px" }}
-              >
+              <React.Fragment key="auto-tech-info-wrapper">
                 <div
-                  className="flex items-center justify-between bg-muted-foreground/10 border-l-[10px] text-3xl font-bold py-5 px-4 m-0 leading-tight"
-                  style={{ borderLeftColor: effectiveHex }}
+                  id="technical-information"
+                  className="flex items-center justify-between border-l-[10px] text-3xl font-bold py-5 px-6 my-10 bg-muted/20"
+                  style={{ borderLeftColor: effectiveHex, scrollMarginTop: "96px" }}
                 >
                   <span className="underline">{colorCodesTitle}</span>
                 </div>
-                <div className="px-4 sm:px-6 py-2">
+                <div className="not-prose my-8">
                   <ColorPageContent
                     hex={effectiveHex}
                     mode="sectionsOnly"
                   />
                 </div>
-              </section>
+              </React.Fragment>
             ];
           }
 
           return mappedSections
         })()}
-      </article>
+      </div>
 
       {titleContainsColor && <FAQSection color={colorName} />}
       {titleHex && <RelatedColorsSection hex={effectiveHex} />}
@@ -1210,54 +1201,17 @@ export default async function WPPostPage({ params }: WPPageProps) {
 
       {!isColorMeaningCategory && titleContainsColor && <AnchorHashNav />}
 
-      <main className={mainClassName}>
-        {isColorMeaningCategory ? (
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-            <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
-              <TableOfContents currentHex={effectiveHex || postColor} items={blogTocItems} />
-            </aside>
-            <div className="flex-1 min-w-0 w-full space-y-6">
-              {mainContent}
-            </div>
-            <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-              <ColorSidebar
-                color={accentColor}
-                showColorSchemes={hasColorUI}
-                className="w-full space-y-6"
-              />
-            </aside>
-          </div>
-        ) : isShadesMeaningCategory ? (
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-            <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
-              <ShadesSidebarTOC
-                currentHex={effectiveHex || postColor}
-                shades={shadesList}
-                baseColorName={baseColorName || "Color"}
-              />
-            </aside>
-            <div className="flex-1 min-w-0 w-full space-y-6">
-              {mainContent}
-            </div>
-            <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-              <ColorSidebar
-                color={accentColor}
-                showColorSchemes={hasColorUI}
-                className="w-full space-y-6"
-              />
-            </aside>
-          </div>
-        ) : (
-          <div className="flex flex-col lg:flex-row gap-8 min-w-0">
-            <div className="flex-1 space-y-6 min-w-0">
-              {mainContent}
-            </div>
-            <aside className="hidden lg:block w-[340px] shrink-0">
-              <ColorSidebar color={accentColor} showColorSchemes={hasColorUI} />
-            </aside>
-          </div>
-        )}
-      </main>
+      <GlobalLayout
+        leftSidebar={isColorMeaningCategory ? <TableOfContents currentHex={effectiveHex || postColor} items={blogTocItems} /> : isShadesMeaningCategory ? <ShadesSidebarTOC currentHex={effectiveHex || postColor} shades={shadesList} baseColorName={baseColorName || "Color"} /> : undefined}
+        leftSidebarClassName={isColorMeaningCategory || isShadesMeaningCategory ? "xl:block w-52 sticky top-28 self-start" : undefined}
+        rightSidebar={<ColorSidebar color={accentColor} showColorSchemes={hasColorUI} className="w-full space-y-6" />}
+        rightSidebarClassName="lg:block w-[340px] sticky top-24 self-start"
+        articleClassName="main-content grow-content max-w-none space-y-6 min-w-0"
+      >
+        <div className="min-w-0 w-full space-y-6">
+          {mainContent}
+        </div>
+      </GlobalLayout>
 
       <Footer />
     </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { GlobalLayout } from "@/components/layout/global-layout"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
@@ -146,133 +147,130 @@ export default function ColorWheelPage() {
                 </div>
             </section>
 
-            <main className="w-full max-w-[1300px] mx-auto px-4 py-12">
-                <div className="flex flex-col lg:flex-row gap-8">
-                    <article id="content" className="main-content grow-content flex-1 space-y-16">
-                        <ToolApplicationSchema
-                            name="Color Wheel Tool"
-                            slug="color-wheel"
-                            description="A professional chromatic wheel interface for selecting hues and building coordinated color palettes based on harmony rules."
-                        />
+      <GlobalLayout
+        rightSidebar={<ColorSidebar color="#E0115F" />}
+        rightSidebarClassName="lg:block w-[340px] sticky top-24 self-start"
+        articleClassName="main-content grow-content flex-1 space-y-16"
+      >
+        <div className="py-12">
+            <ToolApplicationSchema
+              name="Color Wheel Tool"
+              slug="color-wheel"
+              description="A professional chromatic wheel interface for selecting hues and building coordinated color palettes based on harmony rules."
+            />
 
-                        {/* Tool Area */}
-                        <section className="space-y-8" aria-label="Color wheel tool interface">
-                            <h2 className="sr-only">Color wheel tool</h2>
-                            <ColorWheelClient />
-                        </section>
+            {/* Tool Area */}
+            <section className="space-y-8" aria-label="Color wheel tool interface">
+              <h2 className="sr-only">Color wheel tool</h2>
+              <ColorWheelClient />
+            </section>
 
-                        {/* How to Use Area with border */}
-                        <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
-                            <div className="space-y-6">
-                                <div className="flex items-center gap-3">
-                                    <CheckCircle2 className="w-8 h-8 text-primary" />
-                                    <h2 className="text-4xl font-bold m-0">How to Use the Color Wheel</h2>
-                                </div>
-                                <div className="grid sm:grid-cols-2 gap-8 items-stretch">
-                                    <div className="space-y-6">
-                                        <p className="text-lg text-muted-foreground leading-relaxed">
-                                            Using our interactive chromatic wheel is simple and efficient. Follow these steps to generate professional palettes for your next project:
-                                        </p>
-                                        <ul className="space-y-4">
-                                            {[
-                                                "Select a base color from the center wheel or enter a Hex code in the input box.",
-                                                "Choose a harmony type from the dropdown menu to see related colors.",
-                                                "Adjust the saturation and luminance sliders to refine the mood of your palette.",
-                                                "View the updated color combinations instantly in the breakdown section below.",
-                                                "Click any color code to copy it to your clipboard for use in your code or design tool."
-                                            ].map((step, i) => (
-                                                <li key={i} className="flex gap-4">
-                                                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">{i + 1}</span>
-                                                    <span className="text-muted-foreground pt-1 font-medium">{step}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                    <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-4 sm:p-10">
-                                        <img
-                                            src="/advanced-chromatic-or-color-wheel-tool-online-free.webp"
-                                            alt="Professional user interface of the online color wheel tool"
-                                            className="w-full h-full object-contain transition-transform duration-700 hover:scale-105"
-                                        />
-                                    </Card>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* Why Use Area with border */}
-                        <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-10 bg-white">
-                            <div className="flex items-center gap-3">
-                                <Info className="w-8 h-8 text-primary" />
-                                <h2 className="text-4xl font-bold m-0">Why Use a Color Wheel?</h2>
-                            </div>
-                            <div className="max-w-none space-y-12">
-                                <p className="text-lg text-muted-foreground leading-relaxed font-normal">
-                                    The color wheel is the essential tool for anyone working with visuals. It bridges the gap between raw intuition and mathematical precision. By understanding how colors relate on a circular spectrum, you remove the guesswork from design.
-                                </p>
-                                <p className="text-lg text-muted-foreground leading-relaxed font-normal">
-                                    For developers, it ensures UI components meet accessibility standards through high contrast. For designers, it provides a structured way to build emotional connection with users. A well-chosen chromatic scheme can make a brand feel trustworthy, exciting, or calm within seconds of interaction.
-                                </p>
-                            </div>
-                        </section>
-
-                        {/* Understanding Color Harmonies with border */}
-                        <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-16 bg-white">
-                            <div className="flex items-center gap-3">
-                                <Layers className="w-8 h-8 text-primary" />
-                                <h2 className="text-4xl font-bold m-0">Understanding Color Harmonies</h2>
-                            </div>
-                            <p className="text-lg text-muted-foreground max-w-3xl m-0">Explore the core geometric relationships that define professional color theory.</p>
-
-                            <div className="space-y-32">
-                                {harmonies.map((harmony, idx) => (
-                                    <div key={idx} className={`flex flex-col ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16`}>
-                                        <div className="flex-1 space-y-6 text-left">
-                                            <h3 className="text-4xl font-extrabold text-foreground">{harmony.title}</h3>
-                                            <p className="text-lg text-muted-foreground leading-relaxed font-normal">{harmony.description}</p>
-                                        </div>
-                                        <div className="flex-1 w-full flex justify-center">
-                                            <Card className="overflow-hidden border-2 border-border shadow-2xl transition-all hover:scale-[1.02] duration-500 max-w-lg w-full rounded-2xl bg-white p-5 sm:p-8">
-                                                <img
-                                                    src={`/${harmony.image}`}
-                                                    alt={`${harmony.title} color harmony pattern`}
-                                                    className="w-full h-full object-contain"
-                                                />
-                                            </Card>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-
-                        {/* FAQs Area with border */}
-                        <section id="faqs" className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
-                            <div className="flex items-center gap-4">
-                                <HelpCircle className="w-10 h-10 text-primary" />
-                                <h2 className="text-4xl font-bold m-0">FAQs About Color Wheel</h2>
-                            </div>
-                            <div className="max-w-5xl">
-                                <Accordion type="single" collapsible className="w-full space-y-4">
-                                    {faqs.map((faq, i) => (
-                                        <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-6 bg-white transition-colors hover:bg-accent/5">
-                                            <AccordionTrigger className="text-xl font-bold text-left hover:no-underline py-6">
-                                                {faq.question}
-                                            </AccordionTrigger>
-                                            <AccordionContent className="text-lg text-muted-foreground leading-relaxed pb-6 text-left">
-                                                {faq.answer}
-                                            </AccordionContent>
-                                        </AccordionItem>
-                                    ))}
-                                </Accordion>
-                            </div>
-                        </section>
-                    </article>
-                    <div className="hidden lg:block w-[340px]">
-                        <div className="sticky top-24">
-                            <ColorSidebar color="#E0115F" />
-                        </div>
-                    </div>
+            {/* How to Use Area with border */}
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-8 h-8 text-primary" />
+                  <h2 className="text-4xl font-bold m-0">How to Use the Color Wheel</h2>
                 </div>
-            </main>
+                <div className="grid sm:grid-cols-2 gap-8 items-stretch">
+                  <div className="space-y-6">
+                    <p className="text-lg text-muted-foreground leading-relaxed">
+                      Using our interactive chromatic wheel is simple and efficient. Follow these steps to generate professional palettes for your next project:
+                    </p>
+                    <ul className="space-y-4">
+                      {[
+                        "Select a base color from the center wheel or enter a Hex code in the input box.",
+                        "Choose a harmony type from the dropdown menu to see related colors.",
+                        "Adjust the saturation and luminance sliders to refine the mood of your palette.",
+                        "View the updated color combinations instantly in the breakdown section below.",
+                        "Click any color code to copy it to your clipboard for use in your code or design tool."
+                      ].map((step, i) => (
+                        <li key={i} className="flex gap-4">
+                          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">{i + 1}</span>
+                          <span className="text-muted-foreground pt-1 font-medium">{step}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <Card className="overflow-hidden border-2 border-border shadow-2xl relative min-h-[400px] flex items-center justify-center bg-white p-4 sm:p-10">
+                    <img
+                      src="/advanced-chromatic-or-color-wheel-tool-online-free.webp"
+                      alt="Professional user interface of the online color wheel tool"
+                      className="w-full h-full object-contain transition-transform duration-700 hover:scale-105"
+                    />
+                  </Card>
+                </div>
+              </div>
+            </section>
+
+            {/* Why Use Area with border */}
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-10 bg-white">
+              <div className="flex items-center gap-3">
+                <Info className="w-8 h-8 text-primary" />
+                <h2 className="text-4xl font-bold m-0">Why Use a Color Wheel?</h2>
+              </div>
+              <div className="max-w-none space-y-12">
+                <p className="text-lg text-muted-foreground leading-relaxed font-normal">
+                  The color wheel is the essential tool for anyone working with visuals. It bridges the gap between raw intuition and mathematical precision. By understanding how colors relate on a circular spectrum, you remove the guesswork from design.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed font-normal">
+                  For developers, it ensures UI components meet accessibility standards through high contrast. For designers, it provides a structured way to build emotional connection with users. A well-chosen chromatic scheme can make a brand feel trustworthy, exciting, or calm within seconds of interaction.
+                </p>
+              </div>
+            </section>
+
+            {/* Understanding Color Harmonies with border */}
+            <section className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-16 bg-white">
+              <div className="flex items-center gap-3">
+                <Layers className="w-8 h-8 text-primary" />
+                <h2 className="text-4xl font-bold m-0">Understanding Color Harmonies</h2>
+              </div>
+              <p className="text-lg text-muted-foreground max-w-3xl m-0">Explore the core geometric relationships that define professional color theory.</p>
+
+              <div className="space-y-32">
+                {harmonies.map((harmony, idx) => (
+                  <div key={idx} className={`flex flex-col ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16`}>
+                    <div className="flex-1 space-y-6 text-left">
+                      <h3 className="text-4xl font-extrabold text-foreground">{harmony.title}</h3>
+                      <p className="text-lg text-muted-foreground leading-relaxed font-normal">{harmony.description}</p>
+                    </div>
+                    <div className="flex-1 w-full flex justify-center">
+                      <Card className="overflow-hidden border-2 border-border shadow-2xl transition-all hover:scale-[1.02] duration-500 max-w-lg w-full rounded-2xl bg-white p-5 sm:p-8">
+                        <img
+                          src={`/${harmony.image}`}
+                          alt={`${harmony.title} color harmony pattern`}
+                          className="w-full h-full object-contain"
+                        />
+                      </Card>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* FAQs Area with border */}
+            <section id="faqs" className="border-2 border-border/60 rounded-3xl p-4 sm:p-12 space-y-12 bg-white">
+              <div className="flex items-center gap-4">
+                <HelpCircle className="w-10 h-10 text-primary" />
+                <h2 className="text-4xl font-bold m-0">FAQs About Color Wheel</h2>
+              </div>
+              <div className="max-w-5xl">
+                <Accordion type="single" collapsible className="w-full space-y-4">
+                  {faqs.map((faq, i) => (
+                    <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-6 bg-white transition-colors hover:bg-accent/5">
+                      <AccordionTrigger className="text-xl font-bold text-left hover:no-underline py-6">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-lg text-muted-foreground leading-relaxed pb-6 text-left">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            </section>
+        </div>
+      </GlobalLayout>
 
             <ExploreColorTools current="color-wheel" />
 

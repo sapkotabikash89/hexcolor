@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
+import { GlobalLayout } from "@/components/layout/global-layout"
 import dynamic from "next/dynamic"
 
 const ColorSidebar = dynamic(() => import("@/components/sidebar").then((mod) => mod.ColorSidebar), {
@@ -365,26 +366,14 @@ export default async function ColorPage({ params }: ColorPageProps) {
         <TableOfContents currentHex={normalizedHex} mobileOnly />
       </div>
 
-      {/* Main Content */}
-      <main className="w-full max-w-[1300px] mx-auto px-2 sm:px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-
-          {/* Left Sidebar Table of Contents - Sticky (Visible on Desktop/Large Tablet) */}
-          <aside className="hidden xl:block w-52 sticky top-28 self-start shrink-0">
-            <TableOfContents currentHex={normalizedHex} />
-          </aside>
-
-          {/* Center Article Content - Flexible width */}
-          <article className="flex-1 min-w-0 w-full">
-            <ColorPageContent key={normalizedHex} hex={normalizedHex} faqs={faqItems} colorInformation={colorInformation || undefined} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
-          </article>
-
-          {/* Right Sidebar - Hidden below lg to prioritize content width */}
-          <aside className="hidden lg:block w-[340px] shrink-0 sticky top-24 self-start">
-            <ColorSidebar color={normalizedHex} />
-          </aside>
-        </div>
-      </main>
+      <GlobalLayout
+        leftSidebar={<TableOfContents currentHex={normalizedHex} />}
+        leftSidebarClassName="xl:block w-52 sticky top-28 self-start"
+        rightSidebar={<ColorSidebar color={normalizedHex} />}
+        rightSidebarClassName="lg:block w-[340px] sticky top-24 self-start"
+      >
+        <ColorPageContent key={normalizedHex} hex={normalizedHex} faqs={faqItems} colorInformation={colorInformation || undefined} name={colorName} colorExistsInDb={colorExistsInDb} pageUrl={pageUrl} />
+      </GlobalLayout>
 
       <Footer />
     </div>
