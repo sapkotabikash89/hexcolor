@@ -11,7 +11,7 @@ import { CustomColorPicker } from "@/components/custom-color-picker"
 import { ColorCombination } from "@/components/color-combination"
 import { getColorPageLink } from "@/lib/color-linking-utils"
 import { ColorExportDialog } from "@/components/color-export-dialog"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { Share, Shuffle, Pipette } from "lucide-react"
 
 export function CompactColorWheel() {

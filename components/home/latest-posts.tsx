@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 export function LatestPosts({ posts }: { posts: any[] }) {
     // If no posts provided, return null or empty state
     if (!posts || posts.length === 0) {

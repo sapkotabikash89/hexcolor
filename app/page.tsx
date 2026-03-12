@@ -6,7 +6,7 @@ import { GlobalLayout } from "@/components/layout/global-layout"
 import { Hero } from "@/components/home/hero"
 import { AboutSection } from "@/components/home/about-section"
 import { LatestPosts } from "@/components/home/latest-posts"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import {
   Palette,
   Image as ImageIcon,

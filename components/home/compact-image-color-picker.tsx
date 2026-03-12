@@ -9,7 +9,7 @@ import { Upload } from "lucide-react"
 import { hexToRgb, rgbToHsl } from "@/lib/color-utils"
 import { CopyButton } from "@/components/copy-button"
 import { getColorPageLink } from "@/lib/color-linking-utils"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 
 export function CompactImageColorPicker() {
     const router = useRouter()

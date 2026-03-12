@@ -37,7 +37,7 @@ function PaginationItem({ ...props }: React.ComponentProps<'li'>) {
   return <li data-slot="pagination-item" {...props} />
 }
 
-import Link from 'next/link'
+import Link from '@/components/force-reload-link'
 
 type PaginationLinkProps = {
   isActive?: boolean

@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 
 const tools = [
   { slug: "color-wheel", title: "Color Wheel", description: "Explore harmonies like complementary, triadic, and analogous." },

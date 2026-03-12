@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { CopyButton } from "@/components/copy-button"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
 import { getColorPageLink } from "@/lib/color-linking-utils"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { Shuffle, Pipette, Palette } from "lucide-react"
 
 interface ColorPickerPageToolProps {

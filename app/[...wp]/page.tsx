@@ -1,6 +1,6 @@
 import React, { Suspense } from "react"
 import type { Metadata } from "next"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Script from "next/script"

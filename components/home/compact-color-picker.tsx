@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import Link from "next/link"
+import Link from "@/components/force-reload-link"
 import { Card } from "@/components/ui/card"
 import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "@/lib/color-utils"
 import { CopyButton } from "@/components/copy-button"
