@@ -5,7 +5,7 @@ import { GlobalLayout } from "@/components/layout/global-layout"
 import { ColorPickerClient } from "@/components/tool-wrappers"
 import { ColorSidebar } from "@/components/sidebar"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
-import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
 import { Card } from "@/components/ui/card"
 import { CheckCircle2, Info, MousePointer2, HelpCircle, Zap, ShieldCheck, RefreshCw, Layers } from "lucide-react"
@@ -99,11 +99,7 @@ export default function ColorPickerPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
-      <WebPageSchema
-        name="Color Picker"
-        url="https://hexcolormeans.com/color-picker/"
-        description="Professional online color picker to select and explore colors. Get instant HEX, RGB, and HSL codes for web design and development."
-      />
+
       <BreadcrumbSchema items={[
         { name: "Home", item: "https://hexcolormeans.com/" },
         { name: "Color Picker", item: "https://hexcolormeans.com/color-picker/" }
@@ -131,11 +127,7 @@ export default function ColorPickerPage() {
         articleClassName="main-content grow-content flex-1 space-y-16"
       >
         <div className="py-12">
-            <ToolApplicationSchema
-              name="Precision Color Picker"
-              slug="color-picker"
-              description="Professional-grade interface for color selection, analysis, and perceptual adjustment."
-            />
+
 
             {/* Tool Area */}
             <section className="space-y-8" aria-label="Color picker tool interface">

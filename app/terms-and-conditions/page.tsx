@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { GlobalLayout } from "@/components/layout/global-layout"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
-import { BreadcrumbSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { ShareButtons } from "@/components/share-buttons"
 
 export const dynamic = "force-static";
@@ -43,11 +43,7 @@ export const metadata: Metadata = {
 export default function TermsAndConditionsPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <WebPageSchema
-        name="Terms and Conditions"
-        url="https://hexcolormeans.com/terms-and-conditions/"
-        description="Terms and conditions for using HexColorMeans. Outlines the rules and responsibilities for using our website."
-      />
+
       <BreadcrumbSchema items={[
         { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
         { name: "Terms and Conditions", item: "https://hexcolormeans.com/terms-and-conditions/" }

@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { GlobalLayout } from "@/components/layout/global-layout";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
-import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { PaletteFromImageClient } from "@/components/tool-wrappers"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
 import { Card } from "@/components/ui/card"
@@ -87,11 +87,7 @@ export default function PaletteFromImagePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
-      <WebPageSchema
-        name="Palette from Image"
-        url="https://hexcolormeans.com/palette-from-image/"
-        description="Professional online image palette generator to extract balanced color schemes and dominant hex codes from digital assets."
-      />
+
       <BreadcrumbSchema items={[
         { name: "Home", item: "https://hexcolormeans.com/" },
         { name: "Palette from Image", item: "https://hexcolormeans.com/palette-from-image/" }
@@ -120,11 +116,7 @@ export default function PaletteFromImagePage() {
         articleClassName="main-content grow-content flex-1 space-y-16"
       >
         <div className="py-12">
-            <ToolApplicationSchema
-              name="Image-to-Palette Generator"
-              slug="palette-from-image"
-              description="A precision engine for extracting balanced color schemes and dominant hex codes from photographic or digital assets."
-            />
+
 
             {/* Tool Area */}
             <section className="space-y-8" aria-label="Palette from image tool interface">
@@ -217,7 +209,7 @@ export default function PaletteFromImagePage() {
                 <h2 className="text-4xl font-bold m-0 text-left">FAQs About Image Palettes</h2>
               </div>
               <div className="max-w-5xl">
-                <FAQSchema faqs={faqs} />
+
                 <Accordion type="single" collapsible className="w-full space-y-4">
                   {faqs.map((faq, i) => (
                     <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-6 bg-white transition-colors hover:bg-accent/5">

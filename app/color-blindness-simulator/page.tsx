@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { GlobalLayout } from "@/components/layout/global-layout";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
-import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { ColorBlindnessSimulatorClient } from "@/components/tool-wrappers"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
 import { Card } from "@/components/ui/card"
@@ -94,11 +94,7 @@ export default function ColorBlindnessSimulatorPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
-      <WebPageSchema
-        name="Color Blindness Simulator"
-        url="https://hexcolormeans.com/color-blindness-simulator/"
-        description="Professional online color blindness simulator to test design accessibility. Model Protanopia, Deuteranopia, Tritanopia, and more."
-      />
+
       <BreadcrumbSchema items={[
         { name: "Home", item: "https://hexcolormeans.com/" },
         { name: "Color Blindness Simulator", item: "https://hexcolormeans.com/color-blindness-simulator/" }
@@ -127,11 +123,7 @@ export default function ColorBlindnessSimulatorPage() {
         articleClassName="main-content grow-content flex-1 space-y-16"
       >
         <div className="py-12">
-            <ToolApplicationSchema
-              name="Color Blindness Simulator"
-              slug="color-blindness-simulator"
-              description="A professional-grade simulation tool for auditing color vision deficiency and accessibility compliance."
-            />
+
 
             {/* Tool Area */}
             <section className="space-y-8" aria-label="Color blindness simulator tool interface">
@@ -246,7 +238,7 @@ export default function ColorBlindnessSimulatorPage() {
                 <h2 className="text-4xl font-bold m-0 text-left">FAQs About Color Blindness</h2>
               </div>
               <div className="max-w-5xl">
-                <FAQSchema faqs={faqs} />
+
                 <Accordion type="single" collapsible className="w-full space-y-4">
                   {faqs.map((faq, i) => (
                     <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-6 bg-white transition-colors hover:bg-accent/5">

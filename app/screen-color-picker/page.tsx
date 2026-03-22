@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { GlobalLayout } from "@/components/layout/global-layout";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
-import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { ScreenColorPickerClient } from "@/components/tool-wrappers"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
 import { Card } from "@/components/ui/card"
@@ -87,11 +87,7 @@ export default function ScreenColorPickerPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
-      <WebPageSchema
-        name="Screen Color Picker"
-        url="https://hexcolormeans.com/screen-color-picker/"
-        description="Professional OS-native screen color picker to extract exact HEX, RGB, and HSL codes from any desktop pixel."
-      />
+
       <BreadcrumbSchema items={[
         { name: "Home", item: "https://hexcolormeans.com/" },
         { name: "Screen Color Picker", item: "https://hexcolormeans.com/screen-color-picker/" }
@@ -120,11 +116,7 @@ export default function ScreenColorPickerPage() {
         articleClassName="main-content grow-content flex-1 space-y-16"
       >
         <div className="py-12">
-            <ToolApplicationSchema
-              name="Screen Color Picker"
-              slug="screen-color-picker"
-              description="A professional-grade universal screen color sampler for desktop-wide pixel extraction."
-            />
+
 
             {/* Tool Area */}
             <section className="space-y-8" aria-label="Screen color picker tool interface">
@@ -217,7 +209,7 @@ export default function ScreenColorPickerPage() {
                 <h2 className="text-4xl font-bold m-0 text-left">FAQs About Screen Picking</h2>
               </div>
               <div className="max-w-5xl">
-                <FAQSchema faqs={faqs} />
+
                 <Accordion type="single" collapsible className="w-full space-y-4">
                   {faqs.map((faq, i) => (
                     <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-6 bg-white transition-colors hover:bg-accent/5">

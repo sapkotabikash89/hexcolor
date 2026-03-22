@@ -34,7 +34,7 @@ import {
   hslToRgb,
   rgbToHex
 } from "@/lib/color-utils";
-import { BreadcrumbSchema, FAQSchema, WebPageSchema } from "@/components/structured-data";
+import { BreadcrumbSchema } from "@/components/structured-data";
 import { ShareButtons } from "@/components/share-buttons";
 
 const DEFAULT_HEX = "#E0115F";
@@ -171,17 +171,13 @@ function PickerContent({ initialHex = DEFAULT_HEX }: { initialHex?: string }) {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <WebPageSchema
-        name={`${displayLabel} Color Information`}
-        url={`https://hexcolormeans.com/html-color-picker/?hex=${currentHex.replace("#", "").toLowerCase()}`}
-        description={`Explore ${currentHex} color information, conversions, harmonies, variations, and accessibility.`}
-      />
+
       <BreadcrumbSchema items={[
         { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
         { name: "Color Names", item: "https://hexcolormeans.com/colors/" },
         { name: currentHex.toUpperCase(), item: `https://hexcolormeans.com/html-color-picker/?hex=${currentHex.replace("#", "").toLowerCase()}` }
       ]} />
-      <FAQSchema faqs={faqItems} />
+
 
       {/* Note: noindex is handled via server response headers or robots.txt */}
 

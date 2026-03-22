@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { GlobalLayout } from "@/components/layout/global-layout";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
-import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { ImageColorPickerClient } from "@/components/tool-wrappers"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
 import { Card } from "@/components/ui/card"
@@ -87,11 +87,7 @@ export default function ImageColorPickerPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
-      <WebPageSchema
-        name="Image Color Picker"
-        url="https://hexcolormeans.com/image-color-picker/"
-        description="Professional online image color picker to extract exact HEX, RGB, and HSL codes from any digital asset."
-      />
+
       <BreadcrumbSchema items={[
         { name: "Home", item: "https://hexcolormeans.com/" },
         { name: "Image Color Picker", item: "https://hexcolormeans.com/image-color-picker/" }
@@ -119,11 +115,7 @@ export default function ImageColorPickerPage() {
         rightSidebarClassName="lg:block w-[340px] sticky top-24 self-start"
       >
         <div className="py-12">
-            <ToolApplicationSchema
-              name="Image Color Picker"
-              slug="image-color-picker"
-              description="A precision pixel extraction tool for harvesting exact color data from local image files."
-            />
+
 
             {/* Tool Area */}
             <section className="space-y-8" aria-label="Image color picker tool interface">
@@ -211,7 +203,7 @@ export default function ImageColorPickerPage() {
                 <h2 className="text-4xl font-bold m-0 text-left">FAQs About Image Picking</h2>
               </div>
               <div className="max-w-5xl">
-                <FAQSchema faqs={faqs} />
+
                 <Accordion type="single" collapsible className="w-full space-y-4">
                   {faqs.map((faq, i) => (
                     <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-6 bg-white transition-colors hover:bg-accent/5">

@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import Script from "next/script"
 import "./globals.css"
-import { WebsiteSchema, OrganizationSchema, SoftwareApplicationSchema } from "@/components/structured-data"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import { NavigationInterceptor } from "@/components/navigation-interceptor"
@@ -88,9 +87,6 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} px-0`}>
         <div className="min-h-screen relative bg-background font-sans antialiased">
-          <WebsiteSchema />
-          <OrganizationSchema />
-          <SoftwareApplicationSchema />
           {children}
         </div>
 

@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { GlobalLayout } from "@/components/layout/global-layout"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
-import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { ContrastCheckerClient } from "@/components/tool-wrappers"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
 import { Card } from "@/components/ui/card"
@@ -89,11 +89,7 @@ export default function ContrastCheckerPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-left font-sans">
-      <WebPageSchema
-        name="Contrast Checker"
-        url="https://hexcolormeans.com/contrast-checker/"
-        description="Professional online contrast checker for WCAG accessibility compliance. Ensure your designs are readable and inclusive for all users."
-      />
+
       <BreadcrumbSchema items={[
         { name: "Home", item: "https://hexcolormeans.com/" },
         { name: "Contrast Checker", item: "https://hexcolormeans.com/contrast-checker/" }
@@ -121,11 +117,7 @@ export default function ContrastCheckerPage() {
         articleClassName="main-content grow-content flex-1 space-y-16"
       >
         <div className="py-12">
-            <ToolApplicationSchema
-              name="Professional Contrast Checker"
-              slug="contrast-checker"
-              description="A precision accessibility tool for validating and optimizing luminance ratios for WCAG compliance."
-            />
+
 
             {/* Tool Area */}
             <section className="space-y-8" aria-label="Contrast checker tool interface">
@@ -216,7 +208,7 @@ export default function ContrastCheckerPage() {
                 <h2 className="text-4xl font-bold m-0 text-left">FAQs About Color Contrast</h2>
               </div>
               <div className="max-w-5xl">
-                <FAQSchema faqs={faqs} />
+
                 <Accordion type="single" collapsible className="w-full space-y-4">
                   {faqs.map((faq, i) => (
                     <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-6 bg-white transition-colors hover:bg-accent/5">

@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { GlobalLayout } from "@/components/layout/global-layout"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
-import { BreadcrumbSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { ShareButtons } from "@/components/share-buttons"
 
 export const dynamic = "force-static";
@@ -43,11 +43,7 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <WebPageSchema
-        name="Privacy Policy"
-        url="https://hexcolormeans.com/privacy-policy/"
-        description="Privacy practices of HexColorMeans. Learn how we collect, use, and protect your information."
-      />
+
       <BreadcrumbSchema items={[
         { name: "HexColorMeans", item: "https://hexcolormeans.com/" },
         { name: "Privacy Policy", item: "https://hexcolormeans.com/privacy-policy/" }

@@ -4,7 +4,6 @@ import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script"
 import "../globals.css" // Import globals for blog posts
-import { WebsiteSchema, OrganizationSchema, SoftwareApplicationSchema } from "@/components/structured-data"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 

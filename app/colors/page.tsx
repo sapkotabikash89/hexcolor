@@ -6,7 +6,7 @@ import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
 import { ColorLibrary } from "@/components/color-library"
 import { GlobalLayout } from "@/components/layout/global-layout"
-import { BreadcrumbSchema, CollectionPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 
 import { ShareButtons } from "@/components/share-buttons"
 
@@ -53,7 +53,7 @@ export default function ColorsPage() {
   const baseUrl = "https://hexcolormeans.com"
   return (
     <div className="flex flex-col min-h-screen">
-      <CollectionPageSchema name="Color Library" url={`${baseUrl}/colors/`} />
+
       <BreadcrumbSchema items={[
         { name: "Home", item: "https://hexcolormeans.com/" },
         { name: "Color Library", item: "https://hexcolormeans.com/colors/" }

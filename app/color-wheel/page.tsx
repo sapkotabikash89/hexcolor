@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { GlobalLayout } from "@/components/layout/global-layout"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { ColorSidebar } from "@/components/sidebar"
-import { BreadcrumbSchema, FAQSchema, ToolApplicationSchema, WebPageSchema } from "@/components/structured-data"
+import { BreadcrumbSchema } from "@/components/structured-data"
 import { ColorWheelClient } from "@/components/tool-wrappers"
 import { ExploreColorTools } from "@/components/tools/explore-color-tools"
 import { Card } from "@/components/ui/card"
@@ -120,11 +120,7 @@ export default function ColorWheelPage() {
 
     return (
         <div className="flex flex-col min-h-screen bg-background text-left font-sans">
-            <WebPageSchema
-                name="Color Wheel"
-                url="https://hexcolormeans.com/color-wheel/"
-                description="Interactive chromatic wheel to explore 8 types of color harmonies for professional design. Learn Complementary, Analogous, and Triadic schemes."
-            />
+
             <BreadcrumbSchema items={[
                 { name: "Home", item: "https://hexcolormeans.com/" },
                 { name: "Color Wheel", item: "https://hexcolormeans.com/color-wheel/" }
@@ -153,11 +149,7 @@ export default function ColorWheelPage() {
         articleClassName="main-content grow-content flex-1 space-y-16"
       >
         <div className="py-12">
-            <ToolApplicationSchema
-              name="Color Wheel Tool"
-              slug="color-wheel"
-              description="A professional chromatic wheel interface for selecting hues and building coordinated color palettes based on harmony rules."
-            />
+
 
             {/* Tool Area */}
             <section className="space-y-8" aria-label="Color wheel tool interface">

@@ -430,71 +430,6 @@ export function UnifiedBlogSchema({
 
   const graph: any[] = [
     {
-      "@type": "Organization",
-      "@id": organizationId,
-      name: publisherName,
-      url: siteUrl,
-      logo: {
-        "@type": "ImageObject",
-        "@id": `${siteUrl}/#logo`,
-        url: publisherLogo,
-        contentUrl: publisherLogo,
-        width: 192,
-        height: 192,
-        caption: publisherName,
-      },
-      image: { "@id": `${siteUrl}/#logo` },
-    },
-    {
-      "@type": "WebSite",
-      "@id": websiteId,
-      url: siteUrl,
-      name: publisherName,
-      description: "Know your color - Explore color information, meanings, conversions, and professional tools",
-      publisher: { "@id": organizationId },
-      potentialAction: [
-        {
-          "@type": "SearchAction",
-          target: {
-            "@type": "EntryPoint",
-            urlTemplate: `${siteUrl}/colors/{search_term_string}`,
-          },
-          "query-input": "required name=search_term_string",
-        },
-      ],
-      inLanguage: "en-US",
-    },
-    {
-      "@type": "ImageObject",
-      "@id": primaryImageId,
-      inLanguage: "en-US",
-      url: image,
-      contentUrl: image,
-      width: 1200,
-      height: 630,
-      caption: title,
-    },
-    {
-      "@type": "WebPage",
-      "@id": webpageId,
-      url: url,
-      name: title,
-      isPartOf: { "@id": websiteId },
-      primaryImageOfPage: { "@id": primaryImageId },
-      image: { "@id": primaryImageId },
-      datePublished: datePublished,
-      dateModified: dateModified,
-      description: description,
-      breadcrumb: { "@id": breadcrumbId },
-      inLanguage: "en-US",
-      potentialAction: [
-        {
-          "@type": "ReadAction",
-          target: [url],
-        },
-      ],
-    },
-    {
       "@type": "BreadcrumbList",
       "@id": breadcrumbId,
       itemListElement: [
@@ -515,18 +450,29 @@ export function UnifiedBlogSchema({
     {
       "@type": "Article",
       "@id": articleId,
-      isPartOf: { "@id": webpageId },
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": url,
+      },
       author: {
         "@type": authorType,
-        "@id": authorType === "Person" ? `${siteUrl}/#/schema/person/${authorName.toLowerCase().replace(/\s+/g, '-')}` : organizationId,
         name: authorName,
       },
       headline: title,
       datePublished: datePublished,
       dateModified: dateModified,
-      mainEntityOfPage: { "@id": webpageId },
-      publisher: { "@id": organizationId },
-      image: { "@id": primaryImageId },
+      publisher: {
+        "@type": "Organization",
+        name: publisherName,
+        logo: {
+          "@type": "ImageObject",
+          url: publisherLogo,
+        },
+      },
+      image: image ? {
+        "@type": "ImageObject",
+        url: image,
+      } : undefined,
       articleSection: categories.map((c) => c.name),
       inLanguage: "en-US",
       ...(colorName || colorHex
@@ -549,22 +495,6 @@ export function UnifiedBlogSchema({
         : {}),
     },
   ]
-
-  if (authorType === "Person") {
-    graph.push({
-      "@type": "Person",
-      "@id": `${siteUrl}/#/schema/person/${authorName.toLowerCase().replace(/\s+/g, '-')}`,
-      name: authorName,
-      image: {
-        "@type": "ImageObject",
-        "@id": `${siteUrl}/#personlogo`,
-        url: "https://secure.gravatar.com/avatar/6556e4c27303e2ad6e2572b226e69623?s=96&d=mm&r=g",
-        contentUrl: "https://secure.gravatar.com/avatar/6556e4c27303e2ad6e2572b226e69623?s=96&d=mm&r=g",
-        caption: authorName,
-      },
-      sameAs: [siteUrl],
-    })
-  }
 
   if (faqs && faqs.length > 0) {
     graph.push({
@@ -624,81 +554,6 @@ export function UnifiedColorSchema({
 
   const graph: any[] = [
     {
-      "@type": "Organization",
-      "@id": organizationId,
-      name: "HexColorMeans",
-      url: siteUrl,
-      logo: {
-        "@type": "ImageObject",
-        "@id": `${siteUrl}/#logo`,
-        url: `${siteUrl}/logo.webp`,
-        contentUrl: `${siteUrl}/logo.webp`,
-        width: 192,
-        height: 192,
-        caption: "HexColorMeans",
-      },
-      image: { "@id": `${siteUrl}/#logo` },
-    },
-    {
-      "@type": "WebSite",
-      "@id": websiteId,
-      url: siteUrl,
-      name: "HexColorMeans",
-      description: "Know your color - Explore color information, meanings, conversions, and professional tools",
-      publisher: { "@id": organizationId },
-      potentialAction: [
-        {
-          "@type": "SearchAction",
-          target: {
-            "@type": "EntryPoint",
-            urlTemplate: `${siteUrl}/colors/{search_term_string}`,
-          },
-          "query-input": "required name=search_term_string",
-        },
-      ],
-      inLanguage: "en-US",
-    },
-    {
-      "@type": "ImageObject",
-      "@id": primaryImageId,
-      inLanguage: "en-US",
-      url: image,
-      contentUrl: image,
-      width: 1200,
-      height: 630,
-      caption: title,
-    },
-    {
-      "@type": "WebPage",
-      "@id": webpageId,
-      url: url,
-      name: title,
-      isPartOf: { "@id": websiteId },
-      primaryImageOfPage: { "@id": primaryImageId },
-      image: { "@id": primaryImageId },
-      description: description,
-      breadcrumb: { "@id": breadcrumbId },
-      inLanguage: "en-US",
-      potentialAction: [
-        {
-          "@type": "ReadAction",
-          target: [url],
-        },
-      ],
-      mainEntity: {
-        "@type": "Thing",
-        name: colorName || colorHex,
-        description: `Color information and codes for ${colorName ? `${colorName} (${colorHex})` : colorHex}.`,
-        additionalProperty: [
-          {
-            "@type": "PropertyValue",
-            name: "Hex Code",
-            value: colorHex,
-          },
-        ],
-      },
-    },
-    {
       "@type": "BreadcrumbList",
       "@id": breadcrumbId,
       itemListElement: breadcrumbs.map((crumb, index) => ({
@@ -709,22 +564,6 @@ export function UnifiedColorSchema({
       })),
     },
   ]
-
-  if (faqs && faqs.length > 0) {
-    graph.push({
-      "@type": "FAQPage",
-      "@id": `${url}#faq`,
-      mainEntity: faqs.map((faq) => ({
-        "@type": "Question",
-        name: faq.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: faq.answer,
-        },
-      })),
-    })
-  }
-
   const schema = {
     "@context": "https://schema.org",
     "@graph": graph,
